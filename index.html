@@ -401,8 +401,8 @@
       ytNote: '파일을 직접 열면 YouTube 재생이 막힐 수 있습니다. 위 링크로 해당 장면을 여세요.',
       ctxOutcome: '행동 결과', ctxKill: '킬', ctxLead: '플레이 직전', ctxBg: '같은 시간대와 비교', ctxDv: '골드 흐름 변화 (참고)',
       ctxOverlap: h => `${h}초 안에 겹친 플레이`, ctxOverlapNote: '이 플레이들의 영향도 골드 변화에 섞여 있습니다',
-      mmHead: '맵 위치', mmSrc: '방송 미니맵 + Riot 기록 · 그림 Riot Data Dragon', mmPlay: '재생', mmPause: '멈춤', mmAt: (d, c) => `시작 ${d >= 0 ? '+' : ''}${d}초 · ${c}`,
-      mmNote: '흰 테두리의 큰 아이콘은 이 플레이에 나온 선수, 선은 이후 이동입니다. 위치는 방송 미니맵에서 읽고, 1분마다 Riot 기록의 정확한 위치로 맞춥니다. 흐린 점선 테두리는 앞뒤 위치를 이어 채운 것, 회색 아이콘과 ✕는 Riot 기록상 처치당한 선수, 잠깐 나타나는 ✕ 원은 처치가 일어난 자리입니다. 읽지 못한 선수(한타에서 가려진 경우 등)는 빠집니다.',
+      mmHead: '맵 위치', mmSrc: '방송 미니맵·중계 화면 + Riot 기록 · 그림 Riot Data Dragon', mmPlay: '재생', mmPause: '멈춤', mmAt: (d, c) => `시작 ${d >= 0 ? '+' : ''}${d}초 · ${c}`,
+      mmNote: '흰 테두리의 큰 아이콘은 이 플레이에 나온 선수, 선은 이후 이동입니다. 위치는 방송 미니맵에서 읽고, 중계 화면에 선수 이름이 보이면 그 자리를 씁니다. 1분마다 Riot 기록의 정확한 위치로 맞춥니다. 흐린 점선 테두리는 앞뒤 위치를 이어 채운 것, 회색 아이콘과 ✕는 Riot 기록상 처치당한 선수, 잠깐 나타나는 ✕ 원은 처치가 일어난 자리입니다. 미니맵과 화면 어디에서도 읽지 못한 선수는 빠집니다.',
       ctxNear: '시작 때 근처 선수 (미니맵)', ctxNearNone: '없음', ctxNearNote: n => `이 플레이에 나온 선수(${n}) 근처 약 1,500 유닛 안`,
       ctxElse: h => `${h}초 안 다른 곳의 일`, ctxElseNone: 'Riot 기록상 없음',
       ctxElseNote: 'Riot 기록에서 이 플레이의 선수가 끼지 않은 처치·오브젝트·구조물입니다. 그 골드도 위 변화에 함께 들어 있습니다.',
@@ -467,8 +467,8 @@
       ytNote: 'Opened as a local file, YouTube may refuse to play here. Use the link above.',
       ctxOutcome: 'Result', ctxKill: 'Kill', ctxLead: 'Just before', ctxBg: 'Against the same phase', ctxDv: 'Gold pace change (reference)',
       ctxOverlap: h => `Other plays within ${h} s`, ctxOverlapNote: 'their effect is mixed into the gold change too',
-      mmHead: 'Map positions', mmSrc: 'broadcast minimap + Riot record · art Riot Data Dragon', mmPlay: 'Play', mmPause: 'Pause', mmAt: (d, c) => `start ${d >= 0 ? '+' : ''}${d} s · ${c}`,
-      mmNote: 'Large icons with a white ring are the players named in this play, lines their movement after it. Positions are read from the broadcast minimap and set to Riot\'s exact positions once a minute. Faint icons with a dashed ring are filled in between known positions, grey icons with a cross are players Riot records as killed, and a brief crossed circle marks where a kill happened. Players the minimap could not show (for example hidden in a fight) are left out.',
+      mmHead: 'Map positions', mmSrc: 'broadcast minimap and view + Riot record · art Riot Data Dragon', mmPlay: 'Play', mmPause: 'Pause', mmAt: (d, c) => `start ${d >= 0 ? '+' : ''}${d} s · ${c}`,
+      mmNote: 'Large icons with a white ring are the players named in this play, lines their movement after it. Positions are read from the broadcast minimap, or from the broadcast view where a player\'s name shows on screen, and set to Riot\'s exact positions once a minute. Faint icons with a dashed ring are filled in between known positions, grey icons with a cross are players Riot records as killed, and a brief crossed circle marks where a kill happened. Players found neither on the minimap nor on screen are left out.',
       ctxNear: 'Nearby at the start (minimap)', ctxNearNone: 'none', ctxNearNote: n => `within about 1,500 units of the players named in this play (${n})`,
       ctxElse: h => `Elsewhere within ${h} s`, ctxElseNone: 'none in Riot\'s record',
       ctxElseNote: 'Kills, epic monsters and structures in Riot\'s record that none of this play\'s players took part in. Their gold is in the change above too.',
@@ -986,8 +986,8 @@
   }
 
   // ------------------------------------------------------------------ minimap
-  // Positions come per game second as x, y (0-1000, Riot's axes: y up) and quality (2 sure, 1 weak, 0 filled in
-  // between, -1 not seen) for each player in g.minimap.players order.
+  // Positions come per game second as x, y (0-1000, Riot's axes: y up) and quality (4 read on the broadcast view,
+  // 3 Riot frame, 2 sure, 1 weak, 0 filled in between, -2 dead, -1 not seen) for each player in g.minimap.players order.
   let mmTimer = null;
   const MM_PLAY = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>';
   const MM_STOP = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="3.5" y="3.5" width="9" height="9" rx="1" fill="currentColor"/></svg>';
@@ -1099,7 +1099,7 @@
           } else {
             n.style.transform = to;
           }
-          // Riot frames and confident matches full, filled-in positions faint with a dashed ring, the dead faded.
+          // Riot frames, the broadcast view and confident matches full, filled-in positions faint with a dashed ring, the dead faded.
           n.style.opacity = dead ? 0.5 : q >= 2 ? 1 : q === 1 ? 0.75 : 0.55;
           n.querySelector('.ring').setAttribute('stroke-dasharray', q === 0 ? '16 10' : 'none');
           seen[i] = d;
