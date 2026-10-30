@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 258 48" width="258" height="48">
+  <style>
+    .word { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 30px; font-weight: 900; letter-spacing: -0.9px; }
+    .play { fill: #172133; }
+    .val { fill: #B9731A; }
+    @media (prefers-color-scheme: dark) { .play { fill: #F1F5F9; } .val { fill: #E9A23B; } }
+  </style>
+  <svg x="0" y="2" width="44" height="44" viewBox="0 0 32 32">
+  <defs>
+    <clipPath id="lwTop"><rect x="0" y="0" width="32" height="16"/></clipPath>
+    <clipPath id="lwBot"><rect x="0" y="16" width="32" height="16"/></clipPath>
+    <clipPath id="lwMid"><rect x="12.5" y="0" width="9" height="32"/></clipPath>
+  </defs>
+  <!-- Before the play, the 30-second window after it (gold), and what follows. -->
+  <rect x="1" y="1" width="10" height="30" rx="3.5" fill="#243552"/>
+  <rect x="12.5" y="1" width="9" height="30" rx="2" fill="#E9A23B"/>
+  <rect x="23" y="1" width="8" height="30" rx="3.5" fill="#243552"/>
+  <!-- Zero line and the gold gap: blue above zero, red below, knocked out in navy inside the window. -->
+  <path d="M2 16H30" stroke="#4A5A73" stroke-width="1.1"/>
+  <path d="M2.5 20C6.5 20 9 21.5 12.5 20.5S17 11.5 20.5 11 25.5 12.5 29.5 8.5" fill="none" stroke="#F2697A" stroke-width="2.6" stroke-linecap="round" clip-path="url(#lwBot)"/>
+  <path d="M2.5 20C6.5 20 9 21.5 12.5 20.5S17 11.5 20.5 11 25.5 12.5 29.5 8.5" fill="none" stroke="#4FB0F0" stroke-width="2.6" stroke-linecap="round" clip-path="url(#lwTop)"/>
+  <path d="M2.5 20C6.5 20 9 21.5 12.5 20.5S17 11.5 20.5 11 25.5 12.5 29.5 8.5" fill="none" stroke="#172133" stroke-width="2.6" stroke-linecap="round" clip-path="url(#lwMid)"/>
+  <!-- The play. -->
+  <circle cx="12.5" cy="20.5" r="2.5" fill="#fff" stroke="#172133" stroke-width="1"/>
+  </svg>
+  <text class="word" x="54" y="35"><tspan class="play">Play</tspan><tspan class="val">Value</tspan></text>
+</svg>

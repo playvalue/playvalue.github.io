@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f5f7" id="themeColor">
+  <title>PlayValue</title>
+  <meta name="description" content="LoL 국제대회 해설이 짚은 플레이를, 직후 15·30·60초의 두 팀 골드 차이로 봅니다. MSI 2026과 Worlds 2026 경기를 다룹니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PlayValue">
+  <meta property="og:title" content="PlayValue — 팀의 관점에서 보는 플레이의 밸류">
+  <meta property="og:description" content="LoL 국제대회 해설이 짚은 플레이를, 직후 15·30·60초의 두 팀 골드 차이로 봅니다. MSI 2026과 Worlds 2026 경기를 다룹니다.">
+  <meta property="og:url" content="https://playvalue.github.io/">
+  <meta property="og:image" content="https://playvalue.github.io/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="./assets/logo-icon.svg?v=2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <style>
+    /* Achromatic ledger: the chrome is ink on a blue-grey ground; hue is kept for data only: the two sides'
+       colours, gain and loss, and the brand's gold on the selected play and the plays worth a look. */
+    :root {
+      --bg-main: #f4f5f7;
+      --bg-header: #f4f5f7;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f6f7f8;
+      --bg-pill: #eceef1;
+      --text-main: #111214;
+      --text-muted: #5d6168;
+      --border-color: #e4e6ea;
+      --border-focus: #111214;
+      --shadow-md: 0 6px 20px rgba(17, 18, 20, 0.10);
+      --blue-team: #1d63b8;
+      --blue-bg: #e7effa;
+      --red-team: #c4243f;
+      --red-bg: #fbe8ec;
+      --gain: #247b50;
+      --gain-bg: #e2f4e9;
+      --loss: #b53d0c;
+      --loss-bg: #fbeae1;
+      --neutral: #62666d;
+      --neutral-bg: #eceef1;
+      --accent: #95580d;
+      --accent-bg: rgba(185, 115, 26, 0.10);
+      --f-objective_hunt: var(--neutral); --f-objective_contest: var(--neutral); --f-structure: var(--neutral); --f-gank: var(--neutral); --f-fight: var(--neutral);
+      --f-lane: var(--neutral); --f-defense: var(--neutral); --f-vision: var(--neutral); --f-other: var(--neutral); --star: #b9731a;
+      --chart-grid: #e9ebee;
+      --chart-axis: #686c73;
+      --brand-gold: #B9731A;
+      --radius-card: 8px; --radius-control: 6px;
+      color-scheme: light;
+      --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Segoe UI', sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+    }
+    [data-theme="dark"] {
+      --bg-main: #0d0d0e;
+      --bg-header: #0d0d0e;
+      --bg-card: #161618;
+      --bg-card-hover: #1d1d20;
+      --bg-pill: #242427;
+      --text-main: #f3f3f4;
+      --text-muted: #a9abb0;
+      --border-color: #2a2a2e;
+      --border-focus: #f3f3f4;
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+      --blue-team: #5ea3ff;
+      --blue-bg: #17243a;
+      --red-team: #ff6d83;
+      --red-bg: #3a1a21;
+      --gain: #3fc07a;
+      --gain-bg: #172a1d;
+      --loss: #ff8a52;
+      --loss-bg: #34200f;
+      --neutral: #a0a2a8;
+      --neutral-bg: #242427;
+      --accent: #e9a23b;
+      --accent-bg: rgba(233, 162, 59, 0.14);
+      --star: #e9a23b;
+      --chart-grid: #262629;
+      --chart-axis: #9a9ca2;
+      --brand-gold: #E9A23B;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--bg-main); }
+    /* Korean wraps between words, not inside them. */
+    html[lang="ko"] body { word-break: keep-all; overflow-wrap: break-word; }
+    body {
+      background: var(--bg-main); color: var(--text-main);
+      font-family: var(--font); font-feature-settings: 'tnum' 0;
+      line-height: 1.5; padding-bottom: 60px; transition: background-color .2s, color .2s;
+    }
+    button { font: inherit; color: inherit; }
+    button, a, summary, select, input, [role="button"] { touch-action: manipulation; }
+    :focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; border-radius: 4px; }
+    .skip { position: absolute; left: 12px; top: -48px; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-focus); border-radius: 8px; padding: 6px 12px; z-index: 100; }
+    .skip:focus { top: 12px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .logo-title { font-size: inherit; margin: 0; }
+    .card h3, .play-title { text-wrap: balance; }
+    .row .t, .row .e, .xt td, .meta strong, .hz .val, .time, .gbtn, .series-score .n { font-variant-numeric: tabular-nums; }
+    button.row { width: 100%; text-align: left; background: transparent; border: 0; border-bottom: 1px solid var(--border-color); border-left: 3px solid transparent; font: inherit; color: inherit; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; } }
+    a { color: var(--text-main); text-underline-offset: 2px; }
+    .container { max-width: 1440px; margin: 0 auto; padding: 0 20px; }
+    .mono { font-family: var(--mono); }
+    .muted { color: var(--text-muted); }
+
+    header { background: var(--bg-header); border-bottom: 1px solid var(--border-color); padding: 14px 0 0; }
+    .num, .time, .row .t, .row .e, .hz .val, .xt td, .meta strong, .gbtn, .ser-select { font-variant-numeric: tabular-nums; }
+    .header-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+    .logo-title { display: flex; align-items: center; gap: 10px; }
+    .logo-brand-link { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+    .logo-mark { width: 34px; height: 34px; }
+    .logo-text { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.03em; }
+    .logo-text-val { color: var(--brand-gold); }
+    .logo-badge { background: var(--bg-pill); color: var(--text-muted); font-size: .75rem; padding: 1px 8px; border-radius: 999px; font-weight: 600; }
+    /* The product's message under the wordmark: a question in ink, then one plain sentence of what is measured. */
+    .tagline { margin-top: 6px; font-size: .9rem; color: var(--text-muted); max-width: 980px; text-wrap: pretty; }
+    .tagline strong { color: var(--text-main); font-size: 1.12rem; font-weight: 700; letter-spacing: -0.01em; margin-right: 6px; }
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn { background: var(--bg-card); border: 1px solid var(--border-color); font-size: .82rem; font-weight: 600; padding: 6px 12px; border-radius: var(--radius-control); cursor: pointer; text-decoration: none; color: var(--text-main); display: inline-flex; gap: 6px; align-items: center; }
+    .btn:hover { border-color: var(--border-focus); }
+
+    .navbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 28px; padding: 14px 0; }
+    .nav { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+    .seg { display: inline-flex; background: var(--bg-pill); border-radius: 8px; padding: 3px; gap: 2px; flex-wrap: wrap; }
+    .seg button { border: 0; background: transparent; padding: 5px 12px; border-radius: var(--radius-control); font-size: .82rem; font-weight: 600; cursor: pointer; color: var(--text-muted); }
+    .seg button.on { background: var(--bg-card); color: var(--text-main); }
+    .seg button:disabled { opacity: .5; cursor: not-allowed; }
+    .seg .badge { font-size: .68rem; font-weight: 600; color: var(--text-muted); margin-left: 4px; }
+    .nav-label { font-size: .75rem; color: var(--text-muted); font-weight: 600; }
+    /* One row however many series there are: step through series, pick one from a grouped list, then a game. */
+    .series { display: flex; gap: 8px 14px; flex-wrap: wrap; align-items: center; }
+    .ser-pick { display: flex; align-items: center; gap: 4px; min-width: 0; flex: 0 1 auto; }
+    .ser-step { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-size: 1.05rem; font-weight: 700; cursor: pointer; flex: none; }
+    .ser-step:hover:not(:disabled) { border-color: var(--border-focus); }
+    .ser-step:disabled { opacity: .35; cursor: default; }
+    .series select.ser-select { height: 34px; font-size: .9rem; font-weight: 700; padding: 0 10px; min-width: 0; max-width: 100%; font-variant-numeric: tabular-nums; }
+    .ser-count { font-size: .75rem; color: var(--text-muted); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .games { display: flex; gap: 4px; }
+    .gbtn { width: 34px; height: 34px; border-radius: var(--radius-control); border: 1px solid var(--border-color); background: var(--bg-card); font-weight: 700; font-size: .85rem; cursor: pointer; position: relative; color: var(--text-main); }
+    .gbtn:hover { border-color: var(--border-focus); }
+    .gbtn .win { position: absolute; left: 7px; right: 7px; bottom: 4px; height: 3px; border-radius: 2px; }
+    .gbtn.on { background: var(--text-main); color: var(--bg-card); border-color: var(--text-main); }
+    .guide { margin-top: 12px; font-size: .84rem; border-top: 1px solid var(--border-color); padding-top: 10px; }
+    .guide summary { cursor: pointer; font-weight: 700; color: var(--text-main); }
+    .guide dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 16px; margin-top: 10px; max-width: 900px; }
+    .guide dt { font-weight: 700; }
+    .guide dd { color: var(--text-muted); }
+    .hz-head { font-size: .78rem; color: var(--text-muted); font-weight: 700; margin-top: 12px; }
+
+    /* main.container: .container's padding shorthand would otherwise reset the top space to 0. */
+    main.container { padding-top: 20px; display: flex; flex-direction: column; gap: 16px; }
+    .site-foot { margin-top: 32px; padding-top: 14px; padding-bottom: 28px; border-top: 1px solid var(--border-color); }
+    .site-foot p { margin: 0; max-width: 90ch; font-size: .75rem; line-height: 1.5; color: var(--text-muted); }
+    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-card); padding: 20px; }
+    .card h3 { font-size: 1rem; margin-bottom: 10px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+    .card h3 .sub, .xt-title .sub { font-size: .78rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0; }
+    .xt-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 14px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; text-wrap: balance; }
+
+    .banner { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+    .teams { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
+    .teams .sub { font-size: .9rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0; }
+    .team-blue { color: var(--blue-team); } .team-red { color: var(--red-team); }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; }
+    .meta span { background: var(--bg-pill); border-radius: var(--radius-control); padding: 4px 10px; font-size: .8rem; }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-top: 12px; }
+
+    .chart-wrap { position: relative; }
+    #chart { width: 100%; height: auto; display: block; user-select: none; }
+    #chart text { font-family: var(--font); font-variant-numeric: tabular-nums; font-size: 12px; fill: var(--chart-axis); }
+    .tip .gain { color: var(--gain); } .tip .loss { color: var(--loss); } .tip .neutral { color: var(--neutral); }
+    .tip { position: absolute; pointer-events: none; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 9px; font-size: .75rem; box-shadow: var(--shadow-md); display: none; max-width: 280px; z-index: 5; }
+    .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .75rem; color: var(--text-muted); margin-top: 6px; }
+    .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+    .legend i.hollow { background: transparent !important; border: 1.5px solid var(--neutral); }
+
+    /* Game view: a header on the ground, the gold timeline across the full width, then the play list beside
+       the selected play, which stays in view while the list scrolls. 7fr + 16px + 5fr fills the container. */
+    .game-head { display: flex; flex-direction: column; gap: 10px; padding: 4px 0 2px; }
+    .game-head .line { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; font-size: .9rem; color: var(--text-muted); }
+    .finding { background: none; border: 0; padding: 0; font: inherit; color: var(--text-main); cursor: pointer; text-align: left; text-decoration: underline; text-decoration-color: var(--border-color); text-underline-offset: 3px; }
+    .finding:hover { text-decoration-color: currentColor; }
+    .finding .star-mark { margin-left: 0; }
+    .work { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 16px; align-items: start; }
+    .detail { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; overscroll-behavior: contain; }
+    @media (max-width: 1000px) { .work { grid-template-columns: 1fr; } .detail { position: static; max-height: none; order: -1; } }
+    .detail .hz-head { margin-top: 14px; }
+    .detail .yt { margin: 14px 0 4px; }
+    /* The arrow keys step through plays; the key caps on the buttons say so. Touch screens have no keys to press. */
+    kbd { display: inline-block; min-width: 20px; padding: 0 5px; border: 1px solid var(--border-color); border-bottom-width: 2px; border-radius: 4px; background: var(--bg-main); font: 600 .75rem/1.4 var(--font); color: var(--text-muted); text-align: center; }
+    .navbtns .btn { gap: 7px; }
+    @media (hover: none) { .navbtns kbd { display: none; } }
+    .chip { display: inline-flex; align-items: center; gap: 4px; font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--bg-pill); color: var(--text-main); white-space: nowrap; }
+    .chip.gain { background: var(--gain-bg); color: var(--gain); }
+    .chip.loss { background: var(--loss-bg); color: var(--loss); }
+    .chip.neutral { background: var(--neutral-bg); color: var(--neutral); }
+    .chip.fam { --c: var(--neutral); background: var(--bg-pill); color: var(--text-main); font-weight: 600; }
+    .chip.fam.dot::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+    .fam-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+    .chip.blue { background: var(--blue-bg); color: var(--blue-team); }
+    .chip.red { background: var(--red-bg); color: var(--red-team); }
+    .play-head { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; }
+    .play-head .left { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .time { font-weight: 700; font-size: .95rem; }
+    .play-title { font-size: 1.25rem; font-weight: 700; margin: 10px 0 4px; letter-spacing: -0.01em; }
+    .flip-note { font-size: .78rem; color: var(--accent); margin-bottom: 4px; }
+    .players { font-size: .82rem; color: var(--text-muted); line-height: 1.7; }
+    .mm { margin: 14px 0 4px; }
+    .mm-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: .78rem; color: var(--text-muted); margin-bottom: 6px; }
+    .mm-head b { color: var(--text-main); font-weight: 600; }
+    .mm svg { display: block; width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1; }
+    .mm .ctrl { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 6px; font-size: .8rem; }
+    .mm .ctrl input[type=range] { width: min(180px, 50vw); accent-color: var(--text-main); }
+    .mm .ctrl .btn.icon { width: 36px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+    .mm .ctrl .num { white-space: nowrap; min-width: 9.5em; }
+    .mm .note { font-size: .74rem; color: var(--text-muted); text-align: center; margin-top: 4px; line-height: 1.5; }
+    .role-lbl { font-size: .72rem; font-weight: 700; color: var(--text-main); background: var(--bg-pill); border-radius: 6px; padding: 1px 6px; margin-right: 4px; }
+    .desc { font-size: .9rem; margin: 6px 0; }
+    .quote { border-left: 3px solid var(--border-color); padding-left: 10px; color: var(--text-muted); font-size: .82rem; margin: 8px 0 12px; font-style: italic; }
+    .horizons { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 10px 0; }
+    .hz { border: 1px solid var(--border-color); border-radius: var(--radius-card); padding: 8px 10px; cursor: pointer; background: transparent; text-align: left; }
+    .hz.on { border-color: var(--text-main); outline: 1px solid var(--text-main); outline-offset: -2px; }
+    .hz .lbl { font-size: .72rem; color: var(--text-muted); font-weight: 700; }
+    .hz .val { font-size: 1.25rem; font-weight: 700; }
+    .hz .val.gain { color: var(--gain); } .hz .val.loss { color: var(--loss); } .hz .val.neutral { color: var(--neutral); }
+    .hz .note { font-size: .7rem; color: var(--text-muted); }
+    .ival { height: 8px; position: relative; margin-top: 6px; }
+    .ival .axis { position: absolute; left: 0; right: 0; top: 3px; height: 2px; background: var(--chart-grid); }
+    .ival .zero { position: absolute; left: 50%; top: -1px; width: 1px; height: 10px; background: var(--chart-axis); }
+    .ival .bar { position: absolute; top: 1px; height: 6px; border-radius: 3px; }
+    .ctx { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; font-size: .82rem; margin-top: 8px; }
+    .ctx dt { color: var(--text-muted); }
+    .ctx dd a, .linkbtn { color: var(--text-main); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; background: none; border: 0; padding: 0; font: inherit; }
+    .foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 12px; font-size: .78rem; color: var(--text-muted); }
+    .navbtns { display: flex; gap: 6px; }
+
+    .yt { position: relative; aspect-ratio: 16 / 9; background: #000; border-radius: var(--radius-control); overflow: hidden; }
+    .yt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .yt-note { font-size: .75rem; color: var(--text-muted); margin-top: 8px; }
+
+    .row:hover { background: var(--bg-card-hover); }
+
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    select { background: var(--bg-card); color: var(--text-main); border: 1px solid #cfd2d8; border-radius: var(--radius-control); padding: 5px 8px; font-size: .8rem; }
+    .rows { display: flex; flex-direction: column; }
+    .row { display: grid; grid-template-columns: 56px 52px minmax(0, 1fr) 170px 104px; gap: 10px; align-items: center; padding: 7px 6px; border-bottom: 1px solid var(--border-color); cursor: pointer; font-size: .84rem; border-left: 3px solid transparent; }
+    .row > :nth-child(2) { justify-self: center; }
+    .row.head { cursor: default; font-size: .75rem; font-weight: 600; color: var(--text-muted); border-bottom-color: #d5d8dd; padding-top: 2px; }
+    .row.head:hover { background: transparent; }
+    .row.head .e { color: var(--text-main); }
+    .row.star { border-left-color: var(--star); }
+    .row.star.on, .row.on { background: var(--bg-pill); }
+    /* The mark for plays worth a look: a small diamond in the brand's gold. */
+    .star-mark { display: inline-block; width: 8px; height: 8px; background: var(--star); transform: rotate(45deg); margin: 0 7px 1px 2px; vertical-align: middle; flex: none; }
+    .hl-legend { font-size: .78rem; color: var(--text-muted); margin: -2px 0 8px; }
+    label.check { display: inline-flex; align-items: center; gap: 6px; font-size: .8rem; cursor: pointer; }
+    .row.on { background: var(--bg-pill); }
+    .row .t { font-weight: 700; font-size: .84rem; }
+    /* The tally's play list names the stage and game in its chip column, wider than a team chip. */
+    #xList .row { grid-template-columns: 56px max-content minmax(0, 1fr) 170px 104px; }
+    #xList .row > .chip { white-space: nowrap; }
+    @media (max-width: 720px) { #xList .row { grid-template-columns: 48px minmax(0, 1fr) 72px; } }
+    .row .e { text-align: right; font-weight: 700; }
+    .row .e.gain { color: var(--gain); } .row .e.loss { color: var(--loss); } .row .e.neutral { color: var(--neutral); }
+    .row .title { min-width: 0; }
+    .row .title .ttl, .row .title .who { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .row .title .who { font-size: .74rem; color: var(--text-muted); margin-top: 1px; }
+    .row .title .who b { color: var(--text-main); }
+    /* On a phone the team chip gives its width to the title; the time takes the side's colour instead. */
+    @media (max-width: 720px) { .row { grid-template-columns: 48px minmax(0, 1fr) 72px; } .row .famcell, .row > .chip, .row.head > :nth-child(2) { display: none; }
+      .row.side-blue .t { color: var(--blue-team); } .row.side-red .t { color: var(--red-team); } }
+
+    table.xt { border-collapse: collapse; width: 100%; font-size: .84rem; }
+    .xt th, .xt td { border-bottom: 1px solid var(--border-color); padding: 7px 8px; text-align: right; white-space: nowrap; }
+    .xt th:first-child, .xt td:first-child { text-align: left; }
+    .xt thead th { font-size: .75rem; color: var(--text-muted); }
+    .xt th .sort { all: unset; cursor: pointer; border-radius: 4px; padding: 2px 4px; margin: -2px -4px; }
+    .xt th .sort:hover { color: var(--text-main); background: var(--bg-pill); }
+    .xt th .sort:focus-visible { outline: 2px solid var(--border-focus); }
+    .xt th[aria-sort="ascending"], .xt th[aria-sort="descending"] { color: var(--text-main); }
+    .xt th .sort .arr { display: inline-block; width: 1em; text-align: center; }
+    .xt td.cell { cursor: pointer; font-weight: 700; }
+    .xt td.pg { font-weight: 500; opacity: .85; }
+    .xt td.cell:hover { background: var(--bg-card-hover); }
+    .xt td.cell.sel { outline: 2px solid var(--border-focus); outline-offset: -2px; }
+    .xt td.zero { color: var(--text-muted); font-weight: 400; }
+    .xt .den { color: var(--text-muted); font-size: .78rem; }
+    .xt td.tot { font-weight: 700; }
+    .sbar { display: inline-flex; width: 96px; height: 8px; border-radius: 4px; overflow: hidden; vertical-align: middle; margin-left: 8px; background: var(--bg-pill); }
+    .sbar i { display: block; height: 100%; }
+    .sbar .positive { background: var(--gain); } .sbar .negative { background: var(--loss); }
+    .sbar .unresolved { background: var(--neutral); opacity: .45; } .sbar .missing { background: transparent; }
+    .xt .rsub { font-size: .72rem; color: var(--text-muted); white-space: normal; max-width: 420px; }
+    .scroll-x { overflow-x: auto; }
+    .note-box { font-size: .78rem; color: var(--text-muted); margin-top: 10px; }
+    .empty { color: var(--text-muted); font-size: .85rem; padding: 10px 0; }
+    .planned { text-align: center; padding: 48px 20px; }
+    @media (max-width: 720px) { .tagline span { display: none; } .tagline strong { font-size: 1rem; } .navbar { gap: 8px; padding: 10px 0 12px; } .ser-pick { flex: 1 1 100%; } .series select.ser-select { flex: 1; } .guide dl { grid-template-columns: 1fr; } .guide dt { margin-top: 6px; } .horizons { gap: 6px; } .hz { padding: 6px 7px; } .hz .val { font-size: .92rem; } .ctx { grid-template-columns: 1fr; } .ctx dt { margin-top: 6px; } }
+  </style>
+</head>
+<body>
+<a class="skip" href="#main" id="skipLink">본문으로 건너뛰기</a>
+<header>
+  <div class="container">
+    <div class="header-row">
+      <div>
+        <div class="logo-title">
+          <a href="./index.html" class="logo-brand-link" title="PlayValue">
+            <img src="./assets/logo-icon.svg?v=2" alt="" class="logo-mark" width="34" height="34">
+            <span class="logo-text" translate="no"><span>Play</span><span class="logo-text-val">Value</span></span>
+          </a>
+          <span class="logo-badge" id="verBadge">v2.0</span>
+        </div>
+        <p class="tagline"><strong data-i18n="tagline"></strong> <span data-i18n="taglineSub"></span></p>
+      </div>
+      <div class="header-actions">
+        <a class="btn" href="./methodology.html" data-i18n="methodology"></a>
+        <button class="btn" id="btnLang"></button>
+        <button class="btn" id="btnTheme"></button>
+      </div>
+    </div>
+    <div class="navbar">
+      <div class="nav">
+        <div class="seg" id="tournTabs"></div>
+        <div class="seg" id="viewTabs"></div>
+      </div>
+      <div class="series" id="series"></div>
+    </div>
+  </div>
+</header>
+
+<main class="container" id="main" tabindex="-1" aria-live="polite" aria-busy="false"></main>
+<footer class="container site-foot"><p data-i18n="legal"></p></footer>
+
+<script>
+(async () => {
+  // index.json is small and read first; a game's full file and a tournament's light play list load on demand.
+  let DATA;
+  try {
+    DATA = await (await fetch('./data/index.json', { cache: 'no-cache' })).json();
+  } catch (e) {
+    document.getElementById('main').innerHTML = '<section class="card"><p>데이터를 불러오지 못했습니다. 웹 서버로 열어 주세요.<br>Could not load the data. Open this page through a web server.</p></section>';
+    return;
+  }
+  const D = DATA.display;
+  const GAMES = DATA.games;
+  const seriesOf = g => g.series || g.stage;
+  // Each tournament has its own series; game 1 of its latest series opens first. Without a tournament, the one
+  // with the most recently played game is taken, so the page opens on the newest series.
+  const gamesIn = tid => GAMES.filter(g => g.tournament_id === tid);
+  const latestTourn = () => GAMES.reduce((a, b) => ((b.date || '') > (a.date || '') ? b : a)).tournament_id;
+  const firstGame = (tid = latestTourn()) => {
+    const gs = gamesIn(tid);
+    return gs.filter(g => seriesOf(g) === gs.map(seriesOf).sort().pop()).sort((a, b) => a.game_num - b.game_num)[0];
+  };
+  const PLAY = {};
+  const LIGHT = {};
+  const loading = {};
+
+  // ------------------------------------------------------------------ text
+  const T = {
+    ko: {
+      tagline: '팀의 관점에서 보는 플레이의 밸류',
+      legal: 'PlayValue는 Riot Games의 보증을 받지 않았으며, Riot Games 또는 Riot Games 자산의 제작·관리에 공식적으로 관여하는 누구의 견해나 의견도 반영하지 않습니다. Riot Games 및 관련 모든 자산은 Riot Games, Inc.의 상표 또는 등록 상표입니다.',
+      taglineSub: '킬 없는 플레이와 실패한 시도까지, 해설이 짚은 중요 플레이의 밸류를 직후 15·30·60초의 두 팀 골드 차이로 봅니다.',
+      methodology: '방법론', lang: 'English', themeDark: '다크 모드', themeLight: '라이트 모드',
+      viewSet: '경기별 보기', viewXtab: '유형별 집계', winner: '승리',
+      cov: (n, m, k) => `플레이 <strong>${n}</strong>건 중 골드 변화를 잰 것 <strong>${m}</strong>건, 그중 이득·손해가 판정된 것 <strong>${k}</strong>건`,
+      duration: '경기 시간', perspective: '누구 입장에서', horizon: '골드 변화 구간', sec: s => `${s}초`,
+      guideTitle: '숫자 읽는 법',
+      guide: [
+        ['골드 변화', '플레이가 시작된 순간부터 15·30·60초 동안 플레이한 팀과 상대 팀의 골드 차이가 얼마나 벌어지거나 좁혀졌는지입니다. 방송 화면의 팀 골드를 읽어 계산합니다.'],
+        ['오차 ±200', '화면의 팀 골드가 100 단위로 반올림돼 있어 생기는 범위입니다. 변화가 이 범위 안이면 이득인지 손해인지 가릴 수 없어 “불확실”로 표시합니다.'],
+        ['측정 없음', '리플레이 화면 등으로 앞이나 뒤 시점의 골드를 읽지 못한 경우입니다.'],
+        ['같은 시간대와 비교', '이 경기의 같은 시간대(라인전·중반·후반)에서 모든 30초 구간의 골드 변화를 모아, 이 플레이의 변화가 어느 쪽 끝에 있는지 보여 줍니다. 위치만 알려 줄 뿐 효과의 크기는 아닙니다.'],
+        ['원인은 아닙니다', '같은 시간에 다른 곳에서 일어난 일도 골드 변화에 섞여 있습니다. 골드가 움직였다고 해서 그 플레이 때문이라는 뜻은 아닙니다.'],
+        ['누구 입장에서', '고른 팀 입장에서 차트와 목록을 읽습니다. 상대 팀이 한 플레이는 골드 변화의 부호가 뒤집히고, 갱킹은 “갱킹 대응”으로 보입니다. 유형별 집계는 해설이 짚은 쪽 기준으로 한 번만 셉니다.'],
+      ],
+      chartTitle: '골드 타임라인', chartSub: (h, team) => `위 선은 두 팀 골드 차이, 아래 막대는 플레이마다 그 뒤 ${h}초 골드 변화입니다. 둘 다 위쪽이 ${team} 이득입니다.`,
+      lgBlue: '블루 팀이 한 플레이', lgRed: '레드 팀이 한 플레이', lgUnres: '오차 범위 안', lgWin: '선택한 플레이의 구간', lgFlow: '이어지는 플레이 (90초 이내)', lgObj: '전령·바론·장로 획득과 이후 플레이',
+      laneFlow: '연결', laneObj: '오브젝트', laneGap: '두 팀 골드 차이', laneBars: h => `플레이 뒤 ${h}초 골드 변화`,
+      finding: (h, clk, title, team, e) => `${h}초 기준 가장 큰 변화: ${clk} ${title} (${team} ${e})`,
+      noFinding: h => `${h}초 기준으로 이득·손해가 판정된 플레이가 없습니다.`,
+      gameLine: (w, d) => `${w} 승리 · 경기 시간 ${d}`,
+      detailEmpty: '플레이를 고르면 여기에 자세히 나옵니다.', prevWord: '이전', nextWord: '다음', keyPrev: '이전 플레이 (키보드 ←)', keyNext: '다음 플레이 (키보드 →)',
+      colTime: '시간', colTeam: '팀', colPlay: '플레이', colType: '행동 유형', colGold: h => `${h}초 골드 변화`, colFrom: tm => ` (${tm} 입장)`,
+      hlOnly: '눈여겨볼 장면만', hlLegend: h => `눈여겨볼 장면 (${h}초 기준): 성공했는데 골드 손해, 실패·중단했는데 골드 이득, 또는 같은 시간대에서 ${h}초 골드 변화 폭이 상위 10%인 플레이`,
+      listTitle: '플레이 목록', listSub: (n, total, h) => `${n} / ${total}건 · ${h}초 골드 변화 · 초록은 이득, 주황은 손해, 회색은 오차 범위 안, —는 측정 없음`,
+      fFamily: '모든 행동 유형', fTag: '모든 결과', fState: '모든 골드 변화', fPlayer: '모든 선수·챔피언', clearFilters: '필터 지우기',
+      playerNote: '그 선수가 행동했거나, 대상이 됐거나, 맞대응한 플레이입니다. 그 선수 팀 입장으로 바꿔 보여 줍니다. 해설이 이름을 말한 플레이만 나옵니다.',
+      ctxEpPlayers: '이 장면에 관여한 선수',
+      prev: '← 이전', next: '다음 →', vod: '영상 보기', vodNew: 'YouTube에서 열기 ↗',
+      ytNote: '파일을 직접 열면 YouTube 재생이 막힐 수 있습니다. 위 링크로 해당 장면을 여세요.',
+      ctxOutcome: '행동 결과', ctxKill: '킬', ctxLead: '플레이 직전', ctxBg: '같은 시간대와 비교', ctxDv: '골드 흐름 변화 (참고)',
+      ctxOverlap: h => `${h}초 안에 겹친 플레이`, ctxOverlapNote: '이 플레이들의 영향도 골드 변화에 섞여 있습니다',
+      mmHead: '맵 위치', mmSrc: '방송 미니맵 + Riot 기록 · 그림 Riot Data Dragon', mmPlay: '재생', mmPause: '멈춤', mmAt: (d, c) => `시작 ${d >= 0 ? '+' : ''}${d}초 · ${c}`,
+      mmNote: '흰 테두리의 큰 아이콘은 이 플레이에 나온 선수, 선은 이후 이동입니다. 위치는 방송 미니맵에서 읽고, 1분마다 Riot 기록의 정확한 위치로 맞춥니다. 흐린 점선 테두리는 앞뒤 위치를 이어 채운 것, 회색 아이콘과 ✕는 Riot 기록상 처치당한 선수, 잠깐 나타나는 ✕ 원은 처치가 일어난 자리입니다. 읽지 못한 선수(한타에서 가려진 경우 등)는 빠집니다.',
+      ctxNear: '시작 때 근처 선수 (미니맵)', ctxNearNone: '없음', ctxNearNote: n => `이 플레이에 나온 선수(${n}) 근처 약 1,500 유닛 안`,
+      ctxElse: h => `${h}초 안 다른 곳의 일`, ctxElseNone: 'Riot 기록상 없음',
+      ctxElseNote: 'Riot 기록에서 이 플레이의 선수가 끼지 않은 처치·오브젝트·구조물입니다. 그 골드도 위 변화에 함께 들어 있습니다.',
+      riotKind: { kill: '처치', tower: '포탑', inhibitor: '억제기', plate: '포탑 방패' },
+      riotMonster: { DRAGON: '드래곤', BARON_NASHOR: '바론', RIFTHERALD: '협곡의 전령', HORDE: '공허 유충', ATAKHAN: '아타칸', ELDER_DRAGON: '장로 드래곤' },
+      ctxEpisode: '같은 장면의 다른 플레이', ctxRelated: '이어지는 플레이', ctxObj: '오브젝트',
+      leadText: (state, g) => `팀 골드 ${g} (${state})`,
+      bgText: (pct, h) => pct >= 50 ? `이 경기 같은 시간대의 ${h}초 구간 중 상위 ${Math.max(1, Math.round(100 - pct))}%` : `이 경기 같은 시간대의 ${h}초 구간 중 하위 ${Math.max(1, Math.round(pct))}%`,
+      bgNote: '위치 정보일 뿐 효과의 크기는 아닙니다',
+      dvText: (v, b, w) => `플레이 전후 ${w}초를 비교하면 분당 골드 차이가 ${v} 빨라짐 (오차 ±${b})`,
+      dvTextNeg: (v, b, w) => `플레이 전후 ${w}초를 비교하면 분당 골드 차이가 ${v} 느려짐 (오차 ±${b})`,
+      verification: '해설만 보고 정리했으며 영상으로 확인하지 않았습니다', retro: '지난 장면 회상',
+      flipNote: (team, actor) => `${team} 입장에서 보는 중입니다. 원래 ${actor}의 플레이이며, 집계에서는 ${actor} 기준으로 한 번만 셉니다.`,
+      oppPlay: '상대 팀 플레이',
+      hzHead: '플레이 이후 골드 변화',
+      hzOk: b => `오차 ±${b}`, hzUnres: b => `오차 ±${b} 안이라 불확실`,
+      xtTitle: '유형별 집계', xtSub: '각 플레이는 플레이한 팀 기준으로 한 번만 셉니다. 숫자를 누르면 해당 플레이가 아래에 나옵니다.',
+      scope: '범위', scopeGame: '선택한 경기', scopeStage: '이 시리즈', scopeAll: '대회 전체',
+      rowsBy: '나눠 보기', rFamily: '행동 유형', rOutcome: '행동 결과', rKill: '킬 여부', rFamOut: '유형 × 결과', rPlayer: '선수', rChamp: '챔피언',
+      xtPlayerNote: '선수·챔피언으로 나누면 그 선수가 행동·대상·맞대응으로 관여한 플레이를 그 선수 팀 입장에서 셉니다. 상대 팀의 플레이는 골드 변화의 부호를 뒤집습니다. 여러 선수가 관여한 플레이는 선수마다 한 번씩 들어가고, 해설이 이름을 말한 경우만 잡힙니다. 경기는 범위 안에서 그 선수가 뛴(그 챔피언이 쓰인) 경기 수이고, 이득·손해의 경기당은 누적을 그 경기 수로 나눈 값입니다.',
+      sortBy: c => `${c} 기준 정렬`, rowLabel: '항목', xtGames: '경기', xtPerGame: '경기당', xtCum: '누적',
+      total: '합계', usedBy: '사용', played: '플레이한 챔피언', games: n => `${n}경기`,
+      xtNote: '네 칸을 더하면 합계입니다. 이득과 손해는 오차 범위를 넘어 방향이 확실한 경우만 셉니다. 숫자는 관측된 골드 변화이며, 그 플레이 때문에 생긴 효과라는 뜻은 아닙니다.',
+      xtPick: '숫자를 누르면 해당 플레이가 여기에 나옵니다.',
+      skip: '본문으로 건너뛰기', loading: '불러오는 중…', loadError: '데이터를 불러오지 못했습니다. 새로고침해 주세요.',
+      plannedTitle: '준비 중', plannedBody: '이 대회는 아직 분석한 경기가 없습니다.',
+      gameN: n => `${n}세트`, gameAria: (n, w) => `${n}세트, ${w} 승리`,
+      serLabel: '시리즈', serOlder: '이전 시리즈', serNewer: '다음 시리즈', serCount: (i, n) => `${n}개 시리즈 중 ${i}번째`,
+      phaseBracket: '본선', phasePlayIn: '플레이인',
+    },
+    en: {
+      legal: "PlayValue isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.",
+      tagline: 'The value of a play, seen from the team',
+      taglineSub: 'Key plays the casters point out, including kill-free ones and failed attempts, valued by the gold gap between the teams 15, 30 and 60 seconds later.',
+      methodology: 'Methodology', lang: '한국어', themeDark: 'Dark mode', themeLight: 'Light mode',
+      viewSet: 'By game', viewXtab: 'Totals by type', winner: 'Winner',
+      cov: (n, m, k) => `<strong>${n}</strong> plays: gold change measured for <strong>${m}</strong>, of which <strong>${k}</strong> are a clear gain or loss`,
+      duration: 'Length', perspective: 'Seen from', horizon: 'Gold change over', sec: s => `${s}s`,
+      guideTitle: 'How to read the numbers',
+      guide: [
+        ['Gold change', 'How much the gold gap between the team that made the play and its opponent widened or narrowed in the 15, 30 and 60 seconds after the play began. Read from the team gold shown on the broadcast.'],
+        ['±200 margin', 'The broadcast rounds team gold to the nearest 100, so every change carries this margin. A change inside it cannot be called a gain or a loss and is shown as “unclear”.'],
+        ['Not measured', 'The gold at the start or end could not be read, for example during a replay.'],
+        ['Same phase', 'Every 30-second stretch in the same phase of this game (laning, mid, late) is pooled, and the play is placed within that spread. It shows position, not the size of an effect.'],
+        ['Not a cause', 'Whatever else happened on the map at the same time is in the gold change too. A change does not mean the play caused it.'],
+        ['Seen from', 'The chart and the list read from the team you pick. A play by the other team has its sign flipped, and a gank shows as “responding to a gank”. Totals count each play once, for the side the casters named.'],
+      ],
+      chartTitle: 'Gold timeline', chartSub: (h, team) => `The line is the gold gap between the teams; each bar below is the gold change in the ${h} s after one play. Up is a gain for ${team} in both.`,
+      lgBlue: 'Play by the blue side', lgRed: 'Play by the red side', lgUnres: 'Inside the margin', lgWin: 'Window of the selected play', lgFlow: 'Linked plays (within 90 s)', lgObj: 'Herald, Baron and Elder taken, and the plays after',
+      laneFlow: 'Linked', laneObj: 'Objectives', laneGap: 'Gold gap', laneBars: h => `Gold change ${h} s after each play`,
+      finding: (h, clk, title, team, e) => `Largest change over ${h} s: ${clk} ${title} (${team} ${e})`,
+      noFinding: h => `No play has a clear gain or loss over ${h} s.`,
+      gameLine: (w, d) => `${w} won · ${d}`,
+      detailEmpty: 'Pick a play to see it here.', prevWord: 'Previous', nextWord: 'Next', keyPrev: 'Previous play (← key)', keyNext: 'Next play (→ key)',
+      colTime: 'Time', colTeam: 'Team', colPlay: 'Play', colType: 'Play type', colGold: h => `Gold change, ${h}s`, colFrom: tm => ` (${tm} view)`,
+      hlOnly: 'Worth a look only', hlLegend: h => `Worth a look (at ${h} s): success with a gold loss, failure or called off with a gold gain, or a ${h} s gold swing in the largest 10% for that phase of the game`,
+      listTitle: 'Plays', listSub: (n, total, h) => `${n} of ${total} · gold change over ${h}s · green gain, orange loss, grey inside the margin, — not measured`,
+      fFamily: 'All play types', fTag: 'All results', fState: 'All gold changes', fPlayer: 'All players and champions', clearFilters: 'Clear filters',
+      playerNote: 'Plays the player made, was targeted by, or responded to, seen from their team. Only plays where the commentary names the player appear.',
+      ctxEpPlayers: 'Players in this moment',
+      prev: '← Previous', next: 'Next →', vod: 'Watch', vodNew: 'Open on YouTube ↗',
+      ytNote: 'Opened as a local file, YouTube may refuse to play here. Use the link above.',
+      ctxOutcome: 'Result', ctxKill: 'Kill', ctxLead: 'Just before', ctxBg: 'Against the same phase', ctxDv: 'Gold pace change (reference)',
+      ctxOverlap: h => `Other plays within ${h} s`, ctxOverlapNote: 'their effect is mixed into the gold change too',
+      mmHead: 'Map positions', mmSrc: 'broadcast minimap + Riot record · art Riot Data Dragon', mmPlay: 'Play', mmPause: 'Pause', mmAt: (d, c) => `start ${d >= 0 ? '+' : ''}${d} s · ${c}`,
+      mmNote: 'Large icons with a white ring are the players named in this play, lines their movement after it. Positions are read from the broadcast minimap and set to Riot\'s exact positions once a minute. Faint icons with a dashed ring are filled in between known positions, grey icons with a cross are players Riot records as killed, and a brief crossed circle marks where a kill happened. Players the minimap could not show (for example hidden in a fight) are left out.',
+      ctxNear: 'Nearby at the start (minimap)', ctxNearNone: 'none', ctxNearNote: n => `within about 1,500 units of the players named in this play (${n})`,
+      ctxElse: h => `Elsewhere within ${h} s`, ctxElseNone: 'none in Riot\'s record',
+      ctxElseNote: 'Kills, epic monsters and structures in Riot\'s record that none of this play\'s players took part in. Their gold is in the change above too.',
+      riotKind: { kill: 'kill', tower: 'turret', inhibitor: 'inhibitor', plate: 'turret plate' },
+      riotMonster: { DRAGON: 'Dragon', BARON_NASHOR: 'Baron', RIFTHERALD: 'Rift Herald', HORDE: 'Voidgrubs', ATAKHAN: 'Atakhan', ELDER_DRAGON: 'Elder Dragon' },
+      ctxEpisode: 'Same moment', ctxRelated: 'Linked plays', ctxObj: 'Objectives',
+      leadText: (state, g) => `team gold ${g} (${state})`,
+      bgText: (pct, h) => pct >= 50 ? `top ${Math.max(1, Math.round(100 - pct))}% of ${h} s stretches in this phase of the game` : `bottom ${Math.max(1, Math.round(pct))}% of ${h} s stretches in this phase of the game`,
+      bgNote: 'position only, not the size of an effect',
+      dvText: (v, b, w) => `the gold gap per minute grew ${v} faster over ${w} s after than before (±${b})`,
+      dvTextNeg: (v, b, w) => `the gold gap per minute grew ${v} slower over ${w} s after than before (±${b})`,
+      verification: 'Written from commentary only; not checked against the video', retro: 'Recalled later',
+      flipNote: (team, actor) => `Seen from ${team}. This is ${actor}'s play and is counted once, for ${actor}, in all totals.`,
+      oppPlay: 'Opponent play',
+      hzHead: 'Gold change after the play',
+      hzOk: b => `±${b}`, hzUnres: b => `inside ±${b}, unclear`,
+      xtTitle: 'Totals by type', xtSub: 'Each play is counted once, for the team that made it. Click a number to list those plays below.',
+      scope: 'Scope', scopeGame: 'Selected game', scopeStage: 'This series', scopeAll: 'Whole event',
+      rowsBy: 'Split by', rFamily: 'Play type', rOutcome: 'Result', rKill: 'Kill', rFamOut: 'Type × result', rPlayer: 'Player', rChamp: 'Champion',
+      xtPlayerNote: 'Split by player or champion, each row counts the plays that player made, was targeted by, or responded to, seen from their team: an opponent play has its gold change sign flipped. A play with several players appears once per player, and only plays where the commentary names the player count. Games counts the games in scope the player played (the champion was picked in); gains and losses per game are their totals divided by those games.',
+      sortBy: c => `Sort by ${c}`, rowLabel: 'Row', xtGames: 'Games', xtPerGame: 'per game', xtCum: 'total',
+      total: 'Total', usedBy: 'Played by', played: 'Champions', games: n => `${n} game${n > 1 ? 's' : ''}`,
+      xtNote: 'The four columns add up to the total. Gain and loss count only changes clearly beyond the margin. These are observed gold changes, not effects caused by the plays.',
+      xtPick: 'Click a number to list its plays here.',
+      skip: 'Skip to content', loading: 'Loading…', loadError: 'Could not load the data. Please reload.',
+      plannedTitle: 'Coming soon', plannedBody: 'No games from this event have been analysed yet.',
+      gameN: n => `Game ${n}`, gameAria: (n, w) => `Game ${n}, won by ${w}`,
+      serLabel: 'Series', serOlder: 'Earlier series', serNewer: 'Later series', serCount: (i, n) => `Series ${i} of ${n}`,
+      phaseBracket: 'Bracket stage', phasePlayIn: 'Play-In',
+    },
+  };
+  const LBL = {
+    ko: {
+      state: { positive: '이득', negative: '손해', unresolved: '불확실', missing: '측정 없음' },
+      tag: { success_gain: '성공 · 골드 이득', success_loss: '성공 · 골드 손해', failure_gain: '실패 · 골드 이득', failure_loss: '실패 · 골드 손해', unresolved: '골드 변화 불확실' },
+      outcome: { success: '성공', mixed: '일부 성공', failure: '실패', aborted: '중단', unknown: '알 수 없음' },
+      kill: { kill_mentioned: '있음', explicit_no_kill: '없음', not_established: '확인 안 됨' },
+      lead: { ahead: '앞섬', even: '비슷함', behind: '뒤짐' },
+      phase: { lane: '라인전 (14분 전)', mid: '중반 (14–25분)', late: '후반 (25분 이후)' },
+      reason: { no_common_valid_endpoint_source: '화면 골드를 읽지 못함', outside_comparison_grid: '골드 기록 구간 밖', actor_unspecified: '플레이한 팀을 알 수 없음', unconfirmed_retrospective_event_time: '회상 장면이라 시각을 모름' },
+      hl: { success_loss: '성공했는데 골드 손해', failure_gain: '실패·중단했는데 골드 이득', bg_top: '같은 시간대 변화 폭 상위 10%', bg_bottom: '같은 시간대 변화 폭 상위 10%' },
+      role: { acquire: '획득', use: '소환', buff_play: '버프 중 플레이' },
+      flipFamily: { gank: '상대 갱킹에 대응', defense: '갱킹 시도 (상대가 대응)' },
+      inv: { actor: '행동', target: '대상', response: '맞대응', mentioned: '언급' },
+    },
+    en: {
+      state: { positive: 'Gain', negative: 'Loss', unresolved: 'Unclear', missing: 'Not measured' },
+      tag: { success_gain: 'Success · gold gain', success_loss: 'Success · gold loss', failure_gain: 'Failure · gold gain', failure_loss: 'Failure · gold loss', unresolved: 'Gold change unclear' },
+      outcome: { success: 'Success', mixed: 'Partial', failure: 'Failure', aborted: 'Called off', unknown: 'Unknown' },
+      kill: { kill_mentioned: 'Yes', explicit_no_kill: 'No', not_established: 'Not confirmed' },
+      lead: { ahead: 'ahead', even: 'level', behind: 'behind' },
+      phase: { lane: 'Laning (before 14:00)', mid: 'Mid game (14–25 min)', late: 'Late game (after 25:00)' },
+      reason: { no_common_valid_endpoint_source: 'Gold could not be read on screen', outside_comparison_grid: 'Outside the recorded gold', actor_unspecified: 'Team that made the play is unknown', unconfirmed_retrospective_event_time: 'Recalled later, time unknown' },
+      hl: { success_loss: 'Success, gold loss', failure_gain: 'Failure or called off, gold gain', bg_top: 'Largest 10% swing for the phase', bg_bottom: 'Largest 10% swing for the phase' },
+      role: { acquire: 'Taken', use: 'Summoned', buff_play: 'Play under the buff' },
+      flipFamily: { gank: 'Responding to a gank', defense: 'Gank attempt (opponent responded)' },
+      inv: { actor: 'Acted', target: 'Targeted', response: 'Responded', mentioned: 'Mentioned' },
+    },
+  };
+  const STATES = ['positive', 'negative', 'unresolved', 'missing'];
+  const OUTCOMES = ['success', 'mixed', 'failure', 'aborted', 'unknown'];
+  const KILLS = ['kill_mentioned', 'explicit_no_kill', 'not_established'];
+
+  // ------------------------------------------------------------------ state
+  const S = {
+    lang: 'ko', theme: 'light', tourn: firstGame().tournament_id, view: 'set', stage: 'all', gameId: firstGame().id, playId: null,
+    persp: '', h: String(D.default_horizon_s), fFamily: '', fTag: '', fState: '', fPlayer: '', fHl: false,
+    xScope: 'all', xRows: 'family', xCell: null, xSort: { col: 'positive', rev: false }, guideOpen: false,
+  };
+  try {
+    S.lang = localStorage.getItem('lv_lang') || S.lang;
+    S.theme = localStorage.getItem('lv_theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    // The guide starts open on a first visit and then remembers whether the viewer closed it.
+    S.guideOpen = localStorage.getItem('lv_guide') === '1';
+  } catch (e) { /* storage unavailable */ }
+  readHash();
+
+  const t = k => T[S.lang][k];
+  const L = (group, k) => (LBL[S.lang][group] || {})[k] ?? k;
+  const famLabel = f => (f ? (D.family_labels[S.lang][f] || f) : '—');
+  const objLabel = k => D.objective_links.labels[S.lang][k] || k;
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fmtG = v => (v > 0 ? '+' : v < 0 ? '−' : '±') + Math.abs(v).toLocaleString();
+  const fmtClock = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  const game = () => GAMES.find(g => g.id === S.gameId);
+  const SMOOTH = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  // Toggle buttons announce their state to screen readers.
+  const syncPressed = () => document.querySelectorAll('.seg button, .gbtn, .hz').forEach(b => b.setAttribute('aria-pressed', String(b.classList.contains('on'))));
+  // Plays outside the gold stream have no game clock; show the video time in brackets instead.
+  const clock = p => p.fmt || `(${p.video_fmt})`;
+  const posLabel = k => D.position_labels[S.lang][k] || k;
+  const champName = x => (S.lang === 'ko' ? x.champion_ko || x.champion : x.champion);
+  // Player lookup per game: name -> {team, position, champion, champion_ko}.
+  const ROSTER = {};
+  // Players a play involved on either team (actor, target, response). Before the involvement coding
+  // existed only the acting team's players were known, so fall back to them as actors.
+  const HAS_INV = !!D.has_involvement;
+  const INV_ROLES = ['actor', 'target', 'response'];
+  const involvedOf = p => (HAS_INV
+    ? (p.involved || []).filter(x => INV_ROLES.includes(x.role))
+    : p.roster_players.map(n => ({ player: n, team: (ROSTER[p._game.id][n] || {}).team, role: 'actor' })));
+  const invOf = (p, name) => involvedOf(p).find(x => x.player === name) || null;
+  // Highlight reasons per play, and a chip coloured by play type.
+  // Highlight reasons per window and play; the list follows the selected window.
+  const HL_BY_H = {};
+
+  // ------------------------------------------------------------------ loading
+  function addRoster(g, roster) {
+    ROSTER[g.id] = {};
+    (roster ? roster.teams : []).forEach(t => t.players.forEach(x => { ROSTER[g.id][x.player] = { ...x, team: t.team }; }));
+  }
+  const isFull = g => !!(g.plays && g.timeline);
+  async function ensureGame(id) {
+    const g = GAMES.find(x => x.id === id);
+    if (isFull(g)) return g;
+    loading[id] = loading[id] || fetch('./' + g.path, { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+    const full = await loading[id];
+    if (isFull(g)) return g;
+    Object.assign(g, full);
+    g.plays.forEach(p => { PLAY[p.id] = p; p._game = g; });
+    addRoster(g, g.roster);
+    Object.entries(g.highlights).forEach(([h, items]) => items.forEach(x => { (HL_BY_H[h] = HL_BY_H[h] || {})[x.play_id] = x.reasons; }));
+    return g;
+  }
+  async function ensurePlays(tid) {
+    const tour = DATA.tournaments.find(x => x.id === tid);
+    if (!tour.plays_path || tour._plays) return;
+    loading[tid] = loading[tid] || fetch('./' + tour.plays_path, { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+    const data = await loading[tid];
+    Object.entries(data.games).forEach(([gid, x]) => {
+      const g = GAMES.find(y => y.id === gid);
+      if (!ROSTER[gid]) addRoster(g, x.roster);
+      LIGHT[gid] = x.plays.map(p => { p._game = g; if (!PLAY[p.id]) PLAY[p.id] = p; return p; });
+    });
+    tour._plays = true;
+  }
+  // A loaded game's full plays, otherwise the light ones from the tournament list.
+  const playsOf = g => (isFull(g) ? g.plays : LIGHT[g.id] || []);
+  const hlOf = id => (HL_BY_H[S.h] || {})[id];
+  const famChip = (key, text, extra = '') => `<span class="chip fam ${extra}" style="--c:var(--f-${key || 'other'})">${esc(text)}</span>`;
+  const playerText = (g, name) => { const x = ROSTER[g.id][name]; return x ? `${name} (${posLabel(x.position)} · ${champName(x)})` : name; };
+
+  function readHash() {
+    const q = new URLSearchParams(location.hash.slice(1));
+    if (q.get('game') && GAMES.some(g => g.id === q.get('game'))) { S.gameId = q.get('game'); S.tourn = GAMES.find(g => g.id === S.gameId).tournament_id; }
+    if (q.get('play')) S.playId = q.get('play');
+    if (q.get('view') === 'xtab') S.view = 'xtab';
+    if (['15', '30', '60'].includes(q.get('h'))) S.h = q.get('h');
+  }
+  function writeHash() {
+    const q = new URLSearchParams({ view: S.view, game: S.gameId, h: S.h });
+    if (S.playId) q.set('play', S.playId);
+    history.replaceState(null, '', '#' + q.toString());
+  }
+
+  // ------------------------------------------------------------------ perspective
+  // Statistics always use the acting team. A team perspective only changes how a card reads:
+  // the opponent's play is shown with E negated, and gank/defense swap names with the outcome flipped.
+  const FLIP_OUTCOME = { success: 'failure', failure: 'success', mixed: 'mixed', aborted: 'aborted', unknown: 'unknown' };
+  const FLIP_STATE = { positive: 'negative', negative: 'positive', unresolved: 'unresolved', missing: 'missing' };
+  function viewOf(p) {
+    const flipped = !!(S.persp && p.actor && p.actor !== S.persp);
+    const swap = flipped && (p.family === 'gank' || p.family === 'defense');
+    const hz = {};
+    for (const [k, v] of Object.entries(p.horizons)) {
+      hz[k] = !flipped || v.state === 'missing' ? v : { ...v, e: -v.e, state: FLIP_STATE[v.state] };
+    }
+    const outcome = swap ? FLIP_OUTCOME[p.outcome] : p.outcome;
+    let tag = null;
+    if (!flipped || swap) tag = tagFor(outcome, hz[S.h].state);
+    return {
+      flipped, swap, hz, outcome, tag,
+      familyText: swap ? L('flipFamily', p.family) : famLabel(p.family),
+      famKey: swap ? (p.family === 'gank' ? 'defense' : 'gank') : p.family,
+      lead: p.context.lead_at_anchor == null ? null : (flipped ? -p.context.lead_at_anchor : p.context.lead_at_anchor),
+      leadState: flipped ? ({ ahead: 'behind', behind: 'ahead', even: 'even' }[p.context.lead_state] || null) : p.context.lead_state,
+      bgPct: p.context.background_pct[S.h] == null ? null : (flipped ? 100 - p.context.background_pct[S.h] : p.context.background_pct[S.h]),
+    };
+  }
+  function tagFor(outcome, state) {
+    for (const [name, c] of Object.entries(D.tags)) {
+      if (c.state !== state) continue;
+      if (c.outcome === '*' || c.outcome.includes(outcome)) return name;
+    }
+    return null;
+  }
+  const stateCls = s => (s === 'positive' ? 'gain' : s === 'negative' ? 'loss' : 'neutral');
+  const tagCls = tg => (!tg ? 'neutral' : tg.endsWith('gain') ? 'gain' : tg.endsWith('loss') ? 'loss' : 'neutral');
+  const eText = h => (h.state === 'missing' ? L('state', 'missing') : fmtG(h.e));
+
+  // ------------------------------------------------------------------ chrome
+  function renderChrome() {
+    document.documentElement.lang = S.lang;
+    document.documentElement.dataset.theme = S.theme;
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+    document.getElementById('btnLang').textContent = t('lang');
+    document.getElementById('btnTheme').textContent = S.theme === 'dark' ? t('themeLight') : t('themeDark');
+    document.getElementById('verBadge').textContent = 'v' + DATA.version;
+    document.getElementById('themeColor').content = S.theme === 'dark' ? '#0d0d0e' : '#f4f5f7';
+    document.getElementById('skipLink').textContent = t('skip');
+
+    const tt = document.getElementById('tournTabs');
+    tt.innerHTML = DATA.tournaments.map(x => `<button data-t="${x.id}" class="${S.tourn === x.id ? 'on' : ''}">${esc(x['name_' + S.lang])}<span class="badge">${esc(x['badge_' + S.lang])}</span></button>`).join('');
+    tt.querySelectorAll('button').forEach(b => b.onclick = () => {
+      S.tourn = b.dataset.t;
+      // Switching to a tournament with games opens its latest series; a planned one keeps the current game.
+      if (gamesIn(S.tourn).length && game().tournament_id !== S.tourn) { S.gameId = firstGame(S.tourn).id; S.playId = null; S.persp = ''; S.xCell = null; S.fPlayer = ''; }
+      render();
+    });
+
+    const planned = (DATA.tournaments.find(x => x.id === S.tourn) || {}).status === 'planned';
+    const vt = document.getElementById('viewTabs');
+    const se = document.getElementById('series');
+    vt.style.display = se.style.display = planned ? 'none' : '';
+    if (planned) return;
+    vt.innerHTML = [['set', t('viewSet')], ['xtab', t('viewXtab')]].map(([k, v]) => `<button data-v="${k}" class="${S.view === k ? 'on' : ''}">${v}</button>`).join('');
+    vt.querySelectorAll('button').forEach(b => b.onclick = () => { S.view = b.dataset.v; render(); });
+
+    // Series latest first, in a grouped list (bracket stage, then play-in) with steps to the neighbouring series;
+    // the selected series' games sit beside it, each with a bar in the winner's side colour.
+    const series = [...new Set(gamesIn(S.tourn).map(seriesOf))].sort().reverse();
+    const gamesOf = s => gamesIn(S.tourn).filter(g => seriesOf(g) === s).sort((a, b) => a.game_num - b.game_num);
+    const label = s => {
+      const gs = gamesOf(s);
+      const wins = {};
+      gs.forEach(g => { wins[g.blue_team] = wins[g.blue_team] || 0; wins[g.red_team] = wins[g.red_team] || 0; wins[g.winner] += 1; });
+      const [a, b] = Object.entries(wins).sort((x, y) => y[1] - x[1]);
+      return `${S.lang === 'ko' ? gs[0].stage_ko : gs[0].stage_en} · ${a[0]} ${a[1]}:${b[1]} ${b[0]}`;
+    };
+    const cur = seriesOf(game());
+    const ci = series.indexOf(cur);
+    const groups = [['phaseBracket', series.filter(s => !gamesOf(s)[0].stage.startsWith('Play-In'))],
+                    ['phasePlayIn', series.filter(s => gamesOf(s)[0].stage.startsWith('Play-In'))]].filter(([, ss]) => ss.length);
+    const opt = s => `<option value="${esc(s)}" ${s === cur ? 'selected' : ''}>${esc(label(s))}</option>`;
+    const options = groups.length > 1 ? groups.map(([k, ss]) => `<optgroup label="${esc(t(k))}">${ss.map(opt).join('')}</optgroup>`).join('') : series.map(opt).join('');
+    se.innerHTML = `
+      <div class="ser-pick">
+        <button type="button" class="ser-step" id="serOlder" aria-label="${esc(t('serOlder'))}" title="${esc(t('serOlder'))}" ${ci >= series.length - 1 ? 'disabled' : ''}>‹</button>
+        <label class="sr-only" for="serSel">${t('serLabel')}</label>
+        <select class="ser-select" id="serSel">${options}</select>
+        <button type="button" class="ser-step" id="serNewer" aria-label="${esc(t('serNewer'))}" title="${esc(t('serNewer'))}" ${ci <= 0 ? 'disabled' : ''}>›</button>
+      </div>
+      <div class="games">${gamesOf(cur).map(g => `<button class="gbtn ${g.id === S.gameId ? 'on' : ''}" data-g="${g.id}" title="${esc(t('gameAria')(g.game_num, g.winner))}" aria-label="${esc(t('gameAria')(g.game_num, g.winner))}">${g.game_num}<span class="win" style="background:var(${g.winner === g.blue_team ? '--blue-team' : '--red-team'})"></span></button>`).join('')}</div>
+      <span class="ser-count">${t('serCount')(ci + 1, series.length)}</span>`;
+    const openGame = id => { S.gameId = id; S.playId = null; S.persp = ''; S.xCell = null; S.fPlayer = ''; render(); };
+    const openSeries = s => openGame(gamesOf(s)[0].id);
+    se.querySelectorAll('.gbtn').forEach(b => b.onclick = () => openGame(b.dataset.g));
+    // The bar is rebuilt on every render, so keep keyboard focus on the control that was used.
+    const refocus = id => { const el = document.getElementById(id); if (el && !el.disabled) el.focus(); };
+    se.querySelector('#serSel').onchange = e => { openSeries(e.target.value); refocus('serSel'); };
+    se.querySelector('#serOlder').onclick = () => { openSeries(series[ci + 1]); refocus('serOlder'); };
+    se.querySelector('#serNewer').onclick = () => { openSeries(series[ci - 1]); refocus('serNewer'); };
+  }
+
+  // ------------------------------------------------------------------ set view
+  // The game's largest clear change over the chosen window, from the acting team's side: the line under the title.
+  function findingOf(g) {
+    let best = null;
+    for (const p of g.plays) {
+      const h = p.horizons[S.h];
+      if (!h || (h.state !== 'positive' && h.state !== 'negative')) continue;
+      if (!best || Math.abs(h.e) > Math.abs(best.horizons[S.h].e)) best = p;
+    }
+    return best;
+  }
+
+  function renderSet() {
+    const g = game();
+    const plays = g.plays;
+    if (!S.playId || !PLAY[S.playId] || PLAY[S.playId]._game !== g) S.playId = plays[0].id;
+    const main = document.getElementById('main');
+    // The game is read from one of its two teams, blue by default. Who "made" a play is the casters' framing,
+    // so it is not offered as a view; totals still count each play once, for the team the casters named.
+    if (S.persp !== g.blue_team && S.persp !== g.red_team) S.persp = g.blue_team;
+    const persp = [[g.blue_team, g.blue_team], [g.red_team, g.red_team]];
+    const f = findingOf(g);
+    main.innerHTML = `
+      <section class="game-head">
+        <h1 class="teams"><span class="team-blue">${esc(g.blue_team)}</span><span class="muted">vs</span><span class="team-red">${esc(g.red_team)}</span>
+          <span class="sub">${esc(S.lang === 'ko' ? g.title_ko : g.title_en)}</span></h1>
+        <div class="line">
+          <span>${esc(t('gameLine')(g.winner, fmtClock(g.duration_gc)))}</span>
+          <span>${t('cov')(g.coverage.plays, g.coverage.e30_measured, g.coverage.e30_sign_resolved)}</span>
+        </div>
+        <div class="line">${f ? `<button class="finding" data-goto="${f.id}">${esc(t('finding')(S.h, clock(f), f['title_' + S.lang], f.actor, fmtG(f.horizons[S.h].e)))}</button>` : esc(t('noFinding')(S.h))}</div>
+        <div class="controls" style="margin-top:4px">
+          <span class="nav-label">${t('perspective')}</span>
+          <div class="seg" id="perspSeg">${persp.map(([k, v]) => `<button data-p="${esc(k)}" class="${S.persp === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
+          <span class="nav-label">${t('horizon')}</span>
+          <div class="seg" id="hSeg">${D.horizons_s.map(h => `<button data-h="${h}" class="${S.h === String(h) ? 'on' : ''}">${t('sec')(h)}</button>`).join('')}</div>
+        </div>
+      </section>
+      <section class="card">
+        <h3>${t('chartTitle')} <span class="sub">${esc(t('chartSub')(S.h, S.persp))}</span></h3>
+        <div class="chart-wrap"><svg id="chart" role="img" aria-label="${esc(t('chartTitle'))}"></svg><div class="tip" id="tip" aria-hidden="true"></div></div>
+        <div class="legend">
+          <span><i style="background:var(--blue-team)"></i>${t('lgBlue')}</span>
+          <span><i style="background:var(--red-team)"></i>${t('lgRed')}</span>
+          <span><i class="hollow"></i>${t('lgUnres')}</span>
+          <span><i style="background:var(--accent-bg);border:1px solid var(--accent)"></i>${t('lgWin')}</span>
+          <span><i style="background:var(--chart-axis)"></i>${t('lgFlow')}</span>
+          <span><i style="background:var(--accent)"></i>${t('lgObj')}</span>
+        </div>
+        <details class="guide" id="guide" ${S.guideOpen ? 'open' : ''}><summary>${t('guideTitle')}</summary>
+          <dl>${t('guide').map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl></details>
+      </section>
+      <div class="work">
+        <section class="card" id="listCard"></section>
+        <aside class="card detail" id="playCard" aria-live="polite"></aside>
+      </div>`;
+    main.querySelector('#guide').ontoggle = e => { S.guideOpen = e.target.open; try { localStorage.setItem('lv_guide', S.guideOpen ? '1' : '0'); } catch (err) {} };
+    main.querySelectorAll('#perspSeg button').forEach(b => b.onclick = () => { S.persp = b.dataset.p; renderSet(); });
+    main.querySelectorAll('#hSeg button').forEach(b => b.onclick = () => { S.h = b.dataset.h; renderSet(); });
+    main.querySelectorAll('.game-head [data-goto]').forEach(b => b.onclick = () => selectPlay(b.dataset.goto, true));
+    renderChart(g);
+    renderCard(g);
+    renderList(g);
+    writeHash();
+    syncPressed();
+  }
+
+  // Choosing a play redraws only what shows it: the chart's marks, the detail panel and the list's selected row.
+  // On one column the detail sits above the list, so bring it into view.
+  function selectPlay(id, reveal) {
+    if (!PLAY[id]) return;
+    S.playId = id;
+    const g = PLAY[id]._game;
+    renderChart(g);
+    renderCard(g);
+    document.querySelectorAll('#listCard .row[data-id]').forEach(r => {
+      const on = r.dataset.id === id;
+      r.classList.toggle('on', on);
+      if (on) r.setAttribute('aria-current', 'true'); else r.removeAttribute('aria-current');
+    });
+    writeHash();
+    syncPressed();
+    const card = document.getElementById('playCard');
+    if (reveal && card && getComputedStyle(card).position !== 'sticky') card.scrollIntoView({ behavior: SMOOTH, block: 'start' });
+  }
+
+  function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+  function renderChart(g) {
+    const svg = document.getElementById('chart');
+    // Drawn at the width it is shown, so tick labels keep their size on a phone.
+    const W = Math.max(320, Math.round(svg.parentElement.clientWidth || 1200));
+    const narrow = W < 640;
+    const padL = narrow ? 52 : 66, padR = 12, top = 10;
+    const gapH = narrow ? 150 : 200, barH = narrow ? 90 : 110, laneH = 22, lanes = 2, bottom = 24, sep = 30;
+    const barTop = top + gapH + sep, laneTop = barTop + barH + 8;
+    const H = laneTop + lanes * laneH + bottom;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('height', H);
+    const tl = g.timeline;
+    const x0 = tl[0].gc, x1 = tl[tl.length - 1].gc;
+    const X = gc => padL + (gc - x0) / (x1 - x0) * (W - padL - padR);
+    const blue = css('--blue-team'), red = css('--red-team'), grid = css('--chart-grid'), axis = css('--chart-axis'), acc = css('--accent'), card = css('--bg-card');
+    // Both bands are drawn from the chosen team: up is that team ahead (the line) or gaining (the bars).
+    const sign = S.persp === g.red_team ? -1 : 1;
+    const [upColor, downColor] = sign > 0 ? [blue, red] : [red, blue];
+    const sideColor = p => (p.actor === g.blue_team ? blue : p.actor === g.red_team ? red : axis);
+    const fmtK = v => (v === 0 ? '0' : (v > 0 ? '+' : '−') + (Math.abs(v) >= 1000 ? Math.abs(v / 1000) + 'k' : Math.abs(v)));
+    let s = '';
+
+    // Band 1: the gold gap, blue minus red, on round steps with zero as the heavier line.
+    const maxAbs = Math.max(1000, ...tl.map(p => Math.abs(p.diff)));
+    const gap = d => sign * d;
+    const step = maxAbs <= 4000 ? 1000 : maxAbs <= 10000 ? 2500 : 5000;
+    const yMax = Math.ceil(maxAbs / step) * step;
+    const Y = d => top + gapH / 2 - d / yMax * (gapH / 2);
+    for (let v = -yMax; v <= yMax; v += step) {
+      s += `<line x1="${padL}" x2="${W - padR}" y1="${Y(v)}" y2="${Y(v)}" stroke="${grid}" stroke-width="${v === 0 ? 1.5 : 1}"/>`;
+      s += `<text x="${padL - 8}" y="${Y(v) + 4}" text-anchor="end">${fmtK(v)}</text>`;
+    }
+
+    // Band 2: one bar per play, the gold change over the chosen window turned to the chosen team's sign,
+    // as in the line above. Bars inside the margin are outlines; unmeasured plays a tick.
+    const hz = p => p.horizons[S.h];
+    const teamE = p => (p.actor && p.actor !== S.persp ? -hz(p).e : hz(p).e);
+    const measured = g.plays.filter(p => p.gc != null && hz(p) && hz(p).state !== 'missing');
+    const bMaxRaw = Math.max(1000, ...measured.map(p => Math.abs(teamE(p))));
+    const bStep = bMaxRaw <= 2000 ? 1000 : bMaxRaw <= 5000 ? 2500 : 5000;
+    const bMax = Math.ceil(bMaxRaw / bStep) * bStep;
+    const BY = d => barTop + barH / 2 - d / bMax * (barH / 2);
+    for (const v of [-bMax, 0, bMax]) {
+      s += `<line x1="${padL}" x2="${W - padR}" y1="${BY(v)}" y2="${BY(v)}" stroke="${grid}" stroke-width="${v === 0 ? 1.5 : 1}"/>`;
+      s += `<text x="${padL - 8}" y="${BY(v) + 4}" text-anchor="end">${fmtK(v)}</text>`;
+    }
+
+    // Minute ticks shared by both bands.
+    const xStep = narrow ? 600 : 300;
+    for (let m = Math.ceil(x0 / xStep) * xStep; m <= x1; m += xStep) {
+      s += `<line x1="${X(m)}" x2="${X(m)}" y1="${top}" y2="${barTop + barH}" stroke="${grid}"/>`;
+      s += `<text x="${X(m)}" y="${H - 6}" text-anchor="middle">${m / 60}:00</text>`;
+    }
+
+    // The selected play: its window shaded through both bands, and a guide line at its start.
+    const sel = PLAY[S.playId];
+    if (sel && sel.gc != null && sel._game === g) {
+      const w = Number(S.h);
+      const xa = X(sel.gc), xb = X(Math.min(x1, sel.gc + w));
+      s += `<rect x="${xa}" y="${top}" width="${Math.max(2, xb - xa)}" height="${barTop + barH - top}" fill="${css('--accent-bg')}"/>`;
+      s += `<line x1="${xa}" x2="${xa}" y1="${top}" y2="${laneTop + lanes * laneH - 4}" stroke="${acc}" stroke-width="1.5"/>`;
+    }
+
+    // The gold gap line, split into runs at gaps (unusable seconds are not interpolated), blue above zero and red below.
+    let path = '', prev = null;
+    for (const p of tl) {
+      path += (prev === null || p.gc - prev > 5 ? 'M' : 'L') + X(p.gc).toFixed(1) + ' ' + Y(gap(p.diff)).toFixed(1) + ' ';
+      prev = p.gc;
+    }
+    s += `<clipPath id="cTop"><rect x="0" y="0" width="${W}" height="${Y(0)}"/></clipPath><clipPath id="cBot"><rect x="0" y="${Y(0)}" width="${W}" height="${gapH}"/></clipPath>`;
+    s += `<path d="${path}" fill="none" stroke="${upColor}" stroke-width="2" stroke-linejoin="round" clip-path="url(#cTop)"/>`;
+    s += `<path d="${path}" fill="none" stroke="${downColor}" stroke-width="2" stroke-linejoin="round" clip-path="url(#cBot)"/>`;
+
+    // The bars. A bar is as wide as its window on screen (at least 3px), so overlapping windows show as overlap.
+    const bw = p => Math.max(3, Math.min(10, X(p.gc + Number(S.h)) - X(p.gc)));
+    let selBar = '';
+    for (const p of g.plays) {
+      if (p.gc == null) continue;
+      const on = p.id === S.playId;
+      const c = sideColor(p);
+      const h = hz(p);
+      const x = X(p.gc), w = bw(p);
+      let mark;
+      if (!h || h.state === 'missing') {
+        mark = `<line x1="${x}" x2="${x + w}" y1="${BY(0)}" y2="${BY(0)}" stroke="${axis}" stroke-width="3"/>`;
+      } else {
+        const y = BY(Math.max(0, teamE(p))), hgt = Math.max(1.5, Math.abs(BY(teamE(p)) - BY(0)));
+        mark = h.state === 'unresolved'
+          ? `<rect x="${x + 0.75}" y="${y + 0.75}" width="${w - 1.5}" height="${Math.max(0.5, hgt - 1.5)}" fill="${card}" stroke="${c}" stroke-width="1.5"/>`
+          : `<rect x="${x}" y="${y}" width="${w}" height="${hgt}" fill="${c}"/>`;
+      }
+      // A wide transparent hit area makes thin bars easy to point at.
+      // With a play selected, its bar keeps full strength and the others fade; it is drawn last, on top.
+      const bar = `<g class="pin" data-id="${p.id}" style="cursor:pointer"${S.playId && !on ? ' opacity="0.3"' : ''}><rect x="${x - 4}" y="${barTop}" width="${w + 8}" height="${barH}" fill="transparent"/>${mark}</g>`;
+      if (on) selBar = bar; else s += bar;
+      // On the gold line, a small dot where each play starts, in its side's colour.
+      const pt = tl.reduce((a, b) => (Math.abs(b.gc - p.gc) < Math.abs(a.gc - p.gc) ? b : a), tl[0]);
+      if (Math.abs(pt.gc - p.gc) <= 5) s += `<circle class="pin" data-id="${p.id}" cx="${x}" cy="${Y(gap(pt.diff))}" r="${on ? 5 : 3}" fill="${on ? c : card}" stroke="${c}" stroke-width="1.5" style="cursor:pointer"/>`;
+    }
+    s += selBar;
+
+    // Lanes: flow bands and objective links.
+    const laneY = i => laneTop + i * laneH;
+    // Each band names itself at its top left, inside the plot, so the two scales are not read as one.
+    s += `<text x="${padL + 6}" y="${top + 13}" font-weight="600" style="fill:${css('--text-main')}">${t('laneGap')}</text>`;
+    s += `<text x="${padL + 6}" y="${barTop - 6}" font-weight="600" style="fill:${css('--text-main')}">${t('laneBars')(S.h)}</text>`;
+    s += `<text x="${padL - 8}" y="${laneY(0) + 14}" text-anchor="end">${t('laneFlow')}</text><text x="${padL - 8}" y="${laneY(1) + 14}" text-anchor="end">${t('laneObj')}</text>`;
+    for (const r of g.related.filter(r => r.flow_band)) {
+      const a = PLAY[r.a], b = PLAY[r.b];
+      if (!a || !b || a.gc == null || b.gc == null) continue;
+      const xa = X(Math.min(a.gc, b.gc)), xb = X(Math.max(a.gc, b.gc));
+      s += `<rect x="${xa}" y="${laneY(0) + 7}" width="${Math.max(3, xb - xa)}" height="7" rx="3" fill="${axis}" fill-opacity="0.55"><title>${a.id} ↔ ${b.id} (${r.gap_s}s)</title></rect>`;
+    }
+    const OBJ = { herald: 'H', baron: 'B', elder: 'E' };
+    for (const c of g.objective_chains) {
+      const ids = [c.acquire_play_id, ...c.links.map(x => x.play_id)].filter(Boolean).map(i => PLAY[i]).filter(p => p && p.gc != null);
+      if (!ids.length) continue;
+      const xs = ids.map(p => X(p.gc));
+      const ly = laneY(1) + 10;
+      s += `<line x1="${Math.min(...xs)}" x2="${Math.max(...xs)}" y1="${ly}" y2="${ly}" stroke="${acc}" stroke-width="2"/>`;
+      ids.forEach(p => {
+        const isAcq = p.id === c.acquire_play_id;
+        s += `<g class="pin" data-id="${p.id}" style="cursor:pointer"><circle cx="${X(p.gc)}" cy="${ly}" r="${isAcq ? 7 : 4.5}" fill="${isAcq ? acc : card}" stroke="${acc}" stroke-width="2"/>${isAcq ? `<text x="${X(p.gc)}" y="${ly + 4}" text-anchor="middle" style="fill:#fff;font-weight:700;font-size:10px">${OBJ[c.objective]}</text>` : ''}<title>${esc(objLabel(c.objective))} · ${esc(c.team)}</title></g>`;
+      });
+    }
+    svg.innerHTML = s;
+    const tip = document.getElementById('tip');
+    svg.querySelectorAll('.pin').forEach(el => {
+      el.onclick = () => selectPlay(el.dataset.id, true);
+      el.onmouseenter = () => {
+        const p = PLAY[el.dataset.id], v = viewOf(p), h = v.hz[S.h];
+        tip.innerHTML = `<b>${clock(p)}</b> ${esc(p.actor || '?')} · ${esc(v.familyText)}<br>${esc(p['title_' + S.lang])}<br>${t('sec')(S.h)} <b class="${stateCls(h.state)}">${eText(h)}</b> ${L('state', h.state)}`;
+        tip.style.display = 'block';
+      };
+      el.onmousemove = ev => {
+        const r = svg.parentElement.getBoundingClientRect();
+        tip.style.left = Math.min(ev.clientX - r.left + 12, r.width - 290) + 'px';
+        tip.style.top = (ev.clientY - r.top + 12) + 'px';
+      };
+      el.onmouseleave = () => { tip.style.display = 'none'; };
+    });
+  }
+
+  function ivalBar(h) {
+    if (h.state === 'missing') return '<div class="ival"></div>';
+    const scale = Math.max(1000, Math.abs(h.e) + h.bound);
+    const lo = (h.e - h.bound) / scale, hi = (h.e + h.bound) / scale;
+    const left = 50 + lo * 50, width = (hi - lo) * 50;
+    const c = h.state === 'positive' ? 'var(--gain)' : h.state === 'negative' ? 'var(--loss)' : 'var(--neutral)';
+    return `<div class="ival"><div class="axis"></div><div class="zero"></div><div class="bar" style="left:${left}%;width:${Math.max(width, 1)}%;background:${c}"></div></div>`;
+  }
+
+  function playLink(id) {
+    const p = PLAY[id];
+    return p ? `<button class="linkbtn" data-goto="${id}">${clock(p)} ${esc(p['title_' + S.lang])}</button>` : esc(id);
+  }
+
+  // ------------------------------------------------------------------ minimap
+  // Positions come per game second as x, y (0-1000, Riot's axes: y up) and quality (2 sure, 1 weak, 0 filled in
+  // between, -1 not seen) for each player in g.minimap.players order.
+  let mmTimer = null;
+  const MM_PLAY = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>';
+  const MM_STOP = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="3.5" y="3.5" width="9" height="9" rx="1" fill="currentColor"/></svg>';
+  function mmRow(g, sec) {
+    const m = g.minimap;
+    const row = m && m.pos[sec - m.t0];
+    return row || null;
+  }
+  function mmSide(g, name) {
+    const r = g.roster && g.roster.teams.find(tm => tm.players.some(x => x.player === name));
+    return r ? (r.team === g.blue_team ? 'blue' : 'red') : '';
+  }
+  function minimapHtml(g, p) {
+    if (!g.minimap || p.gc == null || !mmRow(g, p.gc)) return '';
+    const h = +S.h;
+    // A plain drawing of Summoner's Rift: bases, lanes, river.
+    const ground = `<rect x="0" y="0" width="1000" height="1000" rx="48" fill="var(--bg-pill)"/>
+      <path d="M0 1000 L0 760 A240 240 0 0 0 240 1000 Z" fill="var(--blue-bg)"/><path d="M1000 0 L1000 240 A240 240 0 0 0 760 0 Z" fill="var(--red-bg)"/>
+      <path d="M190 250 L810 770" stroke="var(--border-color)" stroke-width="70" stroke-linecap="round" fill="none"/>
+      <g stroke="var(--text-muted)" stroke-opacity=".22" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path d="M80 900 L80 80 L900 80"/><path d="M100 920 L920 920 L920 100"/><path d="M130 870 L870 130"/></g>`;
+    // The real map from Riot's Data Dragon goes over the drawing, which stays as the fallback if it fails to load.
+    const dd = `https://ddragon.leagueoflegends.com/cdn/${g.minimap.ddragon}`;
+    return `<div class="mm" id="mm">
+      <div class="mm-head"><b>${t('mmHead')}</b><span>${t('mmSrc')}</span></div>
+      <svg viewBox="0 0 1000 1000" role="img" aria-label="${esc(t('mmHead'))}">
+        <defs><clipPath id="mmMap"><rect width="1000" height="1000" rx="48"/></clipPath>
+          <clipPath id="mmIcon" clipPathUnits="objectBoundingBox"><circle cx=".5" cy=".5" r=".5"/></clipPath></defs>
+        ${ground}<image href="${dd}/img/map/map11.png" width="1000" height="1000" preserveAspectRatio="none" clip-path="url(#mmMap)"/>
+        <g id="mmTrails"></g><g id="mmDots"></g><g id="mmKills"></g></svg>
+      <div class="ctrl"><button class="btn icon" id="mmPlay" type="button" aria-label="${esc(t('mmPlay'))}" title="${esc(t('mmPlay'))}">${MM_PLAY}</button>
+        <input type="range" id="mmSlider" min="${-5}" max="${h}" step="1" value="-5" aria-label="${esc(t('mmHead'))}">
+        <span class="num" id="mmTime"></span></div>
+      <p class="note">${t('mmNote')}</p></div>`;
+  }
+  function wireMinimap(g, p) {
+    if (mmTimer) { clearInterval(mmTimer); mmTimer = null; }
+    const box = document.getElementById('mm');
+    if (!box) return;
+    const h = +S.h;
+    const players = g.minimap.players;
+    const named = new Set([...involvedOf(p).map(x => x.player), ...(p.roster_players || [])]);
+    const champ = name => { const r = g.roster.teams.flatMap(tm => tm.players).find(x => x.player === name); return r ? (S.lang === 'ko' && r.champion_ko ? r.champion_ko : r.champion) : ''; };
+    const mmss = x => `${Math.floor(x / 60)}:${String(Math.floor(x % 60)).padStart(2, '0')}`;
+    // Movement after the start, one faint line per player (bold for the named ones).
+    box.querySelector('#mmTrails').innerHTML = players.map((name, i) => {
+      // A line breaks where the player is not seen or moves faster than a champion can (a recall, a misread).
+      const runs = [[]];
+      let last = null;
+      for (let s = p.gc; s <= p.gc + h; s++) {
+        const r = mmRow(g, s);
+        const pt = r && r[i * 3 + 2] >= 0 ? [r[i * 3], 1000 - r[i * 3 + 1], s] : null;
+        if (!pt || (last && Math.hypot(pt[0] - last[0], pt[1] - last[1]) > 100 * (pt[2] - last[2]))) runs.push([]);
+        if (pt) { runs[runs.length - 1].push(`${pt[0]},${pt[1]}`); last = pt; }
+      }
+      const side = mmSide(g, name);
+      const bold = named.has(name);
+      return runs.filter(r => r.length > 1).map(r => `<polyline points="${r.join(' ')}" fill="none" stroke="#fff" stroke-opacity="${bold ? 0.7 : 0.25}" stroke-width="${bold ? 18 : 12}" stroke-linejoin="round" stroke-linecap="round"/>`
+        + `<polyline points="${r.join(' ')}" fill="none" stroke="var(--${side}-team)" stroke-opacity="${bold ? 0.95 : 0.5}" stroke-width="${bold ? 10 : 6}" stroke-linejoin="round" stroke-linecap="round"/>`).join('');
+    }).join('');
+    const dd = `https://ddragon.leagueoflegends.com/cdn/${g.minimap.ddragon}`;
+    const dots = box.querySelector('#mmDots'), slider = box.querySelector('#mmSlider'), clock = box.querySelector('#mmTime');
+    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // One icon per player, built once and then only moved: rebuilding the images every frame made them flash.
+    // Unnamed players first so the named ones sit on top. The icon is drawn around (0, 0) and placed by transform.
+    const order = players.map((n, i) => [n, i]).sort((a, b) => named.has(a[0]) - named.has(b[0]));
+    dots.innerHTML = order.map(([name, i]) => {
+      const side = mmSide(g, name), bold = named.has(name), R = bold ? 54 : 44;
+      // The champion's icon in a ring of its side's colour; named players larger with a white outer ring and
+      // their name (blue above the icon, red below, so two side by side stay readable).
+      const halo = bold ? `<circle r="${R + 9}" fill="none" stroke="#fff" stroke-width="7"/>` : '';
+      const label = bold ? `<text y="${side === 'red' ? R + 52 : -R - 22}" text-anchor="middle" font-size="44" font-weight="700" fill="#fff" paint-order="stroke" stroke="rgba(0,0,0,.75)" stroke-width="12">${esc(name)}</text>` : '';
+      return `<g class="mm-p" data-i="${i}" style="display:none${calm ? '' : ';transition:transform .25s linear, opacity .25s'}"><title>${esc(name)} · ${esc(champ(name))}</title>`
+        + `<circle r="${R}" fill="var(--${side}-team)"/><image href="${dd}/img/champion/${encodeURIComponent(g.minimap.icons[i])}.png" x="${-R}" y="${-R}" width="${2 * R}" height="${2 * R}" clip-path="url(#mmIcon)"/>`
+        + `<circle class="ring" r="${R}" fill="none" stroke="var(--${side}-team)" stroke-width="${bold ? 10 : 8}"/>${halo}${label}`
+        + `<path class="dead-x" d="M-26 -26 L26 26 M26 -26 L-26 26" stroke="#fff" stroke-width="12" stroke-linecap="round" style="display:none"/></g>`;
+    }).join('');
+    const nodes = [...dots.querySelectorAll('.mm-p')];
+    const seen = {};          // player index -> second last seen
+    const draw = d => {
+      clock.textContent = t('mmAt')(d, mmss(p.gc + d));
+      // A second with no reading (a replay cut, an unread clock) keeps the last frame within 3 s.
+      let back = 0, r = mmRow(g, p.gc + d);
+      while (!r && back < 3) r = mmRow(g, p.gc + d - ++back);
+      if (!r) return;
+      // A kill in the last 3 s shows as a cross in the killer's side colour at the spot, fading out.
+      const now = p.gc + d;
+      box.querySelector('#mmKills').innerHTML = (g.minimap.kills || []).filter(k => k[0] <= now && now - k[0] < 3).map(k => {
+        const side = k[3] >= 0 ? mmSide(g, players[k[3]]) : (mmSide(g, players[k[4]]) === 'blue' ? 'red' : 'blue');
+        return `<g opacity="${1 - (now - k[0]) / 3}" transform="translate(${k[1]} ${1000 - k[2]})"><circle r="44" fill="none" stroke="var(--${side}-team)" stroke-width="8"/>`
+          + `<path d="M-30 -30 L30 30 M30 -30 L-30 30" stroke="var(--${side}-team)" stroke-width="14" stroke-linecap="round"/></g>`;
+      }).join('');
+      nodes.forEach(n => {
+        const i = +n.dataset.i, q = r[i * 3 + 2];
+        // Dead (Riot kill record): greyed at the spot where they fell, with a cross, until seen again.
+        const dead = q === -2;
+        n.style.filter = dead ? 'grayscale(1)' : '';
+        n.querySelector('.dead-x').style.display = dead ? '' : 'none';
+        if (q >= 0 || dead) {
+          const to = `translate(${r[i * 3]}px, ${1000 - r[i * 3 + 1]}px)`;
+          if (n.style.display === 'none') {
+            // Appearing: place it without sliding in from where it was last (or from the corner).
+            const tr = n.style.transition;
+            n.style.transition = 'none';
+            n.style.display = '';
+            n.style.transform = to;
+            n.getBoundingClientRect();
+            n.style.transition = tr;
+          } else {
+            n.style.transform = to;
+          }
+          // Riot frames and confident matches full, filled-in positions faint with a dashed ring, the dead faded.
+          n.style.opacity = dead ? 0.5 : q >= 2 ? 1 : q === 1 ? 0.75 : 0.55;
+          n.querySelector('.ring').setAttribute('stroke-dasharray', q === 0 ? '16 10' : 'none');
+          seen[i] = d;
+        } else if (seen[i] !== undefined && Math.abs(d - seen[i]) <= 2) {
+          // Missed for a moment: stay where last seen, faded.
+          n.style.opacity = 0.35;
+        } else {
+          n.style.display = 'none';
+        }
+      });
+    };
+    const btn = box.querySelector('#mmPlay');
+    const setBtn = playing => { btn.innerHTML = playing ? MM_STOP : MM_PLAY; btn.ariaLabel = btn.title = t(playing ? 'mmPause' : 'mmPlay'); };
+    const stop = () => { if (mmTimer) { clearInterval(mmTimer); mmTimer = null; } setBtn(false); };
+    const play = () => {
+      if (+slider.value >= h) { slider.value = -5; draw(-5); }
+      setBtn(true);
+      // Four game seconds per real second.
+      mmTimer = setInterval(() => {
+        const d = +slider.value + 1;
+        if (d > h) return stop();
+        slider.value = d;
+        draw(d);
+      }, 250);
+    };
+    slider.oninput = () => { stop(); draw(+slider.value); };
+    btn.onclick = () => (mmTimer ? stop() : play());
+    // Opening a play starts the map from 5 s before it, unless the viewer asks for reduced motion.
+    slider.value = -5;
+    draw(-5);
+    if (!calm) play();
+  }
+
+  function renderCard(g) {
+    const p = PLAY[S.playId];
+    const v = viewOf(p);
+    const idx = g.plays.indexOf(p);
+    const side = p.actor === g.blue_team ? 'blue' : p.actor === g.red_team ? 'red' : '';
+    const hzHtml = D.horizons_s.map(hs => {
+      const h = v.hz[hs];
+      const note = h.state === 'missing' ? L('reason', h.reason) : h.state === 'unresolved' ? t('hzUnres')(h.bound) : t('hzOk')(h.bound);
+      return `<button class="hz ${S.h === String(hs) ? 'on' : ''}" data-h="${hs}"><div class="lbl">${t('sec')(hs)}</div><div class="val ${stateCls(h.state)}">${eText(h)}</div><div class="note">${esc(note)}</div>${ivalBar(h)}</button>`;
+    }).join('');
+    const ctx = p.context;
+    const dv = ctx.delta_v;
+    const sign = v.flipped ? -1 : 1;
+    const ctxRows = [];
+    ctxRows.push([t('ctxOutcome'), `${esc(L('outcome', v.outcome))}${v.flipped && !v.swap ? ` <span class="muted">(${esc(p.actor)})</span>` : ''} · ${t('ctxKill')} ${esc(L('kill', p.kill_status))}`]);
+    if (v.leadState) ctxRows.push([t('ctxLead'), `${esc(t('leadText')(L('lead', v.leadState), fmtG(v.lead)))} · ${esc(L('phase', ctx.phase))}`]);
+    if (v.bgPct != null) ctxRows.push([t('ctxBg'), `${esc(t('bgText')(v.bgPct, S.h))} <span class="muted">(${t('bgNote')})</span>`]);
+    if (dv) {
+      const x = sign * dv.dv;
+      ctxRows.push([t('ctxDv'), esc((x >= 0 ? t('dvText') : t('dvTextNeg'))(Math.round(Math.abs(x)).toLocaleString(), Math.round(dv.dv_bound).toLocaleString(), dv.window_s))]);
+    }
+    if (ctx.overlapping_play_ids[S.h].length) ctxRows.push([t('ctxOverlap')(S.h), ctx.overlapping_play_ids[S.h].map(playLink).join('<br>') + `<br><span class="muted">${t('ctxOverlapNote')}</span>`]);
+    if (ctx.minimap_near) {
+      const nr = ctx.minimap_near;
+      ctxRows.push([t('ctxNear'), (nr.near.length ? nr.near.map(x => `${esc(x.player)} <span class="muted">(${esc(x.team)})</span>`).join(', ') : `<span class="muted">${t('ctxNearNone')}</span>`)
+        + `<br><span class="muted">${esc(t('ctxNearNote')(nr.seen.join(', ')))}</span>`]);
+    }
+    if (ctx.riot_elsewhere) {
+      // One line per kill, monster or structure; turret plates, frequent and small, as one count per team.
+      const evs = ctx.riot_elsewhere[S.h];
+      const mmss = x => `${Math.floor(x / 60)}:${String(Math.floor(x % 60)).padStart(2, '0')}`;
+      const lines = evs.filter(e => e.kind !== 'plate').map(e => `<span class="num">${mmss(e.gc)}</span> ${esc(e.team || '?')} `
+        + (e.kind === 'kill' ? `${t('riotKind').kill} <span class="muted">${esc(e.by || '—')} → ${esc(e.victim || '?')}</span>`
+          : e.kind === 'monster' ? esc(t('riotMonster')[e.monster] || e.monster) : esc(t('riotKind')[e.kind])));
+      const plates = {};
+      evs.filter(e => e.kind === 'plate').forEach(e => { plates[e.team] = (plates[e.team] || 0) + 1; });
+      if (Object.keys(plates).length) lines.push(`${esc(t('riotKind').plate)} ${Object.entries(plates).map(([tm, n]) => `${esc(tm)} ${n}`).join(' · ')}`);
+      ctxRows.push([t('ctxElse')(S.h), (lines.length ? lines.join('<br>') : `<span class="muted">${t('ctxElseNone')}</span>`)
+        + (lines.length ? `<br><span class="muted">${t('ctxElseNote')}</span>` : '')]);
+    }
+    const ep = g.episodes.find(e => e.id === p.episode_id);
+    if (ep) {
+      ctxRows.push([t('ctxEpisode'), ep.play_ids.filter(i => i !== p.id).map(playLink).join('<br>')]);
+      const byTeam = {};
+      ep.play_ids.forEach(i => involvedOf(PLAY[i]).forEach(x => { (byTeam[x.team] = byTeam[x.team] || new Set()).add(x.player); }));
+      const teams = Object.keys(byTeam);
+      if (teams.length) ctxRows.push([t('ctxEpPlayers'), teams.map(tm => `${esc(tm)}: ${[...byTeam[tm]].map(esc).join(', ')}`).join(' · ')]);
+    }
+    if (p.related_play_ids.length) ctxRows.push([t('ctxRelated'), p.related_play_ids.map(playLink).join('<br>')]);
+    if (p.objective_links.length) {
+      ctxRows.push([t('ctxObj'), p.objective_links.map(o => {
+        const head = `<span class="chip fam">${esc(objLabel(o.objective))} · ${esc(L('role', o.role))}</span> ${esc(o.team)}`;
+        if (o.role === 'acquire') return head + (o.linked_play_ids.length ? ' → ' + o.linked_play_ids.map(i => `${playLink(i)}${PLAY[i] ? ` <span class="muted">(${esc(objLinkType(PLAY[i], o.chain_id))})</span>` : ''}`).join(', ') : '');
+        return head + ` · ${esc(objLabel(o.use_type))}` + (o.acquire_play_id ? ' ← ' + playLink(o.acquire_play_id) : '');
+      }).join('<br>')]);
+    }
+    const tags = [];
+    tags.push(`<span class="time">${clock(p)}</span>`);
+    tags.push(`<span class="chip ${side}">${esc(p.actor || '?')}</span>`);
+    tags.push(famChip(v.famKey, v.familyText, 'dot'));
+    if (p.family_secondary && !v.flipped) tags.push(`<span class="chip">+ ${esc(famLabel(p.family_secondary))}</span>`);
+    if (v.tag) tags.push(`<span class="chip ${tagCls(v.tag)}">${esc(L('tag', v.tag))}</span>`);
+    else if (v.flipped) tags.push(`<span class="chip">${t('oppPlay')}</span>`);
+    if (p.speech_context === 'retrospective') tags.push(`<span class="chip">${t('retro')}</span>`);
+    (hlOf(p.id) || []).forEach(r => tags.push(`<span class="chip"><span class="star-mark" aria-hidden="true"></span>${esc(L('hl', r))}</span>`));
+    const el = document.getElementById('playCard');
+    const start = Math.max(0, p.t + (g.video_offset_s || 0) - 5);
+    el.innerHTML = `
+      <div class="play-head"><div class="left">${tags.join('')}<span class="muted mono" style="font-size:.75rem">${p.id}</span></div>
+        <div class="navbtns"><button class="btn" id="prevP" title="${esc(t('keyPrev'))}" ${idx <= 0 ? 'disabled' : ''}><kbd>←</kbd>${t('prevWord')}</button><button class="btn" id="nextP" title="${esc(t('keyNext'))}" ${idx >= g.plays.length - 1 ? 'disabled' : ''}>${t('nextWord')}<kbd>→</kbd></button></div></div>
+      <h2 class="play-title">${esc(p['title_' + S.lang])}</h2>
+      ${v.flipped ? `<p class="flip-note">${esc(t('flipNote')(S.persp, p.actor))}</p>` : ''}
+      <div class="horizons" aria-label="${esc(t('hzHead'))}">${hzHtml}</div>
+      ${minimapHtml(g, p)}
+      ${involvedOf(p).length ? `<p class="players">${INV_ROLES.map(r => [r, involvedOf(p).filter(x => x.role === r)]).filter(([, xs]) => xs.length)
+        .map(([r, xs]) => `<span class="role-lbl">${esc(L('inv', r))}</span> ${xs.map(x => `<button class="linkbtn" data-player="${esc(x.player)}">${esc(playerText(g, x.player))}</button>`).join(', ')}`).join('<br>')}</p>` : ''}
+      <p class="desc">${esc(p['desc_' + S.lang])}</p>
+      ${p.quote ? `<blockquote class="quote">“${esc(p.quote.replace(/>>\s*/g, ''))}”</blockquote>` : ''}
+      <div class="yt"><iframe loading="lazy" src="https://www.youtube.com/embed/${g.youtube_id || g.video_id}?start=${start}" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="VOD"></iframe></div>
+      ${location.protocol === 'file:' ? `<p class="yt-note">${t('ytNote')}</p>` : ''}
+      <dl class="ctx">${ctxRows.map(([k, val]) => `<dt>${k}</dt><dd>${val}</dd>`).join('')}</dl>
+      <div class="foot"><span>${t('verification')}</span><a href="${p.yt_url}" target="_blank" rel="noopener">${t('vod')} (${p.video_fmt}) ↗</a></div>
+      `;
+    el.querySelectorAll('.hz').forEach(b => b.onclick = () => { S.h = b.dataset.h; renderSet(); });
+    wireMinimap(g, p);
+    el.querySelectorAll('[data-goto]').forEach(b => b.onclick = () => selectPlay(b.dataset.goto));
+    el.querySelectorAll('[data-player]').forEach(b => b.onclick = () => pickPlayer(g, b.dataset.player));
+    el.querySelector('#prevP').onclick = () => selectPlay(g.plays[idx - 1].id);
+    el.querySelector('#nextP').onclick = () => selectPlay(g.plays[idx + 1].id);
+    el.scrollTop = 0;
+  }
+
+  function objLinkType(p, chainId) {
+    const o = p.objective_links.find(x => x.chain_id === chainId && x.role !== 'acquire');
+    return o ? `${L('role', o.role)} · ${objLabel(o.use_type)}` : '';
+  }
+
+  // One line of involved players: who acted, then who they went after, then who responded.
+  function whoLine(p) {
+    const inv = involvedOf(p);
+    if (!inv.length) return '';
+    const names = role => inv.filter(x => x.role === role).map(x => (x.player === S.fPlayer ? `<b>${esc(x.player)}</b>` : esc(x.player)));
+    const [a, tg, rs] = [names('actor'), names('target'), names('response')];
+    let line = a.join(', ');
+    if (tg.length) line += `${line ? ' ' : ''}→ ${tg.join(', ')}`;
+    if (rs.length) line += `${line ? ' · ' : ''}${esc(L('inv', 'response'))} ${rs.join(', ')}`;
+    return `<span class="who">${line}</span>`;
+  }
+
+  function rowHtml(p, selected) {
+    const v = viewOf(p);
+    const h = v.hz[S.h];
+    const g = p._game;
+    const side = p.actor === g.blue_team ? 'blue' : p.actor === g.red_team ? 'red' : '';
+    const hl = hlOf(p.id);
+    return `<button type="button" class="row side-${side || 'none'} ${selected ? 'on' : ''} ${hl ? 'star' : ''}" data-id="${p.id}" ${selected ? 'aria-current="true"' : ''} ${hl ? `title="${esc(hl.map(r => L('hl', r)).join(' · '))}"` : ''}>
+      <span class="t">${clock(p)}</span><span class="chip ${side}">${esc(p.actor || '?')}</span>
+      <span class="title"><span class="ttl">${hl ? `<span class="star-mark" aria-hidden="true"></span><span class="sr-only">${esc(t('hlOnly'))}</span>` : ''}${S.fPlayer && invOf(p, S.fPlayer) ? `<span class="chip">${esc(L('inv', invOf(p, S.fPlayer).role))}</span> ` : ''}${esc(p['title_' + S.lang])}${p.objective_links.length ? ' <span class="chip fam">' + p.objective_links.map(o => esc(objLabel(o.objective))).join('·') + '</span>' : ''}</span>${whoLine(p)}</span>
+      <span class="famcell">${famChip(v.famKey, v.familyText, 'dot')}</span>
+      <span class="e ${stateCls(h.state)}" title="${esc(L('state', h.state))}">${h.state === 'missing' ? '—' : fmtG(h.e)}</span></button>`;
+  }
+
+  // Picking a player filters the list and turns the view to that player's team.
+  function pickPlayer(g, name) {
+    S.fPlayer = name;
+    if (name && ROSTER[g.id][name]) S.persp = ROSTER[g.id][name].team;
+    renderSet();
+    document.getElementById('listCard').scrollIntoView({ block: 'start' });
+  }
+
+  function renderList(g) {
+    const el = document.getElementById('listCard');
+    const tagKeys = [...Object.keys(D.tags)];
+    const list = g.plays.filter(p => {
+      const v = viewOf(p);
+      if (S.fFamily && p.family !== S.fFamily) return false;
+      if (S.fState && v.hz[S.h].state !== S.fState) return false;
+      if (S.fTag && v.tag !== S.fTag) return false;
+      if (S.fPlayer && !invOf(p, S.fPlayer)) return false;
+      if (S.fHl && !hlOf(p.id)) return false;
+      return true;
+    });
+    el.innerHTML = `<h3>${t('listTitle')} <span class="sub">${t('listSub')(list.length, g.plays.length, S.h)}</span></h3>
+      <div class="filters">
+        <select id="fFamily"><option value="">${t('fFamily')}</option>${D.families.map(f => `<option value="${f}" ${S.fFamily === f ? 'selected' : ''}>${esc(famLabel(f))}</option>`).join('')}</select>
+        <select id="fTag"><option value="">${t('fTag')}</option>${tagKeys.map(k => `<option value="${k}" ${S.fTag === k ? 'selected' : ''}>${esc(L('tag', k))}</option>`).join('')}</select>
+        <select id="fState"><option value="">${t('fState')}</option>${STATES.map(k => `<option value="${k}" ${S.fState === k ? 'selected' : ''}>${esc(L('state', k))}</option>`).join('')}</select>
+        <select id="fPlayer"><option value="">${t('fPlayer')}</option>${(g.roster ? g.roster.teams : []).map(tm => `<optgroup label="${esc(tm.team)}">${tm.players.map(x => `<option value="${esc(x.player)}" ${S.fPlayer === x.player ? 'selected' : ''}>${esc(posLabel(x.position))} · ${esc(x.player)} · ${esc(champName(x))}</option>`).join('')}</optgroup>`).join('')}</select>
+        <label class="check"><input type="checkbox" id="fHl" ${S.fHl ? 'checked' : ''}><span class="star-mark" aria-hidden="true"></span>${t('hlOnly')}</label>
+        ${S.fFamily || S.fTag || S.fState || S.fPlayer || S.fHl ? `<button class="btn" id="fClear">${t('clearFilters')}</button>` : ''}
+      </div>
+      <p class="hl-legend"><span class="star-mark" aria-hidden="true"></span>${t('hlLegend')(S.h)}</p>
+      ${S.fPlayer ? `<p class="note-box" style="margin:-4px 0 8px">${t('playerNote')}</p>` : ''}
+      <div class="rows"><div class="row head" aria-hidden="true"><span>${t('colTime')}</span><span>${t('colTeam')}</span><span>${t('colPlay')}</span><span class="famcell">${t('colType')}</span><span class="e">${t('colGold')(S.h)}${S.persp ? t('colFrom')(S.persp) : ''}</span></div>${list.map(p => rowHtml(p, p.id === S.playId)).join('')}</div>`;
+    el.querySelector('#fFamily').onchange = e => { S.fFamily = e.target.value; renderList(g); };
+    el.querySelector('#fTag').onchange = e => { S.fTag = e.target.value; renderList(g); };
+    el.querySelector('#fState').onchange = e => { S.fState = e.target.value; renderList(g); };
+    el.querySelector('#fPlayer').onchange = e => { pickPlayer(g, e.target.value); };
+    el.querySelector('#fHl').onchange = e => { S.fHl = e.target.checked; renderList(g); };
+    const clear = el.querySelector('#fClear');
+    if (clear) clear.onclick = () => { S.fFamily = S.fTag = S.fState = ''; S.fHl = false; pickPlayer(g, ''); };
+    el.querySelectorAll('.row:not(.head)').forEach(r => r.onclick = () => selectPlay(r.dataset.id, true));
+  }
+
+  // ------------------------------------------------------------------ cross-tab
+  function scopeGames() {
+    const g = game();
+    return S.xScope === 'game' ? [g] : S.xScope === 'stage' ? gamesIn(g.tournament_id).filter(x => seriesOf(x) === seriesOf(g)) : gamesIn(g.tournament_id);
+  }
+  function scopePlays() { return scopeGames().flatMap(playsOf); }
+  function rowKeys() {
+    if (S.xRows === 'family') return D.families.map(f => [f, famLabel(f), p => p.family === f, null, null, null, f]);
+    if (S.xRows === 'outcome') return OUTCOMES.map(o => [o, L('outcome', o), p => p.outcome === o]);
+    if (S.xRows === 'kill') return KILLS.map(k => [k, L('kill', k), p => p.kill_status === k]);
+    if (S.xRows === 'player' || S.xRows === 'champ') {
+      // One row per player (or champion) in scope, busiest first. A play joins the row of every player it
+      // involved, and is read from that player's team: an opponent play counts with its sign flipped.
+      const champOf = (p, x) => (ROSTER[p._game.id][x.player] || {}).champion;
+      const keyOf = (p, x) => (S.xRows === 'player' ? x.player : champOf(p, x));
+      const rows = new Map();
+      scopePlays().forEach(p => involvedOf(p).forEach(x => {
+        const k = keyOf(p, x);
+        if (!k) return;
+        if (!rows.has(k)) {
+          const r = ROSTER[p._game.id][x.player];
+          rows.set(k, { n: 0, roles: {}, label: S.xRows === 'player' ? `${x.player} · ${r.team} ${posLabel(r.position)}` : champName(r) });
+        }
+        const row = rows.get(k);
+        row.n += 1;
+        row.roles[x.role] = (row.roles[x.role] || 0) + 1;
+      }));
+      // Who played each champion (or which champions each player was on), counted by games in scope.
+      const pairs = new Map();
+      scopeGames().forEach(g => Object.values(ROSTER[g.id]).forEach(x => {
+        const [k, other] = S.xRows === 'player' ? [x.player, champName(x)] : [x.champion, `${x.player} (${x.team})`];
+        if (!pairs.has(k)) pairs.set(k, new Map());
+        pairs.get(k).set(other, (pairs.get(k).get(other) || 0) + 1);
+      }));
+      const sub = (k, r) => INV_ROLES.filter(role => r.roles[role]).map(role => `${L('inv', role)} ${r.roles[role]}`).join(' · ')
+        + ` — ${S.xRows === 'player' ? t('played') : t('usedBy')}: ` + [...(pairs.get(k) || new Map()).entries()]
+        .sort((a, b) => b[1] - a[1]).map(([o, n]) => `${o} ${t('games')(n)}`).join(', ');
+      const hit = (p, k) => involvedOf(p).find(x => keyOf(p, x) === k);
+      // Games in scope the player played (or the champion was picked in), for the per-game column.
+      const games = new Map();
+      scopeGames().forEach(g => Object.values(ROSTER[g.id]).forEach(x => {
+        const k = S.xRows === 'player' ? x.player : x.champion;
+        games.set(k, (games.get(k) || 0) + 1);
+      }));
+      return [...rows.entries()].sort((a, b) => b[1].n - a[1].n || a[1].label.localeCompare(b[1].label))
+        .map(([k, r]) => [k, r.label, p => !!hit(p, k), sub(k, r), p => { const x = hit(p, k); return !!x && !!p.actor && x.team !== p.actor; }, p => hit(p, k).team, null, games.get(k) || 0]);
+    }
+    return D.families.flatMap(f => OUTCOMES.map(o => [`${f}|${o}`, `${famLabel(f)} · ${L('outcome', o)}`, p => p.family === f && p.outcome === o]));
+  }
+  // A 100% bar of the four states, so the total reads as their sum.
+  function sbar(counts, n) {
+    return `<span class="sbar" aria-hidden="true">${STATES.map(s => `<i class="${s}" style="width:${n ? 100 * counts[s] / n : 0}%"></i>`).join('')}</span>`;
+  }
+  function renderXtab() {
+    const g = game();
+    const plays = scopePlays();
+    const h = S.h;
+    const rows = rowKeys().map(([k, label, fn, sub, flip, teamOf, famKey, games]) => {
+      const ps = plays.filter(fn);
+      const flipOf = flip || (() => false);
+      const stateOf = p => (flipOf(p) ? FLIP_STATE[p.horizons[h].state] : p.horizons[h].state);
+      const by = Object.fromEntries(STATES.map(s => [s, ps.filter(p => stateOf(p) === s)]));
+      return { k, label, sub, ps, by, flipOf, teamOf, famKey, games };
+    }).filter(r => r.ps.length);
+    // Rows sort by the picked column header, gains by default: counts largest first, labels A to Z, and a
+    // second click on the same header reverses. Ties fall back to the total, then the label.
+    const perPlayer = S.xRows === 'player' || S.xRows === 'champ';
+    // Player and champion rows also show gains and losses per game played, and the games; those columns
+    // exist only there, and elsewhere a sort on them falls back to gains.
+    const PER_GAME = ['positive', 'negative'];
+    const { rev } = S.xSort;
+    const col = !perPlayer && (S.xSort.col === 'games' || S.xSort.col.endsWith('_pg')) ? 'positive' : S.xSort.col;
+    const perGame = (r, st) => (r.games ? r.by[st].length / r.games : 0);
+    const count = r => (col === 'total' ? r.ps.length : col === 'games' ? r.games : col.endsWith('_pg') ? perGame(r, col.slice(0, -3)) : r.by[col].length);
+    const order = (a, b) => (col === 'label' ? a.label.localeCompare(b.label) : count(b) - count(a) || b.ps.length - a.ps.length || a.label.localeCompare(b.label));
+    rows.sort((a, b) => (rev ? -1 : 1) * order(a, b));
+    const sortTh = (c, text) => {
+      const on = col === c;
+      const up = (c === 'label') !== rev;  // A to Z, or smallest first
+      const aria = on ? ` aria-sort="${up ? 'ascending' : 'descending'}"` : '';
+      const arrow = on ? (up ? '↑' : '↓') : '';
+      return `<th${aria}><button type="button" class="sort" data-sort="${c}" aria-label="${esc(t('sortBy')(text || t('rowLabel')))}">${esc(text)}<span class="arr" aria-hidden="true">${arrow}</span></button></th>`;
+    };
+    const main = document.getElementById('main');
+    // The series is named by its two teams: the selected game's label without its game number.
+    const scopeName = { game: `${t('scopeGame')} (${S.lang === 'ko' ? g.title_ko : g.title_en})`, stage: `${t('scopeStage')} (${g.blue_team} vs ${g.red_team})`, all: t('scopeAll') };
+    const tot = Object.fromEntries(STATES.map(s => [s, plays.filter(p => p.horizons[h].state === s).length]));
+    main.innerHTML = `
+      <section class="card">
+        <h1 class="xt-title">${t('xtTitle')} <span class="sub">${t('xtSub')}</span></h1>
+        <div class="controls" style="margin-top:0;margin-bottom:12px">
+          <span class="nav-label">${t('scope')}</span>
+          <div class="seg" id="xScope">${['game', 'stage', 'all'].map(k => `<button data-k="${k}" class="${S.xScope === k ? 'on' : ''}">${esc(scopeName[k])}</button>`).join('')}</div>
+          <span class="nav-label">${t('rowsBy')}</span>
+          <div class="seg" id="xRows">${[['family', t('rFamily')], ['outcome', t('rOutcome')], ['kill', t('rKill')], ['famout', t('rFamOut')], ['player', t('rPlayer')], ['champ', t('rChamp')]].map(([k, v]) => `<button data-k="${k}" class="${S.xRows === k ? 'on' : ''}">${v}</button>`).join('')}</div>
+          <span class="nav-label">${t('horizon')}</span>
+          <div class="seg" id="xH">${D.horizons_s.map(x => `<button data-h="${x}" class="${S.h === String(x) ? 'on' : ''}">${t('sec')(x)}</button>`).join('')}</div>
+        </div>
+        <div class="scroll-x"><table class="xt">
+          <thead><tr>${sortTh('label', t('rowLabel'))}${STATES.map(s => (perPlayer && PER_GAME.includes(s)
+            ? sortTh(s, `${L('state', s)} (${t('xtCum')})`) + sortTh(`${s}_pg`, `${L('state', s)} (${t('xtPerGame')})`)
+            : sortTh(s, L('state', s)))).join('')}${sortTh('total', t('total'))}${perPlayer ? sortTh('games', t('xtGames')) : ''}</tr></thead>
+          <tbody>${rows.map(r => `<tr><td>${r.famKey ? `<span class="fam-dot" style="background:var(--f-${r.famKey})"></span>` : ''}${esc(r.label)}${r.sub ? `<div class="rsub">${esc(r.sub)}</div>` : ''}</td>${STATES.map(s => {
+            const n = r.by[s].length;
+            const key = `${r.k}::${s}`;
+            const color = n && s === 'positive' ? 'var(--gain)' : n && s === 'negative' ? 'var(--loss)' : '';
+            return `<td class="cell ${n ? '' : 'zero'} ${S.xCell === key ? 'sel' : ''}" data-cell="${esc(key)}" role="button" tabindex="0" aria-pressed="${S.xCell === key}" style="color:${color}">${n}</td>`
+              + (perPlayer && PER_GAME.includes(s) ? `<td class="pg" style="color:${color}">${r.games ? perGame(r, s).toFixed(1) : '—'}</td>` : '');
+          }).join('')}<td class="tot">${r.ps.length}${sbar(Object.fromEntries(STATES.map(s => [s, r.by[s].length])), r.ps.length)}</td>${perPlayer ? `<td>${r.games}</td>` : ''}</tr>`).join('')}
+          ${perPlayer ? '' : `<tr><td><b>${t('total')}</b></td>${STATES.map(s => `<td class="den">${tot[s]}</td>`).join('')}<td class="tot">${plays.length}${sbar(tot, plays.length)}</td></tr>`}</tbody>
+        </table></div>
+        <p class="note-box">${t('xtNote')}${S.xRows === 'player' || S.xRows === 'champ' ? ' ' + t('xtPlayerNote') : ''}</p>
+      </section>
+      <section class="card" id="xList"><p class="empty">${t('xtPick')}</p></section>`;
+    main.querySelectorAll('#xScope button').forEach(b => b.onclick = () => { S.xScope = b.dataset.k; S.xCell = null; renderXtab(); });
+    main.querySelectorAll('#xRows button').forEach(b => b.onclick = () => { S.xRows = b.dataset.k; S.xCell = null; renderXtab(); });
+    main.querySelectorAll('#xH button').forEach(b => b.onclick = () => { S.h = b.dataset.h; S.xCell = null; renderXtab(); });
+    main.querySelectorAll('th .sort').forEach(b => b.onclick = () => {
+      const c = b.dataset.sort;
+      S.xSort = { col: c, rev: S.xSort.col === c ? !S.xSort.rev : false };
+      renderXtab();
+      const again = document.querySelector(`th .sort[data-sort="${c}"]`);
+      if (again) again.focus();
+    });
+    main.querySelectorAll('td.cell').forEach(c => {
+      c.onclick = () => { S.xCell = c.dataset.cell; renderXtab(); };
+      c.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.click(); } };
+    });
+    if (S.xCell) {
+      const [rk, st] = S.xCell.split('::');
+      const r = rows.find(x => x.k === rk);
+      const ps = r ? r.by[st] : [];
+      const box = document.getElementById('xList');
+      box.innerHTML = `<h3>${esc(r ? r.label : '')} · ${esc(L('state', st))} <span class="sub">${ps.length} · ${t('sec')(h)}</span></h3>
+        <div class="rows">${ps.map(p => `<button type="button" class="row" data-id="${p.id}"><span class="t">${clock(p)}</span><span class="chip">${esc(S.lang === 'ko' ? p._game.stage_ko : p._game.stage_en)} ${t('gameN')(p._game.game_num)}</span>
+          <span class="title">${esc(p.actor || '?')} · ${esc(p['title_' + S.lang])}</span><span class="famcell">${famChip(p.family, famLabel(p.family), 'dot')}</span>
+          ${(() => { const hz = p.horizons[h], f = r.flipOf(p), stt = f ? FLIP_STATE[hz.state] : hz.state; return `<span class="e ${stateCls(stt)}">${hz.state === 'missing' ? '—' : fmtG(f ? -hz.e : hz.e)}</span>`; })()}</button>`).join('')}</div>`;
+      box.querySelectorAll('.row').forEach(row => row.onclick = () => {
+        const p = PLAY[row.dataset.id];
+        // Opened from a player or champion row, the play is shown from that player's team, as it was counted.
+        S.view = 'set'; S.gameId = p._game.id; S.playId = p.id; S.persp = r.flipOf(p) ? r.teamOf(p) : p.actor || '';
+        render(); window.scrollTo({ top: 0 });
+      });
+    }
+    writeHash();
+    syncPressed();
+  }
+
+  // ------------------------------------------------------------------ main
+  function renderPlanned() {
+    document.getElementById('main').innerHTML = `<section class="card planned"><h3 style="justify-content:center">${t('plannedTitle')}</h3><p class="muted">${t('plannedBody')}</p></section>`;
+  }
+  async function render() {
+    renderChrome();
+    const tour = DATA.tournaments.find(x => x.id === S.tourn);
+    if (tour.status === 'planned') return renderPlanned();
+    const main = document.getElementById('main');
+    const wait = `<section class="card"><p class="muted">${t('loading')}</p></section>`;
+    main.setAttribute('aria-busy', 'true');
+    try {
+      if (S.view === 'xtab') {
+        if (!tour._plays) main.innerHTML = wait;
+        await ensurePlays(S.tourn);
+        if (S.view === 'xtab') renderXtab();
+      } else {
+        const id = S.gameId;
+        if (!isFull(game())) main.innerHTML = wait;
+        await ensureGame(id);
+        if (S.view === 'set' && S.gameId === id) renderSet();
+      }
+    } catch (e) {
+      main.innerHTML = `<section class="card"><p>${t('loadError')}</p></section>`;
+    }
+    main.setAttribute('aria-busy', 'false');
+    syncPressed();
+  }
+  document.getElementById('btnLang').onclick = () => { S.lang = S.lang === 'ko' ? 'en' : 'ko'; try { localStorage.setItem('lv_lang', S.lang); } catch (e) {} render(); };
+  document.getElementById('btnTheme').onclick = () => { S.theme = S.theme === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('lv_theme', S.theme); } catch (e) {} render(); };
+  render();
+  // ← → step through the game's plays, unless the viewer is typing in or choosing from a field.
+  document.addEventListener('keydown', e => {
+    if (S.view !== 'set' || e.altKey || e.ctrlKey || e.metaKey || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const p = PLAY[S.playId];
+    if (!p || !p._game.plays) return;
+    const list = p._game.plays, i = list.indexOf(p) + (e.key === 'ArrowRight' ? 1 : -1);
+    if (i >= 0 && i < list.length) { e.preventDefault(); selectPlay(list[i].id); }
+  });
+  // The chart is drawn in pixels of its frame, so redraw it when the frame changes width.
+  let lastW = 0, resizeTimer = 0;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const svg = document.getElementById('chart');
+      const w = svg && svg.parentElement.clientWidth;
+      if (svg && w && w !== lastW && S.view === 'set' && PLAY[S.playId]) { lastW = w; renderChart(PLAY[S.playId]._game); }
+    }, 150);
+  });
+})();
+</script>
+</body>
+</html>

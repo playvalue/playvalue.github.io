@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f5f7" id="themeColor">
+  <title>방법론 — PlayValue</title>
+  <meta name="description" content="PlayValue가 해설에서 플레이를 뽑고, 골드 변화를 재고, 유형을 코딩하는 방법과 그 검증.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PlayValue">
+  <meta property="og:title" content="방법론 — PlayValue">
+  <meta property="og:description" content="PlayValue가 해설에서 플레이를 뽑고, 골드 변화를 재고, 유형을 코딩하는 방법과 그 검증.">
+  <meta property="og:url" content="https://playvalue.github.io/methodology.html">
+  <meta property="og:image" content="https://playvalue.github.io/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="./assets/logo-icon.svg?v=2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <style>
+    :root {
+      --bg-main: #f4f5f7; --bg-card: #ffffff; --bg-pill: #eceef1; --text-main: #111214; --text-muted: #5d6168;
+      --border-color: #e4e6ea; --border-focus: #111214; --blue-team: #1d63b8; --red-team: #c4243f;
+      --gain: #247b50; --loss: #b53d0c; --neutral: #62666d; --brand-gold: #B9731A; --code-bg: #eceef1;
+      --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Segoe UI', sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+      color-scheme: light;
+    }
+    [data-theme="dark"] {
+      --bg-main: #0d0d0e; --bg-card: #161618; --bg-pill: #242427; --text-main: #f3f3f4; --text-muted: #a9abb0;
+      --border-color: #2a2a2e; --border-focus: #f3f3f4; --blue-team: #5ea3ff; --red-team: #ff6d83;
+      --gain: #3fc07a; --loss: #ff8a52; --neutral: #a0a2a8; --brand-gold: #E9A23B; --code-bg: #242427;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* Korean wraps between words, not inside them. */
+    html[lang="ko"] body { word-break: keep-all; overflow-wrap: break-word; }
+    body { background: var(--bg-main); color: var(--text-main); font-family: var(--font); line-height: 1.7; padding-bottom: 80px; }
+    a { color: var(--text-main); text-underline-offset: 2px; }
+    /* Same frame as the dashboard: one 1440px column with 20px gutters, the wordmark bar on the ground. */
+    .wrap { max-width: 1440px; margin: 0 auto; padding: 0 20px; }
+    header { border-bottom: 1px solid var(--border-color); padding: 14px 0; }
+    .header-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; font-weight: 900; font-size: 1.4rem; letter-spacing: -0.03em; }
+    .brand img { width: 34px; height: 34px; }
+    .brand .v { color: var(--brand-gold); }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); font: inherit; font-size: .82rem; font-weight: 600; padding: 6px 12px; border-radius: 6px; cursor: pointer; text-decoration: none; }
+    .btn:hover { border-color: var(--border-focus); }
+    main { padding-top: 28px; }
+    /* The article: title and lede across the top, contents in a sticky left column, each section on its own card.
+       220px + 24px + the rest fills the column; text inside a card keeps a 72ch measure, tables use the card. */
+    article[data-lang] { grid-template-columns: 220px minmax(0, 1fr); column-gap: 24px; align-items: start; }
+    article[data-lang] { padding-top: 20px; }
+    article > h1, article > .lede { grid-column: 1 / -1; }
+    article > .toc { grid-column: 1; grid-row: 3 / span 12; position: sticky; top: 16px; flex-direction: column; gap: 2px; margin: 16px 0 0; }
+    article > section { grid-column: 2; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 26px 30px 28px; margin-top: 16px; }
+    article > section:first-of-type { margin-top: 16px; }
+    @media (max-width: 900px) {
+      article[data-lang] { grid-template-columns: minmax(0, 1fr); }
+      article > .toc { grid-column: 1; grid-row: auto; position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+      article > section { grid-column: 1; padding: 20px 18px 22px; }
+      h1 { font-size: 1.55rem; } .lede { font-size: 1rem; }
+    }
+    /* The coding table: the batch column keeps a readable width; the codebook path may break. */
+    .tbl td:first-child { min-width: 6.5em; }
+    [id$="-coding-table"] table { min-width: 720px; }
+    [id$="-coding-table"] td:first-child { min-width: 9em; }
+    [id$="-coding-table"] td:nth-child(2) { min-width: 10em; }
+    [id$="-coding-table"] td:first-child .mono { word-break: break-all; }
+    h1 { font-size: 2rem; letter-spacing: -0.02em; line-height: 1.25; text-wrap: balance; }
+    /* After the base rule, so it wins: the earlier 900px rule set 1.55rem but this line overrode it. */
+    @media (max-width: 600px) { h1 { font-size: 1.5rem; } }
+    /* The lede runs the article's width like the title; the 72ch measure below is for text inside the cards. */
+    .lede { color: var(--text-main); margin-top: 12px; font-size: 1.1rem; line-height: 1.65; max-width: none; }
+    .toc { display: flex; }
+    .toc a { font-size: .9rem; color: var(--text-muted); border-radius: 6px; padding: 6px 10px; text-decoration: none; }
+    .toc a:hover { background: var(--bg-pill); color: var(--text-main); }
+    .toc a.on { background: var(--bg-pill); color: var(--text-main); font-weight: 600; }
+    @media (max-width: 900px) { .toc a { background: var(--bg-pill); color: var(--text-main); font-size: .82rem; padding: 3px 10px; border-radius: 999px; } }
+    h2 { font-size: 1.35rem; letter-spacing: -0.01em; margin-bottom: 12px; }
+    h3 { font-size: .98rem; margin: 18px 0 6px; }
+    p, li { max-width: 72ch; }
+    p + p { margin-top: 8px; }
+    ul, ol { padding-left: 22px; margin: 6px 0; }
+    li { margin: 3px 0; }
+    .muted { color: var(--text-muted); }
+    .quote { border-left: 3px solid var(--brand-gold); padding: 6px 14px; background: var(--bg-card); border-radius: 0 8px 8px 0; margin: 10px 0; }
+    code, .mono { font-family: var(--mono); font-size: .86em; }
+    pre { background: var(--code-bg); border-radius: 8px; padding: 12px 14px; font-family: var(--mono); font-size: .84rem; overflow-x: auto; margin: 10px 0; line-height: 1.6; }
+    .tbl { overflow-x: auto; margin: 10px 0; }
+    table { border-collapse: collapse; width: 100%; font-size: .86rem; background: var(--bg-card); border-radius: 8px; }
+    th, td { border-bottom: 1px solid var(--border-color); padding: 7px 10px; text-align: left; vertical-align: top; }
+    th { font-size: .78rem; color: var(--text-muted); font-weight: 700; }
+    td.n, th.n { text-align: right; font-family: var(--mono); white-space: nowrap; }
+    .gain { color: var(--gain); } .loss { color: var(--loss); }
+    .steps { counter-reset: s; list-style: none; padding: 0; }
+    .steps li { counter-increment: s; position: relative; padding-left: 38px; margin: 12px 0; }
+    .steps li::before { content: counter(s); position: absolute; left: 0; top: 1px; width: 26px; height: 26px; border-radius: 50%; background: var(--bg-pill); font-weight: 800; font-size: .82rem; display: flex; align-items: center; justify-content: center; }
+    .note { font-size: .82rem; color: var(--text-muted); }
+    [data-lang] { display: none; }
+    html[lang="ko"] [data-lang="ko"], html[lang="en"] [data-lang="en"] { display: block; }
+    html[lang="ko"] article[data-lang="ko"], html[lang="en"] article[data-lang="en"] { display: grid; }
+    :focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; border-radius: 4px; }
+    button, a { touch-action: manipulation; }
+    .skip { position: absolute; left: 12px; top: -48px; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-focus); border-radius: 8px; padding: 6px 12px; z-index: 100; }
+    .skip:focus { top: 12px; }
+    section { scroll-margin-top: 16px; }
+    .quote { background: var(--bg-main); }
+    h2, h3 { text-wrap: balance; }
+    td.n, .mono { font-variant-numeric: tabular-nums; }
+    footer { margin-top: 40px; font-size: .8rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 14px; }
+    #footLegal { margin: 8px 0 0; font-size: .75rem; line-height: 1.5; max-width: none; }
+  </style>
+</head>
+<body>
+<a class="skip" href="#content" id="skipLink">본문으로 건너뛰기</a>
+<header>
+  <div class="wrap header-row">
+    <a class="brand" href="./index.html"><img src="./assets/logo-icon.svg?v=2" alt="" width="30" height="30"><span translate="no">Play<span class="v">Value</span></span></a>
+    <div class="actions">
+      <a class="btn" href="./index.html" id="backBtn">← 대시보드</a>
+      <button class="btn" id="btnLang">English</button>
+      <button class="btn" id="btnTheme">다크 모드</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="content" tabindex="-1">
+
+<!-- ================================================================ Korean -->
+<article data-lang="ko">
+  <h1>PlayValue는 무엇을, 어떻게 재는가</h1>
+  <p class="lede">해설진이 짚은 플레이를 골드를 보지 않은 채 먼저 골라 두고, 그 뒤 15·30·60초 동안 두 팀의 골드 차이가 어떻게 움직였는지 방송 화면에서 읽어 붙입니다. 이 페이지는 그 절차와 숫자의 뜻, 그리고 숫자가 말하지 않는 것을 정리합니다.</p>
+  <nav class="toc">
+    <a href="#ko-why">왜 팀으로 보나</a><a href="#ko-question">연구 질문</a><a href="#ko-steps">처리 절차</a><a href="#ko-metric">골드 변화</a><a href="#ko-coding">해설 코딩</a>
+    <a href="#ko-views">화면의 규칙</a><a href="#ko-numbers">현재 데이터</a><a href="#ko-check">검증</a><a href="#ko-limits">한계</a><a href="#ko-version">버전</a><a href="#ko-next">향후 방향</a><a href="#ko-contact">데이터 협력</a>
+  </nav>
+
+  <section id="ko-why">
+    <h2>왜 팀으로 보나</h2>
+    <p>리그 오브 레전드는 다섯 명이 한 맵 위에서 함께 움직이는 팀 게임입니다. 킬, 피해량, CS 같은 개인 지표만으로는 한 플레이가 경기에 남긴 흔적을 다 담지 못합니다. 바텀에서 상대 정글러를 붙잡아 둔 시간은 탑에서 포탑 방패 몇 개가 되고, 실패한 갱킹도 상대의 점멸을 빼 놓아 다음 오브젝트 싸움에서 두 팀이 서는 자리를 바꿉니다.</p>
+    <p>이처럼 어느 한 곳의 플레이는 팀 전체의 실시간 전략과 위치에 영향을 주고, 그 변화는 결국 골드로 바뀌어 나타날 수 있습니다. PlayValue는 그래서 선수 한 명이 아니라 <b>팀의 관점</b>에서 봅니다. 플레이가 일어난 뒤 두 팀의 골드 차이가 어떻게 움직였는지 재서, 한 플레이가 맵 전체로 번져 나간 흐름을 골드라는 공통 단위로 보려는 것이 목표입니다.</p>
+    <p class="muted">그 골드 변화에는 같은 시간 다른 곳에서 일어난 일도 함께 들어 있습니다. 그래서 숫자는 팀이 그 시간 동안 겪은 결과를 보여 줄 뿐, 그 플레이 하나의 몫을 떼어 내지는 않습니다.</p>
+  </section>
+
+  <section id="ko-question">
+    <h2>연구 질문</h2>
+    <div class="quote">경기 전체 해설에서 구체적인 행동·시도를 골드 결과를 보기 전에 선정했을 때, 실패·무킬 플레이를 포함한 각 사례에는 어떤 실제 상대 골드 수입이 동반되는가?</div>
+    <p>골드는 플레이가 남기는 여러 결과 중 관측할 수 있는 한 가지입니다. PlayValue는 그 관측값을 보여 줄 뿐, 플레이의 가치나 기여를 점수로 매기지 않습니다.</p>
+    <h3>왜 해설에서 고르나</h3>
+    <p>국제 대회 중계진은 리그와 국제 대회를 오래 중계·분석해 온 전문가이고, 선수·코치 출신도 있습니다. 경기를 보는 사람에게 지금 중요한 플레이를 짚어 설명하는 것이 바로 그들의 역할입니다. 그래서 해설이 짚은 장면을 “중요한 플레이”의 표본으로 삼는 것은 자연스러운 선택입니다. 연구자가 직접 기준을 정해 장면을 고르면 그 기준이 결과를 미리 정해 버릴 수 있는데, 해설은 경기 흐름을 따라 실시간으로 말한다는 점도 장점입니다. 다만 해설진도 성공한 장면을 더 자주 말할 수 있다는 점은 <a href="#ko-limits">한계</a>에 적었습니다.</p>
+    <h3>말하지 않는 것</h3>
+    <ul>
+      <li><b>원인:</b> 골드 변화는 그 시간 동안 팀 전체에 일어난 일의 합입니다. 같은 시간 다른 라인의 일도 섞여 있어, 골드가 움직였다고 그 플레이 때문이라고 할 수 없습니다.</li>
+      <li><b>선수 개인의 공헌:</b> 팀 골드로 재므로 개인 몫을 나누지 않습니다.</li>
+      <li><b>판단의 좋고 나쁨:</b> “다른 선택을 했다면”을 추정하지 않습니다.</li>
+    </ul>
+  </section>
+
+  <section id="ko-steps">
+    <h2>처리 절차</h2>
+    <ol class="steps">
+      <li><b>해설에서 플레이 추출 (골드 가림).</b> 경기 전체 영어 자동 자막을 읽고 구체적인 행동과 시도를 모두 뽑습니다. 실패한 시도, 킬이 없는 플레이, 라인 관리처럼 평범한 행동도 포함합니다. 자막의 골드·돈 언급은 미리 가립니다(<code>gold</code>, <code>money</code>, <code>2k</code> 같은 표현과 앞뒤 두 구간). 플레이 하나는 해설이 한 덩어리로 말하는 한 팀의 시도(갱킹, 진입과 이어진 교전, 오브젝트 사냥 등)이고, 그 안의 스킬 적중·점멸·정화 같은 세부 동작은 따로 떼지 않고 설명에 넣습니다. 상대 팀의 별도 반격, 교전이 끝난 뒤 다른 목표로 넘어간 행동, 다른 곳에서 동시에 한 행동은 다른 플레이가 됩니다. 경기마다 독립된 세션이 다른 기록이나 골드 자료를 보지 않고 추출하고, 전체를 한 번 더 읽어 빠진 것과 중복을 점검합니다. 결과는 SHA-256 해시로 고정한 뒤에야 골드와 합칩니다.</li>
+      <li><b>방송 화면에서 골드 읽기.</b> 1초마다 방송 화면의 경기 시간과 양 팀 골드를 문자 인식(OCR)으로 읽습니다. 리플레이 화면과 일시 정지는 걸러 냅니다. 화면의 팀 골드는 100 단위로 반올림돼 있습니다. MSI는 경기마다 영상이 따로 있어 라이브 구간을 사람이 화면을 보고 등록했습니다. 월즈는 매치 전체가 한 영상이라, 화면의 경기 시간이 0부터 다시 흐르는 지점으로 경기를 나누고, 경기 시간이 1초씩 흐르는 구간을 라이브로 자동 제안한 뒤 구간 경계마다 화면을 보고 확인해 확정했습니다. 골드를 읽는 방식과 위치는 두 대회가 같습니다.</li>
+      <li><b>골드 결합.</b> 고정된 플레이 목록의 시작 시점(기준점)에 골드를 붙여 15·30·60초 뒤의 변화를 계산합니다. 골드를 본 뒤 플레이를 추가하거나 빼지 않습니다. 골드를 읽을 수 없는 플레이도 “측정 없음”으로 목록에 남깁니다.</li>
+      <li><b>해설만 보고 하는 코딩.</b> 행동 유형, 오브젝트 링크, 관여 선수를 붙입니다. 입력은 해설 요약·인용과 경기 로스터뿐이고 골드는 넣지 않습니다. 세 모델 계열이 독립으로 코딩하고 다수결로 정합니다. 각 코드북은 시험 경기로 다듬은 뒤 본 경기 코딩 전에 고정합니다.</li>
+      <li><b>규칙 버전.</b> 구간, 시간대, 기준값 같은 화면 규칙은 한 설정 파일에 모으고, 그 파일의 해시를 규칙 버전으로 데이터에 기록합니다.</li>
+    </ol>
+  </section>
+
+  <section id="ko-metric">
+    <h2>골드 변화 (주 지표)</h2>
+    <pre>골드 변화(h초) = [플레이한 팀 골드 − 상대 팀 골드](기준점 + h) − [플레이한 팀 골드 − 상대 팀 골드](기준점)
+h = 15, 30, 60초</pre>
+    <p>플레이한 팀 입장에서 두 팀의 골드 차이가 h초 동안 얼마나 벌어졌는지(+) 또는 좁혀졌는지(−)입니다. 세 구간을 모두 보여 주고, 기본 표시는 30초입니다. 30초는 이벤트가 대부분 끝나면서(71%) 측정 가능한 비율(92%)과 이득·손해 판정 비율(64%)이 함께 높은 구간이라 골랐습니다. 이 비교는 골드 변화의 방향을 보지 않고 측정 범위만으로 했습니다.</p>
+    <h3>네 가지 상태</h3>
+    <div class="tbl"><table>
+      <tr><th>상태</th><th>조건</th></tr>
+      <tr><td class="gain">이득</td><td>변화가 오차 범위 밖에서 +</td></tr>
+      <tr><td class="loss">손해</td><td>변화가 오차 범위 밖에서 −</td></tr>
+      <tr><td>불확실</td><td>변화가 오차 범위 안이라 방향을 가릴 수 없음</td></tr>
+      <tr><td>측정 없음</td><td>앞이나 뒤 시점의 골드를 읽지 못함 (리플레이 화면, 기록 구간 밖, 플레이한 팀 미상 등)</td></tr>
+    </table></div>
+    <p><b>오차 ±200:</b> 골드 변화에는 화면 값 네 개가 들어가고, 각 값은 반올림 오차가 ±50 이내입니다. 그래서 참값은 (변화 − 200, 변화 + 200) 안에 있고, |변화| ≥ 200일 때만 이득이나 손해로 판정합니다.</p>
+    <h3>참고 정보</h3>
+    <ul>
+      <li><b>플레이 직전:</b> 기준점의 팀 골드 차이입니다. 시간대별 기준(라인전 ±<span data-v="lead_lane"></span>, 중반 ±<span data-v="lead_mid"></span>, 후반 ±<span data-v="lead_late"></span>)보다 크면 “앞섬”, 작으면 “뒤짐”, 그 사이는 “비슷함”입니다. 기준값은 플레이가 아니라 배경 시점들의 골드 차이 분포(상위 3분의 1 지점)에서 정했습니다.</li>
+      <li><b>시간대:</b> 경기 시간 기준 라인전(14분 전), 중반(14–25분), 후반(25분 이후)입니다.</li>
+      <li><b>같은 시간대와 비교:</b> 같은 경기·같은 시간대의 모든 측정 가능한 초를 기준점으로 삼아 15·30·60초 골드 변화 분포를 각각 만들고, 화면에서 고른 구간의 분포에서 이 플레이가 그 안에서 어디쯤인지 보여 줍니다. 배경 시점에도 다른 플레이가 섞여 있으므로 대조군이 아니며, 효과의 크기로 읽지 않습니다.</li>
+      <li><b>골드 흐름 변화:</b> 플레이 전후 같은 길이(15분 전 <span data-v="dv_early"></span>초, 이후 <span data-v="dv_late"></span>초) 구간의 분당 골드 차이 변화를 비교한 값입니다. 화면 값 세 개의 반올림 오차가 겹쳐 오차가 크므로, 오차 범위와 함께만 보여 주고 분류나 정렬에는 쓰지 않습니다.</li>
+    </ul>
+  </section>
+
+  <section id="ko-coding">
+    <h2>해설 코딩</h2>
+    <p>세 가지 코딩 모두 같은 방식입니다. 입력은 플레이의 해설 요약, 원문 인용, 행동 주체 팀, 경기 로스터(Oracle's Elixir의 포지션·챔피언)이며 골드와 경기 결과는 넣지 않습니다. Claude, Gemma, Qwen 세 모델 계열이 독립으로 코딩하고 다수결로 정합니다. 같은 모델을 두 번 돌리면 일치도가 부풀려지는 것을 확인해, 서로 다른 계열 셋을 씁니다.</p>
+    <div class="tbl" id="ko-coding-table"></div>
+    <h3>행동 유형</h3>
+    <p>플레이한 팀이 무엇을 시도했는지를 9가지 유형으로 나눕니다. 성공했는지, 킬이 났는지는 유형을 정하는 기준이 아닙니다. 챔피언끼리 맞붙는 행동은 누가 가담했는지로 가릅니다.</p>
+    <ol>
+      <li>플레이한 팀이 공격을 <b>받는</b> 쪽이면 → 피습 대응</li>
+      <li>맞라이너끼리만 (탑끼리, 미드끼리, 원딜·서포터끼리) → 라인전</li>
+      <li>플레이한 팀만 라인 밖 인원을 더했거나 혼자 떨어진 상대를 노렸으면 → 갱킹·다이브·끊기 시도</li>
+      <li>양쪽 모두 라인 밖 인원이 가담했으면 → 교전·한타</li>
+    </ol>
+    <p>그 전에 두 가지를 먼저 봅니다. 드래곤·바론·전령·유충을 두고 벌어진 교전은 그 오브젝트가 없었다면 일어나지 않았을 싸움이므로 에픽 오브젝트 경합으로 봅니다. 또 실제로 공격을 주고받지 않고 대치하거나 진입 각만 보다 물러난 장면은 교전으로 치지 않습니다. 이 두 기준은 사람이 직접 붙인 정답과 모델 코딩을 비교한 뒤 코드북 v6에 넣었습니다.</p>
+    <div class="tbl" id="ko-family-table"></div>
+    <h3>오브젝트 링크</h3>
+    <p>협곡의 전령, 바론 내셔, 장로 드래곤을 얻은 플레이와 그 뒤 플레이를 잇습니다. 전령은 소환한 플레이를 “사용”으로, 바론과 장로는 패시브 버프라 해설이 “버프를 두른” 장면이라고 말한 플레이를 “버프 중 플레이”로 잇습니다. 링크는 보여 주기 위한 것이고 어떤 값도 더하지 않습니다.</p>
+    <h3>관여 선수</h3>
+    <p>플레이마다 해설이 이름이나 챔피언으로 특정한 선수를 양 팀 모두 적고, 행동(플레이한 팀), 대상(노림을 받은 상대), 맞대응(맞선 상대) 중 하나의 역할을 붙입니다.</p>
+  </section>
+
+  <section id="ko-views">
+    <h2>화면의 규칙</h2>
+    <ul>
+      <li><b>한 번만 세기:</b> 기본 집계에서 플레이는 플레이한 팀 기준으로 한 번만 셉니다.</li>
+      <li><b>누구 입장에서:</b> 상대 팀 입장으로 바꾸면 골드 변화의 부호와 직전 상태가 뒤집히고, 갱킹과 피습 대응은 서로 바뀌며 성공·실패도 뒤집힙니다. 보는 방향만 바뀌고 집계는 바뀌지 않습니다.</li>
+      <li><b>선수·챔피언별 집계:</b> 그 선수가 행동·대상·맞대응으로 관여한 플레이를 그 선수 팀 입장에서 셉니다. 여러 선수가 관여한 플레이는 선수마다 한 번씩 들어갑니다.</li>
+      <li><b>같은 장면:</b> 추출 단계에서 한 사건으로 묶인 플레이들(에피소드)은 함께 보여 주되, 골드 변화를 더하지 않습니다. 같은 30초 구간 안에 시작한 다른 플레이가 있으면 카드에 표시합니다.</li>
+      <li><b>눈여겨볼 장면:</b> 화면에서 고른 구간(15·30·60초)의 골드 변화 방향이 확정된 플레이 중 “성공했는데 손해” 또는 “실패·중단했는데 이득”인 것, 그리고 같은 시간대 배경 대비 골드 변화의 폭이 상위 <span data-v="tail2"></span>%에 드는 것입니다. 배경은 양 팀 입장을 모두 담아 0을 중심으로 대칭이므로, 상위 <span data-v="tail"></span>%와 하위 <span data-v="tail"></span>%를 합치면 방향과 관계없이 변화 폭 상위 <span data-v="tail2"></span>%가 되고, 어느 팀 입장에서 보든 같은 플레이가 뽑힙니다. 해설이 고른 플레이는 플레이한 팀의 이득 쪽으로 치우쳐 있어, 이 중 대부분은 플레이한 팀 기준으로 큰 이득입니다. 구간을 바꾸면 그 구간 기준으로 다시 뽑힙니다. 플레이 목록에 금색 마름모와 행 왼쪽의 금색 선으로 표시하며 순위가 아닙니다.</li>
+    </ul>
+  </section>
+
+  <section id="ko-numbers">
+    <h2>현재 데이터</h2>
+    <p id="ko-summary"></p>
+    <div class="tbl" id="ko-stage-table"></div>
+    <div class="tbl" id="ko-horizon-table"></div>
+    <p id="ko-small"></p>
+  </section>
+
+  <section id="ko-check">
+    <h2>Riot 경기 데이터로 검증</h2>
+    <p>Riot이 남기는 경기 기록(match-v5 타임라인, Leaguepedia 공개본)에는 1분마다 선수별 누적 골드가, 밀리초 단위로 챔피언 처치·오브젝트·구조물이 기록돼 있습니다. 1분 간격이라 15·30초 변화를 재는 데는 쓸 수 없고, 추출과 코딩이 끝난 뒤 두 가지를 확인하는 데만 씁니다. 추출 입력에는 넣지 않습니다. 결과를 아는 채로 플레이를 고르면, 해설이 고른 플레이가 아니라 결과가 난 플레이를 재게 되기 때문입니다.</p>
+    <h3>골드 읽기</h3>
+    <p id="ko-check-gold"></p>
+    <h3>미니맵 위치</h3>
+    <p id="ko-check-mm"></p>
+    <h3>킬 여부</h3>
+    <p id="ko-check-kill"></p>
+    <div class="tbl" id="ko-check-table"></div>
+  </section>
+
+  <section id="ko-limits">
+    <h2>한계</h2>
+    <ul>
+      <li><b>해설이 고른 표본:</b> 해설진은 성공했거나 이미 이득이 난 장면을 더 자주 말할 수 있습니다. 플레이 목록은 해설에 나온 행동이며, 경기에서 일어난 모든 행동의 대표 표본이 아닙니다. 이득 쪽 플레이가 많은 것도 이 영향일 수 있습니다.</li>
+      <li><b>영상 미확인:</b> 플레이와 시각은 해설 자막만으로 정리했고 영상으로 확인하지 않았습니다. 자동 자막의 오인식, 리플레이 중 회상, 해설과 실제 장면의 시차가 섞일 수 있습니다.</li>
+      <li><b>반올림과 측정 공백:</b> 골드가 100 단위라 ±200 안의 변화는 방향을 알 수 없습니다. 리플레이 화면이 길면 끝점이 없어 측정되지 않습니다.</li>
+      <li><b>겹침:</b> 관측 구간 안에 다른 플레이와 다른 라인의 일이 함께 들어 있습니다. <span id="ko-else"></span></li>
+      <li><b>이름이 나온 선수만:</b> 관여 선수는 해설이 이름이나 챔피언을 말한 경우만 잡힙니다. “본대 합류”처럼 팀으로만 말한 관여는 빠집니다.</li>
+      <li><b>시간 안에 골드로 바뀌지 않는 플레이:</b> 구간 안에 킬·오브젝트·구조물이 하나도 없는 플레이(약 28%)는 직후 15·30·60초의 골드 변화가 같은 경기에서 이벤트가 없는 임의 시점과 구별되지 않습니다. 이런 플레이는 이벤트 기록이나 골드 신호로는 찾을 수 없고 해설이 짚었기 때문에 목록에 있습니다. 골드 차이가 보이지 않는 것은 그 효과가 이 시간 안에 골드로 바뀌지 않았거나, 더 긴 시간에 걸쳐 바뀌었거나, 반올림 범위보다 작기 때문일 수 있으며, 이 데이터로는 셋을 가리지 못합니다.</li>
+      <li><b>골드로 드러나지 않는 이득:</b> 일반 드래곤은 버프가 경기 내내 쌓여 특정 플레이에 잇지 않습니다. 공허 유충은 해설이 획득 뒤 효과를 거의 말하지 않고 시간대별 구조물 데이터도 아직 없어 잇지 않습니다. 이런 보상은 승리 확률 모델에서 다룰 몫입니다.</li>
+      <li><b>모델 코딩:</b> 행동 유형 등은 세 모델의 다수결입니다. 사람이 직접 유형을 붙인 플레이와 비교해 정확도를 확인합니다. 먼저 42개로 코드북 v5의 어긋난 기준을 찾아 v6를 만들었고, v6를 만들 때 보지 않은 다른 42개로 따로 확인했습니다. 이 42개에서 v6 코딩은 전체 비율로 환산해 약 78%(95% 구간 약 65~91%)가 일치했습니다. 같은 42개에서 v5는 약 72%였습니다. 주로 공격 없이 끝난 진입 시도나 피하기만 한 장면을 갱킹으로 보거나, 한 팀이 주도한 오브젝트 사냥을 경합으로 본 경우가 어긋났습니다. 행동 유형별 수치는 이 정도의 오차를 안고 읽어야 합니다.</li>
+      <li><b>플레이 단위:</b> 플레이를 어디까지 하나로 볼지는 처음 공개한 결승·패자조 결승 10경기 추출에서 굳어졌고, 그 뒤 경기부터는 같은 기준을 프로토콜에 글로 적어 넣었습니다. 기준 없이 추출해 본 패자조 3라운드 경기는 한 장면을 세 배쯤 잘게 나눴기 때문에 버리고 다시 추출했습니다. 그래도 기준을 적어 넣은 뒤의 경기가 더 잘게 나뉘었습니다. <span id="ko-gran"></span> 그래서 경기나 시리즈 사이에 플레이 수나 행동 유형 비율을 비교할 때는 이 차이가 섞입니다. 플레이 하나의 골드 변화를 재는 데는 영향이 없습니다. 처음 10경기는 사람이 붙인 정답 표본이 그 플레이에 연결돼 있어 다시 추출하지 않았습니다.</li>
+      <li><b>표본 크기와 구성:</b> <span id="ko-sample"></span> 팀·선수 사이 비교는 경기 수 차이를 감안해야 합니다.</li>
+      <li><b>번역과 표기:</b> 영어 제목·설명은 기계 번역이고, 챔피언 한글 이름은 직접 입력했습니다.</li>
+    </ul>
+  </section>
+
+  <section id="ko-version">
+    <h2>버전과 자료</h2>
+    <p id="ko-version-text"></p>
+    <p class="note">원본 자료: 방송 VOD(YouTube 공식 채널), 영어 자동 자막, 경기 로스터(Oracle's Elixir), 검증용 Riot 경기 기록(Leaguepedia의 match-v5 공개본), 맵 위치 그림의 지도와 챔피언 아이콘(Riot Data Dragon, 대시보드가 Riot 서버에서 직접 불러옴). 리그 오브 레전드는 Riot Games의 상표이며, PlayValue는 Riot Games와 관계없는 비공식 분석입니다.</p>
+  </section>
+
+  <section id="ko-next">
+    <h2>향후 방향: 골드에서 승리 확률로</h2>
+    <p>골드는 플레이가 남기는 흔적 중 재기 쉬운 하나일 뿐입니다. 시야를 잡아 두거나, 상대 점멸을 빼 두거나, 오브젝트 앞 자리를 먼저 차지하는 플레이는 당장 골드로 바뀌지 않아도 그 팀이 이길 가능성을 바꿉니다. 지금의 골드 지표로는 이런 플레이가 '변화 없음'이나 '불확실'로 남습니다.</p>
+    <p>다음 단계로는 그 순간의 경기 상황(경기 시간, 두 팀의 골드·경험치 차, 남은 오브젝트와 포탑, 선수 위치와 생존 여부)에서 승리 확률을 추정하는 모델을 만들고, 플레이 전후의 승리 확률 차를 재려고 합니다. 확률 차를 충분히 정확하게 계산할 수 있으면 골드로 곧바로 바뀌지 않는 플레이도 같은 틀에서 잴 수 있습니다.</p>
+    <p>그때도 지금처럼 플레이는 결과를 보지 않은 채 해설에서 고르고, 모델이 얼마나 잘 맞는지(보정)와 확률 차가 원인 효과가 아니라는 한계를 함께 밝힐 계획입니다.</p>
+  </section>
+
+  <section id="ko-contact">
+    <h2>데이터 협력</h2>
+    <p>PlayValue는 방송 화면과 해설, 공개 기록만으로 플레이를 고르고 골드를 잽니다. 골드는 1초마다 화면 숫자를 읽고, 선수 위치는 방송 미니맵에서 읽기 때문에 한타처럼 아이콘이 겹치는 순간에는 정확도가 떨어집니다. 초 단위 이벤트나 선수 위치처럼 더 정밀한 경기 데이터를 연구용으로 제공하거나 함께 쓰실 수 있다면 연락 주세요.</p>
+    <p>PlayValue는 게임과 e스포츠 데이터를 폭넓게 다루는 연구의 일부입니다. 예를 들어 월드 챔피언십 직전의 밸런스 패치가 팀마다 얼마나 다르게 작용했는지도 분석했습니다: <a href="https://arxiv.org/abs/2610.07427">When the Rule-Maker Runs the World Championship: Late Patches and Procedural Accountability in League of Legends</a> (Haewoon Kwak, 2026).</p>
+    <p><a href="mailto:kwak.haewoon+playvalue@gmail.com">kwak.haewoon+playvalue@gmail.com</a></p>
+  </section>
+</article>
+
+<!-- ================================================================ English -->
+<article data-lang="en">
+  <h1>What PlayValue measures, and how</h1>
+  <p class="lede">Plays the casters call out are picked first, without looking at gold. Then the gold gap between the two teams is read off the broadcast for the 15, 30 and 60 seconds after each play. This page sets out that procedure, what the numbers mean, and what they do not say.</p>
+  <nav class="toc">
+    <a href="#en-why">Why the team</a><a href="#en-question">Question</a><a href="#en-steps">Procedure</a><a href="#en-metric">Gold change</a><a href="#en-coding">Coding</a>
+    <a href="#en-views">Display rules</a><a href="#en-numbers">Current data</a><a href="#en-check">Checks</a><a href="#en-limits">Limits</a><a href="#en-version">Version</a><a href="#en-next">Next steps</a><a href="#en-contact">Data</a>
+  </nav>
+
+  <section id="en-why">
+    <h2>Why look at the team</h2>
+    <p>League of Legends is a team game: five players moving together on one map. Individual numbers such as kills, damage or CS cannot hold everything a play leaves on a game. Time spent pinning the enemy jungler bot can turn into turret plates top, and even a failed gank that burns a Flash changes where both teams stand at the next objective.</p>
+    <p>A play in one place shapes the whole team's strategy and positions in real time, and that change can end up as gold. So PlayValue looks from <b>the team's point of view</b>, not one player's. By measuring how the gold gap between the two teams moved after a play, the aim is to see, in one common unit, how a play spread across the map.</p>
+    <p class="muted">That gold change also holds whatever happened elsewhere at the same time. The number shows what the team went through in that window; it does not carve out the share of one play.</p>
+  </section>
+
+  <section id="en-question">
+    <h2>Research question</h2>
+    <div class="quote">When concrete actions and attempts are selected from the full commentary before the gold outcome is seen, what actual relative gold income accompanies each case, including failed and kill-free plays?</div>
+    <p>Gold is one observable trace a play leaves. PlayValue shows that observation; it does not score a play's value or contribution.</p>
+    <h3>Why the commentary picks the plays</h3>
+    <p>The casters of international events are experts who have called and analysed the leagues and international events for years, some of them former players or coaches. Pointing out the plays that matter, as they happen, and explaining them to viewers is exactly their job. Taking the moments they point out as the sample of important plays is therefore a natural choice. A rule written by the researchers to pick moments could decide the result in advance, and the commentary has the further advantage of being spoken live, as the game unfolds. The commentary may still dwell more on plays that worked; that is listed under <a href="#en-limits">Limits</a>.</p>
+    <h3>What the numbers do not say</h3>
+    <ul>
+      <li><b>Cause:</b> a gold change sums everything that happened to the team in that window, including other lanes. A change does not mean the play caused it.</li>
+      <li><b>Individual contribution:</b> the measure is team gold, so it is not split between players.</li>
+      <li><b>Decision quality:</b> there is no estimate of what would have happened otherwise.</li>
+    </ul>
+  </section>
+
+  <section id="en-steps">
+    <h2>Procedure</h2>
+    <ol class="steps">
+      <li><b>Extract plays from the commentary, with gold masked.</b> The full English auto-captions are read for every concrete action and attempt, including failed attempts, kill-free plays and ordinary lane management. Gold and money talk is masked beforehand (words such as <code>gold</code>, <code>money</code>, <code>2k</code> and the two segments either side). A play is one team's attempt that the commentary describes as a unit (a gank, an engage and the fight that follows, an objective take); mechanics inside it, such as a spell landing, a Flash or a cleanse, go into its description rather than becoming plays of their own. A counter-attempt by the other team, a move to a new target after the first resolves, or a simultaneous action elsewhere is a separate play. Each game is extracted in a separate session that sees no other records or gold data, then re-read in full to catch misses and duplicates. The result is frozen with SHA-256 hashes before any gold is joined.</li>
+      <li><b>Read gold from the broadcast.</b> The game clock and both teams' gold are read from the broadcast once per second by text recognition (OCR). Replays and pauses are filtered out. On screen, team gold is rounded to 100. At MSI each game had its own video and live play was registered by a person looking at the screens. At Worlds a whole match is one video, so games are split where the on-screen clock restarts from 0, live play is proposed where the clock runs one second per second, and every boundary was then checked on screen before it was fixed. The gold is read the same way, from the same place, at both events.</li>
+      <li><b>Join gold.</b> Gold is attached at each frozen play's start (the anchor) and the change after 15, 30 and 60 seconds is computed. No play is added or dropped after gold is seen; a play without readable gold stays in the list as “not measured”.</li>
+      <li><b>Code from the commentary only.</b> Play type, objective links and involved players are added from the commentary summary, quotes and game roster, never gold. Three model families code independently and the majority decides. Each codebook is tuned on trial games and frozen before the main games are coded.</li>
+      <li><b>Version the rules.</b> Windows, phases, thresholds and other display rules live in one settings file whose hash is written into the data as the rules version.</li>
+    </ol>
+  </section>
+
+  <section id="en-metric">
+    <h2>Gold change (main measure)</h2>
+    <pre>gold change(h) = [acting team gold − opponent gold](anchor + h) − [acting team gold − opponent gold](anchor)
+h = 15, 30, 60 seconds</pre>
+    <p>How much the gold gap widened (+) or narrowed (−) for the team that made the play over h seconds. All three windows are shown; 30 seconds is the default. It was chosen because most events have ended by then (71%) while the share measured (92%) and the share with a clear gain or loss (64%) both stay high. That comparison used coverage only, not the direction of the changes.</p>
+    <h3>Four states</h3>
+    <div class="tbl"><table>
+      <tr><th>State</th><th>Condition</th></tr>
+      <tr><td class="gain">Gain</td><td>positive beyond the margin</td></tr>
+      <tr><td class="loss">Loss</td><td>negative beyond the margin</td></tr>
+      <tr><td>Unclear</td><td>inside the margin, so the direction cannot be told</td></tr>
+      <tr><td>Not measured</td><td>gold at the start or end could not be read (replay on screen, outside the recorded gold, acting team unknown)</td></tr>
+    </table></div>
+    <p><b>±200 margin:</b> a gold change uses four on-screen readings, each within ±50 of the true value after rounding. The true change lies within (change − 200, change + 200), so only |change| ≥ 200 is called a gain or a loss.</p>
+    <h3>Context</h3>
+    <ul>
+      <li><b>Just before:</b> the team gold gap at the anchor. Beyond the phase threshold (laning ±<span data-v="lead_lane"></span>, mid ±<span data-v="lead_mid"></span>, late ±<span data-v="lead_late"></span>) it reads “ahead” or “behind”, otherwise “level”. Thresholds come from the spread of gold gaps over background seconds (the top-third point), not from plays.</li>
+      <li><b>Phase:</b> by game clock, laning (before 14:00), mid (14–25 min), late (after 25:00).</li>
+      <li><b>Against the same phase:</b> every measurable second of the same game and phase is used as an anchor to build spreads of 15, 30 and 60-second changes, and the play is placed within the spread for the window chosen on screen. Other plays are in the background too, so it is not a control group and not the size of an effect.</li>
+      <li><b>Gold pace change:</b> the change in gold-gap-per-minute between equal windows before and after the play (<span data-v="dv_early"></span> s before 15:00, <span data-v="dv_late"></span> s after). Three rounded readings make its margin wide, so it is shown only with that margin and never used for sorting or grouping.</li>
+    </ul>
+  </section>
+
+  <section id="en-coding">
+    <h2>Coding from the commentary</h2>
+    <p>All three codings work the same way. The input is the play's commentary summary, original quotes, acting team and game roster (positions and champions from Oracle's Elixir), with no gold or results. Claude, Gemma and Qwen code independently and the majority decides. Running one model twice was found to inflate agreement, so three different families are used.</p>
+    <div class="tbl" id="en-coding-table"></div>
+    <h3>Play type</h3>
+    <p>What the acting team attempted, in nine types. Success and kills do not decide the type. Champion-versus-champion plays are split by who took part:</p>
+    <ol>
+      <li>the acting team is the one being attacked → under attack</li>
+      <li>only lane opponents (top vs top, mid vs mid, bot and support vs bot and support) → laning</li>
+      <li>only the acting team added players from outside the lane, or went after an isolated opponent → gank / dive / catch attempt</li>
+      <li>both sides added players from outside the lane → fight</li>
+    </ol>
+    <p>Two checks come first. A fight over a dragon, Baron, Herald or grubs is an epic objective contest, because without the objective it would not have happened. And a standoff, or looking for an engage and backing off without any attack, is not a fight. Both rules went into codebook v6 after the model coding was compared with labels a person assigned by hand.</p>
+    <div class="tbl" id="en-family-table"></div>
+    <h3>Objective links</h3>
+    <p>Plays that took the Rift Herald, Baron Nashor or the Elder Dragon are linked to later plays: a Herald to the play that summoned it, and Baron or Elder, as passive buffs, to plays the commentary describes as made under the buff. Links are for display and add nothing up.</p>
+    <h3>Involved players</h3>
+    <p>For each play, the players the commentary names on either team, by name or champion, each with a role: acted (team that made the play), targeted (opponent the play went after) or responded (opponent who joined in against it).</p>
+  </section>
+
+  <section id="en-views">
+    <h2>Display rules</h2>
+    <ul>
+      <li><b>Counted once:</b> in the main totals, each play counts once, for the team that made it.</li>
+      <li><b>Seen from:</b> switching to the other team flips the sign of the gold change and the lead before, swaps gank and under-attack, and flips success and failure. Only the reading changes, not the totals.</li>
+      <li><b>By player or champion:</b> a row counts the plays the player made, was targeted by or responded to, seen from their team. A play with several players appears once per player.</li>
+      <li><b>Same moment:</b> plays grouped as one event at extraction (an episode) are shown together but their gold changes are not added. Other plays starting inside the same 30-second window are flagged on the card.</li>
+      <li><b>Worth a look:</b> plays with a clear direction over the window chosen on screen (15, 30 or 60 s) that succeeded with a loss or failed or were called off with a gain, and plays whose gold swing is in the largest <span data-v="tail2"></span>% for their game and phase. The background holds both teams' view and is symmetric around zero, so its top and bottom <span data-v="tail"></span>% together are simply the largest <span data-v="tail2"></span>% of swings in either direction, and the same plays are picked whichever team you view from. Commentary-picked plays lean towards gains for the team that made them, so most of these are large gains from that side. Changing the window picks them again for that window. They are marked in the play list with a gold diamond and a gold edge on the row, not ranked.</li>
+    </ul>
+  </section>
+
+  <section id="en-numbers">
+    <h2>Current data</h2>
+    <p id="en-summary"></p>
+    <div class="tbl" id="en-stage-table"></div>
+    <div class="tbl" id="en-horizon-table"></div>
+    <p id="en-small"></p>
+  </section>
+
+  <section id="en-check">
+    <h2>Checks against Riot's match data</h2>
+    <p>Riot's match record (the match-v5 timeline, as published on Leaguepedia) holds each player's total gold once a minute and champion kills, monsters and buildings to the millisecond. One frame a minute is too coarse for the 15- and 30-second changes, so the record is used only after extraction and coding, for two checks. It never enters the extraction input: picking plays while knowing their outcome would measure the plays that paid off rather than the plays the commentary picked.</p>
+    <h3>Gold reading</h3>
+    <p id="en-check-gold"></p>
+    <h3>Minimap positions</h3>
+    <p id="en-check-mm"></p>
+    <h3>Kills</h3>
+    <p id="en-check-kill"></p>
+    <div class="tbl" id="en-check-table"></div>
+  </section>
+
+  <section id="en-limits">
+    <h2>Limits</h2>
+    <ul>
+      <li><b>A sample the casters chose:</b> casters may talk more about plays that worked or already paid off. The list is the actions the commentary names, not a representative sample of everything in a game. The tilt towards gains may partly come from this.</li>
+      <li><b>Not checked on video:</b> plays and times come from the captions alone. Caption errors, replays recalled later and the lag between commentary and action can creep in.</li>
+      <li><b>Rounding and gaps:</b> with gold rounded to 100, changes inside ±200 have no clear direction. Long replays leave no endpoint to measure.</li>
+      <li><b>Overlap:</b> each window also holds other plays and whatever happened in other lanes. <span id="en-else"></span></li>
+      <li><b>Named players only:</b> involvement is recorded only where the commentary names a player or champion; “the team collapses” adds no one.</li>
+      <li><b>Plays that do not turn into gold in the window:</b> plays with no kill, monster or structure in their window (about 28%) show gold changes over 15, 30 and 60 s that cannot be told apart from event-free moments of the same games. Event logs and gold signals cannot find these plays; they are listed because the casters pointed them out. A missing gold change may mean the effect did not turn into gold within the window, turned into gold over a longer time, or was smaller than the rounding margin; these data cannot tell which.</li>
+      <li><b>Gains gold does not show:</b> elemental dragons stack for the rest of the game and are not tied to plays. Voidgrubs are rarely discussed after they are taken and there is no time-resolved structure data yet, so they are not linked either. A win-probability model is the place for these.</li>
+      <li><b>Model coding:</b> play types and the rest are a three-model majority. Accuracy is checked against plays a person labelled by hand. A first set of 42 showed where codebook v5 went wrong and codebook v6 was written from it; v6 was then checked on a second set of 42 that played no part in writing it. On that set v6 coding matched about 78% (95% interval roughly 65–91%), weighted back to all plays, against about 72% for v5 on the same plays. Most misses were approaches that ended without an attack, or pure evasion, coded as ganks, and objective takes led by one team coded as contests. Figures by play type carry this much error.</li>
+      <li><b>Play granularity:</b> how much one play covers was settled in the extraction of the first ten published games (final and lower final); from the next games on, the same rule is written into the protocol. A trial extraction of the lower round 3 games without the written rule split each moment about three times as finely, so it was discarded and redone. Even so, the games extracted with the written rule came out more finely split. <span id="en-gran"></span> Comparisons of play counts or play-type shares across games or series carry this difference; the gold change of each play is measured the same way. The first ten games were not re-extracted because the human-labelled gold samples are tied to their plays.</li>
+      <li><b>Sample size and make-up:</b> <span id="en-sample"></span> Compare teams and players with the game counts in mind.</li>
+      <li><b>Translation and names:</b> English titles and descriptions are machine translations; Korean champion names were entered by hand.</li>
+    </ul>
+  </section>
+
+  <section id="en-version">
+    <h2>Version and sources</h2>
+    <p id="en-version-text"></p>
+    <p class="note">Sources: broadcast VODs (official YouTube channel), English auto-captions, game rosters (Oracle's Elixir), for the checks Riot's match records (match-v5, as published on Leaguepedia), and for the map view the map and champion icons from Riot's Data Dragon (loaded by the dashboard straight from Riot's servers). League of Legends is a trademark of Riot Games; PlayValue is an unofficial analysis not affiliated with Riot Games.</p>
+  </section>
+
+  <section id="en-next">
+    <h2>Next steps: from gold to win probability</h2>
+    <p>Gold is only the easiest trace of a play to measure. A play that sets up vision, burns the opponent's Flash or takes the ground in front of an objective changes a team's chance to win without turning into gold right away; the gold measure leaves such plays at "no change" or "unclear".</p>
+    <p>The next step is a model of win probability from the state of the game at a moment (game time, the gold and experience gaps, the objectives and turrets left, player positions and who is alive), and a measure of how that probability moves across a play. With the probability gap estimated well enough, plays that do not turn straight into gold can be measured in the same frame.</p>
+    <p>Plays will still be picked from the commentary before any outcome is seen, and the model's calibration will be published together with the limit that a probability gap is not a causal effect.</p>
+  </section>
+
+  <section id="en-contact">
+    <h2>Data for research</h2>
+    <p>PlayValue picks plays and measures gold from the broadcast, its commentary and public records only. Gold is read off the screen once a second and player positions off the broadcast minimap, so accuracy drops when icons overlap in fights. If you can share finer match data for research, such as per-second events or player positions, or would like to work with it together, please get in touch.</p>
+    <p>PlayValue is part of a wider line of research on games and esports data; for example, how the balance patches released just before the World Championship fell on different teams: <a href="https://arxiv.org/abs/2610.07427">When the Rule-Maker Runs the World Championship: Late Patches and Procedural Accountability in League of Legends</a> (Haewoon Kwak, 2026).</p>
+    <p><a href="mailto:kwak.haewoon+playvalue@gmail.com">kwak.haewoon+playvalue@gmail.com</a></p>
+  </section>
+</article>
+
+<footer class="wrap"><span id="footText"></span><p id="footLegal"></p></footer>
+</main>
+
+<script>
+(async () => {
+  // The page needs the summary index and the light play lists, never the per-game files.
+  let DATA, PLAYS = [];
+  try {
+    DATA = await (await fetch('./data/index.json', { cache: 'no-cache' })).json();
+    const lists = await Promise.all(DATA.tournaments.filter(x => x.plays_path).map(x => fetch('./' + x.plays_path, { cache: 'no-cache' }).then(r => r.json())));
+    PLAYS = lists.flatMap(l => Object.values(l.games).flatMap(g => g.plays));
+  } catch (e) {
+    document.querySelectorAll('[id$="-summary"]').forEach(el => { el.textContent = 'Could not load the data. Open this page through a web server.'; });
+    return;
+  }
+  const D = DATA.display;
+  const GAMES = DATA.games;
+  const STATES = ['positive', 'negative', 'unresolved', 'missing'];
+  let lang = 'ko', theme = 'light';
+  try {
+    lang = localStorage.getItem('lv_lang') || lang;
+    theme = localStorage.getItem('lv_theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  } catch (e) { /* storage unavailable */ }
+
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const num = n => Number(n).toLocaleString();
+  const pct = (a, b) => (b ? `${Math.round(1000 * a / b) / 10}%` : '—');
+  const table = (head, rows, numCols) => `<table><tr>${head.map((h, i) => `<th class="${numCols.includes(i) ? 'n' : ''}">${h}</th>`).join('')}</tr>${rows.map(r => `<tr>${r.map((c, i) => `<td class="${numCols.includes(i) ? 'n' : ''}">${c}</td>`).join('')}</tr>`).join('')}</table>`;
+
+  const W = {
+    ko: {
+      state: { positive: '이득', negative: '손해', unresolved: '불확실', missing: '측정 없음' },
+      coding: { action_family: '행동 유형', objective_links: '오브젝트 링크', involvement: '관여 선수' },
+      unit: { action_family: '플레이', objective_links: '(후보, 오브젝트) 칸', involvement: '(플레이, 선수) 칸' },
+      codingHead: ['코딩', '코딩한 경기', '판정 단위', '만장일치', '2대1', '셋 다 다름', 'Fleiss κ', 'Fleiss κ (시험 경기)'],
+      games: n => `${n}경기`,
+      familyHead: ['행동 유형', '플레이', '이득', '손해', '불확실', '측정 없음'],
+      stageHead: ['스테이지', '경기', '플레이', '30초 측정', '30초 판정'],
+      horizonHead: ['구간', '이득', '손해', '불확실', '측정 없음'],
+      gran: (a, b, c, d, e, f) => `해설 자막 100구간당 플레이 수가 처음 ${a}경기는 ${b}개, 기준을 적어 넣은 ${d}경기는 ${e}개입니다(경기별 범위 ${c}, ${f}).`,
+      sample: (g, events, team, k) => `${events}의 ${g}경기이고, 가장 많이 나온 ${team}는 그중 ${k}경기에 나옵니다.`,
+      summary: (g, p, m, k, events) => `${events}의 ${g}경기에서 플레이 ${num(p)}건을 뽑았고, 그중 ${num(m)}건(${pct(m, p)})의 30초 골드 변화를 쟀으며, ${num(k)}건(${pct(k, p)})은 이득·손해가 판정됩니다.`,
+      small: (a, b, c, d) => `작은 변화가 대부분입니다. 30초 골드 변화를 잰 플레이의 ${pct(a, b)}, 배경 시점(같은 경기 모든 측정 가능한 초)의 ${pct(c, d)}가 |변화| 500 미만입니다. 골드 변화가 500 이상인 구간만 고르는 방식이었다면 이 플레이의 ${pct(a, b)}는 고르지 못했을 것입니다.`,
+      version: (v, r, n) => `데이터 형식 v${esc(v)} · 규칙 버전 <code>${esc(r)}</code> · 코드북 해시는 위 코딩 표의 각 코드북 파일에 기록됩니다. 경기 ${n}개.`,
+      back: '← 대시보드', langBtn: 'English', dark: '다크 모드', light: '라이트 모드', title: '방법론 — PlayValue',
+      foot: 'PlayValue · 해설 기반 플레이 골드 관측',
+      legal: 'PlayValue는 Riot Games의 보증을 받지 않았으며, Riot Games 또는 Riot Games 자산의 제작·관리에 공식적으로 관여하는 누구의 견해나 의견도 반영하지 않습니다. Riot Games 및 관련 모든 자산은 Riot Games, Inc.의 상표 또는 등록 상표입니다.',
+      sec: s => `${s}초`,
+      checkGold: (g, f, m, w1, wb, mb) => `${g}경기의 1분 시점 ${num(f)}곳에서, 같은 경기 시간에 OCR로 읽은 두 팀 골드 차이를 Riot 기록과 비교했습니다. 차이의 오차는 중앙값 ${num(m)}이고 ${pct(w1 * f, f)}가 100 이내입니다. 화면 골드가 팀마다 100 단위로 반올림돼 있어 이 정도 오차는 반올림만으로 생깁니다. 오차가 200을 넘는 곳은 모두 그 1초 안에 킬이나 웨이브 골드가 들어온 경우였고, 앞뒤 1초 중 가장 가까운 값을 쓰면 ${pct(wb * f, f)}가 100 이내, 최대 ${num(mb)}입니다.`,
+      checkKill: (n, share, km, kmHit) => `플레이 ${num(n)}건마다 시작 10초 전부터 끝 10초 뒤까지 Riot 기록에 챔피언 처치가 있었는지 봤습니다. 해설이 킬을 말한 플레이의 ${pct(kmHit, km)}에서 실제 처치가 확인됩니다. 이 구간 동안 맵 어디에서도 처치가 없었던 플레이가 ${pct(share * n, n)}입니다. 킬을 말하지 않거나 킬이 없었다고 한 플레이에서 그 플레이의 선수가 낀 처치가 잡히기도 하는데, 대개 바로 앞뒤의 다른 플레이에서 나온 처치이거나 시도한 쪽이 잡힌 경우입니다.`,
+      checkMm: (g, n, placed, w, solo, crowd) => `${g}경기는 방송 미니맵에서 챔피언 아이콘을 1초마다 찾아 위치를 읽고, 대시보드의 플레이 상세에 맵으로 보여 줍니다. 아이콘 모양은 공식 챔피언 아이콘에서 시작해 그 방송에서 확실히 찾은 장면으로 다듬고, 한 아이콘에는 한 챔피언만 둡니다. 확실히 찾은 초만 쓰고 그 사이는 20초 이내일 때만 앞뒤 위치를 이어 채우며(그보다 길면 귀환·사망이 끼어 있을 수 있어 비워 둡니다), 나머지는 비워 둡니다. Riot 기록의 1분 위치 ${num(n)}곳(아이콘을 만들 때 쓰지 않은 홀수 분)과 비교하면 ${pct(placed * n, n)}에 위치를 냈고, 그중 ${pct(w * placed * n, placed * n)}가 600 유닛(아이콘 크기) 안이었습니다. 주변에 다른 챔피언이 없을 때는 ${pct(solo, 1)}, 4명 이상 몰린 한타에서는 ${pct(crowd, 1)}로, 아이콘이 서로 가려지는 한타에서는 정확도가 크게 떨어집니다.`,
+      else30: (a, b) => `Riot 기록으로 보면, 선수 이름이 있고 30초 변화를 잰 플레이 ${num(b)}건 중 ${num(a)}건(${pct(a, b)})의 구간에 그 플레이 선수가 끼지 않은 처치·오브젝트·구조물(포탑 방패 포함)이 있습니다. 대시보드의 플레이 상세에 그 목록을 보여 줍니다. 포탑 방패처럼 Riot이 참여 선수를 다 적지 않는 일은 같은 장면이어도 여기 들어갈 수 있습니다.`,
+      checkHead: ['해설의 킬 판정', '플레이', '구간 안 처치 있음', '그 플레이 선수가 낀 처치'],
+      ks: { kill_mentioned: '킬 언급', explicit_no_kill: '킬 없음 명시', not_established: '언급 없음' },
+    },
+    en: {
+      state: { positive: 'Gain', negative: 'Loss', unresolved: 'Unclear', missing: 'Not measured' },
+      coding: { action_family: 'Play type', objective_links: 'Objective links', involvement: 'Involved players' },
+      unit: { action_family: 'plays', objective_links: '(candidate, objective) cells', involvement: '(play, player) cells' },
+      codingHead: ['Coding', 'Games coded', 'Units', 'Unanimous', '2–1', 'Three-way', 'Fleiss κ', 'Fleiss κ (trial)'],
+      games: n => `${n} game${n === 1 ? '' : 's'}`,
+      familyHead: ['Play type', 'Plays', 'Gain', 'Loss', 'Unclear', 'Not measured'],
+      stageHead: ['Stage', 'Games', 'Plays', '30 s measured', '30 s clear'],
+      horizonHead: ['Window', 'Gain', 'Loss', 'Unclear', 'Not measured'],
+      gran: (a, b, c, d, e, f) => `Plays per 100 caption segments: ${b} in the first ${a} games and ${e} in the ${d} games with the written rule (per-game ranges ${c} and ${f}).`,
+      sample: (g, events, team, k) => `${g} games from ${events}; the most frequent team, ${team}, plays in ${k} of them.`,
+      summary: (g, p, m, k, events) => `${num(p)} plays were picked from ${g} games of ${events}; the 30-second gold change was measured for ${num(m)} (${pct(m, p)}), and ${num(k)} (${pct(k, p)}) are a clear gain or loss.`,
+      small: (a, b, c, d) => `Most changes are small: ${pct(a, b)} of measured plays and ${pct(c, d)} of background seconds (every measurable second of the same games) move less than 500 gold in 30 seconds. A method that only picks stretches where gold moves 500 or more would have missed ${pct(a, b)} of these plays.`,
+      version: (v, r, n) => `Data format v${esc(v)} · rules version <code>${esc(r)}</code> · codebook hashes are recorded with each codebook file in the coding table. ${n} games.`,
+      back: '← Dashboard', langBtn: '한국어', dark: 'Dark mode', light: 'Light mode', title: 'Methodology — PlayValue',
+      foot: 'PlayValue · gold observed after commentary-picked plays',
+      legal: "PlayValue isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.",
+      sec: s => `${s} s`,
+      checkGold: (g, f, m, w1, wb, mb) => `At ${num(f)} minute marks in ${g} games, the gold gap the OCR read at that game second was compared with Riot's. The median error is ${num(m)} and ${pct(w1 * f, f)} are within 100; the on-screen gold is rounded to 100 per team, so rounding alone produces errors of this size. Every error above 200 fell in a second where a kill or wave gold landed; taking the closest reading within one second either side, ${pct(wb * f, f)} are within 100 and the largest is ${num(mb)}.`,
+      checkKill: (n, share, km, kmHit) => `For each of ${num(n)} plays, Riot's record was searched for champion kills from 10 s before the play to 10 s after it. A kill is found for ${pct(kmHit, km)} of the plays where the commentary mentions one. ${pct(share * n, n)} of plays have no kill anywhere on the map in that window. Plays where the commentary mentions no kill, or says there was none, sometimes have a kill involving their players; it is usually a kill from the play just before or after, or the side that tried being caught.`,
+      checkMm: (g, n, placed, w, solo, crowd) => `For ${g} games, champion icons are found on the broadcast minimap every second and shown as a map in each play's details on the dashboard. Each icon's look starts from the official champion icon and is refined on that broadcast's confident detections, and one icon holds one champion. Only confidently matched seconds are used; gaps of up to 20 seconds between them are filled in from the positions before and after (a longer gap may hide a recall or a death), and the rest are left empty. Against ${num(n)} of Riot's once-a-minute positions (odd minutes, never used to build the icons), a position was given for ${pct(placed * n, n)}, and ${pct(w * placed * n, placed * n)} of those were within 600 units (an icon's size): ${pct(solo, 1)} for a champion with nobody nearby, ${pct(crowd, 1)} in fights of four or more, where icons hide each other.`,
+      else30: (a, b) => `By Riot's record, ${num(a)} of the ${num(b)} plays with named players and a measured 30-second change (${pct(a, b)}) have a kill, epic monster or structure (turret plates included) in their window that none of the play's players took part in; the dashboard lists them in each play's details. Events for which Riot does not record every participant, such as turret plates, can appear there even when they belong to the same moment.`,
+      checkHead: ['Commentary on kills', 'Plays', 'Kill in window', "Kill involving the play's players"],
+      ks: { kill_mentioned: 'Kill mentioned', explicit_no_kill: 'No kill stated', not_established: 'Not mentioned' },
+    },
+  };
+
+  function fill(l) {
+    const w = W[l];
+    // One row per coded batch (games coded together), so each batch keeps its own agreement figure.
+    const coding = Object.entries(D.coding).flatMap(([k, c]) => c.batches.map((b, i) => [
+      i ? '' : `${esc(w.coding[k])}<br><span class="note mono">${esc(c.codebook.split('/').slice(-2).join('/'))}</span>`,
+      `${esc(b[`stages_${l}`].join(' · '))}<br><span class="note">${esc(w.games(b.games))}</span>`,
+      `${num(b.units)} ${esc(w.unit[k])}`, num(b.patterns.unanimous || 0), num(b.patterns.majority || 0), num(b.patterns.split || 0),
+      b.fleiss_kappa?.toFixed(3) ?? '—', i ? '' : (c.pilot_fleiss_kappa?.toFixed(3) ?? '—')]));
+    document.getElementById(`${l}-coding-table`).innerHTML = table(w.codingHead, coding, [2, 3, 4, 5, 6, 7]);
+
+    const fam = D.families.map(f => {
+      const ps = PLAYS.filter(p => p.family === f);
+      return [esc(D.family_labels[l][f]), num(ps.length), ...STATES.map(s => num(ps.filter(p => p.horizons['30'].state === s).length))];
+    }).filter(r => r[1] !== '0');
+    document.getElementById(`${l}-family-table`).innerHTML = table(w.familyHead.map((h, i) => (i >= 2 ? `${h} (${w.sec(30)})` : h)), fam, [1, 2, 3, 4, 5]);
+
+    const stages = [...new Set(GAMES.map(g => g.stage))].map(st => {
+      const gs = GAMES.filter(g => g.stage === st);
+      const c = k => gs.reduce((a, g) => a + g.coverage[k], 0);
+      return [esc(l === 'ko' ? gs[0].stage_ko : gs[0].stage_en), num(gs.length), num(c('plays')), num(c('e30_measured')), num(c('e30_sign_resolved'))];
+    });
+    document.getElementById(`${l}-stage-table`).innerHTML = table(w.stageHead, stages, [1, 2, 3, 4]);
+
+    const hz = D.horizons_s.map(h => [w.sec(h), ...STATES.map(s => num(PLAYS.filter(p => p.horizons[String(h)].state === s).length))]);
+    document.getElementById(`${l}-horizon-table`).innerHTML = table(w.horizonHead, hz, [1, 2, 3, 4]);
+
+    const cov = DATA.coverage;
+    const apps = {};
+    GAMES.forEach(g => [g.blue_team, g.red_team].forEach(x => { apps[x] = (apps[x] || 0) + 1; }));
+    const [topTeam, topN] = Object.entries(apps).sort((a, b) => b[1] - a[1])[0];
+    // Every event with published games, with the stages it covers (its tab badge).
+    const events = DATA.tournaments.filter(x => GAMES.some(g => g.tournament_id === x.id))
+      .map(x => `${x[`name_${l}`]} (${x[`badge_${l}`]})`).join(l === 'ko' ? ' · ' : ' and ');
+    document.getElementById(`${l}-sample`).textContent = w.sample(GAMES.length, events, topTeam, topN);
+    const dens = rule => {
+      const gs = GAMES.filter(g => g.extraction && g.extraction.written_granularity_rule === rule);
+      const per = gs.map(g => 100 * g.coverage.plays / g.extraction.segments);
+      const all = 100 * gs.reduce((a, g) => a + g.coverage.plays, 0) / gs.reduce((a, g) => a + g.extraction.segments, 0);
+      return [gs.length, all.toFixed(1), `${Math.min(...per).toFixed(1)}–${Math.max(...per).toFixed(1)}`];
+    };
+    const [d0, d1] = [dens(false), dens(true)];
+    document.getElementById(`${l}-gran`).textContent = d0[0] && d1[0] ? w.gran(...d0, ...d1) : '';
+    document.getElementById(`${l}-summary`).textContent = w.summary(GAMES.length, cov.plays, cov.e30_measured, cov.e30_sign_resolved, events);
+    const measured = PLAYS.filter(p => p.horizons['30'].state !== 'missing');
+    const small = measured.filter(p => Math.abs(p.horizons['30'].e) < 500).length;
+    const bgN = GAMES.reduce((a, g) => a + Object.values(g.background_counts.n_by_phase).reduce((x, y) => x + y, 0), 0);
+    const bgS = GAMES.reduce((a, g) => a + Object.values(g.background_counts.n_abs_lt_500_by_phase).reduce((x, y) => x + y, 0), 0);
+    document.getElementById(`${l}-small`).textContent = w.small(small, measured.length, bgS, bgN);
+    const V2 = DATA.validation;
+    document.getElementById(`${l}-check`).hidden = !V2;
+    if (V2) {
+      const gd = V2.gold, kd = V2.kills;
+      document.getElementById(`${l}-check-gold`).textContent = w.checkGold(gd.games, gd.frames, gd.abs_gap_error.median,
+        gd.abs_gap_error.within_100, gd.abs_gap_error_best_1s.within_100, gd.abs_gap_error_best_1s.max);
+      const km = kd.by_kill_status.kill_mentioned;
+      document.getElementById(`${l}-check-kill`).textContent = w.checkKill(kd.plays, kd.share_without_riot_kill, km.plays, km.kill);
+      const rows = ['kill_mentioned', 'explicit_no_kill', 'not_established'].filter(k => kd.by_kill_status[k]).map(k => {
+        const c = kd.by_kill_status[k];
+        return [esc(w.ks[k]), num(c.plays), `${num(c.kill)} (${pct(c.kill, c.plays)})`, `${num(c.kill_involving)} (${pct(c.kill_involving, c.plays)})`];
+      });
+      document.getElementById(`${l}-check-table`).innerHTML = table(w.checkHead, rows, [1, 2, 3]);
+      const mm = V2.minimap;
+      document.getElementById(`${l}-check-mm`).textContent = mm
+        ? w.checkMm(mm.games, mm.points, mm.placed, mm.within_600, mm.by_crowd['0'].within_600, mm.by_crowd['4'].within_600) : '';
+    }
+    document.getElementById(`${l}-else`).textContent = V2 && V2.elsewhere_30 ? w.else30(V2.elsewhere_30.with_event, V2.elsewhere_30.plays) : '';
+    document.getElementById(`${l}-version-text`).innerHTML = w.version(DATA.version, DATA.rules_version, GAMES.length);
+  }
+
+  function render() {
+    const w = W[lang];
+    document.documentElement.lang = lang;
+    document.documentElement.dataset.theme = theme;
+    document.title = w.title;
+    document.getElementById('backBtn').textContent = w.back;
+    document.getElementById('btnLang').textContent = w.langBtn;
+    document.getElementById('btnTheme').textContent = theme === 'dark' ? w.light : w.dark;
+    document.getElementById('footText').textContent = w.foot;
+    document.getElementById('footLegal').textContent = w.legal;
+    document.getElementById('themeColor').content = theme === 'dark' ? '#0d0d0e' : '#f4f5f7';
+    document.getElementById('skipLink').textContent = lang === 'ko' ? '본문으로 건너뛰기' : 'Skip to content';
+  }
+
+  // Values that come straight from the rules.
+  const V = {
+    lead_lane: num(D.lead_threshold_gold.lane), lead_mid: num(D.lead_threshold_gold.mid), lead_late: num(D.lead_threshold_gold.late),
+    dv_early: D.delta_v.window_s.before_15min, dv_late: D.delta_v.window_s.from_15min, tail: D.highlights.background_tail_pct, tail2: 2 * D.highlights.background_tail_pct,
+  };
+  document.querySelectorAll('[data-v]').forEach(el => { el.textContent = V[el.dataset.v]; });
+  fill('ko');
+  fill('en');
+  render();
+  document.getElementById('btnLang').onclick = () => { lang = lang === 'ko' ? 'en' : 'ko'; try { localStorage.setItem('lv_lang', lang); } catch (e) {} render(); };
+  document.getElementById('btnTheme').onclick = () => { theme = theme === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('lv_theme', theme); } catch (e) {} render(); };
+})();
+</script>
+<script>
+// The contents column marks the section being read.
+(() => {
+  if (!('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(entries => entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const toc = e.target.closest('article').querySelector('.toc');
+    toc.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id));
+  }), { rootMargin: '-20% 0px -70% 0px' });
+  document.querySelectorAll('article > section[id]').forEach(sec => io.observe(sec));
+})();
+</script>
+</body>
+</html>
