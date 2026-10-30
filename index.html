@@ -15,6 +15,8 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
+  <!-- Visit statistics (Umami, no cookies). Page views are sent by the dashboard itself; see trackView(). -->
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="3119b06f-5313-434d-90e9-6eff291dd9d7" data-domains="playvalue.github.io" data-auto-track="false" onload="window.__umFlush && window.__umFlush()"></script>
   <link rel="icon" type="image/svg+xml" href="./assets/logo-icon.svg?v=2">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -157,7 +159,7 @@
     /* main.container: .container's padding shorthand would otherwise reset the top space to 0. */
     main.container { padding-top: 20px; display: flex; flex-direction: column; gap: 16px; }
     .site-foot { margin-top: 32px; padding-top: 14px; padding-bottom: 28px; border-top: 1px solid var(--border-color); }
-    .site-foot p { margin: 0; max-width: 90ch; font-size: .75rem; line-height: 1.5; color: var(--text-muted); }
+    .site-foot p { margin: 0; max-width: none; font-size: .75rem; line-height: 1.5; color: var(--text-muted); }
     .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-card); padding: 20px; }
     .card h3 { font-size: 1rem; margin-bottom: 10px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
     .card h3 .sub, .xt-title .sub { font-size: .78rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0; }
@@ -620,6 +622,23 @@
     const q = new URLSearchParams({ view: S.view, game: S.gameId, h: S.h });
     if (S.playId) q.set('play', S.playId);
     history.replaceState(null, '', '#' + q.toString());
+    trackView();
+  }
+
+  // ------------------------------------------------------------------ visit statistics
+  // Umami's own page tracking is off: every play click rewrites the hash, which it would count as a page view.
+  // A view is sent when the game or the tally changes; a few deliberate actions are events. Calls made before
+  // the deferred script arrives wait in a queue; with the script blocked they go nowhere.
+  const umQueue = [];
+  const um = (...a) => (window.umami ? window.umami.track(...a) : umQueue.push(a));
+  window.__umFlush = () => { while (umQueue.length) window.umami.track(...umQueue.shift()); };
+  let lastView = '';
+  function trackView() {
+    const url = S.view === 'xtab' ? `/totals/${S.tourn}` : `/game/${S.gameId}`;
+    if (url === lastView) return;
+    lastView = url;
+    const title = S.view === 'xtab' ? `Totals · ${S.tourn}` : `${game().title_en} · ${game().tournament_id}`;
+    um(props => ({ ...props, url, title }));
   }
 
   // ------------------------------------------------------------------ perspective
@@ -991,7 +1010,7 @@
       <g stroke="var(--text-muted)" stroke-opacity=".22" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" fill="none">
         <path d="M80 900 L80 80 L900 80"/><path d="M100 920 L920 920 L920 100"/><path d="M130 870 L870 130"/></g>`;
     // The real map from Riot's Data Dragon goes over the drawing, which stays as the fallback if it fails to load.
-    const dd = `https://ddragon.leagueoflegends.com/cdn/${g.minimap.ddragon}`;
+    const dd = `./assets/ddragon/${g.minimap.ddragon}`;
     return `<div class="mm" id="mm">
       <div class="mm-head"><b>${t('mmHead')}</b><span>${t('mmSrc')}</span></div>
       <svg viewBox="0 0 1000 1000" role="img" aria-label="${esc(t('mmHead'))}">
@@ -1029,7 +1048,7 @@
       return runs.filter(r => r.length > 1).map(r => `<polyline points="${r.join(' ')}" fill="none" stroke="#fff" stroke-opacity="${bold ? 0.7 : 0.25}" stroke-width="${bold ? 18 : 12}" stroke-linejoin="round" stroke-linecap="round"/>`
         + `<polyline points="${r.join(' ')}" fill="none" stroke="var(--${side}-team)" stroke-opacity="${bold ? 0.95 : 0.5}" stroke-width="${bold ? 10 : 6}" stroke-linejoin="round" stroke-linecap="round"/>`).join('');
     }).join('');
-    const dd = `https://ddragon.leagueoflegends.com/cdn/${g.minimap.ddragon}`;
+    const dd = `./assets/ddragon/${g.minimap.ddragon}`;
     const dots = box.querySelector('#mmDots'), slider = box.querySelector('#mmSlider'), clock = box.querySelector('#mmTime');
     const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
     // One icon per player, built once and then only moved: rebuilding the images every frame made them flash.
@@ -1457,6 +1476,17 @@
   document.getElementById('btnLang').onclick = () => { S.lang = S.lang === 'ko' ? 'en' : 'ko'; try { localStorage.setItem('lv_lang', S.lang); } catch (e) {} render(); };
   document.getElementById('btnTheme').onclick = () => { S.theme = S.theme === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('lv_theme', S.theme); } catch (e) {} render(); };
   render();
+  // Runs after each control's own handler, so the state already shows the choice.
+  document.addEventListener('click', e => {
+    const el = e.target.closest('#btnLang, #btnTheme, #mmPlay, [data-h], button.row[data-id], a[href*="youtube.com/"]');
+    if (!el) return;
+    if (el.id === 'btnLang') um('language', { to: S.lang });
+    else if (el.id === 'btnTheme') um('theme', { to: S.theme });
+    else if (el.id === 'mmPlay') { if (el.title === t('mmPause')) um('map-play', { game: S.gameId }); }
+    else if (el.dataset.h) um('horizon', { h: el.dataset.h });
+    else if (el.dataset.id) um('play-open', { game: (PLAY[el.dataset.id] || {})._game?.id || S.gameId, view: S.view });
+    else um('vod-link', { game: S.gameId });
+  });
   // ← → step through the game's plays, unless the viewer is typing in or choosing from a field.
   document.addEventListener('keydown', e => {
     if (S.view !== 'set' || e.altKey || e.ctrlKey || e.metaKey || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;
