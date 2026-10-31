@@ -2,6 +2,8 @@
 
 **https://playvalue.github.io**
 
+[![The PlayValue dashboard: the MSI 2026 final, game 5, with the gold timeline, the play list, and the selected play's gold change and map positions](assets/screenshot.png)](https://playvalue.github.io)
+
 PlayValue looks at the plays that League of Legends casters call out in professional matches and shows how the gold gap between the two teams moved in the 15, 30 and 60 seconds after each one.
 
 - Plays are picked from the commentary first, without looking at gold.
