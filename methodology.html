@@ -38,6 +38,8 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     /* Korean wraps between words, not inside them. */
+    .gh-link { display: inline-flex; align-items: center; gap: 6px; }
+    .gh-mark { flex: none; }
     html[lang="ko"] body { word-break: keep-all; overflow-wrap: break-word; }
     body { background: var(--bg-main); color: var(--text-main); font-family: var(--font); line-height: 1.7; padding-bottom: 80px; }
     a { color: var(--text-main); text-underline-offset: 2px; }
@@ -281,7 +283,7 @@ h = 15, 30, 60초</pre>
     <h2>데이터 협력</h2>
     <p>PlayValue는 방송 화면과 해설, 공개 기록만으로 플레이를 고르고 골드를 잽니다. 골드는 1초마다 화면 숫자를 읽고, 선수 위치는 방송 미니맵과 중계 화면에서 읽기 때문에 한타처럼 아이콘이 겹치고 카메라가 일부만 비추는 순간에는 정확도가 떨어집니다. 초 단위 이벤트나 선수 위치처럼 더 정밀한 경기 데이터를 연구용으로 제공하거나 함께 쓰실 수 있다면 연락 주세요.</p>
     <p>PlayValue는 게임과 e스포츠 데이터를 폭넓게 다루는 연구의 일부입니다. 예를 들어 월드 챔피언십 직전의 밸런스 패치가 팀마다 얼마나 다르게 작용했는지도 분석했습니다: <a href="https://arxiv.org/abs/2610.07427">When the Rule-Maker Runs the World Championship: Late Patches and Procedural Accountability in League of Legends</a> (Haewoon Kwak, 2026).</p>
-    <p>GitHub: <a href="https://github.com/playvalue/playvalue.github.io" data-umami-event="github">playvalue/playvalue.github.io</a></p>
+    <p><a class="gh-link" href="https://github.com/playvalue/playvalue.github.io" data-umami-event="github"><svg class="gh-mark" viewBox="0 0 16 16" width="16" height="16" role="img" aria-label="GitHub"><path fill="currentColor" d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>playvalue/playvalue.github.io</a></p>
   </section>
 </article>
 
@@ -434,7 +436,7 @@ h = 15, 30, 60 seconds</pre>
     <h2>Data for research</h2>
     <p>PlayValue picks plays and measures gold from the broadcast, its commentary and public records only. Gold is read off the screen once a second and player positions off the broadcast minimap and view, so accuracy drops in fights, where icons overlap and the camera shows only part of the action. If you can share finer match data for research, such as per-second events or player positions, or would like to work with it together, please get in touch.</p>
     <p>PlayValue is part of a wider line of research on games and esports data; for example, how the balance patches released just before the World Championship fell on different teams: <a href="https://arxiv.org/abs/2610.07427">When the Rule-Maker Runs the World Championship: Late Patches and Procedural Accountability in League of Legends</a> (Haewoon Kwak, 2026).</p>
-    <p>GitHub: <a href="https://github.com/playvalue/playvalue.github.io" data-umami-event="github">playvalue/playvalue.github.io</a></p>
+    <p><a class="gh-link" href="https://github.com/playvalue/playvalue.github.io" data-umami-event="github"><svg class="gh-mark" viewBox="0 0 16 16" width="16" height="16" role="img" aria-label="GitHub"><path fill="currentColor" d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>playvalue/playvalue.github.io</a></p>
   </section>
 </article>
 
