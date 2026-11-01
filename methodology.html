@@ -37,6 +37,7 @@
       color-scheme: dark;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     /* Korean wraps between words, not inside them. */
     .gh-link { display: inline-flex; align-items: center; gap: 6px; }
     .gh-mark { flex: none; }
@@ -46,13 +47,18 @@
     /* Same frame as the dashboard: one 1440px column with 20px gutters, the wordmark bar on the ground. */
     .wrap { max-width: 1440px; margin: 0 auto; padding: 0 20px; }
     header { border-bottom: 1px solid var(--border-color); padding: 14px 0; }
-    .header-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .header-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: nowrap; }
     .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; font-weight: 900; font-size: 1.4rem; letter-spacing: -0.03em; }
     .brand img { width: 34px; height: 34px; }
     .brand .v { color: var(--brand-gold); }
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
-    .btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); font: inherit; font-size: .82rem; font-weight: 600; padding: 6px 12px; border-radius: 6px; cursor: pointer; text-decoration: none; }
+    .actions { display: flex; gap: 8px; flex: none; flex-wrap: nowrap; align-items: center; }
+    .btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); font: inherit; font-size: .82rem; font-weight: 600; padding: 6px 12px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
     .btn:hover { border-color: var(--border-focus); }
+    .btn.icon-only { width: 36px; height: 36px; padding: 0; flex: none; }
+    .btn.icon-only svg { display: block; width: 18px; height: 18px; }
+    #btnTheme .theme-sun { display: none; }
+    [data-theme="dark"] #btnTheme .theme-moon { display: none; }
+    [data-theme="dark"] #btnTheme .theme-sun { display: block; }
     main { padding-top: 28px; }
     /* The article: title and lede across the top, contents in a sticky left column, each section on its own card.
        220px + 24px + the rest fills the column; text inside a card keeps a 72ch measure, tables use the card. */
@@ -125,9 +131,19 @@
   <div class="wrap header-row">
     <a class="brand" href="./index.html"><img src="./assets/logo-icon.svg?v=2" alt="" width="30" height="30"><span translate="no">Play<span class="v">Value</span></span></a>
     <div class="actions">
-      <a class="btn" href="./index.html" id="backBtn">← 대시보드</a>
-      <button class="btn" id="btnLang">English</button>
-      <button class="btn" id="btnTheme">다크 모드</button>
+      <a class="btn icon-only" href="./index.html" id="backBtn" aria-label="대시보드" title="대시보드">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span class="sr-only">대시보드</span>
+      </a>
+      <button class="btn icon-only" id="btnLang" type="button" aria-label="English" title="English">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14.5 14.5 0 0 1 0 18M12 3a14.5 14.5 0 0 0 0 18"/></svg>
+        <span class="sr-only">English</span>
+      </button>
+      <button class="btn icon-only" id="btnTheme" type="button" aria-label="다크 모드" title="다크 모드">
+        <svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.2 15.2A8.5 8.5 0 0 1 8.8 3.8 8.5 8.5 0 1 0 20.2 15.2Z"/></svg>
+        <svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
+        <span class="sr-only">다크 모드</span>
+      </button>
     </div>
   </div>
 </header>
@@ -225,7 +241,7 @@ h = 15, 30, 60초</pre>
       <li><b>누구 입장에서:</b> 상대 팀 입장으로 바꾸면 골드 변화의 부호와 직전 상태가 뒤집히고, 갱킹과 피습 대응은 서로 바뀌며 성공·실패도 뒤집힙니다. 보는 방향만 바뀌고 집계는 바뀌지 않습니다.</li>
       <li><b>선수·챔피언별 집계:</b> 그 선수가 행동·대상·맞대응으로 관여한 플레이를 그 선수 팀 입장에서 셉니다. 여러 선수가 관여한 플레이는 선수마다 한 번씩 들어갑니다.</li>
       <li><b>같은 장면:</b> 추출 단계에서 한 사건으로 묶인 플레이들(에피소드)은 함께 보여 주되, 골드 변화를 더하지 않습니다. 같은 30초 구간 안에 시작한 다른 플레이가 있으면 카드에 표시합니다.</li>
-      <li><b>눈여겨볼 장면:</b> 화면에서 고른 구간(15·30·60초)의 골드 변화 방향이 확정된 플레이 중 “성공했는데 손해” 또는 “실패·중단했는데 이득”인 것, 그리고 같은 시간대 배경 대비 골드 변화의 폭이 상위 <span data-v="tail2"></span>%에 드는 것입니다. 배경은 양 팀 입장을 모두 담아 0을 중심으로 대칭이므로, 상위 <span data-v="tail"></span>%와 하위 <span data-v="tail"></span>%를 합치면 방향과 관계없이 변화 폭 상위 <span data-v="tail2"></span>%가 되고, 어느 팀 입장에서 보든 같은 플레이가 뽑힙니다. 해설이 고른 플레이는 플레이한 팀의 이득 쪽으로 치우쳐 있어, 이 중 대부분은 플레이한 팀 기준으로 큰 이득입니다. 구간을 바꾸면 그 구간 기준으로 다시 뽑힙니다. 플레이 목록에 금색 마름모와 행 왼쪽의 금색 선으로 표시하며 순위가 아닙니다.</li>
+      <li><b>눈여겨볼 장면:</b> 화면에서 고른 구간(15·30·60초)의 골드 변화 방향이 확정된 플레이 중 “성공했는데 손해” 또는 “실패·중단했는데 이득”인 것, 그리고 같은 시간대 배경 대비 골드 변화의 폭이 상위 <span data-v="tail2"></span>%에 드는 것입니다. 배경은 양 팀 입장을 모두 담아 0을 중심으로 대칭이므로, 상위 <span data-v="tail"></span>%와 하위 <span data-v="tail"></span>%를 합치면 방향과 관계없이 변화 폭 상위 <span data-v="tail2"></span>%가 되고, 어느 팀 입장에서 보든 같은 플레이가 뽑힙니다. 해설이 고른 플레이는 플레이한 팀의 이득 쪽으로 치우쳐 있어, 이 중 대부분은 플레이한 팀 기준으로 큰 이득입니다. 구간을 바꾸면 그 구간 기준으로 다시 뽑힙니다. 플레이 목록에서는 행 왼쪽의 둥근 금색 선으로, 필터와 선정 사유에서는 스파클 아이콘으로 표시하며 순위가 아닙니다.</li>
     </ul>
   </section>
 
@@ -378,7 +394,7 @@ h = 15, 30, 60 seconds</pre>
       <li><b>Seen from:</b> switching to the other team flips the sign of the gold change and the lead before, swaps gank and under-attack, and flips success and failure. Only the reading changes, not the totals.</li>
       <li><b>By player or champion:</b> a row counts the plays the player made, was targeted by or responded to, seen from their team. A play with several players appears once per player.</li>
       <li><b>Same moment:</b> plays grouped as one event at extraction (an episode) are shown together but their gold changes are not added. Other plays starting inside the same 30-second window are flagged on the card.</li>
-      <li><b>Worth a look:</b> plays with a clear direction over the window chosen on screen (15, 30 or 60 s) that succeeded with a loss or failed or were called off with a gain, and plays whose gold swing is in the largest <span data-v="tail2"></span>% for their game and phase. The background holds both teams' view and is symmetric around zero, so its top and bottom <span data-v="tail"></span>% together are simply the largest <span data-v="tail2"></span>% of swings in either direction, and the same plays are picked whichever team you view from. Commentary-picked plays lean towards gains for the team that made them, so most of these are large gains from that side. Changing the window picks them again for that window. They are marked in the play list with a gold diamond and a gold edge on the row, not ranked.</li>
+      <li><b>Worth a look:</b> plays with a clear direction over the window chosen on screen (15, 30 or 60 s) that succeeded with a loss or failed or were called off with a gain, and plays whose gold swing is in the largest <span data-v="tail2"></span>% for their game and phase. The background holds both teams' view and is symmetric around zero, so its top and bottom <span data-v="tail"></span>% together are simply the largest <span data-v="tail2"></span>% of swings in either direction, and the same plays are picked whichever team you view from. Commentary-picked plays lean towards gains for the team that made them, so most of these are large gains from that side. Changing the window picks them again for that window. In the play list they use a rounded gold rail at the left of the row; the filter and reason chips use a sparkle icon. They are not ranked.</li>
     </ul>
   </section>
 
@@ -484,7 +500,7 @@ h = 15, 30, 60 seconds</pre>
       summary: (g, p, m, k, events) => `${events}의 ${g}경기에서 플레이 ${num(p)}건을 뽑았고, 그중 ${num(m)}건(${pct(m, p)})의 30초 골드 변화를 쟀으며, ${num(k)}건(${pct(k, p)})은 이득·손해가 판정됩니다.`,
       small: (a, b, c, d) => `작은 변화가 대부분입니다. 30초 골드 변화를 잰 플레이의 ${pct(a, b)}, 배경 시점(같은 경기 모든 측정 가능한 초)의 ${pct(c, d)}가 |변화| 500 미만입니다. 골드 변화가 500 이상인 구간만 고르는 방식이었다면 이 플레이의 ${pct(a, b)}는 고르지 못했을 것입니다.`,
       version: (v, r, n) => `데이터 형식 v${esc(v)} · 규칙 버전 <code>${esc(r)}</code> · 코드북 해시는 위 코딩 표의 각 코드북 파일에 기록됩니다. 경기 ${n}개.`,
-      back: '← 대시보드', langBtn: 'English', dark: '다크 모드', light: '라이트 모드', title: '방법론 — PlayValue',
+      back: '대시보드', langBtn: 'English', dark: '다크 모드', light: '라이트 모드', title: '방법론 — PlayValue',
       foot: 'PlayValue · 해설 기반 플레이 골드 관측',
       legal: 'PlayValue는 Riot Games의 보증을 받지 않았으며, Riot Games 또는 Riot Games 자산의 제작·관리에 공식적으로 관여하는 누구의 견해나 의견도 반영하지 않습니다. Riot Games 및 관련 모든 자산은 Riot Games, Inc.의 상표 또는 등록 상표입니다.',
       sec: s => `${s}초`,
@@ -509,7 +525,7 @@ h = 15, 30, 60 seconds</pre>
       summary: (g, p, m, k, events) => `${num(p)} plays were picked from ${g} games of ${events}; the 30-second gold change was measured for ${num(m)} (${pct(m, p)}), and ${num(k)} (${pct(k, p)}) are a clear gain or loss.`,
       small: (a, b, c, d) => `Most changes are small: ${pct(a, b)} of measured plays and ${pct(c, d)} of background seconds (every measurable second of the same games) move less than 500 gold in 30 seconds. A method that only picks stretches where gold moves 500 or more would have missed ${pct(a, b)} of these plays.`,
       version: (v, r, n) => `Data format v${esc(v)} · rules version <code>${esc(r)}</code> · codebook hashes are recorded with each codebook file in the coding table. ${n} games.`,
-      back: '← Dashboard', langBtn: '한국어', dark: 'Dark mode', light: 'Light mode', title: 'Methodology — PlayValue',
+      back: 'Dashboard', langBtn: '한국어', dark: 'Dark mode', light: 'Light mode', title: 'Methodology — PlayValue',
       foot: 'PlayValue · gold observed after commentary-picked plays',
       legal: "PlayValue isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.",
       sec: s => `${s} s`,
@@ -597,9 +613,16 @@ h = 15, 30, 60 seconds</pre>
     document.documentElement.lang = lang;
     document.documentElement.dataset.theme = theme;
     document.title = w.title;
-    document.getElementById('backBtn').textContent = w.back;
-    document.getElementById('btnLang').textContent = w.langBtn;
-    document.getElementById('btnTheme').textContent = theme === 'dark' ? w.light : w.dark;
+    const backButton = document.getElementById('backBtn');
+    backButton.ariaLabel = backButton.title = w.back;
+    backButton.querySelector('.sr-only').textContent = w.back;
+    const langButton = document.getElementById('btnLang');
+    langButton.ariaLabel = langButton.title = w.langBtn;
+    langButton.querySelector('.sr-only').textContent = w.langBtn;
+    const themeButton = document.getElementById('btnTheme');
+    const themeLabel = theme === 'dark' ? w.light : w.dark;
+    themeButton.ariaLabel = themeButton.title = themeLabel;
+    themeButton.querySelector('.sr-only').textContent = themeLabel;
     document.getElementById('footText').textContent = w.foot;
     document.getElementById('footLegal').textContent = w.legal;
     document.getElementById('themeColor').content = theme === 'dark' ? '#0d0d0e' : '#f4f5f7';

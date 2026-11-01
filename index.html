@@ -114,7 +114,8 @@
 
     header { background: var(--bg-header); border-bottom: 1px solid var(--border-color); padding: 14px 0 0; }
     .num, .time, .row .t, .row .e, .hz .val, .xt td, .meta strong, .gbtn, .ser-select { font-variant-numeric: tabular-nums; }
-    .header-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+    .header-row { display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; gap: 12px; }
+    .header-copy { flex: 1 1 auto; min-width: 0; }
     .logo-title { display: flex; align-items: center; gap: 10px; }
     .logo-brand-link { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
     .logo-mark { width: 34px; height: 34px; }
@@ -122,11 +123,18 @@
     .logo-text-val { color: var(--brand-gold); }
     .logo-badge { background: var(--bg-pill); color: var(--text-muted); font-size: .75rem; padding: 1px 8px; border-radius: 999px; font-weight: 600; }
     /* The product's message under the wordmark: a question in ink, then one plain sentence of what is measured. */
-    .tagline { margin-top: 6px; font-size: .9rem; color: var(--text-muted); max-width: 980px; text-wrap: pretty; }
-    .tagline strong { color: var(--text-main); font-size: 1.12rem; font-weight: 700; letter-spacing: -0.01em; margin-right: 6px; }
-    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tagline { display: flex; align-items: baseline; gap: 6px; min-width: 0; margin-top: 6px; color: var(--text-muted); white-space: nowrap; }
+    .tagline strong { flex: none; color: var(--text-main); font-size: 1.12rem; font-weight: 700; letter-spacing: -0.01em; }
+    .tagline span { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: .9rem; }
+    html[lang="en"] .tagline span { font-size: .84rem; letter-spacing: -0.012em; }
+    .header-actions { display: flex; gap: 8px; flex: none; flex-wrap: nowrap; align-items: center; }
     .btn { background: var(--bg-card); border: 1px solid var(--border-color); font-size: .82rem; font-weight: 600; padding: 6px 12px; border-radius: var(--radius-control); cursor: pointer; text-decoration: none; color: var(--text-main); display: inline-flex; gap: 6px; align-items: center; }
     .btn:hover { border-color: var(--border-focus); }
+    .btn.icon-only { width: 36px; height: 36px; padding: 0; justify-content: center; flex: none; }
+    .btn.icon-only svg { width: 18px; height: 18px; display: block; }
+    #btnTheme .theme-sun { display: none; }
+    [data-theme="dark"] #btnTheme .theme-moon { display: none; }
+    [data-theme="dark"] #btnTheme .theme-sun { display: block; }
 
     .navbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 28px; padding: 14px 0; }
     .nav { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
@@ -149,6 +157,9 @@
     .gbtn:hover { border-color: var(--border-focus); }
     .gbtn .win { position: absolute; left: 7px; right: 7px; bottom: 4px; height: 3px; border-radius: 2px; }
     .gbtn.on { background: var(--text-main); color: var(--bg-card); border-color: var(--text-main); }
+    .game-summary { display: inline-flex; align-items: baseline; gap: 6px; border-left: 1px solid var(--border-color); padding-left: 14px; white-space: nowrap; }
+    .game-summary .matchup { font-size: .82rem; font-weight: 800; }
+    .game-summary .match-meta { font-size: .75rem; color: var(--text-muted); font-weight: 600; }
     .guide { margin-top: 12px; font-size: .84rem; border-top: 1px solid var(--border-color); padding-top: 10px; }
     .guide summary { cursor: pointer; font-weight: 700; color: var(--text-main); }
     .guide dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 16px; margin-top: 10px; max-width: 900px; }
@@ -182,16 +193,72 @@
     .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
     .legend i.hollow { background: transparent !important; border: 1.5px solid var(--neutral); }
 
-    /* Game view: a header on the ground, the gold timeline across the full width, then the play list beside
-       the selected play, which stays in view while the list scrolls. 7fr + 16px + 5fr fills the container. */
-    .game-head { display: flex; flex-direction: column; gap: 10px; padding: 4px 0 2px; }
-    .game-head .line { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; font-size: .9rem; color: var(--text-muted); }
-    .finding { background: none; border: 0; padding: 0; font: inherit; color: var(--text-main); cursor: pointer; text-align: left; text-decoration: underline; text-decoration-color: var(--border-color); text-underline-offset: 3px; }
-    .finding:hover { text-decoration-color: currentColor; }
-    .finding .star-mark { margin-left: 0; }
-    .work { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 16px; align-items: start; }
-    .detail { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; overscroll-behavior: contain; }
-    @media (max-width: 1000px) { .work { grid-template-columns: 1fr; } .detail { position: static; max-height: none; order: -1; } }
+    /* Game view: plays on the left, map and gold timeline as the main stage, and a selected-play inspector
+       on the right. Match context lives in the navigation and panel heads, so the workspace starts at once. */
+    .workspace { display: grid; grid-template-columns: minmax(290px, 4fr) minmax(500px, 7fr) minmax(340px, 5fr); gap: 16px; align-items: start; }
+    /* The map and timeline are one continuous stage. Let the page scroll them together instead of
+       creating a second, nested scrollbar inside the centre column. */
+    .workspace-stage { display: flex; flex-direction: column; gap: 16px; }
+    .detail { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+    .list-panel, .workspace-stage, .map-card, .timeline-card, .detail { min-width: 0; }
+    .list-panel, .map-card, .timeline-card { padding: 16px; }
+    .stage-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+    .stage-control { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .stage-toolbar .seg { flex-wrap: nowrap; }
+    .map-card .mm { margin: 0; }
+    .map-card .mm svg { width: min(100%, 680px); max-width: none; margin: 0 auto; }
+    .map-guide { margin-top: 8px; font-size: .76rem; color: var(--text-muted); }
+    .map-guide summary { cursor: pointer; font-weight: 700; color: var(--text-main); }
+    .map-guide .note { text-align: left; margin-top: 6px; }
+    .map-empty { min-height: 360px; display: grid; place-content: center; text-align: center; color: var(--text-muted); }
+    .map-empty h3 { justify-content: center; color: var(--text-main); }
+    .timeline-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 7px 12px; margin-bottom: 10px; }
+    .timeline-head h3 { flex: 1 1 260px; margin-bottom: 0; }
+    .timeline-finding { border: 0; border-radius: var(--radius-control); background: var(--accent-bg); color: var(--accent); padding: 5px 8px; font-size: .74rem; font-weight: 700; cursor: pointer; text-align: left; }
+    .timeline-finding:hover { box-shadow: inset 0 0 0 1px var(--accent); }
+    .timeline-card .guide { margin-top: 10px; }
+    .timeline-card .legend { gap: 5px 12px; }
+    .list-coverage { display: flex; flex-wrap: wrap; gap: 4px 10px; margin: -4px 0 10px; font-size: .75rem; color: var(--text-muted); }
+    .list-coverage strong { color: var(--text-main); }
+    /* The narrow left rail uses two lines per play: identity and value first, team and type below. */
+    .list-panel .filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .list-panel .filters select { width: 100%; min-width: 0; }
+    .list-panel .filters .highlight-toggle, .list-panel .filters .btn { grid-column: 1 / -1; justify-self: start; }
+    .list-panel .row { grid-template-columns: 48px minmax(0, 1fr) 72px; grid-template-areas: "time title gold" "team family gold"; gap: 3px 8px; padding: 8px 10px 8px 18px; position: relative; }
+    .list-panel button.row { border-left: 0; }
+    /* Keep the noteworthy marker visually separate from the time and title rather than using the
+       row's border, which sat almost flush against its content. */
+    .list-panel .row.star::before { content: ""; position: absolute; left: 5px; top: 8px; bottom: 8px; width: 3px; border-radius: 999px; background: var(--star); }
+    .list-panel .row > :nth-child(1) { grid-area: time; }
+    .list-panel .row > :nth-child(2) { grid-area: team; justify-self: start; }
+    .list-panel .row > :nth-child(3) { grid-area: title; }
+    .list-panel .row > :nth-child(4) { grid-area: family; }
+    .list-panel .row > :nth-child(5) { grid-area: gold; align-self: center; text-align: right; }
+    .list-panel .row.head { grid-template-areas: "time title gold"; }
+    .list-panel .row.head > :nth-child(2), .list-panel .row.head > :nth-child(4) { display: none; }
+    .list-panel .row .famcell .chip { white-space: normal; }
+    @media (max-width: 1220px) {
+      .workspace { grid-template-columns: minmax(0, 1fr); }
+      .detail { position: static; max-height: none; overflow: visible; }
+      .workspace-stage { order: -2; }
+      .detail { order: -1; }
+      .list-panel .row { grid-template-columns: 56px 52px minmax(0, 1fr) 170px 104px; grid-template-areas: none; gap: 10px; padding: 7px 10px 7px 18px; }
+      .list-panel .row > :nth-child(n) { grid-area: auto; justify-self: auto; }
+      .list-panel .row > :nth-child(2) { justify-self: center; }
+      .list-panel .row > :nth-child(5) { text-align: initial; }
+      .list-panel .row.head > :nth-child(2), .list-panel .row.head > :nth-child(4) { display: initial; }
+      .list-panel .filters { display: flex; }
+      .list-panel .filters select { width: auto; }
+      .list-panel .filters .highlight-toggle, .list-panel .filters .btn { grid-column: auto; }
+    }
+    @media (max-width: 720px) {
+      .game-summary { flex-basis: 100%; border-left: 0; padding-left: 0; }
+      .list-panel .row { grid-template-columns: 48px minmax(0, 1fr) 72px; }
+      .list-panel .filters { display: grid; grid-template-columns: 1fr; }
+      .list-panel .filters select { width: 100%; }
+      .stage-toolbar { align-items: flex-start; }
+      .stage-control { width: 100%; justify-content: space-between; }
+    }
     .detail .hz-head { margin-top: 14px; }
     .detail .yt { margin: 14px 0 4px; }
     /* The arrow keys step through plays; the key caps on the buttons say so. Touch screens have no keys to press. */
@@ -215,7 +282,7 @@
     .players { font-size: .82rem; color: var(--text-muted); line-height: 1.7; }
     .mm { margin: 14px 0 4px; }
     .mm-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: .78rem; color: var(--text-muted); margin-bottom: 6px; }
-    .mm-head b { color: var(--text-main); font-weight: 600; }
+    .mm-head b { color: var(--text-main); font-weight: 600; white-space: nowrap; }
     .mm svg { display: block; width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1; }
     .mm .ctrl { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 6px; font-size: .8rem; }
     .mm .ctrl input[type=range] { width: min(180px, 50vw); accent-color: var(--text-main); }
@@ -236,10 +303,22 @@
     .ival .axis { position: absolute; left: 0; right: 0; top: 3px; height: 2px; background: var(--chart-grid); }
     .ival .zero { position: absolute; left: 50%; top: -1px; width: 1px; height: 10px; background: var(--chart-axis); }
     .ival .bar { position: absolute; top: 1px; height: 6px; border-radius: 3px; }
-    .ctx { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; font-size: .82rem; margin-top: 8px; }
-    .ctx dt { color: var(--text-muted); }
+    .context-summary { margin-top: 16px; }
+    .context-summary-title { display: block; margin-bottom: 8px; font-size: .78rem; font-weight: 800; color: var(--text-main); }
+    .ctx-primary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .ctx-primary .ctx-item { min-width: 0; padding: 10px 11px; border-radius: var(--radius-control); background: var(--bg-pill); }
+    .ctx-primary .ctx-item:first-child { grid-column: 1 / -1; }
+    .ctx-primary dt { margin-bottom: 3px; color: var(--text-muted); font-size: .7rem; font-weight: 700; }
+    .ctx-primary dd { font-size: .82rem; line-height: 1.45; }
+    .ctx-primary dd .muted { font-size: .75rem; }
+    .ctx-more { margin-top: 10px; border-top: 1px solid var(--border-color); }
+    .ctx-more summary { padding: 10px 2px 2px; cursor: pointer; color: var(--text-main); font-size: .78rem; font-weight: 700; }
+    .ctx-more .ctx { display: grid; grid-template-columns: 1fr; gap: 0; margin: 0; padding-top: 2px; }
+    .ctx-more .ctx dt { margin-top: 9px; color: var(--text-muted); font-size: .72rem; font-weight: 700; }
+    .ctx-more .ctx dd { padding: 2px 0 9px; border-bottom: 1px solid var(--border-color); font-size: .8rem; line-height: 1.5; }
+    .ctx-more .ctx dd:last-child { border-bottom: 0; }
     .ctx dd a, .linkbtn { color: var(--text-main); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; background: none; border: 0; padding: 0; font: inherit; }
-    .foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 12px; font-size: .78rem; color: var(--text-muted); }
+    .foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border-color); font-size: .75rem; color: var(--text-muted); }
     .navbtns { display: flex; gap: 6px; }
 
     .yt { position: relative; aspect-ratio: 16 / 9; background: #000; border-radius: var(--radius-control); overflow: hidden; }
@@ -256,11 +335,23 @@
     .row.head { cursor: default; font-size: .75rem; font-weight: 600; color: var(--text-muted); border-bottom-color: #d5d8dd; padding-top: 2px; }
     .row.head:hover { background: transparent; }
     .row.head .e { color: var(--text-main); }
-    .row.star { border-left-color: var(--star); }
     .row.star.on, .row.on { background: var(--bg-pill); }
-    /* The mark for plays worth a look: a small diamond in the brand's gold. */
-    .star-mark { display: inline-block; width: 8px; height: 8px; background: var(--star); transform: rotate(45deg); margin: 0 7px 1px 2px; vertical-align: middle; flex: none; }
-    .hl-legend { font-size: .78rem; color: var(--text-muted); margin: -2px 0 8px; }
+    .highlight-spark { width: 14px; height: 14px; display: inline-flex; align-items: center; justify-content: center; color: var(--star); flex: none; }
+    .highlight-spark svg { display: block; width: 100%; height: 100%; }
+    .highlight-toggle { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 5px 10px; border: 1px solid var(--border-color); border-radius: 999px; background: var(--bg-card); color: var(--text-muted); font-size: .78rem; font-weight: 700; cursor: pointer; }
+    .highlight-toggle:hover { border-color: var(--border-focus); color: var(--text-main); }
+    .highlight-toggle.on { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
+    .highlight-criteria { margin: -2px 0 9px; border: 1px solid var(--border-color); border-radius: var(--radius-control); background: var(--bg-main); }
+    .highlight-criteria summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 9px; list-style: none; cursor: pointer; color: var(--text-main); font-size: .75rem; font-weight: 700; }
+    .highlight-criteria summary::-webkit-details-marker { display: none; }
+    .highlight-criteria .criteria-title { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+    .highlight-criteria .criteria-action { color: var(--text-muted); font-size: .7rem; white-space: nowrap; }
+    .highlight-criteria .criteria-close { display: none; }
+    .highlight-criteria[open] .criteria-open { display: none; }
+    .highlight-criteria[open] .criteria-close { display: inline; }
+    .highlight-criteria p { padding: 0 9px 9px; color: var(--text-muted); font-size: .75rem; line-height: 1.55; }
+    .chip.highlight-reason { color: var(--accent); background: var(--accent-bg); }
+    .chip.highlight-reason .highlight-spark { width: 12px; height: 12px; }
     label.check { display: inline-flex; align-items: center; gap: 6px; font-size: .8rem; cursor: pointer; }
     .row.on { background: var(--bg-pill); }
     .row .t { font-weight: 700; font-size: .84rem; }
@@ -303,7 +394,7 @@
     .note-box { font-size: .78rem; color: var(--text-muted); margin-top: 10px; }
     .empty { color: var(--text-muted); font-size: .85rem; padding: 10px 0; }
     .planned { text-align: center; padding: 48px 20px; }
-    @media (max-width: 720px) { .tagline span { display: none; } .tagline strong { font-size: 1rem; } .navbar { gap: 8px; padding: 10px 0 12px; } .ser-pick { flex: 1 1 100%; } .series select.ser-select { flex: 1; } .guide dl { grid-template-columns: 1fr; } .guide dt { margin-top: 6px; } .horizons { gap: 6px; } .hz { padding: 6px 7px; } .hz .val { font-size: .92rem; } .ctx { grid-template-columns: 1fr; } .ctx dt { margin-top: 6px; } }
+    @media (max-width: 720px) { .tagline span { display: none; } .tagline strong { overflow: hidden; text-overflow: ellipsis; font-size: 1rem; } .navbar { gap: 8px; padding: 10px 0 12px; } .ser-pick { flex: 1 1 100%; } .series select.ser-select { flex: 1; } .guide dl { grid-template-columns: 1fr; } .guide dt { margin-top: 6px; } .horizons { gap: 6px; } .hz { padding: 6px 7px; } .hz .val { font-size: .92rem; } .ctx-primary { grid-template-columns: 1fr; } .ctx-primary .ctx-item:first-child { grid-column: auto; } }
   </style>
 </head>
 <body>
@@ -311,7 +402,7 @@
 <header>
   <div class="container">
     <div class="header-row">
-      <div>
+      <div class="header-copy">
         <div class="logo-title">
           <a href="./index.html" class="logo-brand-link" title="PlayValue">
             <img src="./assets/logo-icon.svg?v=2" alt="" class="logo-mark" width="34" height="34">
@@ -322,9 +413,19 @@
         <p class="tagline"><strong data-i18n="tagline"></strong> <span data-i18n="taglineSub"></span></p>
       </div>
       <div class="header-actions">
-        <a class="btn" href="./methodology.html" data-i18n="methodology"></a>
-        <button class="btn" id="btnLang"></button>
-        <button class="btn" id="btnTheme"></button>
+        <a class="btn icon-only" id="methodologyLink" href="./methodology.html" aria-label="방법론" title="방법론">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v17H6.5A2.5 2.5 0 0 0 4 22V5.5Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v17h4.5A2.5 2.5 0 0 1 20 22V5.5Z"/></svg>
+          <span class="sr-only" data-i18n="methodology">방법론</span>
+        </a>
+        <button class="btn icon-only" id="btnLang" type="button" aria-label="English" title="English">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14.5 14.5 0 0 1 0 18M12 3a14.5 14.5 0 0 0 0 18"/></svg>
+          <span class="sr-only">English</span>
+        </button>
+        <button class="btn icon-only" id="btnTheme" type="button" aria-label="다크 모드" title="다크 모드">
+          <svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.2 15.2A8.5 8.5 0 0 1 8.8 3.8 8.5 8.5 0 1 0 20.2 15.2Z"/></svg>
+          <svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
+          <span class="sr-only">다크 모드</span>
+        </button>
       </div>
     </div>
     <div class="navbar">
@@ -388,20 +489,27 @@
       lgBlue: '블루 팀이 한 플레이', lgRed: '레드 팀이 한 플레이', lgUnres: '오차 범위 안', lgWin: '선택한 플레이의 구간', lgFlow: '이어지는 플레이 (90초 이내)', lgObj: '전령·바론·장로 획득과 이후 플레이',
       laneFlow: '연결', laneObj: '오브젝트', laneGap: '두 팀 골드 차이', laneBars: h => `플레이 뒤 ${h}초 골드 변화`,
       finding: (h, clk, title, team, e) => `${h}초 기준 가장 큰 변화: ${clk} ${title} (${team} ${e})`,
+      findingCompact: (h, clk, team, e) => `↗ ${h}초 최대 변화 · ${clk} · ${team} ${e}`,
       noFinding: h => `${h}초 기준으로 이득·손해가 판정된 플레이가 없습니다.`,
       gameLine: (w, d) => `${w} 승리 · 경기 시간 ${d}`,
+      gameNav: (n, w, d) => `${n}세트 · ${w} 승 · ${d}`,
       detailEmpty: '플레이를 고르면 여기에 자세히 나옵니다.', prevWord: '이전', nextWord: '다음', keyPrev: '이전 플레이 (키보드 ←)', keyNext: '다음 플레이 (키보드 →)',
       colTime: '시간', colTeam: '팀', colPlay: '플레이', colType: '행동 유형', colGold: h => `${h}초 골드 변화`, colFrom: tm => ` (${tm} 입장)`,
-      hlOnly: '눈여겨볼 장면만', hlLegend: h => `눈여겨볼 장면 (${h}초 기준): 성공했는데 골드 손해, 실패·중단했는데 골드 이득, 또는 같은 시간대에서 ${h}초 골드 변화 폭이 상위 10%인 플레이`,
-      listTitle: '플레이 목록', listSub: (n, total, h) => `${n} / ${total}건 · ${h}초 골드 변화 · 초록은 이득, 주황은 손해, 회색은 오차 범위 안, —는 측정 없음`,
+      hlOnly: '눈여겨볼 장면만', hlCriteriaTitle: h => `눈여겨볼 장면 · ${h}초 기준`,
+      hlCriteria: h => `성공했는데 골드 손해, 실패·중단했는데 골드 이득, 또는 같은 시간대에서 ${h}초 골드 변화 폭이 상위 10%인 플레이입니다.`,
+      hlCriteriaOpen: '기준 보기', hlCriteriaClose: '접기',
+      listTitle: '플레이 목록', listSub: (n, total) => n === total ? `${total}건` : `${n} / ${total}건`,
+      listCoverage: (h, m, k) => `${h}초 골드 측정 <strong>${m}</strong> · 방향 판정 <strong>${k}</strong>`,
       fFamily: '모든 행동 유형', fTag: '모든 결과', fState: '모든 골드 변화', fPlayer: '모든 선수·챔피언', clearFilters: '필터 지우기',
       playerNote: '그 선수가 행동했거나, 대상이 됐거나, 맞대응한 플레이입니다. 그 선수 팀 입장으로 바꿔 보여 줍니다. 해설이 이름을 말한 플레이만 나옵니다.',
       ctxEpPlayers: '이 장면에 관여한 선수',
       prev: '← 이전', next: '다음 →', vod: '영상 보기', vodNew: 'YouTube에서 열기 ↗',
       ytNote: '파일을 직접 열면 YouTube 재생이 막힐 수 있습니다. 위 링크로 해당 장면을 여세요.',
+      ctxSummary: '판정 요약', ctxMore: n => `상황 더 보기 · ${n}개 항목`,
       ctxOutcome: '행동 결과', ctxKill: '킬', ctxLead: '플레이 직전', ctxBg: '같은 시간대와 비교', ctxDv: '골드 흐름 변화 (참고)',
       ctxOverlap: h => `${h}초 안에 겹친 플레이`, ctxOverlapNote: '이 플레이들의 영향도 골드 변화에 섞여 있습니다',
       mmHead: '맵 위치', mmSrc: '방송 미니맵·중계 화면 + Riot 기록 · 그림 Riot Data Dragon', mmPlay: '재생', mmPause: '멈춤', mmAt: (d, c) => `시작 ${d >= 0 ? '+' : ''}${d}초 · ${c}`,
+      mmGuide: '위치 읽는 법', mmUnavailable: '이 플레이는 표시할 위치 정보가 없습니다.',
       mmNote: '흰 테두리의 큰 아이콘은 이 플레이에 나온 선수, 선은 이후 이동입니다. 위치는 방송 미니맵에서 읽고, 중계 화면에 선수 이름이 보이면 그 자리를 씁니다. 1분마다 Riot 기록의 정확한 위치로 맞춥니다. 흐린 점선 테두리는 앞뒤 위치를 이어 채운 것, 회색 아이콘과 ✕는 Riot 기록상 처치당한 선수, 잠깐 나타나는 ✕ 원은 처치가 일어난 자리입니다. 미니맵과 화면 어디에서도 읽지 못한 선수는 빠집니다.',
       ctxNear: '시작 때 근처 선수 (미니맵)', ctxNearNone: '없음', ctxNearNote: n => `이 플레이에 나온 선수(${n}) 근처 약 1,500 유닛 안`,
       ctxElse: h => `${h}초 안 다른 곳의 일`, ctxElseNone: 'Riot 기록상 없음',
@@ -454,20 +562,27 @@
       lgBlue: 'Play by the blue side', lgRed: 'Play by the red side', lgUnres: 'Inside the margin', lgWin: 'Window of the selected play', lgFlow: 'Linked plays (within 90 s)', lgObj: 'Herald, Baron and Elder taken, and the plays after',
       laneFlow: 'Linked', laneObj: 'Objectives', laneGap: 'Gold gap', laneBars: h => `Gold change ${h} s after each play`,
       finding: (h, clk, title, team, e) => `Largest change over ${h} s: ${clk} ${title} (${team} ${e})`,
+      findingCompact: (h, clk, team, e) => `↗ Largest ${h}s change · ${clk} · ${team} ${e}`,
       noFinding: h => `No play has a clear gain or loss over ${h} s.`,
       gameLine: (w, d) => `${w} won · ${d}`,
+      gameNav: (n, w, d) => `Game ${n} · ${w} won · ${d}`,
       detailEmpty: 'Pick a play to see it here.', prevWord: 'Previous', nextWord: 'Next', keyPrev: 'Previous play (← key)', keyNext: 'Next play (→ key)',
       colTime: 'Time', colTeam: 'Team', colPlay: 'Play', colType: 'Play type', colGold: h => `Gold change, ${h}s`, colFrom: tm => ` (${tm} view)`,
-      hlOnly: 'Worth a look only', hlLegend: h => `Worth a look (at ${h} s): success with a gold loss, failure or called off with a gold gain, or a ${h} s gold swing in the largest 10% for that phase of the game`,
-      listTitle: 'Plays', listSub: (n, total, h) => `${n} of ${total} · gold change over ${h}s · green gain, orange loss, grey inside the margin, — not measured`,
+      hlOnly: 'Worth a look only', hlCriteriaTitle: h => `Worth a look · ${h}s window`,
+      hlCriteria: h => `A success with a gold loss, a failure or called-off play with a gold gain, or a ${h}s gold swing in the largest 10% for that phase of the game.`,
+      hlCriteriaOpen: 'View criteria', hlCriteriaClose: 'Close',
+      listTitle: 'Plays', listSub: (n, total) => n === total ? `${total}` : `${n} of ${total}`,
+      listCoverage: (h, m, k) => `${h}s gold measured <strong>${m}</strong> · direction resolved <strong>${k}</strong>`,
       fFamily: 'All play types', fTag: 'All results', fState: 'All gold changes', fPlayer: 'All players and champions', clearFilters: 'Clear filters',
       playerNote: 'Plays the player made, was targeted by, or responded to, seen from their team. Only plays where the commentary names the player appear.',
       ctxEpPlayers: 'Players in this moment',
       prev: '← Previous', next: 'Next →', vod: 'Watch', vodNew: 'Open on YouTube ↗',
       ytNote: 'Opened as a local file, YouTube may refuse to play here. Use the link above.',
+      ctxSummary: 'Assessment summary', ctxMore: n => `More context · ${n} item${n === 1 ? '' : 's'}`,
       ctxOutcome: 'Result', ctxKill: 'Kill', ctxLead: 'Just before', ctxBg: 'Against the same phase', ctxDv: 'Gold pace change (reference)',
       ctxOverlap: h => `Other plays within ${h} s`, ctxOverlapNote: 'their effect is mixed into the gold change too',
       mmHead: 'Map positions', mmSrc: 'broadcast minimap and view + Riot record · art Riot Data Dragon', mmPlay: 'Play', mmPause: 'Pause', mmAt: (d, c) => `start ${d >= 0 ? '+' : ''}${d} s · ${c}`,
+      mmGuide: 'How to read positions', mmUnavailable: 'No position data are available for this play.',
       mmNote: 'Large icons with a white ring are the players named in this play, lines their movement after it. Positions are read from the broadcast minimap, or from the broadcast view where a player\'s name shows on screen, and set to Riot\'s exact positions once a minute. Faint icons with a dashed ring are filled in between known positions, grey icons with a cross are players Riot records as killed, and a brief crossed circle marks where a kill happened. Players found neither on the minimap nor on screen are left out.',
       ctxNear: 'Nearby at the start (minimap)', ctxNearNone: 'none', ctxNearNote: n => `within about 1,500 units of the players named in this play (${n})`,
       ctxElse: h => `Elsewhere within ${h} s`, ctxElseNone: 'none in Riot\'s record',
@@ -551,6 +666,7 @@
   const famLabel = f => (f ? (D.family_labels[S.lang][f] || f) : '—');
   const objLabel = k => D.objective_links.labels[S.lang][k] || k;
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const SPARK_ICON = '<span class="highlight-spark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/><path d="M5 3v4M3 5h4M19 17v4M17 19h4"/></svg></span>';
   const fmtG = v => (v > 0 ? '+' : v < 0 ? '−' : '±') + Math.abs(v).toLocaleString();
   const fmtClock = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
   const game = () => GAMES.find(g => g.id === S.gameId);
@@ -681,8 +797,16 @@
     document.documentElement.lang = S.lang;
     document.documentElement.dataset.theme = S.theme;
     document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
-    document.getElementById('btnLang').textContent = t('lang');
-    document.getElementById('btnTheme').textContent = S.theme === 'dark' ? t('themeLight') : t('themeDark');
+    document.querySelector('.tagline').title = `${t('tagline')} ${t('taglineSub')}`;
+    const methodologyLink = document.getElementById('methodologyLink');
+    methodologyLink.ariaLabel = methodologyLink.title = t('methodology');
+    const langButton = document.getElementById('btnLang');
+    langButton.ariaLabel = langButton.title = t('lang');
+    langButton.querySelector('.sr-only').textContent = t('lang');
+    const themeButton = document.getElementById('btnTheme');
+    const themeLabel = S.theme === 'dark' ? t('themeLight') : t('themeDark');
+    themeButton.ariaLabel = themeButton.title = themeLabel;
+    themeButton.querySelector('.sr-only').textContent = themeLabel;
     document.getElementById('verBadge').textContent = 'v' + DATA.version;
     document.getElementById('themeColor').content = S.theme === 'dark' ? '#0d0d0e' : '#f4f5f7';
     document.getElementById('skipLink').textContent = t('skip');
@@ -721,6 +845,7 @@
                     ['phasePlayIn', series.filter(s => gamesOf(s)[0].stage.startsWith('Play-In'))]].filter(([, ss]) => ss.length);
     const opt = s => `<option value="${esc(s)}" ${s === cur ? 'selected' : ''}>${esc(label(s))}</option>`;
     const options = groups.length > 1 ? groups.map(([k, ss]) => `<optgroup label="${esc(t(k))}">${ss.map(opt).join('')}</optgroup>`).join('') : series.map(opt).join('');
+    const selectedGame = game();
     se.innerHTML = `
       <div class="ser-pick">
         <button type="button" class="ser-step" id="serOlder" aria-label="${esc(t('serOlder'))}" title="${esc(t('serOlder'))}" ${ci >= series.length - 1 ? 'disabled' : ''}>‹</button>
@@ -729,7 +854,8 @@
         <button type="button" class="ser-step" id="serNewer" aria-label="${esc(t('serNewer'))}" title="${esc(t('serNewer'))}" ${ci <= 0 ? 'disabled' : ''}>›</button>
       </div>
       <div class="games">${gamesOf(cur).map(g => `<button class="gbtn ${g.id === S.gameId ? 'on' : ''}" data-g="${g.id}" title="${esc(t('gameAria')(g.game_num, g.winner))}" aria-label="${esc(t('gameAria')(g.game_num, g.winner))}">${g.game_num}<span class="win" style="background:var(${g.winner === g.blue_team ? '--blue-team' : '--red-team'})"></span></button>`).join('')}</div>
-      <span class="ser-count">${t('serCount')(ci + 1, series.length)}</span>`;
+      <span class="ser-count">${t('serCount')(ci + 1, series.length)}</span>
+      ${S.view === 'set' ? `<span class="game-summary"><span class="matchup"><span class="team-blue">${esc(selectedGame.blue_team)}</span><span class="muted"> vs </span><span class="team-red">${esc(selectedGame.red_team)}</span></span><span class="match-meta">${esc(t('gameNav')(selectedGame.game_num, selectedGame.winner, fmtClock(selectedGame.duration_gc)))}</span></span>` : ''}`;
     const openGame = id => { S.gameId = id; S.playId = null; S.persp = ''; S.xCell = null; S.fPlayer = ''; render(); };
     const openSeries = s => openGame(gamesOf(s)[0].id);
     se.querySelectorAll('.gbtn').forEach(b => b.onclick = () => openGame(b.dataset.g));
@@ -763,52 +889,49 @@
     const persp = [[g.blue_team, g.blue_team], [g.red_team, g.red_team]];
     const f = findingOf(g);
     main.innerHTML = `
-      <section class="game-head">
-        <h1 class="teams"><span class="team-blue">${esc(g.blue_team)}</span><span class="muted">vs</span><span class="team-red">${esc(g.red_team)}</span>
-          <span class="sub">${esc(S.lang === 'ko' ? g.title_ko : g.title_en)}</span></h1>
-        <div class="line">
-          <span>${esc(t('gameLine')(g.winner, fmtClock(g.duration_gc)))}</span>
-          <span>${t('cov')(g.coverage.plays, g.coverage.e30_measured, g.coverage.e30_sign_resolved)}</span>
+      <div class="workspace">
+        <section class="card list-panel" id="listCard"></section>
+        <div class="workspace-stage" id="workspaceStage">
+          <section class="card map-card" id="mapCard">
+            <div class="stage-toolbar">
+              <div class="stage-control"><span class="nav-label">${t('perspective')}</span><div class="seg" id="perspSeg">${persp.map(([k, v]) => `<button data-p="${esc(k)}" class="${S.persp === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div></div>
+              <div class="stage-control"><span class="nav-label">${t('horizon')}</span><div class="seg" id="hSeg">${D.horizons_s.map(h => `<button data-h="${h}" class="${S.h === String(h) ? 'on' : ''}">${t('sec')(h)}</button>`).join('')}</div></div>
+            </div>
+            <div id="mapSlot" aria-live="polite"></div>
+          </section>
+          <section class="card timeline-card">
+            <div class="timeline-head">
+              <h3>${t('chartTitle')} <span class="sub">${esc(t('chartSub')(S.h, S.persp))}</span></h3>
+              ${f ? `<button class="timeline-finding" data-goto="${f.id}" title="${esc(t('finding')(S.h, clock(f), f['title_' + S.lang], f.actor, fmtG(f.horizons[S.h].e)))}">${esc(t('findingCompact')(S.h, clock(f), f.actor, fmtG(f.horizons[S.h].e)))}</button>` : ''}
+            </div>
+            <div class="chart-wrap"><svg id="chart" role="img" aria-label="${esc(t('chartTitle'))}"></svg><div class="tip" id="tip" aria-hidden="true"></div></div>
+            <div class="legend">
+              <span><i style="background:var(--blue-team)"></i>${t('lgBlue')}</span>
+              <span><i style="background:var(--red-team)"></i>${t('lgRed')}</span>
+              <span><i class="hollow"></i>${t('lgUnres')}</span>
+              <span><i style="background:var(--accent-bg);border:1px solid var(--accent)"></i>${t('lgWin')}</span>
+              <span><i style="background:var(--chart-axis)"></i>${t('lgFlow')}</span>
+              <span><i style="background:var(--accent)"></i>${t('lgObj')}</span>
+            </div>
+            <details class="guide" id="guide" ${S.guideOpen ? 'open' : ''}><summary>${t('guideTitle')}</summary>
+              <dl>${t('guide').map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl></details>
+          </section>
         </div>
-        <div class="line">${f ? `<button class="finding" data-goto="${f.id}">${esc(t('finding')(S.h, clock(f), f['title_' + S.lang], f.actor, fmtG(f.horizons[S.h].e)))}</button>` : esc(t('noFinding')(S.h))}</div>
-        <div class="controls" style="margin-top:4px">
-          <span class="nav-label">${t('perspective')}</span>
-          <div class="seg" id="perspSeg">${persp.map(([k, v]) => `<button data-p="${esc(k)}" class="${S.persp === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
-          <span class="nav-label">${t('horizon')}</span>
-          <div class="seg" id="hSeg">${D.horizons_s.map(h => `<button data-h="${h}" class="${S.h === String(h) ? 'on' : ''}">${t('sec')(h)}</button>`).join('')}</div>
-        </div>
-      </section>
-      <section class="card">
-        <h3>${t('chartTitle')} <span class="sub">${esc(t('chartSub')(S.h, S.persp))}</span></h3>
-        <div class="chart-wrap"><svg id="chart" role="img" aria-label="${esc(t('chartTitle'))}"></svg><div class="tip" id="tip" aria-hidden="true"></div></div>
-        <div class="legend">
-          <span><i style="background:var(--blue-team)"></i>${t('lgBlue')}</span>
-          <span><i style="background:var(--red-team)"></i>${t('lgRed')}</span>
-          <span><i class="hollow"></i>${t('lgUnres')}</span>
-          <span><i style="background:var(--accent-bg);border:1px solid var(--accent)"></i>${t('lgWin')}</span>
-          <span><i style="background:var(--chart-axis)"></i>${t('lgFlow')}</span>
-          <span><i style="background:var(--accent)"></i>${t('lgObj')}</span>
-        </div>
-        <details class="guide" id="guide" ${S.guideOpen ? 'open' : ''}><summary>${t('guideTitle')}</summary>
-          <dl>${t('guide').map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl></details>
-      </section>
-      <div class="work">
-        <section class="card" id="listCard"></section>
         <aside class="card detail" id="playCard" aria-live="polite"></aside>
       </div>`;
     main.querySelector('#guide').ontoggle = e => { S.guideOpen = e.target.open; try { localStorage.setItem('lv_guide', S.guideOpen ? '1' : '0'); } catch (err) {} };
     main.querySelectorAll('#perspSeg button').forEach(b => b.onclick = () => { S.persp = b.dataset.p; renderSet(); });
     main.querySelectorAll('#hSeg button').forEach(b => b.onclick = () => { S.h = b.dataset.h; renderSet(); });
-    main.querySelectorAll('.game-head [data-goto]').forEach(b => b.onclick = () => selectPlay(b.dataset.goto, true));
-    renderChart(g);
+    main.querySelectorAll('.timeline-card [data-goto]').forEach(b => b.onclick = () => selectPlay(b.dataset.goto, true));
     renderCard(g);
+    renderChart(g);
     renderList(g);
     writeHash();
     syncPressed();
   }
 
   // Choosing a play redraws only what shows it: the chart's marks, the detail panel and the list's selected row.
-  // On one column the detail sits above the list, so bring it into view.
+  // On one column the central stage sits above the inspector and list, so bring it into view.
   function selectPlay(id, reveal) {
     if (!PLAY[id]) return;
     S.playId = id;
@@ -822,8 +945,8 @@
     });
     writeHash();
     syncPressed();
-    const card = document.getElementById('playCard');
-    if (reveal && card && getComputedStyle(card).position !== 'sticky') card.scrollIntoView({ behavior: SMOOTH, block: 'start' });
+    const stage = document.getElementById('workspaceStage');
+    if (reveal && stage && getComputedStyle(stage).position !== 'sticky') stage.scrollIntoView({ behavior: SMOOTH, block: 'start' });
   }
 
   function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
@@ -1021,7 +1144,7 @@
       <div class="ctrl"><button class="btn icon" id="mmPlay" type="button" aria-label="${esc(t('mmPlay'))}" title="${esc(t('mmPlay'))}">${MM_PLAY}</button>
         <input type="range" id="mmSlider" min="${-5}" max="${h}" step="1" value="-5" aria-label="${esc(t('mmHead'))}">
         <span class="num" id="mmTime"></span></div>
-      <p class="note">${t('mmNote')}</p></div>`;
+      <details class="map-guide"><summary>${t('mmGuide')}</summary><p class="note">${t('mmNote')}</p></details></div>`;
   }
   function wireMinimap(g, p) {
     if (mmTimer) { clearInterval(mmTimer); mmTimer = null; }
@@ -1146,18 +1269,19 @@
     const ctx = p.context;
     const dv = ctx.delta_v;
     const sign = v.flipped ? -1 : 1;
-    const ctxRows = [];
-    ctxRows.push([t('ctxOutcome'), `${esc(L('outcome', v.outcome))}${v.flipped && !v.swap ? ` <span class="muted">(${esc(p.actor)})</span>` : ''} · ${t('ctxKill')} ${esc(L('kill', p.kill_status))}`]);
-    if (v.leadState) ctxRows.push([t('ctxLead'), `${esc(t('leadText')(L('lead', v.leadState), fmtG(v.lead)))} · ${esc(L('phase', ctx.phase))}`]);
-    if (v.bgPct != null) ctxRows.push([t('ctxBg'), `${esc(t('bgText')(v.bgPct, S.h))} <span class="muted">(${t('bgNote')})</span>`]);
+    const ctxPrimaryRows = [];
+    const ctxDetailRows = [];
+    ctxPrimaryRows.push([t('ctxOutcome'), `${esc(L('outcome', v.outcome))}${v.flipped && !v.swap ? ` <span class="muted">(${esc(p.actor)})</span>` : ''} · ${t('ctxKill')} ${esc(L('kill', p.kill_status))}`]);
+    if (v.leadState) ctxPrimaryRows.push([t('ctxLead'), `${esc(t('leadText')(L('lead', v.leadState), fmtG(v.lead)))} · ${esc(L('phase', ctx.phase))}`]);
+    if (v.bgPct != null) ctxPrimaryRows.push([t('ctxBg'), `${esc(t('bgText')(v.bgPct, S.h))} <span class="muted">(${t('bgNote')})</span>`]);
     if (dv) {
       const x = sign * dv.dv;
-      ctxRows.push([t('ctxDv'), esc((x >= 0 ? t('dvText') : t('dvTextNeg'))(Math.round(Math.abs(x)).toLocaleString(), Math.round(dv.dv_bound).toLocaleString(), dv.window_s))]);
+      ctxDetailRows.push([t('ctxDv'), esc((x >= 0 ? t('dvText') : t('dvTextNeg'))(Math.round(Math.abs(x)).toLocaleString(), Math.round(dv.dv_bound).toLocaleString(), dv.window_s))]);
     }
-    if (ctx.overlapping_play_ids[S.h].length) ctxRows.push([t('ctxOverlap')(S.h), ctx.overlapping_play_ids[S.h].map(playLink).join('<br>') + `<br><span class="muted">${t('ctxOverlapNote')}</span>`]);
+    if (ctx.overlapping_play_ids[S.h].length) ctxDetailRows.push([t('ctxOverlap')(S.h), ctx.overlapping_play_ids[S.h].map(playLink).join('<br>') + `<br><span class="muted">${t('ctxOverlapNote')}</span>`]);
     if (ctx.minimap_near) {
       const nr = ctx.minimap_near;
-      ctxRows.push([t('ctxNear'), (nr.near.length ? nr.near.map(x => `${esc(x.player)} <span class="muted">(${esc(x.team)})</span>`).join(', ') : `<span class="muted">${t('ctxNearNone')}</span>`)
+      ctxDetailRows.push([t('ctxNear'), (nr.near.length ? nr.near.map(x => `${esc(x.player)} <span class="muted">(${esc(x.team)})</span>`).join(', ') : `<span class="muted">${t('ctxNearNone')}</span>`)
         + `<br><span class="muted">${esc(t('ctxNearNote')(nr.seen.join(', ')))}</span>`]);
     }
     if (ctx.riot_elsewhere) {
@@ -1170,20 +1294,20 @@
       const plates = {};
       evs.filter(e => e.kind === 'plate').forEach(e => { plates[e.team] = (plates[e.team] || 0) + 1; });
       if (Object.keys(plates).length) lines.push(`${esc(t('riotKind').plate)} ${Object.entries(plates).map(([tm, n]) => `${esc(tm)} ${n}`).join(' · ')}`);
-      ctxRows.push([t('ctxElse')(S.h), (lines.length ? lines.join('<br>') : `<span class="muted">${t('ctxElseNone')}</span>`)
+      ctxDetailRows.push([t('ctxElse')(S.h), (lines.length ? lines.join('<br>') : `<span class="muted">${t('ctxElseNone')}</span>`)
         + (lines.length ? `<br><span class="muted">${t('ctxElseNote')}</span>` : '')]);
     }
     const ep = g.episodes.find(e => e.id === p.episode_id);
     if (ep) {
-      ctxRows.push([t('ctxEpisode'), ep.play_ids.filter(i => i !== p.id).map(playLink).join('<br>')]);
+      ctxDetailRows.push([t('ctxEpisode'), ep.play_ids.filter(i => i !== p.id).map(playLink).join('<br>')]);
       const byTeam = {};
       ep.play_ids.forEach(i => involvedOf(PLAY[i]).forEach(x => { (byTeam[x.team] = byTeam[x.team] || new Set()).add(x.player); }));
       const teams = Object.keys(byTeam);
-      if (teams.length) ctxRows.push([t('ctxEpPlayers'), teams.map(tm => `${esc(tm)}: ${[...byTeam[tm]].map(esc).join(', ')}`).join(' · ')]);
+      if (teams.length) ctxDetailRows.push([t('ctxEpPlayers'), teams.map(tm => `${esc(tm)}: ${[...byTeam[tm]].map(esc).join(', ')}`).join(' · ')]);
     }
-    if (p.related_play_ids.length) ctxRows.push([t('ctxRelated'), p.related_play_ids.map(playLink).join('<br>')]);
+    if (p.related_play_ids.length) ctxDetailRows.push([t('ctxRelated'), p.related_play_ids.map(playLink).join('<br>')]);
     if (p.objective_links.length) {
-      ctxRows.push([t('ctxObj'), p.objective_links.map(o => {
+      ctxDetailRows.push([t('ctxObj'), p.objective_links.map(o => {
         const head = `<span class="chip fam">${esc(objLabel(o.objective))} · ${esc(L('role', o.role))}</span> ${esc(o.team)}`;
         if (o.role === 'acquire') return head + (o.linked_play_ids.length ? ' → ' + o.linked_play_ids.map(i => `${playLink(i)}${PLAY[i] ? ` <span class="muted">(${esc(objLinkType(PLAY[i], o.chain_id))})</span>` : ''}`).join(', ') : '');
         return head + ` · ${esc(objLabel(o.use_type))}` + (o.acquire_play_id ? ' ← ' + playLink(o.acquire_play_id) : '');
@@ -1197,7 +1321,7 @@
     if (v.tag) tags.push(`<span class="chip ${tagCls(v.tag)}">${esc(L('tag', v.tag))}</span>`);
     else if (v.flipped) tags.push(`<span class="chip">${t('oppPlay')}</span>`);
     if (p.speech_context === 'retrospective') tags.push(`<span class="chip">${t('retro')}</span>`);
-    (hlOf(p.id) || []).forEach(r => tags.push(`<span class="chip"><span class="star-mark" aria-hidden="true"></span>${esc(L('hl', r))}</span>`));
+    (hlOf(p.id) || []).forEach(r => tags.push(`<span class="chip highlight-reason">${SPARK_ICON}${esc(L('hl', r))}</span>`));
     const el = document.getElementById('playCard');
     const start = Math.max(0, p.t + (g.video_offset_s || 0) - 5);
     el.innerHTML = `
@@ -1206,16 +1330,22 @@
       <h2 class="play-title">${esc(p['title_' + S.lang])}</h2>
       ${v.flipped ? `<p class="flip-note">${esc(t('flipNote')(S.persp, p.actor))}</p>` : ''}
       <div class="horizons" aria-label="${esc(t('hzHead'))}">${hzHtml}</div>
-      ${minimapHtml(g, p)}
       ${involvedOf(p).length ? `<p class="players">${INV_ROLES.map(r => [r, involvedOf(p).filter(x => x.role === r)]).filter(([, xs]) => xs.length)
         .map(([r, xs]) => `<span class="role-lbl">${esc(L('inv', r))}</span> ${xs.map(x => `<button class="linkbtn" data-player="${esc(x.player)}">${esc(playerText(g, x.player))}</button>`).join(', ')}`).join('<br>')}</p>` : ''}
       <p class="desc">${esc(p['desc_' + S.lang])}</p>
       ${p.quote ? `<blockquote class="quote">“${esc(p.quote.replace(/>>\s*/g, ''))}”</blockquote>` : ''}
       <div class="yt"><iframe loading="lazy" src="https://www.youtube.com/embed/${g.youtube_id || g.video_id}?start=${start}" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="VOD"></iframe></div>
       ${location.protocol === 'file:' ? `<p class="yt-note">${t('ytNote')}</p>` : ''}
-      <dl class="ctx">${ctxRows.map(([k, val]) => `<dt>${k}</dt><dd>${val}</dd>`).join('')}</dl>
+      <section class="context-summary" aria-labelledby="ctxSummaryTitle">
+        <strong class="context-summary-title" id="ctxSummaryTitle">${t('ctxSummary')}</strong>
+        <dl class="ctx-primary">${ctxPrimaryRows.map(([k, val]) => `<div class="ctx-item"><dt>${k}</dt><dd>${val}</dd></div>`).join('')}</dl>
+        ${ctxDetailRows.length ? `<details class="ctx-more"><summary>${t('ctxMore')(ctxDetailRows.length)}</summary><dl class="ctx">${ctxDetailRows.map(([k, val]) => `<dt>${k}</dt><dd>${val}</dd>`).join('')}</dl></details>` : ''}
+      </section>
       <div class="foot"><span>${t('verification')}</span><a href="${p.yt_url}" target="_blank" rel="noopener">${t('vod')} (${p.video_fmt}) ↗</a></div>
       `;
+    const mapEl = document.getElementById('mapSlot');
+    const map = minimapHtml(g, p);
+    mapEl.innerHTML = map || `<div class="map-empty"><div><h3>${t('mmHead')}</h3><p>${t('mmUnavailable')}</p></div></div>`;
     el.querySelectorAll('.hz').forEach(b => b.onclick = () => { S.h = b.dataset.h; renderSet(); });
     wireMinimap(g, p);
     el.querySelectorAll('[data-goto]').forEach(b => b.onclick = () => selectPlay(b.dataset.goto));
@@ -1250,7 +1380,7 @@
     const hl = hlOf(p.id);
     return `<button type="button" class="row side-${side || 'none'} ${selected ? 'on' : ''} ${hl ? 'star' : ''}" data-id="${p.id}" ${selected ? 'aria-current="true"' : ''} ${hl ? `title="${esc(hl.map(r => L('hl', r)).join(' · '))}"` : ''}>
       <span class="t">${clock(p)}</span><span class="chip ${side}">${esc(p.actor || '?')}</span>
-      <span class="title"><span class="ttl">${hl ? `<span class="star-mark" aria-hidden="true"></span><span class="sr-only">${esc(t('hlOnly'))}</span>` : ''}${S.fPlayer && invOf(p, S.fPlayer) ? `<span class="chip">${esc(L('inv', invOf(p, S.fPlayer).role))}</span> ` : ''}${esc(p['title_' + S.lang])}${p.objective_links.length ? ' <span class="chip fam">' + p.objective_links.map(o => esc(objLabel(o.objective))).join('·') + '</span>' : ''}</span>${whoLine(p)}</span>
+      <span class="title"><span class="ttl">${hl ? `<span class="sr-only">${esc(t('hlOnly'))}</span>` : ''}${S.fPlayer && invOf(p, S.fPlayer) ? `<span class="chip">${esc(L('inv', invOf(p, S.fPlayer).role))}</span> ` : ''}${esc(p['title_' + S.lang])}${p.objective_links.length ? ' <span class="chip fam">' + p.objective_links.map(o => esc(objLabel(o.objective))).join('·') + '</span>' : ''}</span>${whoLine(p)}</span>
       <span class="famcell">${famChip(v.famKey, v.familyText, 'dot')}</span>
       <span class="e ${stateCls(h.state)}" title="${esc(L('state', h.state))}">${h.state === 'missing' ? '—' : fmtG(h.e)}</span></button>`;
   }
@@ -1275,16 +1405,19 @@
       if (S.fHl && !hlOf(p.id)) return false;
       return true;
     });
-    el.innerHTML = `<h3>${t('listTitle')} <span class="sub">${t('listSub')(list.length, g.plays.length, S.h)}</span></h3>
+    const measured = g.plays.filter(p => p.horizons[S.h].state !== 'missing').length;
+    const resolved = g.plays.filter(p => ['positive', 'negative'].includes(p.horizons[S.h].state)).length;
+    el.innerHTML = `<h3>${t('listTitle')} <span class="sub">${t('listSub')(list.length, g.plays.length)}</span></h3>
+      <p class="list-coverage">${t('listCoverage')(S.h, measured, resolved)}</p>
       <div class="filters">
         <select id="fFamily"><option value="">${t('fFamily')}</option>${D.families.map(f => `<option value="${f}" ${S.fFamily === f ? 'selected' : ''}>${esc(famLabel(f))}</option>`).join('')}</select>
         <select id="fTag"><option value="">${t('fTag')}</option>${tagKeys.map(k => `<option value="${k}" ${S.fTag === k ? 'selected' : ''}>${esc(L('tag', k))}</option>`).join('')}</select>
         <select id="fState"><option value="">${t('fState')}</option>${STATES.map(k => `<option value="${k}" ${S.fState === k ? 'selected' : ''}>${esc(L('state', k))}</option>`).join('')}</select>
         <select id="fPlayer"><option value="">${t('fPlayer')}</option>${(g.roster ? g.roster.teams : []).map(tm => `<optgroup label="${esc(tm.team)}">${tm.players.map(x => `<option value="${esc(x.player)}" ${S.fPlayer === x.player ? 'selected' : ''}>${esc(posLabel(x.position))} · ${esc(x.player)} · ${esc(champName(x))}</option>`).join('')}</optgroup>`).join('')}</select>
-        <label class="check"><input type="checkbox" id="fHl" ${S.fHl ? 'checked' : ''}><span class="star-mark" aria-hidden="true"></span>${t('hlOnly')}</label>
+        <label class="highlight-toggle ${S.fHl ? 'on' : ''}"><input class="sr-only" type="checkbox" id="fHl" ${S.fHl ? 'checked' : ''}>${SPARK_ICON}${t('hlOnly')}</label>
         ${S.fFamily || S.fTag || S.fState || S.fPlayer || S.fHl ? `<button class="btn" id="fClear">${t('clearFilters')}</button>` : ''}
       </div>
-      <p class="hl-legend"><span class="star-mark" aria-hidden="true"></span>${t('hlLegend')(S.h)}</p>
+      <details class="highlight-criteria"><summary><span class="criteria-title">${SPARK_ICON}<span>${t('hlCriteriaTitle')(S.h)}</span></span><span class="criteria-action"><span class="criteria-open">${t('hlCriteriaOpen')}</span><span class="criteria-close">${t('hlCriteriaClose')}</span></span></summary><p>${t('hlCriteria')(S.h)}</p></details>
       ${S.fPlayer ? `<p class="note-box" style="margin:-4px 0 8px">${t('playerNote')}</p>` : ''}
       <div class="rows"><div class="row head" aria-hidden="true"><span>${t('colTime')}</span><span>${t('colTeam')}</span><span>${t('colPlay')}</span><span class="famcell">${t('colType')}</span><span class="e">${t('colGold')(S.h)}${S.persp ? t('colFrom')(S.persp) : ''}</span></div>${list.map(p => rowHtml(p, p.id === S.playId)).join('')}</div>`;
     el.querySelector('#fFamily').onchange = e => { S.fFamily = e.target.value; renderList(g); };
