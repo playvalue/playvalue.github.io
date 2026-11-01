@@ -90,7 +90,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { background: var(--bg-main); scrollbar-gutter: stable; }
     /* Korean wraps between words, not inside them. */
-    html[lang="ko"] body { word-break: keep-all; overflow-wrap: break-word; }
+    html[lang="ko"] body, html[lang="zh-CN"] body, html[lang="ja"] body { word-break: keep-all; overflow-wrap: break-word; }
     body {
       background: var(--bg-main); color: var(--text-main);
       font-family: var(--font); font-feature-settings: 'tnum' 0;
@@ -132,6 +132,14 @@
     .btn:hover { border-color: var(--border-focus); }
     .btn.icon-only { width: 36px; height: 36px; padding: 0; justify-content: center; flex: none; }
     .btn.icon-only svg { width: 18px; height: 18px; display: block; }
+    .lang-picker { position: relative; }
+    .lang-flag { font-size: 1.12rem; line-height: 1; filter: saturate(.92); }
+    .lang-menu { position: absolute; z-index: 80; top: calc(100% + 8px); right: 0; min-width: 174px; padding: 6px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; box-shadow: var(--shadow-md); }
+    .lang-menu[hidden] { display: none; }
+    .lang-option { width: 100%; display: grid; grid-template-columns: 24px 1fr 14px; align-items: center; gap: 8px; border: 0; border-radius: 7px; padding: 8px 9px; background: transparent; color: var(--text-main); cursor: pointer; text-align: left; font-size: .84rem; }
+    .lang-option:hover, .lang-option:focus-visible { background: var(--bg-pill); }
+    .lang-option .check { opacity: 0; color: var(--accent); font-weight: 800; }
+    .lang-option.on .check { opacity: 1; }
     #btnTheme .theme-sun { display: none; }
     [data-theme="dark"] #btnTheme .theme-moon { display: none; }
     [data-theme="dark"] #btnTheme .theme-sun { display: block; }
@@ -417,10 +425,17 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v17H6.5A2.5 2.5 0 0 0 4 22V5.5Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v17h4.5A2.5 2.5 0 0 1 20 22V5.5Z"/></svg>
           <span class="sr-only" data-i18n="methodology">방법론</span>
         </a>
-        <button class="btn icon-only" id="btnLang" type="button" aria-label="English" title="English">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14.5 14.5 0 0 1 0 18M12 3a14.5 14.5 0 0 0 0 18"/></svg>
-          <span class="sr-only">English</span>
-        </button>
+        <div class="lang-picker">
+          <button class="btn icon-only" id="btnLang" type="button" aria-label="언어 선택" title="언어 선택" aria-haspopup="menu" aria-expanded="false">
+            <span class="lang-flag" id="langFlag" aria-hidden="true">🇰🇷</span><span class="sr-only">언어 선택</span>
+          </button>
+          <div class="lang-menu" id="langMenu" role="menu" hidden>
+            <button class="lang-option" type="button" role="menuitemradio" data-lang="ko"><span class="lang-flag" aria-hidden="true">🇰🇷</span><span>한국어</span><span class="check" aria-hidden="true">✓</span></button>
+            <button class="lang-option" type="button" role="menuitemradio" data-lang="en"><span class="lang-flag" aria-hidden="true">🇺🇸</span><span>English</span><span class="check" aria-hidden="true">✓</span></button>
+            <button class="lang-option" type="button" role="menuitemradio" data-lang="zh"><span class="lang-flag" aria-hidden="true">🇨🇳</span><span>简体中文</span><span class="check" aria-hidden="true">✓</span></button>
+            <button class="lang-option" type="button" role="menuitemradio" data-lang="ja"><span class="lang-flag" aria-hidden="true">🇯🇵</span><span>日本語</span><span class="check" aria-hidden="true">✓</span></button>
+          </div>
+        </div>
         <button class="btn icon-only" id="btnTheme" type="button" aria-label="다크 모드" title="다크 모드">
           <svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.2 15.2A8.5 8.5 0 0 1 8.8 3.8 8.5 8.5 0 1 0 20.2 15.2Z"/></svg>
           <svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
@@ -472,7 +487,7 @@
       tagline: '팀의 관점에서 보는 플레이의 밸류',
       legal: 'PlayValue는 Riot Games의 보증을 받지 않았으며, Riot Games 또는 Riot Games 자산의 제작·관리에 공식적으로 관여하는 누구의 견해나 의견도 반영하지 않습니다. Riot Games 및 관련 모든 자산은 Riot Games, Inc.의 상표 또는 등록 상표입니다.',
       taglineSub: '킬 없는 플레이와 실패한 시도까지, 해설이 짚은 중요 플레이의 밸류를 직후 15·30·60초의 두 팀 골드 차이로 봅니다.',
-      methodology: '방법론', lang: 'English', themeDark: '다크 모드', themeLight: '라이트 모드',
+      methodology: '방법론', lang: 'English', languagePicker: '언어 선택', themeDark: '다크 모드', themeLight: '라이트 모드',
       viewSet: '경기별 보기', viewXtab: '유형별 집계', winner: '승리',
       cov: (n, m, k) => `플레이 <strong>${n}</strong>건 중 골드 변화를 잰 것 <strong>${m}</strong>건, 그중 이득·손해가 판정된 것 <strong>${k}</strong>건`,
       duration: '경기 시간', perspective: '누구 입장에서', horizon: '골드 변화 구간', sec: s => `${s}초`,
@@ -545,7 +560,7 @@
       legal: "PlayValue isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.",
       tagline: 'The value of a play, seen from the team',
       taglineSub: 'Key plays the casters point out, including kill-free ones and failed attempts, valued by the gold gap between the teams 15, 30 and 60 seconds later.',
-      methodology: 'Methodology', lang: '한국어', themeDark: 'Dark mode', themeLight: 'Light mode',
+      methodology: 'Methodology', lang: '한국어', languagePicker: 'Choose language', themeDark: 'Dark mode', themeLight: 'Light mode',
       viewSet: 'By game', viewXtab: 'Totals by type', winner: 'Winner',
       cov: (n, m, k) => `<strong>${n}</strong> plays: gold change measured for <strong>${m}</strong>, of which <strong>${k}</strong> are a clear gain or loss`,
       duration: 'Length', perspective: 'Seen from', horizon: 'Gold change over', sec: s => `${s}s`,
@@ -615,6 +630,59 @@
       phaseBracket: 'Bracket stage', phasePlayIn: 'Play-In',
     },
   };
+  T.zh = { ...T.en,
+    tagline: '从团队视角看一场操作的价值',
+    taglineSub: '包括无击杀操作与失败尝试，用随后15、30、60秒的两队经济差来观察解说提到的重要操作。',
+    legal: 'PlayValue 未经 Riot Games 认可，也不代表 Riot Games 或任何参与制作、管理 Riot Games 产品人员的观点。Riot Games 及其相关资产均为 Riot Games, Inc. 的商标或注册商标。',
+    methodology: '研究方法', languagePicker: '选择语言', themeDark: '深色模式', themeLight: '浅色模式',
+    viewSet: '按比赛查看', viewXtab: '按类型汇总', winner: '胜者',
+    cov: (n, m, k) => `共 <strong>${n}</strong> 个操作：测得经济变化 <strong>${m}</strong> 个，其中 <strong>${k}</strong> 个可明确判为收益或损失`,
+    duration: '比赛时长', perspective: '观察视角', horizon: '经济变化区间', sec: s => `${s}秒`,
+    guideTitle: '如何读懂数字',
+    guide: [['经济变化','从操作开始起15、30、60秒内，执行方与对手之间的经济差扩大或缩小了多少。数据来自转播画面的团队经济。'],['±200误差','转播画面将团队经济四舍五入至百位，因此每个变化都有误差。落在误差范围内时标为“无法判断”。'],['未测量','例如回放期间，无法读到开始或结束时的经济。'],['同一阶段比较','汇集本局同一阶段（对线、中期、后期）的所有30秒区间，并标出该操作的位置。这表示相对位置，不是效果大小。'],['不代表因果','同一时间地图其他位置发生的事情也包含在经济变化中。变化并不说明由该操作造成。'],['观察视角','图表和列表按所选队伍显示。对方操作会翻转正负号，Gank会显示为“应对Gank”。汇总仍按解说指出的一方每个操作只计一次。']],
+    chartTitle: '经济时间线', chartSub: (h, team) => `上方折线为两队经济差，下方每根柱为一个操作后${h}秒的经济变化；向上都表示${team}获益。`,
+    lgBlue: '蓝色方操作', lgRed: '红色方操作', lgUnres: '误差范围内', lgWin: '所选操作区间', lgFlow: '关联操作（90秒内）', lgObj: '峡谷先锋、纳什男爵、远古巨龙及后续操作',
+    laneFlow: '关联', laneObj: '资源', laneGap: '两队经济差', laneBars: h => `每个操作后${h}秒经济变化`,
+    finding: (h, clk, title, team, e) => `${h}秒内最大变化：${clk} ${title}（${team} ${e}）`, findingCompact: (h, clk, team, e) => `↗ ${h}秒最大变化 · ${clk} · ${team} ${e}`, noFinding: h => `${h}秒区间没有可明确判定收益或损失的操作。`,
+    gameLine: (w, d) => `${w}获胜 · ${d}`, gameNav: (n, w, d) => `第${n}局 · ${w}获胜 · ${d}`,
+    detailEmpty: '选择一个操作即可在此查看详情。', prevWord: '上一个', nextWord: '下一个', keyPrev: '上一个操作（←键）', keyNext: '下一个操作（→键）',
+    colTime: '时间', colTeam: '队伍', colPlay: '操作', colType: '操作类型', colGold: h => `${h}秒经济变化`, colFrom: tm => `（${tm}视角）`,
+    hlOnly: '只看值得关注', hlCriteriaTitle: h => `值得关注 · ${h}秒区间`, hlCriteria: h => `成功却损失经济、失败或取消却获得经济，或${h}秒经济波动位于该阶段最大10%的操作。`, hlCriteriaOpen: '查看标准', hlCriteriaClose: '收起',
+    listTitle: '操作列表', listSub: (n, total) => n === total ? `${total}个` : `${n} / ${total}个`, listCoverage: (h, m, k) => `${h}秒经济已测 <strong>${m}</strong> · 方向明确 <strong>${k}</strong>`,
+    fFamily: '所有操作类型', fTag: '所有结果', fState: '所有经济变化', fPlayer: '所有选手与英雄', clearFilters: '清除筛选', playerNote: '显示该选手执行、成为目标或参与应对的操作，并从其队伍视角呈现。只包含解说提到姓名的操作。',
+    ctxEpPlayers: '此场景涉及的选手', prev: '← 上一个', next: '下一个 →', vod: '观看视频', vodNew: '在YouTube打开 ↗', ytNote: '作为本地文件打开时，YouTube可能无法播放。请使用上方链接。',
+    ctxSummary: '判定摘要', ctxMore: n => `更多背景 · ${n}项`, ctxOutcome: '操作结果', ctxKill: '击杀', ctxLead: '操作前', ctxBg: '与同阶段相比', ctxDv: '经济节奏变化（参考）', ctxOverlap: h => `${h}秒内的其他操作`, ctxOverlapNote: '这些操作的影响也混入了经济变化',
+    mmHead: '地图位置', mmSrc: '转播小地图与画面 + Riot记录 · 图像来自Riot Data Dragon', mmPlay: '播放', mmPause: '暂停', mmAt: (d, c) => `开始${d >= 0 ? '+' : ''}${d}秒 · ${c}`, mmGuide: '如何读位置', mmUnavailable: '此操作没有可用的位置数据。',
+    mmNote: '白色外圈的大图标是此操作中被点名的选手，线条表示之后的移动。位置来自转播小地图或画面中的选手名，并每分钟与Riot精确位置校准。虚线淡色图标为已知位置间的补点，灰色叉号表示Riot记录中的阵亡，短暂出现的叉圈表示击杀地点。无法从小地图或画面识别的选手不会显示。',
+    ctxNear: '开始时附近选手（小地图）', ctxNearNone: '无', ctxNearNote: n => `距此操作中被点名选手（${n}）约1,500单位内`, ctxElse: h => `${h}秒内其他位置事件`, ctxElseNone: 'Riot记录中无', ctxElseNote: 'Riot记录中没有此操作选手参与的击杀、史诗野怪或建筑事件；其经济也包含在上方变化中。',
+    riotKind: { kill:'击杀', tower:'防御塔', inhibitor:'召唤水晶', plate:'镀层' }, riotMonster: { DRAGON:'元素亚龙', BARON_NASHOR:'纳什男爵', RIFTHERALD:'峡谷先锋', HORDE:'虚空巢虫', ATAKHAN:'厄塔汗', ELDER_DRAGON:'远古巨龙' },
+    ctxEpisode: '同一场景', ctxRelated: '关联操作', ctxObj: '地图资源', leadText: (state,g) => `团队经济 ${g}（${state}）`, bgText: (pct,h) => pct >= 50 ? `本局同阶段${h}秒区间的前${Math.max(1,Math.round(100-pct))}%` : `本局同阶段${h}秒区间的后${Math.max(1,Math.round(pct))}%`, bgNote: '仅表示位置，不是效果大小',
+    dvText: (v,b,w) => `比较操作前后${w}秒，每分钟经济差加快${v}（±${b}）`, dvTextNeg: (v,b,w) => `比较操作前后${w}秒，每分钟经济差减慢${v}（±${b}）`, verification: '仅依据解说整理，未用视频核验', retro: '事后回顾', flipNote: (team,actor) => `当前从${team}视角查看。原为${actor}的操作，汇总中仅按${actor}计一次。`, oppPlay: '对方操作',
+    hzHead: '操作后的经济变化', hzOk: b => `误差±${b}`, hzUnres: b => `在±${b}内，无法判断`,
+    xtTitle: '按类型汇总', xtSub: '每个操作按执行方只计一次。点击数字可在下方查看对应操作。', scope: '范围', scopeGame: '所选比赛', scopeStage: '本系列赛', scopeAll: '整个赛事', rowsBy: '拆分方式', rFamily: '操作类型', rOutcome: '结果', rKill: '击杀', rFamOut: '类型 × 结果', rPlayer: '选手', rChamp: '英雄',
+    xtPlayerNote: '按选手或英雄拆分时，计算其执行、成为目标或参与应对的操作，并从该选手队伍视角显示；对方操作会翻转经济变化正负号。多人参与的操作会对每位选手各计一次，只统计解说点名的情况。', sortBy: c => `按${c}排序`, rowLabel: '项目', xtGames: '比赛', xtPerGame: '每局', xtCum: '累计', total: '合计', usedBy: '使用者', played: '使用英雄', games: n => `${n}局`,
+    xtNote: '四栏之和为总数。收益与损失只统计超出误差范围、方向明确的变化。这些是观测到的经济变化，并非操作造成的因果效果。', xtPick: '点击数字后，对应操作会显示在这里。', skip: '跳到正文', loading: '加载中…', loadError: '无法加载数据，请刷新页面。', plannedTitle: '即将推出', plannedBody: '此赛事尚无已分析比赛。', gameN: n => `第${n}局`, gameAria: (n,w) => `第${n}局，${w}获胜`, serLabel: '系列赛', serOlder: '上一系列赛', serNewer: '下一系列赛', serCount: (i,n) => `第${i}/${n}个系列赛`, phaseBracket: '淘汰赛阶段', phasePlayIn: '入围赛', sourceEnglish: '操作标题与说明暂以英文显示',
+  };
+  T.ja = { ...T.en,
+    tagline: 'チーム視点で見るプレーの価値', taglineSub: 'キルのないプレーや失敗した試みも含め、実況が注目したプレーを15・30・60秒後の両チームのゴールド差で見ます。',
+    legal: 'PlayValueはRiot Gamesの承認を受けておらず、Riot GamesまたはRiot Gamesの資産の制作・管理に正式に関わる個人の見解を示すものではありません。Riot Gamesおよび関連資産はRiot Games, Inc.の商標または登録商標です。',
+    methodology:'調査方法', languagePicker:'言語を選択', themeDark:'ダークモード', themeLight:'ライトモード', viewSet:'試合別', viewXtab:'タイプ別集計', winner:'勝者',
+    cov:(n,m,k)=>`全<strong>${n}</strong>プレー中、ゴールド変化を測定できたものは<strong>${m}</strong>件、そのうち利益・損失を判定できたものは<strong>${k}</strong>件`, duration:'試合時間', perspective:'視点', horizon:'ゴールド変化の区間', sec:s=>`${s}秒`,
+    guideTitle:'数字の読み方', guide:[['ゴールド変化','プレー開始から15・30・60秒の間に、実行したチームと相手のゴールド差がどれだけ広がったか、または縮まったかを示します。放送画面のチームゴールドから計算します。'],['誤差±200','画面のチームゴールドは100単位に丸められるため生じる範囲です。この範囲内の変化は「不明」と表示します。'],['未測定','リプレイなどで開始時点または終了時点のゴールドを読み取れなかった場合です。'],['同じ時間帯と比較','同じ試合・同じフェーズの全30秒区間を集め、その分布内での位置を示します。効果の大きさではありません。'],['因果ではありません','同時刻に別の場所で起きた出来事もゴールド変化に含まれます。変化がそのプレーによるとは限りません。'],['視点','選んだチームの視点で図と一覧を読みます。相手のプレーは符号が反転し、ギャンクは「ギャンク対応」として表示されます。集計では実況が示した側で一度だけ数えます。']],
+    chartTitle:'ゴールド・タイムライン', chartSub:(h,team)=>`上の線は両チームのゴールド差、下の棒は各プレー後${h}秒のゴールド変化です。どちらも上向きが${team}の利益です。`,
+    lgBlue:'ブルー側のプレー', lgRed:'レッド側のプレー', lgUnres:'誤差範囲内', lgWin:'選択したプレーの区間', lgFlow:'関連プレー（90秒以内）', lgObj:'ヘラルド・バロン・エルダー獲得と後続プレー', laneFlow:'関連', laneObj:'オブジェクト', laneGap:'両チームのゴールド差', laneBars:h=>`各プレー後${h}秒のゴールド変化`,
+    finding:(h,clk,title,team,e)=>`${h}秒で最大の変化：${clk} ${title}（${team} ${e}）`, findingCompact:(h,clk,team,e)=>`↗ ${h}秒最大変化 · ${clk} · ${team} ${e}`, noFinding:h=>`${h}秒で利益・損失を判定できるプレーはありません。`, gameLine:(w,d)=>`${w}勝利 · ${d}`, gameNav:(n,w,d)=>`第${n}ゲーム · ${w}勝利 · ${d}`,
+    detailEmpty:'プレーを選ぶと詳細が表示されます。', prevWord:'前', nextWord:'次', keyPrev:'前のプレー（←キー）', keyNext:'次のプレー（→キー）', colTime:'時間', colTeam:'チーム', colPlay:'プレー', colType:'プレータイプ', colGold:h=>`${h}秒のゴールド変化`, colFrom:tm=>`（${tm}視点）`,
+    hlOnly:'注目シーンのみ', hlCriteriaTitle:h=>`注目シーン · ${h}秒基準`, hlCriteria:h=>`成功したのにゴールド損、失敗・中止したのにゴールド益、または同フェーズで${h}秒の変動幅が上位10%のプレーです。`, hlCriteriaOpen:'基準を見る', hlCriteriaClose:'閉じる', listTitle:'プレー一覧', listSub:(n,total)=>n===total?`${total}件`:`${n} / ${total}件`, listCoverage:(h,m,k)=>`${h}秒ゴールド測定 <strong>${m}</strong> · 方向判定 <strong>${k}</strong>`,
+    fFamily:'すべてのプレータイプ', fTag:'すべての結果', fState:'すべてのゴールド変化', fPlayer:'すべての選手・チャンピオン', clearFilters:'フィルターを解除', playerNote:'その選手が実行・対象・対応として関わったプレーを、その選手のチーム視点で表示します。実況が名前を挙げたプレーのみです。', ctxEpPlayers:'この場面に関わった選手', prev:'← 前', next:'次 →', vod:'動画を見る', vodNew:'YouTubeで開く ↗', ytNote:'ローカルファイルとして開くとYouTubeが再生できない場合があります。上のリンクを使ってください。',
+    ctxSummary:'判定サマリー', ctxMore:n=>`詳しい状況 · ${n}項目`, ctxOutcome:'プレー結果', ctxKill:'キル', ctxLead:'プレー直前', ctxBg:'同じフェーズとの比較', ctxDv:'ゴールドペースの変化（参考）', ctxOverlap:h=>`${h}秒以内に重なるプレー`, ctxOverlapNote:'これらの影響もゴールド変化に含まれます',
+    mmHead:'マップ位置', mmSrc:'放送ミニマップ・画面 + Riot記録 · 画像 Riot Data Dragon', mmPlay:'再生', mmPause:'停止', mmAt:(d,c)=>`開始${d>=0?'+':''}${d}秒 · ${c}`, mmGuide:'位置の読み方', mmUnavailable:'このプレーには表示できる位置データがありません。', mmNote:'白い縁の大きなアイコンはこのプレーで名前が挙がった選手、線はその後の移動です。位置は放送ミニマップまたは選手名が映る画面から読み、1分ごとにRiotの正確な位置へ合わせます。薄い破線は既知位置間の補間、灰色の×はRiot記録上のデス、短く出る×印の円はキル地点です。読み取れない選手は表示しません。',
+    ctxNear:'開始時に近くにいた選手（ミニマップ）', ctxNearNone:'なし', ctxNearNote:n=>`このプレーで名前が挙がった選手（${n}）から約1,500ユニット以内`, ctxElse:h=>`${h}秒以内に別の場所で起きたこと`, ctxElseNone:'Riot記録ではなし', ctxElseNote:'このプレーの選手が関与していないキル、エピックモンスター、建造物です。そのゴールドも上の変化に含まれます。',
+    riotKind:{kill:'キル',tower:'タワー',inhibitor:'インヒビター',plate:'タワープレート'}, riotMonster:{DRAGON:'ドラゴン',BARON_NASHOR:'バロン',RIFTHERALD:'リフトヘラルド',HORDE:'ヴォイドグラブ',ATAKHAN:'アタカン',ELDER_DRAGON:'エルダードラゴン'}, ctxEpisode:'同じ場面', ctxRelated:'関連プレー', ctxObj:'オブジェクト', leadText:(state,g)=>`チームゴールド ${g}（${state}）`, bgText:(pct,h)=>pct>=50?`この試合同フェーズの${h}秒区間で上位${Math.max(1,Math.round(100-pct))}%`:`この試合同フェーズの${h}秒区間で下位${Math.max(1,Math.round(pct))}%`, bgNote:'位置を示すだけで効果の大きさではありません',
+    dvText:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}速く拡大（±${b}）`, dvTextNeg:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}遅く拡大（±${b}）`, verification:'実況のみから整理し、動画では確認していません', retro:'後から振り返った場面', flipNote:(team,actor)=>`${team}視点で表示中です。元は${actor}のプレーで、集計では${actor}として一度だけ数えます。`, oppPlay:'相手チームのプレー', hzHead:'プレー後のゴールド変化', hzOk:b=>`誤差±${b}`, hzUnres:b=>`±${b}以内のため不明`,
+    xtTitle:'タイプ別集計', xtSub:'各プレーは実行したチーム基準で一度だけ数えます。数字を押すと該当プレーが下に表示されます。', scope:'範囲', scopeGame:'選択した試合', scopeStage:'このシリーズ', scopeAll:'大会全体', rowsBy:'分け方', rFamily:'プレータイプ', rOutcome:'結果', rKill:'キル', rFamOut:'タイプ × 結果', rPlayer:'選手', rChamp:'チャンピオン', xtPlayerNote:'選手・チャンピオン別では、実行・対象・対応として関わったプレーをその選手のチーム視点で数えます。相手のプレーはゴールド変化の符号を反転します。複数の選手が関わるプレーは選手ごとに一度入り、実況が名前を挙げたものだけを数えます。', sortBy:c=>`${c}で並べ替え`, rowLabel:'項目', xtGames:'試合', xtPerGame:'1試合当たり', xtCum:'累計', total:'合計', usedBy:'使用者', played:'使用チャンピオン', games:n=>`${n}試合`, xtNote:'4列の合計が総数です。利益と損失は誤差範囲を超えて方向が明確な場合だけ数えます。これは観測されたゴールド変化であり、プレーの因果効果ではありません。', xtPick:'数字を押すと該当プレーがここに表示されます。',
+    skip:'本文へ移動', loading:'読み込み中…', loadError:'データを読み込めませんでした。再読み込みしてください。', plannedTitle:'準備中', plannedBody:'この大会ではまだ分析済みの試合がありません。', gameN:n=>`第${n}ゲーム`, gameAria:(n,w)=>`第${n}ゲーム、${w}の勝利`, serLabel:'シリーズ', serOlder:'前のシリーズ', serNewer:'次のシリーズ', serCount:(i,n)=>`${n}シリーズ中${i}番目`, phaseBracket:'ブラケットステージ', phasePlayIn:'プレイイン', sourceEnglish:'プレーのタイトルと説明は現在英語で表示されます',
+  };
   const LBL = {
     ko: {
       state: { positive: '이득', negative: '손해', unresolved: '불확실', missing: '측정 없음' },
@@ -642,10 +710,29 @@
       flipFamily: { gank: 'Responding to a gank', defense: 'Gank attempt (opponent responded)' },
       inv: { actor: 'Acted', target: 'Targeted', response: 'Responded', mentioned: 'Mentioned' },
     },
+    zh: {
+      state:{positive:'收益',negative:'损失',unresolved:'无法判断',missing:'未测量'}, tag:{success_gain:'成功 · 经济收益',success_loss:'成功 · 经济损失',failure_gain:'失败 · 经济收益',failure_loss:'失败 · 经济损失',unresolved:'经济变化不明确'}, outcome:{success:'成功',mixed:'部分成功',failure:'失败',aborted:'取消',unknown:'未知'}, kill:{kill_mentioned:'有',explicit_no_kill:'无',not_established:'未确认'}, lead:{ahead:'领先',even:'接近',behind:'落后'}, phase:{lane:'对线期（14分钟前）',mid:'中期（14–25分钟）',late:'后期（25分钟后）'}, reason:{no_common_valid_endpoint_source:'无法从画面读取经济',outside_comparison_grid:'超出经济记录区间',actor_unspecified:'无法确定执行方',unconfirmed_retrospective_event_time:'事后回顾，时间未知'}, hl:{success_loss:'成功但经济损失',failure_gain:'失败或取消但经济收益',bg_top:'同阶段波动幅度前10%',bg_bottom:'同阶段波动幅度前10%'}, role:{acquire:'获取',use:'召唤',buff_play:'增益期间操作'}, flipFamily:{gank:'应对对方Gank',defense:'Gank尝试（对方应对）'}, inv:{actor:'执行',target:'目标',response:'应对',mentioned:'提及'},
+    },
+    ja: {
+      state:{positive:'利益',negative:'損失',unresolved:'不明',missing:'未測定'}, tag:{success_gain:'成功 · ゴールド利益',success_loss:'成功 · ゴールド損失',failure_gain:'失敗 · ゴールド利益',failure_loss:'失敗 · ゴールド損失',unresolved:'ゴールド変化不明'}, outcome:{success:'成功',mixed:'一部成功',failure:'失敗',aborted:'中止',unknown:'不明'}, kill:{kill_mentioned:'あり',explicit_no_kill:'なし',not_established:'未確認'}, lead:{ahead:'リード',even:'互角',behind:'ビハインド'}, phase:{lane:'レーン戦（14分前）',mid:'中盤（14–25分）',late:'終盤（25分以降）'}, reason:{no_common_valid_endpoint_source:'画面のゴールドを読めない',outside_comparison_grid:'ゴールド記録区間外',actor_unspecified:'プレーしたチームが不明',unconfirmed_retrospective_event_time:'後からの回想で時刻不明'}, hl:{success_loss:'成功したがゴールド損失',failure_gain:'失敗・中止したがゴールド利益',bg_top:'同フェーズの変動幅上位10%',bg_bottom:'同フェーズの変動幅上位10%'}, role:{acquire:'獲得',use:'召喚',buff_play:'バフ中のプレー'}, flipFamily:{gank:'相手ギャンクへの対応',defense:'ギャンク試行（相手が対応）'}, inv:{actor:'実行',target:'対象',response:'対応',mentioned:'言及'},
+    },
   };
   const STATES = ['positive', 'negative', 'unresolved', 'missing'];
   const OUTCOMES = ['success', 'mixed', 'failure', 'aborted', 'unknown'];
   const KILLS = ['kill_mentioned', 'explicit_no_kill', 'not_established'];
+  const LANG_META = { ko:{html:'ko',flag:'🇰🇷',name:'한국어'}, en:{html:'en',flag:'🇺🇸',name:'English'}, zh:{html:'zh-CN',flag:'🇨🇳',name:'简体中文'}, ja:{html:'ja',flag:'🇯🇵',name:'日本語'} };
+  const LOCAL_LABELS = {
+    zh: {
+      family:{objective_hunt:'史诗资源争夺',objective_contest:'史诗资源对抗',structure:'建筑进攻/防守',gank:'Gank / 越塔 / 抓单尝试',fight:'交战 / 团战',lane:'对线、资源与发育',defense:'遭受进攻（躲避 / 生存 / 撤退）',vision:'视野与信息',other:'其他'},
+      objective:{herald:'峡谷先锋',baron:'纳什男爵',elder:'远古巨龙',acquire:'获取',use:'召唤',buff_play:'增益期间操作',structure_destroyed:'摧毁建筑',structure_damaged:'建筑受损',stopped:'被阻止',fight:'交战或资源对抗',other:'其他',mixed:'编码者意见不一'},
+      position:{TOP:'上路',JUNGLE:'打野',MIDDLE:'中路',BOTTOM:'下路',UTILITY:'辅助'},
+    },
+    ja: {
+      family:{objective_hunt:'エピックオブジェクト獲得',objective_contest:'エピックオブジェクト争奪',structure:'建造物の攻撃・防衛',gank:'ギャンク / ダイブ / キャッチ試行',fight:'交戦 / 集団戦',lane:'レーン・リソース・成長',defense:'攻撃への対応（回避 / 生存 / 離脱）',vision:'視界・情報',other:'その他'},
+      objective:{herald:'リフトヘラルド',baron:'バロンナッシャー',elder:'エルダードラゴン',acquire:'獲得',use:'召喚',buff_play:'バフ中のプレー',structure_destroyed:'建造物破壊',structure_damaged:'建造物へのダメージ',stopped:'阻止',fight:'交戦・オブジェクト争奪',other:'その他',mixed:'判定不一致'},
+      position:{TOP:'トップ',JUNGLE:'ジャングル',MIDDLE:'ミッド',BOTTOM:'ボット',UTILITY:'サポート'},
+    },
+  };
 
   // ------------------------------------------------------------------ state
   const S = {
@@ -654,7 +741,8 @@
     xScope: 'all', xRows: 'family', xCell: null, xSort: { col: 'positive', rev: false }, guideOpen: false,
   };
   try {
-    S.lang = localStorage.getItem('lv_lang') || S.lang;
+    const storedLang = localStorage.getItem('lv_lang');
+    if (LANG_META[storedLang]) S.lang = storedLang;
     S.theme = localStorage.getItem('lv_theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     // The guide starts open on a first visit and then remembers whether the viewer closed it.
     S.guideOpen = localStorage.getItem('lv_guide') === '1';
@@ -663,8 +751,10 @@
 
   const t = k => T[S.lang][k];
   const L = (group, k) => (LBL[S.lang][group] || {})[k] ?? k;
-  const famLabel = f => (f ? (D.family_labels[S.lang][f] || f) : '—');
-  const objLabel = k => D.objective_links.labels[S.lang][k] || k;
+  const dataLang = () => S.lang === 'ko' ? 'ko' : 'en';
+  const contentText = (obj, stem) => obj[`${stem}_${dataLang()}`] ?? obj[`${stem}_en`] ?? '';
+  const famLabel = f => (f ? ((LOCAL_LABELS[S.lang]?.family || D.family_labels[S.lang] || D.family_labels.en)[f] || f) : '—');
+  const objLabel = k => (LOCAL_LABELS[S.lang]?.objective || D.objective_links.labels[S.lang] || D.objective_links.labels.en)[k] || k;
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const SPARK_ICON = '<span class="highlight-spark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/><path d="M5 3v4M3 5h4M19 17v4M17 19h4"/></svg></span>';
   const fmtG = v => (v > 0 ? '+' : v < 0 ? '−' : '±') + Math.abs(v).toLocaleString();
@@ -675,7 +765,7 @@
   const syncPressed = () => document.querySelectorAll('.seg button, .gbtn, .hz').forEach(b => b.setAttribute('aria-pressed', String(b.classList.contains('on'))));
   // Plays outside the gold stream have no game clock; show the video time in brackets instead.
   const clock = p => p.fmt || `(${p.video_fmt})`;
-  const posLabel = k => D.position_labels[S.lang][k] || k;
+  const posLabel = k => (LOCAL_LABELS[S.lang]?.position || D.position_labels[S.lang] || D.position_labels.en)[k] || k;
   const champName = x => (S.lang === 'ko' ? x.champion_ko || x.champion : x.champion);
   // Player lookup per game: name -> {team, position, champion, champion_ko}.
   const ROSTER = {};
@@ -794,15 +884,22 @@
 
   // ------------------------------------------------------------------ chrome
   function renderChrome() {
-    document.documentElement.lang = S.lang;
+    document.documentElement.lang = LANG_META[S.lang].html;
     document.documentElement.dataset.theme = S.theme;
     document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
     document.querySelector('.tagline').title = `${t('tagline')} ${t('taglineSub')}`;
     const methodologyLink = document.getElementById('methodologyLink');
     methodologyLink.ariaLabel = methodologyLink.title = t('methodology');
     const langButton = document.getElementById('btnLang');
-    langButton.ariaLabel = langButton.title = t('lang');
-    langButton.querySelector('.sr-only').textContent = t('lang');
+    const languageLabel = t('languagePicker') || T.en.languagePicker || 'Choose language';
+    langButton.ariaLabel = langButton.title = languageLabel;
+    langButton.querySelector('.sr-only').textContent = languageLabel;
+    document.getElementById('langFlag').textContent = LANG_META[S.lang].flag;
+    document.querySelectorAll('.lang-option').forEach(option => {
+      const on = option.dataset.lang === S.lang;
+      option.classList.toggle('on', on);
+      option.setAttribute('aria-checked', String(on));
+    });
     const themeButton = document.getElementById('btnTheme');
     const themeLabel = S.theme === 'dark' ? t('themeLight') : t('themeDark');
     themeButton.ariaLabel = themeButton.title = themeLabel;
@@ -812,7 +909,7 @@
     document.getElementById('skipLink').textContent = t('skip');
 
     const tt = document.getElementById('tournTabs');
-    tt.innerHTML = DATA.tournaments.map(x => `<button data-t="${x.id}" class="${S.tourn === x.id ? 'on' : ''}">${esc(x['name_' + S.lang])}<span class="badge">${esc(x['badge_' + S.lang])}</span></button>`).join('');
+    tt.innerHTML = DATA.tournaments.map(x => `<button data-t="${x.id}" class="${S.tourn === x.id ? 'on' : ''}">${esc(contentText(x, 'name'))}<span class="badge">${esc(contentText(x, 'badge'))}</span></button>`).join('');
     tt.querySelectorAll('button').forEach(b => b.onclick = () => {
       S.tourn = b.dataset.t;
       // Switching to a tournament with games opens its latest series; a planned one keeps the current game.
@@ -837,7 +934,7 @@
       const wins = {};
       gs.forEach(g => { wins[g.blue_team] = wins[g.blue_team] || 0; wins[g.red_team] = wins[g.red_team] || 0; wins[g.winner] += 1; });
       const [a, b] = Object.entries(wins).sort((x, y) => y[1] - x[1]);
-      return `${S.lang === 'ko' ? gs[0].stage_ko : gs[0].stage_en} · ${a[0]} ${a[1]}:${b[1]} ${b[0]}`;
+      return `${contentText(gs[0], 'stage')} · ${a[0]} ${a[1]}:${b[1]} ${b[0]}`;
     };
     const cur = seriesOf(game());
     const ci = series.indexOf(cur);
@@ -902,7 +999,7 @@
           <section class="card timeline-card">
             <div class="timeline-head">
               <h3>${t('chartTitle')} <span class="sub">${esc(t('chartSub')(S.h, S.persp))}</span></h3>
-              ${f ? `<button class="timeline-finding" data-goto="${f.id}" title="${esc(t('finding')(S.h, clock(f), f['title_' + S.lang], f.actor, fmtG(f.horizons[S.h].e)))}">${esc(t('findingCompact')(S.h, clock(f), f.actor, fmtG(f.horizons[S.h].e)))}</button>` : ''}
+              ${f ? `<button class="timeline-finding" data-goto="${f.id}" title="${esc(t('finding')(S.h, clock(f), contentText(f, 'title'), f.actor, fmtG(f.horizons[S.h].e)))}">${esc(t('findingCompact')(S.h, clock(f), f.actor, fmtG(f.horizons[S.h].e)))}</button>` : ''}
             </div>
             <div class="chart-wrap"><svg id="chart" role="img" aria-label="${esc(t('chartTitle'))}"></svg><div class="tip" id="tip" aria-hidden="true"></div></div>
             <div class="legend">
@@ -1082,7 +1179,7 @@
       el.onclick = () => selectPlay(el.dataset.id, true);
       el.onmouseenter = () => {
         const p = PLAY[el.dataset.id], v = viewOf(p), h = v.hz[S.h];
-        tip.innerHTML = `<b>${clock(p)}</b> ${esc(p.actor || '?')} · ${esc(v.familyText)}<br>${esc(p['title_' + S.lang])}<br>${t('sec')(S.h)} <b class="${stateCls(h.state)}">${eText(h)}</b> ${L('state', h.state)}`;
+        tip.innerHTML = `<b>${clock(p)}</b> ${esc(p.actor || '?')} · ${esc(v.familyText)}<br>${esc(contentText(p, 'title'))}<br>${t('sec')(S.h)} <b class="${stateCls(h.state)}">${eText(h)}</b> ${L('state', h.state)}`;
         tip.style.display = 'block';
       };
       el.onmousemove = ev => {
@@ -1105,7 +1202,7 @@
 
   function playLink(id) {
     const p = PLAY[id];
-    return p ? `<button class="linkbtn" data-goto="${id}">${clock(p)} ${esc(p['title_' + S.lang])}</button>` : esc(id);
+    return p ? `<button class="linkbtn" data-goto="${id}">${clock(p)} ${esc(contentText(p, 'title'))}</button>` : esc(id);
   }
 
   // ------------------------------------------------------------------ minimap
@@ -1327,12 +1424,13 @@
     el.innerHTML = `
       <div class="play-head"><div class="left">${tags.join('')}<span class="muted mono" style="font-size:.75rem">${p.id}</span></div>
         <div class="navbtns"><button class="btn" id="prevP" title="${esc(t('keyPrev'))}" ${idx <= 0 ? 'disabled' : ''}><kbd>←</kbd>${t('prevWord')}</button><button class="btn" id="nextP" title="${esc(t('keyNext'))}" ${idx >= g.plays.length - 1 ? 'disabled' : ''}>${t('nextWord')}<kbd>→</kbd></button></div></div>
-      <h2 class="play-title">${esc(p['title_' + S.lang])}</h2>
+      <h2 class="play-title">${esc(contentText(p, 'title'))}</h2>
+      ${S.lang === 'zh' || S.lang === 'ja' ? `<p class="muted" style="font-size:.74rem;margin-top:-2px">${esc(t('sourceEnglish'))}</p>` : ''}
       ${v.flipped ? `<p class="flip-note">${esc(t('flipNote')(S.persp, p.actor))}</p>` : ''}
       <div class="horizons" aria-label="${esc(t('hzHead'))}">${hzHtml}</div>
       ${involvedOf(p).length ? `<p class="players">${INV_ROLES.map(r => [r, involvedOf(p).filter(x => x.role === r)]).filter(([, xs]) => xs.length)
         .map(([r, xs]) => `<span class="role-lbl">${esc(L('inv', r))}</span> ${xs.map(x => `<button class="linkbtn" data-player="${esc(x.player)}">${esc(playerText(g, x.player))}</button>`).join(', ')}`).join('<br>')}</p>` : ''}
-      <p class="desc">${esc(p['desc_' + S.lang])}</p>
+      <p class="desc">${esc(contentText(p, 'desc'))}</p>
       ${p.quote ? `<blockquote class="quote">“${esc(p.quote.replace(/>>\s*/g, ''))}”</blockquote>` : ''}
       <div class="yt"><iframe loading="lazy" src="https://www.youtube.com/embed/${g.youtube_id || g.video_id}?start=${start}" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="VOD"></iframe></div>
       ${location.protocol === 'file:' ? `<p class="yt-note">${t('ytNote')}</p>` : ''}
@@ -1380,7 +1478,7 @@
     const hl = hlOf(p.id);
     return `<button type="button" class="row side-${side || 'none'} ${selected ? 'on' : ''} ${hl ? 'star' : ''}" data-id="${p.id}" ${selected ? 'aria-current="true"' : ''} ${hl ? `title="${esc(hl.map(r => L('hl', r)).join(' · '))}"` : ''}>
       <span class="t">${clock(p)}</span><span class="chip ${side}">${esc(p.actor || '?')}</span>
-      <span class="title"><span class="ttl">${hl ? `<span class="sr-only">${esc(t('hlOnly'))}</span>` : ''}${S.fPlayer && invOf(p, S.fPlayer) ? `<span class="chip">${esc(L('inv', invOf(p, S.fPlayer).role))}</span> ` : ''}${esc(p['title_' + S.lang])}${p.objective_links.length ? ' <span class="chip fam">' + p.objective_links.map(o => esc(objLabel(o.objective))).join('·') + '</span>' : ''}</span>${whoLine(p)}</span>
+      <span class="title"><span class="ttl">${hl ? `<span class="sr-only">${esc(t('hlOnly'))}</span>` : ''}${S.fPlayer && invOf(p, S.fPlayer) ? `<span class="chip">${esc(L('inv', invOf(p, S.fPlayer).role))}</span> ` : ''}${esc(contentText(p, 'title'))}${p.objective_links.length ? ' <span class="chip fam">' + p.objective_links.map(o => esc(objLabel(o.objective))).join('·') + '</span>' : ''}</span>${whoLine(p)}</span>
       <span class="famcell">${famChip(v.famKey, v.familyText, 'dot')}</span>
       <span class="e ${stateCls(h.state)}" title="${esc(L('state', h.state))}">${h.state === 'missing' ? '—' : fmtG(h.e)}</span></button>`;
   }
@@ -1515,7 +1613,7 @@
     };
     const main = document.getElementById('main');
     // The series is named by its two teams: the selected game's label without its game number.
-    const scopeName = { game: `${t('scopeGame')} (${S.lang === 'ko' ? g.title_ko : g.title_en})`, stage: `${t('scopeStage')} (${g.blue_team} vs ${g.red_team})`, all: t('scopeAll') };
+    const scopeName = { game: `${t('scopeGame')} (${contentText(g, 'title')})`, stage: `${t('scopeStage')} (${g.blue_team} vs ${g.red_team})`, all: t('scopeAll') };
     const tot = Object.fromEntries(STATES.map(s => [s, plays.filter(p => p.horizons[h].state === s).length]));
     main.innerHTML = `
       <section class="card">
@@ -1564,8 +1662,8 @@
       const ps = r ? r.by[st] : [];
       const box = document.getElementById('xList');
       box.innerHTML = `<h3>${esc(r ? r.label : '')} · ${esc(L('state', st))} <span class="sub">${ps.length} · ${t('sec')(h)}</span></h3>
-        <div class="rows">${ps.map(p => `<button type="button" class="row" data-id="${p.id}"><span class="t">${clock(p)}</span><span class="chip">${esc(S.lang === 'ko' ? p._game.stage_ko : p._game.stage_en)} ${t('gameN')(p._game.game_num)}</span>
-          <span class="title">${esc(p.actor || '?')} · ${esc(p['title_' + S.lang])}</span><span class="famcell">${famChip(p.family, famLabel(p.family), 'dot')}</span>
+        <div class="rows">${ps.map(p => `<button type="button" class="row" data-id="${p.id}"><span class="t">${clock(p)}</span><span class="chip">${esc(contentText(p._game, 'stage'))} ${t('gameN')(p._game.game_num)}</span>
+          <span class="title">${esc(p.actor || '?')} · ${esc(contentText(p, 'title'))}</span><span class="famcell">${famChip(p.family, famLabel(p.family), 'dot')}</span>
           ${(() => { const hz = p.horizons[h], f = r.flipOf(p), stt = f ? FLIP_STATE[hz.state] : hz.state; return `<span class="e ${stateCls(stt)}">${hz.state === 'missing' ? '—' : fmtG(f ? -hz.e : hz.e)}</span>`; })()}</button>`).join('')}</div>`;
       box.querySelectorAll('.row').forEach(row => row.onclick = () => {
         const p = PLAY[row.dataset.id];
@@ -1606,15 +1704,32 @@
     main.setAttribute('aria-busy', 'false');
     syncPressed();
   }
-  document.getElementById('btnLang').onclick = () => { S.lang = S.lang === 'ko' ? 'en' : 'ko'; try { localStorage.setItem('lv_lang', S.lang); } catch (e) {} render(); };
+  const langButton = document.getElementById('btnLang');
+  const langMenu = document.getElementById('langMenu');
+  const closeLangMenu = () => { langMenu.hidden = true; langButton.setAttribute('aria-expanded', 'false'); };
+  langButton.onclick = e => {
+    e.stopPropagation();
+    langMenu.hidden = !langMenu.hidden;
+    langButton.setAttribute('aria-expanded', String(!langMenu.hidden));
+    if (!langMenu.hidden) langMenu.querySelector('.lang-option.on')?.focus();
+  };
+  langMenu.querySelectorAll('.lang-option').forEach(option => option.onclick = e => {
+    e.stopPropagation();
+    S.lang = option.dataset.lang;
+    try { localStorage.setItem('lv_lang', S.lang); } catch (err) {}
+    closeLangMenu();
+    um('language', { to: S.lang });
+    render();
+  });
+  document.addEventListener('click', e => { if (!e.target.closest('.lang-picker')) closeLangMenu(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !langMenu.hidden) { closeLangMenu(); langButton.focus(); } });
   document.getElementById('btnTheme').onclick = () => { S.theme = S.theme === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('lv_theme', S.theme); } catch (e) {} render(); };
   render();
   // Runs after each control's own handler, so the state already shows the choice.
   document.addEventListener('click', e => {
-    const el = e.target.closest('#btnLang, #btnTheme, #mmPlay, [data-h], button.row[data-id], a[href*="youtube.com/"]');
+    const el = e.target.closest('#btnTheme, #mmPlay, [data-h], button.row[data-id], a[href*="youtube.com/"]');
     if (!el) return;
-    if (el.id === 'btnLang') um('language', { to: S.lang });
-    else if (el.id === 'btnTheme') um('theme', { to: S.theme });
+    if (el.id === 'btnTheme') um('theme', { to: S.theme });
     else if (el.id === 'mmPlay') { if (el.title === t('mmPause')) um('map-play', { game: S.gameId }); }
     else if (el.dataset.h) um('horizon', { h: el.dataset.h });
     else if (el.dataset.id) um('play-open', { game: (PLAY[el.dataset.id] || {})._game?.id || S.gameId, view: S.view });

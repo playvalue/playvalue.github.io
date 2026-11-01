@@ -41,7 +41,7 @@
     /* Korean wraps between words, not inside them. */
     .gh-link { display: inline-flex; align-items: center; gap: 6px; }
     .gh-mark { flex: none; }
-    html[lang="ko"] body { word-break: keep-all; overflow-wrap: break-word; }
+    html[lang="ko"] body, html[lang="zh-CN"] body, html[lang="ja"] body { word-break: keep-all; overflow-wrap: break-word; }
     body { background: var(--bg-main); color: var(--text-main); font-family: var(--font); line-height: 1.7; padding-bottom: 80px; }
     a { color: var(--text-main); text-underline-offset: 2px; }
     /* Same frame as the dashboard: one 1440px column with 20px gutters, the wordmark bar on the ground. */
@@ -56,6 +56,14 @@
     .btn:hover { border-color: var(--border-focus); }
     .btn.icon-only { width: 36px; height: 36px; padding: 0; flex: none; }
     .btn.icon-only svg { display: block; width: 18px; height: 18px; }
+    .lang-picker { position: relative; }
+    .lang-flag { font-size: 1.12rem; line-height: 1; filter: saturate(.92); }
+    .lang-menu { position: absolute; z-index: 80; top: calc(100% + 8px); right: 0; min-width: 174px; padding: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 10px 28px rgba(0,0,0,.16); }
+    .lang-menu[hidden] { display: none; }
+    .lang-option { width: 100%; display: grid; grid-template-columns: 24px 1fr 14px; align-items: center; gap: 8px; border: 0; border-radius: 7px; padding: 8px 9px; background: transparent; color: var(--ink); cursor: pointer; text-align: left; font-size: .84rem; }
+    .lang-option:hover, .lang-option:focus-visible { background: var(--pill); }
+    .lang-option .check { opacity: 0; color: var(--gold); font-weight: 800; }
+    .lang-option.on .check { opacity: 1; }
     #btnTheme .theme-sun { display: none; }
     [data-theme="dark"] #btnTheme .theme-moon { display: none; }
     [data-theme="dark"] #btnTheme .theme-sun { display: block; }
@@ -110,9 +118,9 @@
     .steps li { counter-increment: s; position: relative; padding-left: 38px; margin: 12px 0; }
     .steps li::before { content: counter(s); position: absolute; left: 0; top: 1px; width: 26px; height: 26px; border-radius: 50%; background: var(--bg-pill); font-weight: 800; font-size: .82rem; display: flex; align-items: center; justify-content: center; }
     .note { font-size: .82rem; color: var(--text-muted); }
-    [data-lang] { display: none; }
-    html[lang="ko"] [data-lang="ko"], html[lang="en"] [data-lang="en"] { display: block; }
-    html[lang="ko"] article[data-lang="ko"], html[lang="en"] article[data-lang="en"] { display: grid; }
+    article[data-lang] { display: none; }
+    html[lang="ko"] article[data-lang="ko"], html[lang="en"] article[data-lang="en"], html[lang="zh-CN"] article[data-lang="zh"], html[lang="ja"] article[data-lang="ja"] { display: block; }
+    html[lang="ko"] article[data-lang="ko"], html[lang="en"] article[data-lang="en"], html[lang="zh-CN"] article[data-lang="zh"], html[lang="ja"] article[data-lang="ja"] { display: grid; }
     :focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; border-radius: 4px; }
     button, a { touch-action: manipulation; }
     .skip { position: absolute; left: 12px; top: -48px; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-focus); border-radius: 8px; padding: 6px 12px; z-index: 100; }
@@ -135,10 +143,17 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
         <span class="sr-only">대시보드</span>
       </a>
-      <button class="btn icon-only" id="btnLang" type="button" aria-label="English" title="English">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14.5 14.5 0 0 1 0 18M12 3a14.5 14.5 0 0 0 0 18"/></svg>
-        <span class="sr-only">English</span>
-      </button>
+      <div class="lang-picker">
+        <button class="btn icon-only" id="btnLang" type="button" aria-label="언어 선택" title="언어 선택" aria-haspopup="menu" aria-expanded="false">
+          <span class="lang-flag" id="langFlag" aria-hidden="true">🇰🇷</span><span class="sr-only">언어 선택</span>
+        </button>
+        <div class="lang-menu" id="langMenu" role="menu" hidden>
+          <button class="lang-option" type="button" role="menuitemradio" data-lang="ko"><span class="lang-flag" aria-hidden="true">🇰🇷</span><span>한국어</span><span class="check" aria-hidden="true">✓</span></button>
+          <button class="lang-option" type="button" role="menuitemradio" data-lang="en"><span class="lang-flag" aria-hidden="true">🇺🇸</span><span>English</span><span class="check" aria-hidden="true">✓</span></button>
+          <button class="lang-option" type="button" role="menuitemradio" data-lang="zh"><span class="lang-flag" aria-hidden="true">🇨🇳</span><span>简体中文</span><span class="check" aria-hidden="true">✓</span></button>
+          <button class="lang-option" type="button" role="menuitemradio" data-lang="ja"><span class="lang-flag" aria-hidden="true">🇯🇵</span><span>日本語</span><span class="check" aria-hidden="true">✓</span></button>
+        </div>
+      </div>
       <button class="btn icon-only" id="btnTheme" type="button" aria-label="다크 모드" title="다크 모드">
         <svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.2 15.2A8.5 8.5 0 0 1 8.8 3.8 8.5 8.5 0 1 0 20.2 15.2Z"/></svg>
         <svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
@@ -456,6 +471,44 @@ h = 15, 30, 60 seconds</pre>
   </section>
 </article>
 
+<!-- ===================================================== Simplified Chinese -->
+<article data-lang="zh">
+  <h1>PlayValue测量什么，以及如何测量</h1>
+  <p class="lede">我们先在不查看经济结果的情况下，从解说中选出具体操作，再从转播画面读取随后15、30、60秒内两队经济差的变化。本页说明完整流程、数字的含义，以及这些数字不能说明什么。</p>
+  <nav class="toc"><a href="#zh-why">为何看团队</a><a href="#zh-question">研究问题</a><a href="#zh-steps">处理流程</a><a href="#zh-metric">经济变化</a><a href="#zh-coding">解说编码</a><a href="#zh-views">显示规则</a><a href="#zh-numbers">当前数据</a><a href="#zh-check">验证</a><a href="#zh-limits">局限</a><a href="#zh-version">版本</a><a href="#zh-next">后续方向</a><a href="#zh-contact">数据合作</a></nav>
+  <section id="zh-why"><h2>为何从团队视角观察</h2><p>《英雄联盟》是五名选手在同一张地图上协作的团队游戏。击杀、伤害和补刀等个人指标无法完整描述一个操作对比赛留下的影响。下路牵制打野可能让上路获得镀层；一次失败的Gank也可能逼出闪现，改变下一次资源争夺的站位。</p><p>因此PlayValue不把贡献拆给单个选手，而是观察操作后两队经济差如何变化，以“经济”这一共同单位呈现影响在地图上的扩散。</p><p class="muted">同一时间地图其他位置发生的事情也包含在经济变化中。数字表示团队在该时间窗内经历的结果，不能分离出单个操作的因果贡献。</p></section>
+  <section id="zh-question"><h2>研究问题</h2><div class="quote">在看到经济结果之前，从整场解说中选出具体行动和尝试时，包括失败与无击杀操作在内的每个案例，伴随着怎样的实际相对经济收入？</div><p>经济只是操作留下的一种可观测痕迹。PlayValue展示这一观测值，不为操作价值或选手贡献打分。</p><h3>为何由解说选择</h3><p>国际赛事解说长期分析职业联赛，其中也有前职业选手和教练。实时指出重要操作正是他们的工作。使用解说提到的场景，可以避免研究者按结果编写筛选规则；但解说也可能更常谈论成功操作，这一点列在局限中。</p><h3>数字不能说明什么</h3><ul><li><b>因果：</b>经济变化汇总了时间窗内全地图的事情。</li><li><b>个人贡献：</b>指标是团队经济，不分配到个人。</li><li><b>决策质量：</b>不估计“如果选择别的行动会怎样”。</li></ul></section>
+  <section id="zh-steps"><h2>处理流程</h2><ol class="steps"><li><b>从解说提取操作（遮蔽经济信息）。</b>读取整场英文自动字幕，收集失败、无击杀和普通兵线管理在内的具体行动。预先遮蔽经济相关词语及相邻字幕。每局独立提取、复读检查，并用SHA-256固定结果。</li><li><b>从转播画面读取经济。</b>OCR每秒读取比赛时间和两队经济，排除回放与暂停；每个比赛区间都经画面核对。</li><li><b>合并经济。</b>在固定操作的起点计算15、30、60秒后的变化。看到经济后不增删操作，无法读取的保留为“未测量”。</li><li><b>只依据解说编码。</b>操作类型、资源关联和涉及选手不使用经济。Claude、Gemma、Qwen三个模型系列独立编码，多数决定；代码本在正式编码前固定。</li><li><b>规则版本化。</b>时间窗、阶段和阈值集中在一个设置文件中，其哈希写入数据。</li></ol></section>
+  <section id="zh-metric"><h2>经济变化（主要指标）</h2><pre>经济变化(h秒) = [执行方经济 − 对手经济](起点 + h) − [执行方经济 − 对手经济](起点)&#10;h = 15、30、60秒</pre><p>正值表示执行方的经济差扩大，负值表示缩小。三种时间窗全部展示，默认30秒。</p><h3>四种状态</h3><div class="tbl"><table><tr><th>状态</th><th>条件</th></tr><tr><td class="gain">收益</td><td>正向变化超出误差范围</td></tr><tr><td class="loss">损失</td><td>负向变化超出误差范围</td></tr><tr><td>无法判断</td><td>变化落在误差范围内</td></tr><tr><td>未测量</td><td>无法读取开始或结束时的经济</td></tr></table></div><p><b>误差±200：</b>一次变化使用四个画面读数，每个读数的四舍五入误差不超过±50。因此仅在|变化| ≥ 200时判为收益或损失。</p><h3>背景信息</h3><ul><li><b>操作前：</b>各阶段阈值为对线期±<span data-v="lead_lane"></span>、中期±<span data-v="lead_mid"></span>、后期±<span data-v="lead_late"></span>。</li><li><b>阶段：</b>对线期为14分钟前，中期14–25分钟，后期25分钟以后。</li><li><b>同阶段比较：</b>用同局同阶段的每个可测秒建立分布，只表示相对位置，不是效果量。</li><li><b>经济节奏变化：</b>比较操作前后等长时间窗（15分钟前<span data-v="dv_early"></span>秒，之后<span data-v="dv_late"></span>秒）的每分钟经济差，仅作参考。</li></ul></section>
+  <section id="zh-coding"><h2>解说编码</h2><p>三类编码只使用操作摘要、原文引用、执行方与比赛阵容，不包含经济或结果。三个不同模型系列独立作答，以多数决定；只修复格式上的缺失ID，不修改答案内容。</p><div class="tbl" id="zh-coding-table"></div><h3>操作类型</h3><p>按执行方尝试做什么分为九类，成功与否和是否产生击杀不决定类型。围绕史诗资源的交战归为资源对抗；没有实际攻击的对峙不算交战。</p><ol><li>执行方受到攻击 → 遭受进攻</li><li>仅同线对手参与 → 对线</li><li>只有执行方增加线外人员或攻击落单对手 → Gank/越塔/抓单</li><li>双方都增加线外人员 → 交战/团战</li></ol><div class="tbl" id="zh-family-table"></div><h3>资源关联</h3><p>将获得峡谷先锋、纳什男爵或远古巨龙的操作与后续使用或增益期间的操作关联。关联只用于展示，不把数值相加。</p><h3>涉及选手</h3><p>记录解说以姓名或英雄指出的双方选手，并标为执行、目标或应对。</p></section>
+  <section id="zh-views"><h2>显示规则</h2><ul><li><b>只计一次：</b>每个操作按执行方计一次。</li><li><b>观察视角：</b>切换到对方会翻转经济变化、领先状态和部分结果，但不改变汇总。</li><li><b>按选手或英雄：</b>从该选手队伍视角统计其执行、成为目标或参与应对的操作。</li><li><b>同一场景：</b>属于同一事件的操作一起显示，但不相加。</li><li><b>值得关注：</b>方向明确且“成功但损失”“失败/取消但收益”，或同阶段波动幅度位于前<span data-v="tail2"></span>%的操作。列表左侧用圆角金色竖线标记，筛选和理由使用闪光图标；这不是排名。</li></ul></section>
+  <section id="zh-numbers"><h2>当前数据</h2><p id="zh-summary"></p><div class="tbl" id="zh-stage-table"></div><div class="tbl" id="zh-horizon-table"></div><p id="zh-small"></p></section>
+  <section id="zh-check"><h2>使用Riot比赛数据验证</h2><p>Riot比赛记录包含每分钟选手累计经济和精确事件。其粒度不足以直接测量15或30秒变化，因此只在提取和编码完成后用于核验，不进入操作选择。</p><h3>经济读取</h3><p id="zh-check-gold"></p><h3>小地图位置</h3><p id="zh-check-mm"></p><h3>击杀</h3><p id="zh-check-kill"></p><div class="tbl" id="zh-check-table"></div></section>
+  <section id="zh-limits"><h2>局限</h2><ul><li><b>解说选择的样本：</b>可能偏向成功或已产生收益的场景，不代表比赛中所有行动。</li><li><b>未用视频逐项核验：</b>字幕可能含识别错误、回放回顾和解说延迟。</li><li><b>四舍五入与缺口：</b>±200内方向不明，长回放可能没有可测终点。</li><li><b>重叠：</b>时间窗内包含其他操作和线路事件。<span id="zh-else"></span></li><li><b>只含被点名选手：</b>按团队描述的参与不会归到个人。</li><li><b>窗口内未转化为经济：</b>数据不能判断效果是更晚出现、太小，还是没有转化。</li><li><b>经济无法体现的收益：</b>长期增益、视野和站位需要未来的胜率模型。</li><li><b>模型编码误差：</b>已用独立人工标注样本检查，但仍有误差。</li><li><b>操作粒度：</b>书面规则采用后的比赛划分更细。<span id="zh-gran"></span></li><li><b>样本构成：</b><span id="zh-sample"></span> 比较时应考虑比赛数。</li><li><b>翻译：</b>中文界面与方法说明为机器辅助翻译；第一阶段中操作标题和说明暂以英文显示。</li></ul></section>
+  <section id="zh-version"><h2>版本与来源</h2><p id="zh-version-text"></p><p class="note">来源：官方转播VOD、英文自动字幕、Oracle's Elixir阵容、Leaguepedia发布的Riot match-v5记录，以及Riot Data Dragon图像。访问量由Umami无Cookie统计。</p></section>
+  <section id="zh-next"><h2>后续方向：从经济到胜率</h2><p>视野、逼出闪现或抢占资源前位置可能在没有立即产生经济时改变胜率。下一步将建立胜率模型，并公布其校准表现以及“胜率变化不是因果效果”的限制。</p></section>
+  <section id="zh-contact"><h2>研究数据合作</h2><p>如果您能为研究分享更细粒度的每秒事件或选手位置数据，或希望开展合作，欢迎联系。</p><p><a class="gh-link" href="https://github.com/playvalue/playvalue.github.io" data-umami-event="github">GitHub · playvalue/playvalue.github.io</a></p></section>
+</article>
+
+<!-- ============================================================= Japanese -->
+<article data-lang="ja">
+  <h1>PlayValueは何を、どう測るのか</h1>
+  <p class="lede">ゴールド結果を見ずに実況から具体的なプレーを先に選び、その後15・30・60秒で両チームのゴールド差がどう動いたかを放送画面から読み取ります。このページでは手順、数字の意味、そして数字が語らないことを説明します。</p>
+  <nav class="toc"><a href="#ja-why">なぜチームか</a><a href="#ja-question">研究質問</a><a href="#ja-steps">手順</a><a href="#ja-metric">ゴールド変化</a><a href="#ja-coding">実況コーディング</a><a href="#ja-views">表示ルール</a><a href="#ja-numbers">現在のデータ</a><a href="#ja-check">検証</a><a href="#ja-limits">限界</a><a href="#ja-version">バージョン</a><a href="#ja-next">今後</a><a href="#ja-contact">データ連携</a></nav>
+  <section id="ja-why"><h2>なぜチーム視点で見るのか</h2><p>League of Legendsは5人が同じマップで動くチームゲームです。キル、ダメージ、CSなどの個人指標だけではプレーが試合に残したものをすべて捉えられません。敵ジャングラーの足止めが別レーンのプレートにつながり、失敗したギャンクでもフラッシュを落とせば次のオブジェクト戦が変わります。</p><p>PlayValueは個人ではなく<b>チームの視点</b>から、プレー後に両チームのゴールド差がどう動いたかを共通単位として観察します。</p><p class="muted">同時刻に別の場所で起きたことも含まれます。数字はチームが経験した結果であり、ひとつのプレーの因果的な取り分ではありません。</p></section>
+  <section id="ja-question"><h2>研究質問</h2><div class="quote">ゴールド結果を見る前に試合全体の実況から具体的な行動・試みを選んだとき、失敗やキルのないプレーを含む各事例には、どのような実際の相対ゴールド収入が伴うか。</div><p>ゴールドは観測可能な痕跡のひとつです。PlayValueは観測値を示しますが、価値や貢献を点数化しません。</p><h3>なぜ実況が選ぶのか</h3><p>国際大会のキャスターは重要なプレーをリアルタイムで伝える専門家です。研究者が結果に合わせた抽出ルールを書く危険を避けられる一方、成功したプレーへの言及が多い可能性は限界として扱います。</p><h3>数字が言わないこと</h3><ul><li><b>原因：</b>時間内のマップ全体が含まれます。</li><li><b>個人の貢献：</b>チームゴールドを個人に分けません。</li><li><b>判断の良し悪し：</b>別の選択をした場合は推定しません。</li></ul></section>
+  <section id="ja-steps"><h2>処理手順</h2><ol class="steps"><li><b>実況から抽出（ゴールドをマスク）。</b>英語字幕全体から失敗、キルなし、通常のレーン管理を含む具体的な行動を抽出します。ゴールド関連語を隠し、試合ごとに漏れと重複を確認してSHA-256で固定します。</li><li><b>放送画面から読む。</b>OCRで毎秒の時間と両チームのゴールドを読み、リプレイと停止を除外します。</li><li><b>ゴールドを結合。</b>固定済みプレーの開始点から15・30・60秒後を計算し、結果を見た後で増減しません。</li><li><b>実況だけでコーディング。</b>タイプ、オブジェクトリンク、関与選手を3モデル系列が独立に回答し、多数決で決めます。</li><li><b>ルールを版管理。</b>区間、フェーズ、しきい値の設定ファイルのハッシュを記録します。</li></ol></section>
+  <section id="ja-metric"><h2>ゴールド変化（主指標）</h2><pre>ゴールド変化(h秒) = [実行チーム − 相手チーム](開始点 + h) − [実行チーム − 相手チーム](開始点)&#10;h = 15、30、60秒</pre><p>実行チームから見て差が広がった分をプラス、縮んだ分をマイナスで示します。既定は30秒です。</p><h3>4つの状態</h3><div class="tbl"><table><tr><th>状態</th><th>条件</th></tr><tr><td class="gain">利益</td><td>プラス方向で誤差範囲外</td></tr><tr><td class="loss">損失</td><td>マイナス方向で誤差範囲外</td></tr><tr><td>不明</td><td>誤差範囲内</td></tr><tr><td>未測定</td><td>開始または終了時点を読めない</td></tr></table></div><p><b>誤差±200：</b>4つの画面値を使い、各値の丸め誤差は±50以内です。|変化| ≥ 200の場合だけ利益・損失と判定します。</p><h3>参考情報</h3><ul><li><b>プレー直前：</b>しきい値はレーン戦±<span data-v="lead_lane"></span>、中盤±<span data-v="lead_mid"></span>、終盤±<span data-v="lead_late"></span>です。</li><li><b>フェーズ：</b>14分前、14–25分、25分以降です。</li><li><b>同じフェーズとの比較：</b>同じ試合の測定可能な全秒で分布内の位置を示します。効果量ではありません。</li><li><b>ゴールドペース：</b>前後の同じ長さ（15分前は<span data-v="dv_early"></span>秒、以後は<span data-v="dv_late"></span>秒）を比べる参考値です。</li></ul></section>
+  <section id="ja-coding"><h2>実況コーディング</h2><p>実況要約、引用、実行チーム、ロスターだけを入力し、ゴールドや結果は含みません。異なる3モデル系列が独立に回答して多数決を取り、回答内容は変更しません。</p><div class="tbl" id="ja-coding-table"></div><h3>プレータイプ</h3><p>実行チームが何を試みたかを9種類に分けます。成功やキルはタイプを決めません。エピックオブジェクトを巡る場面を先に判定し、攻撃のないにらみ合いは交戦にしません。</p><ol><li>実行側が攻撃を受ける → 攻撃への対応</li><li>同じレーンの相手だけ → レーン戦</li><li>実行側だけがレーン外の人数を加える → ギャンク/ダイブ/キャッチ</li><li>双方が人数を加える → 交戦/集団戦</li></ol><div class="tbl" id="ja-family-table"></div><h3>オブジェクトリンク</h3><p>ヘラルド、バロン、エルダーの獲得を後続の召喚やバフ中プレーにつなぎます。表示用であり値は合算しません。</p><h3>関与選手</h3><p>実況が特定した選手を実行・対象・対応の役割で記録します。</p></section>
+  <section id="ja-views"><h2>表示ルール</h2><ul><li><b>一度だけ：</b>実行チーム基準で一度数えます。</li><li><b>視点：</b>相手視点では符号や一部結果を反転しますが集計は変えません。</li><li><b>選手別：</b>実行・対象・対応として関わったプレーをその選手のチーム視点で数えます。</li><li><b>同じ場面：</b>同一イベントを一緒に表示しますが足しません。</li><li><b>注目シーン：</b>「成功したが損失」「失敗・中止したが利益」、または同フェーズの変動幅上位<span data-v="tail2"></span>%です。左端の金色レールとスパークルで示し、順位ではありません。</li></ul></section>
+  <section id="ja-numbers"><h2>現在のデータ</h2><p id="ja-summary"></p><div class="tbl" id="ja-stage-table"></div><div class="tbl" id="ja-horizon-table"></div><p id="ja-small"></p></section>
+  <section id="ja-check"><h2>Riot試合データによる検証</h2><p>1分ごとの選手ゴールドと精密なイベント記録は15・30秒変化の直接測定には粗いため、抽出とコーディング後の確認だけに使います。</p><h3>ゴールド読み取り</h3><p id="ja-check-gold"></p><h3>ミニマップ位置</h3><p id="ja-check-mm"></p><h3>キル</h3><p id="ja-check-kill"></p><div class="tbl" id="ja-check-table"></div></section>
+  <section id="ja-limits"><h2>限界</h2><ul><li><b>実況が選んだ標本：</b>成功した場面に偏る可能性があります。</li><li><b>動画未確認：</b>字幕誤認識、回想、実況の遅れを含み得ます。</li><li><b>丸めと欠測：</b>±200内は方向不明です。</li><li><b>重なり：</b>他のプレーや別レーンの出来事が入ります。<span id="ja-else"></span></li><li><b>名前が出た選手のみ：</b>チームとして語られた関与は個人に付きません。</li><li><b>区間内でゴールドにならないプレー：</b>効果が後に出る、微小、または変換されない場合を区別できません。</li><li><b>ゴールドに表れない利益：</b>視界や長期バフには勝率モデルが必要です。</li><li><b>モデルコーディング：</b>人手標本で確認していますが誤差は残ります。</li><li><b>粒度：</b>書面ルール導入後は細かく分かれる傾向があります。<span id="ja-gran"></span></li><li><b>標本構成：</b><span id="ja-sample"></span> 比較では試合数も考慮してください。</li><li><b>翻訳：</b>日本語UIと方法説明は機械支援翻訳です。第1段階ではプレーのタイトルと説明を英語で表示します。</li></ul></section>
+  <section id="ja-version"><h2>バージョンと出典</h2><p id="ja-version-text"></p><p class="note">出典：公式VOD、英語自動字幕、Oracle's Elixir、Leaguepedia公開のRiot match-v5記録、Riot Data Dragon。訪問数はCookieなしのUmamiで集計します。</p></section>
+  <section id="ja-next"><h2>今後：ゴールドから勝率へ</h2><p>視界、フラッシュ、オブジェクト前の場所取りはすぐにゴールドにならなくても勝率を変えます。次は勝率モデルを作り、較正結果と「勝率変化は因果効果ではない」という限界を公開します。</p></section>
+  <section id="ja-contact"><h2>研究データの連携</h2><p>秒単位イベントや選手位置など、より細かな研究データを共有できる方、共同研究を希望する方はご連絡ください。</p><p><a class="gh-link" href="https://github.com/playvalue/playvalue.github.io" data-umami-event="github">GitHub · playvalue/playvalue.github.io</a></p></section>
+</article>
+
 <footer class="wrap"><span id="footText"></span><p id="footLegal"></p></footer>
 </main>
 
@@ -500,7 +553,7 @@ h = 15, 30, 60 seconds</pre>
       summary: (g, p, m, k, events) => `${events}의 ${g}경기에서 플레이 ${num(p)}건을 뽑았고, 그중 ${num(m)}건(${pct(m, p)})의 30초 골드 변화를 쟀으며, ${num(k)}건(${pct(k, p)})은 이득·손해가 판정됩니다.`,
       small: (a, b, c, d) => `작은 변화가 대부분입니다. 30초 골드 변화를 잰 플레이의 ${pct(a, b)}, 배경 시점(같은 경기 모든 측정 가능한 초)의 ${pct(c, d)}가 |변화| 500 미만입니다. 골드 변화가 500 이상인 구간만 고르는 방식이었다면 이 플레이의 ${pct(a, b)}는 고르지 못했을 것입니다.`,
       version: (v, r, n) => `데이터 형식 v${esc(v)} · 규칙 버전 <code>${esc(r)}</code> · 코드북 해시는 위 코딩 표의 각 코드북 파일에 기록됩니다. 경기 ${n}개.`,
-      back: '대시보드', langBtn: 'English', dark: '다크 모드', light: '라이트 모드', title: '방법론 — PlayValue',
+      back: '대시보드', langBtn: 'English', languagePicker: '언어 선택', dark: '다크 모드', light: '라이트 모드', title: '방법론 — PlayValue',
       foot: 'PlayValue · 해설 기반 플레이 골드 관측',
       legal: 'PlayValue는 Riot Games의 보증을 받지 않았으며, Riot Games 또는 Riot Games 자산의 제작·관리에 공식적으로 관여하는 누구의 견해나 의견도 반영하지 않습니다. Riot Games 및 관련 모든 자산은 Riot Games, Inc.의 상표 또는 등록 상표입니다.',
       sec: s => `${s}초`,
@@ -525,7 +578,7 @@ h = 15, 30, 60 seconds</pre>
       summary: (g, p, m, k, events) => `${num(p)} plays were picked from ${g} games of ${events}; the 30-second gold change was measured for ${num(m)} (${pct(m, p)}), and ${num(k)} (${pct(k, p)}) are a clear gain or loss.`,
       small: (a, b, c, d) => `Most changes are small: ${pct(a, b)} of measured plays and ${pct(c, d)} of background seconds (every measurable second of the same games) move less than 500 gold in 30 seconds. A method that only picks stretches where gold moves 500 or more would have missed ${pct(a, b)} of these plays.`,
       version: (v, r, n) => `Data format v${esc(v)} · rules version <code>${esc(r)}</code> · codebook hashes are recorded with each codebook file in the coding table. ${n} games.`,
-      back: 'Dashboard', langBtn: '한국어', dark: 'Dark mode', light: 'Light mode', title: 'Methodology — PlayValue',
+      back: 'Dashboard', langBtn: '한국어', languagePicker: 'Choose language', dark: 'Dark mode', light: 'Light mode', title: 'Methodology — PlayValue',
       foot: 'PlayValue · gold observed after commentary-picked plays',
       legal: "PlayValue isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.",
       sec: s => `${s} s`,
@@ -537,20 +590,40 @@ h = 15, 30, 60 seconds</pre>
       ks: { kill_mentioned: 'Kill mentioned', explicit_no_kill: 'No kill stated', not_established: 'Not mentioned' },
     },
   };
+  W.zh = { ...W.en,
+    state:{positive:'收益',negative:'损失',unresolved:'无法判断',missing:'未测量'}, coding:{action_family:'操作类型',objective_links:'资源关联',involvement:'涉及选手'}, unit:{action_family:'个操作',objective_links:'（候选，资源）单元',involvement:'（操作，选手）单元'},
+    codingHead:['编码','已编码比赛','判定单元','全体一致','2比1','三方不同','Fleiss κ','Fleiss κ（试验）'], games:n=>`${n}局`, familyHead:['操作类型','操作','收益','损失','无法判断','未测量'], stageHead:['阶段','比赛','操作','30秒已测','30秒方向明确'], horizonHead:['区间','收益','损失','无法判断','未测量'],
+    gran:(a,b,c,d,e,f)=>`每100段解说字幕的操作数：最初${a}局为${b}个，采用书面规则的${d}局为${e}个（单局范围${c}、${f}）。`, sample:(g,events,team,k)=>`共${g}局，来自${events}；出现最频繁的队伍${team}参加了其中${k}局。`, summary:(g,p,m,k,events)=>`从${events}的${g}局比赛中提取${num(p)}个操作；其中${num(m)}个（${pct(m,p)}）测得30秒经济变化，${num(k)}个（${pct(k,p)}）可明确判定收益或损失。`, small:(a,b,c,d)=>`大多数变化很小：已测操作的${pct(a,b)}和背景时点的${pct(c,d)}在30秒内变化小于500。只选择变化500以上区间的方法会漏掉这些操作中的${pct(a,b)}。`, version:(v,r,n)=>`数据格式 v${esc(v)} · 规则版本 <code>${esc(r)}</code> · 代码本哈希记录在上方编码表对应文件中。共${n}局。`,
+    back:'返回仪表板', languagePicker:'选择语言', dark:'深色模式', light:'浅色模式', title:'研究方法 — PlayValue', foot:'PlayValue · 解说选定操作后的经济观测', legal:'PlayValue 未经 Riot Games 认可，也不代表 Riot Games 或任何参与制作、管理 Riot Games 产品人员的观点。Riot Games及其相关资产均为Riot Games, Inc.的商标或注册商标。', sec:s=>`${s}秒`, skip:'跳到正文', joiner:'与',
+    checkGold:(g,f,m,w1,wb,mb)=>`在${g}局的${num(f)}个整分钟时点，将OCR读取的两队经济差与Riot记录比较。误差中位数为${num(m)}，${pct(w1*f,f)}在100以内；取前后1秒最接近的读数时，${pct(wb*f,f)}在100以内，最大误差${num(mb)}。`, checkKill:(n,share,km,kmHit)=>`对${num(n)}个操作检查开始前10秒至结束后10秒的Riot击杀记录。解说提到击杀的操作中，${pct(kmHit,km)}确认有击杀；${pct(share*n,n)}的操作在该区间全地图都没有击杀。`, checkMm:(g,n,placed,w,solo,crowd,fv,mmCrowd)=>`在${g}局中，每秒从转播小地图读取英雄位置并显示在仪表板。与Riot每分钟位置的${num(n)}个未参与建模时点比较，${pct(placed*n,n)}给出了位置，其中${pct(w*placed*n,placed*n)}位于600单位以内；单独英雄为${pct(solo,1)}，四人以上团战为${pct(crowd,1)}。`, else30:(a,b)=>`Riot记录显示，在${num(b)}个有选手姓名且30秒变化可测的操作中，${num(a)}个（${pct(a,b)}）的区间含有这些选手未参与的击杀、资源或建筑事件。`, checkHead:['解说中的击杀判定','操作','区间内有击杀','此操作选手参与击杀'], ks:{kill_mentioned:'提到击杀',explicit_no_kill:'明确无击杀',not_established:'未提及'},
+  };
+  W.ja = { ...W.en,
+    state:{positive:'利益',negative:'損失',unresolved:'不明',missing:'未測定'}, coding:{action_family:'プレータイプ',objective_links:'オブジェクトリンク',involvement:'関与選手'}, unit:{action_family:'プレー',objective_links:'（候補、オブジェクト）セル',involvement:'（プレー、選手）セル'},
+    codingHead:['コーディング','対象試合','判定単位','全員一致','2対1','三者不一致','Fleiss κ','Fleiss κ（試行）'], games:n=>`${n}試合`, familyHead:['プレータイプ','プレー','利益','損失','不明','未測定'], stageHead:['ステージ','試合','プレー','30秒測定','30秒判定'], horizonHead:['区間','利益','損失','不明','未測定'],
+    gran:(a,b,c,d,e,f)=>`実況字幕100区間当たりのプレー数は、最初の${a}試合で${b}件、書面ルールを用いた${d}試合で${e}件です（試合別範囲${c}、${f}）。`, sample:(g,events,team,k)=>`${events}の${g}試合で、最も多いチーム${team}は${k}試合に出場しています。`, summary:(g,p,m,k,events)=>`${events}の${g}試合から${num(p)}プレーを抽出し、${num(m)}件（${pct(m,p)}）で30秒ゴールド変化を測定、${num(k)}件（${pct(k,p)}）で利益・損失を判定できました。`, small:(a,b,c,d)=>`変化の多くは小さく、測定済みプレーの${pct(a,b)}と背景時点の${pct(c,d)}は30秒で500未満です。500以上だけを選ぶ方法ではこれらの${pct(a,b)}を見逃します。`, version:(v,r,n)=>`データ形式 v${esc(v)} · ルール版 <code>${esc(r)}</code> · コードブックのハッシュは上の表の各ファイルに記録されています。${n}試合。`,
+    back:'ダッシュボード', languagePicker:'言語を選択', dark:'ダークモード', light:'ライトモード', title:'調査方法 — PlayValue', foot:'PlayValue · 実況が選んだプレー後のゴールド観測', legal:'PlayValueはRiot Gamesの承認を受けておらず、Riot Gamesまたは関連資産の制作・管理に正式に関わる個人の見解を示すものではありません。Riot Gamesおよび関連資産はRiot Games, Inc.の商標または登録商標です。', sec:s=>`${s}秒`, skip:'本文へ移動', joiner:'と',
+    checkGold:(g,f,m,w1,wb,mb)=>`${g}試合の${num(f)}か所の分時点で、OCRのゴールド差をRiot記録と比較しました。誤差中央値は${num(m)}、${pct(w1*f,f)}が100以内です。前後1秒で最も近い値を使うと${pct(wb*f,f)}が100以内、最大${num(mb)}です。`, checkKill:(n,share,km,kmHit)=>`${num(n)}プレーについて開始10秒前から終了10秒後までのキルを確認しました。実況がキルに言及したプレーの${pct(kmHit,km)}で実際のキルを確認し、${pct(share*n,n)}は区間内のマップ全体にキルがありません。`, checkMm:(g,n,placed,w,solo,crowd,fv,mmCrowd)=>`${g}試合で放送ミニマップから毎秒位置を読み、ダッシュボードに表示します。Riotの未使用1分位置${num(n)}点と比べ、${pct(placed*n,n)}で位置を出し、その${pct(w*placed*n,placed*n)}が600ユニット以内でした。単独時は${pct(solo,1)}、4人以上の集団戦では${pct(crowd,1)}です。`, else30:(a,b)=>`名前付きで30秒変化を測れた${num(b)}プレー中${num(a)}件（${pct(a,b)}）の区間に、そのプレーの選手が関与しないキル・オブジェクト・建造物があります。`, checkHead:['実況のキル判定','プレー','区間内キル','プレー選手が関与'], ks:{kill_mentioned:'キル言及',explicit_no_kill:'キルなし明記',not_established:'言及なし'},
+  };
+  const LANG_META = { ko:{html:'ko',flag:'🇰🇷'}, en:{html:'en',flag:'🇺🇸'}, zh:{html:'zh-CN',flag:'🇨🇳'}, ja:{html:'ja',flag:'🇯🇵'} };
+  const FAMILY_LOCAL = {
+    zh:{objective_hunt:'史诗资源争夺',objective_contest:'史诗资源对抗',structure:'建筑进攻/防守',gank:'Gank / 越塔 / 抓单',fight:'交战 / 团战',lane:'对线、资源与发育',defense:'遭受进攻',vision:'视野与信息',other:'其他'},
+    ja:{objective_hunt:'エピックオブジェクト獲得',objective_contest:'エピックオブジェクト争奪',structure:'建造物の攻撃・防衛',gank:'ギャンク / ダイブ / キャッチ',fight:'交戦 / 集団戦',lane:'レーン・リソース・成長',defense:'攻撃への対応',vision:'視界・情報',other:'その他'},
+  };
+  if (!LANG_META[lang]) lang = 'ko';
 
   function fill(l) {
     const w = W[l];
     // One row per coded batch (games coded together), so each batch keeps its own agreement figure.
     const coding = Object.entries(D.coding).flatMap(([k, c]) => c.batches.map((b, i) => [
       i ? '' : `${esc(w.coding[k])}<br><span class="note mono">${esc(c.codebook.split('/').slice(-2).join('/'))}</span>`,
-      `${esc(b[`stages_${l}`].join(' · '))}<br><span class="note">${esc(w.games(b.games))}</span>`,
+      `${esc((b[`stages_${l}`] || b.stages_en).join(' · '))}<br><span class="note">${esc(w.games(b.games))}</span>`,
       `${num(b.units)} ${esc(w.unit[k])}`, num(b.patterns.unanimous || 0), num(b.patterns.majority || 0), num(b.patterns.split || 0),
       b.fleiss_kappa?.toFixed(3) ?? '—', i ? '' : (c.pilot_fleiss_kappa?.toFixed(3) ?? '—')]));
     document.getElementById(`${l}-coding-table`).innerHTML = table(w.codingHead, coding, [2, 3, 4, 5, 6, 7]);
 
     const fam = D.families.map(f => {
       const ps = PLAYS.filter(p => p.family === f);
-      return [esc(D.family_labels[l][f]), num(ps.length), ...STATES.map(s => num(ps.filter(p => p.horizons['30'].state === s).length))];
+      return [esc((FAMILY_LOCAL[l] || D.family_labels[l] || D.family_labels.en)[f]), num(ps.length), ...STATES.map(s => num(ps.filter(p => p.horizons['30'].state === s).length))];
     }).filter(r => r[1] !== '0');
     document.getElementById(`${l}-family-table`).innerHTML = table(w.familyHead.map((h, i) => (i >= 2 ? `${h} (${w.sec(30)})` : h)), fam, [1, 2, 3, 4, 5]);
 
@@ -570,7 +643,7 @@ h = 15, 30, 60 seconds</pre>
     const [topTeam, topN] = Object.entries(apps).sort((a, b) => b[1] - a[1])[0];
     // Every event with published games, with the stages it covers (its tab badge).
     const events = DATA.tournaments.filter(x => GAMES.some(g => g.tournament_id === x.id))
-      .map(x => `${x[`name_${l}`]} (${x[`badge_${l}`]})`).join(l === 'ko' ? ' · ' : ' and ');
+      .map(x => `${x[`name_${l}`] || x.name_en} (${x[`badge_${l}`] || x.badge_en})`).join(l === 'ko' ? ' · ' : ` ${w.joiner || 'and'} `);
     document.getElementById(`${l}-sample`).textContent = w.sample(GAMES.length, events, topTeam, topN);
     const dens = rule => {
       const gs = GAMES.filter(g => g.extraction && g.extraction.written_granularity_rule === rule);
@@ -610,15 +683,22 @@ h = 15, 30, 60 seconds</pre>
 
   function render() {
     const w = W[lang];
-    document.documentElement.lang = lang;
+    document.documentElement.lang = LANG_META[lang].html;
     document.documentElement.dataset.theme = theme;
     document.title = w.title;
     const backButton = document.getElementById('backBtn');
     backButton.ariaLabel = backButton.title = w.back;
     backButton.querySelector('.sr-only').textContent = w.back;
     const langButton = document.getElementById('btnLang');
-    langButton.ariaLabel = langButton.title = w.langBtn;
-    langButton.querySelector('.sr-only').textContent = w.langBtn;
+    const languageLabel = w.languagePicker || 'Choose language';
+    langButton.ariaLabel = langButton.title = languageLabel;
+    langButton.querySelector('.sr-only').textContent = languageLabel;
+    document.getElementById('langFlag').textContent = LANG_META[lang].flag;
+    document.querySelectorAll('.lang-option').forEach(option => {
+      const on = option.dataset.lang === lang;
+      option.classList.toggle('on', on);
+      option.setAttribute('aria-checked', String(on));
+    });
     const themeButton = document.getElementById('btnTheme');
     const themeLabel = theme === 'dark' ? w.light : w.dark;
     themeButton.ariaLabel = themeButton.title = themeLabel;
@@ -626,7 +706,7 @@ h = 15, 30, 60 seconds</pre>
     document.getElementById('footText').textContent = w.foot;
     document.getElementById('footLegal').textContent = w.legal;
     document.getElementById('themeColor').content = theme === 'dark' ? '#0d0d0e' : '#f4f5f7';
-    document.getElementById('skipLink').textContent = lang === 'ko' ? '본문으로 건너뛰기' : 'Skip to content';
+    document.getElementById('skipLink').textContent = w.skip || (lang === 'ko' ? '본문으로 건너뛰기' : 'Skip to content');
   }
 
   // Values that come straight from the rules.
@@ -637,8 +717,16 @@ h = 15, 30, 60 seconds</pre>
   document.querySelectorAll('[data-v]').forEach(el => { el.textContent = V[el.dataset.v]; });
   fill('ko');
   fill('en');
+  fill('zh');
+  fill('ja');
   render();
-  document.getElementById('btnLang').onclick = () => { lang = lang === 'ko' ? 'en' : 'ko'; try { localStorage.setItem('lv_lang', lang); } catch (e) {} render(); };
+  const langButton = document.getElementById('btnLang');
+  const langMenu = document.getElementById('langMenu');
+  const closeLangMenu = () => { langMenu.hidden = true; langButton.setAttribute('aria-expanded', 'false'); };
+  langButton.onclick = e => { e.stopPropagation(); langMenu.hidden = !langMenu.hidden; langButton.setAttribute('aria-expanded', String(!langMenu.hidden)); if (!langMenu.hidden) langMenu.querySelector('.lang-option.on')?.focus(); };
+  langMenu.querySelectorAll('.lang-option').forEach(option => option.onclick = e => { e.stopPropagation(); lang = option.dataset.lang; try { localStorage.setItem('lv_lang', lang); } catch (err) {} closeLangMenu(); render(); });
+  document.addEventListener('click', e => { if (!e.target.closest('.lang-picker')) closeLangMenu(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !langMenu.hidden) { closeLangMenu(); langButton.focus(); } });
   document.getElementById('btnTheme').onclick = () => { theme = theme === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('lv_theme', theme); } catch (e) {} render(); };
 })();
 </script>
