@@ -27,7 +27,9 @@
        colours, gain and loss, and the brand's gold on the selected play and the plays worth a look. */
     :root {
       --bg-main: #f4f5f7;
-      --bg-header: #f4f5f7;
+      --bg-header: #f7f3ec;
+      --header-control: #fffdf9;
+      --header-border: #e4d7c5;
       --bg-card: #ffffff;
       --bg-card-hover: #f6f7f8;
       --bg-pill: #eceef1;
@@ -60,7 +62,9 @@
     }
     [data-theme="dark"] {
       --bg-main: #0d0d0e;
-      --bg-header: #0d0d0e;
+      --bg-header: #171512;
+      --header-control: #211e1a;
+      --header-border: #3a3024;
       --bg-card: #161618;
       --bg-card-hover: #1d1d20;
       --bg-pill: #242427;
@@ -112,7 +116,7 @@
     .mono { font-family: var(--mono); }
     .muted { color: var(--text-muted); }
 
-    header { background: var(--bg-header); border-bottom: 1px solid var(--border-color); padding: 14px 0 0; }
+    header { background: var(--bg-header); border-bottom: 1px solid var(--header-border); padding: 14px 0 0; transition: background-color .2s, border-color .2s; }
     .num, .time, .row .t, .row .e, .hz .val, .xt td, .meta strong, .gbtn, .ser-select { font-variant-numeric: tabular-nums; }
     .header-row { display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; gap: 12px; }
     .header-copy { flex: 1 1 auto; min-width: 0; }
@@ -128,6 +132,7 @@
     .tagline span { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: .9rem; }
     html[lang="en"] .tagline span { font-size: .84rem; letter-spacing: -0.012em; }
     .header-actions { display: flex; gap: 8px; flex: none; flex-wrap: nowrap; align-items: center; }
+    header .btn, header .ser-step, header select.ser-select, header .gbtn:not(.on), header .seg button.on { background: var(--header-control); }
     .btn { background: var(--bg-card); border: 1px solid var(--border-color); font-size: .82rem; font-weight: 600; padding: 6px 12px; border-radius: var(--radius-control); cursor: pointer; text-decoration: none; color: var(--text-main); display: inline-flex; gap: 6px; align-items: center; }
     .btn:hover { border-color: var(--border-focus); }
     .btn.icon-only { width: 36px; height: 36px; padding: 0; justify-content: center; flex: none; }
@@ -1340,7 +1345,13 @@
       // Four game seconds per real second.
       mmTimer = setInterval(() => {
         const d = +slider.value + 1;
-        if (d > h) return stop();
+        if (d > h) {
+          // Keep the map moving: after the selected window ends, return to the
+          // five-second lead-in and play the same sequence again.
+          slider.value = -5;
+          draw(-5);
+          return;
+        }
         slider.value = d;
         draw(d);
       }, 250);

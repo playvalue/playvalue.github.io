@@ -23,7 +23,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <style>
     :root {
-      --bg-main: #f4f5f7; --bg-card: #ffffff; --bg-pill: #eceef1; --text-main: #111214; --text-muted: #5d6168;
+      --bg-main: #f4f5f7; --bg-header: #f7f3ec; --header-control: #fffdf9; --header-border: #e4d7c5;
+      --bg-card: #ffffff; --bg-pill: #eceef1; --text-main: #111214; --text-muted: #5d6168;
       --border-color: #e4e6ea; --border-focus: #111214; --blue-team: #1d63b8; --red-team: #c4243f;
       --gain: #247b50; --loss: #b53d0c; --neutral: #62666d; --brand-gold: #B9731A; --code-bg: #eceef1;
       --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Segoe UI', sans-serif;
@@ -31,7 +32,8 @@
       color-scheme: light;
     }
     [data-theme="dark"] {
-      --bg-main: #0d0d0e; --bg-card: #161618; --bg-pill: #242427; --text-main: #f3f3f4; --text-muted: #a9abb0;
+      --bg-main: #0d0d0e; --bg-header: #171512; --header-control: #211e1a; --header-border: #3a3024;
+      --bg-card: #161618; --bg-pill: #242427; --text-main: #f3f3f4; --text-muted: #a9abb0;
       --border-color: #2a2a2e; --border-focus: #f3f3f4; --blue-team: #5ea3ff; --red-team: #ff6d83;
       --gain: #3fc07a; --loss: #ff8a52; --neutral: #a0a2a8; --brand-gold: #E9A23B; --code-bg: #242427;
       color-scheme: dark;
@@ -46,23 +48,24 @@
     a { color: var(--text-main); text-underline-offset: 2px; }
     /* Same frame as the dashboard: one 1440px column with 20px gutters, the wordmark bar on the ground. */
     .wrap { max-width: 1440px; margin: 0 auto; padding: 0 20px; }
-    header { border-bottom: 1px solid var(--border-color); padding: 14px 0; }
+    header { background: var(--bg-header); border-bottom: 1px solid var(--header-border); padding: 14px 0; transition: background-color .2s, border-color .2s; }
     .header-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: nowrap; }
     .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; font-weight: 900; font-size: 1.4rem; letter-spacing: -0.03em; }
     .brand img { width: 34px; height: 34px; }
     .brand .v { color: var(--brand-gold); }
     .actions { display: flex; gap: 8px; flex: none; flex-wrap: nowrap; align-items: center; }
     .btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); font: inherit; font-size: .82rem; font-weight: 600; padding: 6px 12px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+    header .btn { background: var(--header-control); }
     .btn:hover { border-color: var(--border-focus); }
     .btn.icon-only { width: 36px; height: 36px; padding: 0; flex: none; }
     .btn.icon-only svg { display: block; width: 18px; height: 18px; }
     .lang-picker { position: relative; }
     .lang-flag { font-size: 1.12rem; line-height: 1; filter: saturate(.92); }
-    .lang-menu { position: absolute; z-index: 80; top: calc(100% + 8px); right: 0; min-width: 174px; padding: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 10px 28px rgba(0,0,0,.16); }
+    .lang-menu { position: absolute; z-index: 80; top: calc(100% + 8px); right: 0; min-width: 174px; padding: 6px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; box-shadow: 0 10px 28px rgba(0,0,0,.16); }
     .lang-menu[hidden] { display: none; }
-    .lang-option { width: 100%; display: grid; grid-template-columns: 24px 1fr 14px; align-items: center; gap: 8px; border: 0; border-radius: 7px; padding: 8px 9px; background: transparent; color: var(--ink); cursor: pointer; text-align: left; font-size: .84rem; }
-    .lang-option:hover, .lang-option:focus-visible { background: var(--pill); }
-    .lang-option .check { opacity: 0; color: var(--gold); font-weight: 800; }
+    .lang-option { width: 100%; display: grid; grid-template-columns: 24px 1fr 14px; align-items: center; gap: 8px; border: 0; border-radius: 7px; padding: 8px 9px; background: transparent; color: var(--text-main); cursor: pointer; text-align: left; font-size: .84rem; }
+    .lang-option:hover, .lang-option:focus-visible { background: var(--bg-pill); }
+    .lang-option .check { opacity: 0; color: var(--brand-gold); font-weight: 800; }
     .lang-option.on .check { opacity: 1; }
     #btnTheme .theme-sun { display: none; }
     [data-theme="dark"] #btnTheme .theme-moon { display: none; }
