@@ -16,17 +16,15 @@ The number is what the team went through in that window, everything else on the 
 
 ## What is here
 
-This repository is the published site. It is built from a separate research repository and deployed here; changes made here directly are overwritten on the next deploy.
+This repository is the published site shell. It is built from a separate research repository and deployed here; changes made here directly are overwritten on the next deploy. Runtime JSON lives in the separate [`playvalue/data`](https://github.com/playvalue/data) project Pages repository, which is served on the same origin under `https://playvalue.github.io/data/`.
 
 | Path | What it is |
 |---|---|
 | `index.html` | The dashboard: per-game view and totals by play type |
 | `methodology.html` | How plays are picked, measured and coded (Korean and English) |
-| `data/index.json` | Tournaments, games and site-wide counts |
-| `data/<tournament>/plays.json` | Plays of every game in a tournament |
-| `data/<tournament>/games/<game>.json` | One game: teams, roster, gold timeline, plays, map positions |
-| `data/wps-v312/` | Frozen v312 beta curves and play-level WPS overlays |
 | `assets/ddragon/` | Map and champion images from Riot's Data Dragon |
+
+The `playvalue/data` repository provides `index.json`, tournament play and game files, and the frozen v312 WPS overlays at the existing `/data/` URLs.
 
 Tournaments covered so far: MSI 2026 (all 71 games) and Worlds 2026 (41 games through the first three quarterfinal series). As of 6 November 2026 the site holds 112 games and 5,613 plays.
 
