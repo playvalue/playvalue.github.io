@@ -56,6 +56,8 @@
       --chart-axis: #686c73;
       --brand-gold: #B9731A;
       --radius-card: 8px; --radius-control: 6px;
+      --motion-fast: 140ms; --motion-medium: 260ms; --motion-emphasis: 420ms;
+      --ease-out: cubic-bezier(.2, .8, .2, 1);
       color-scheme: light;
       --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Segoe UI', sans-serif;
       --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
@@ -110,7 +112,7 @@
     .card h3, .play-title { text-wrap: balance; }
     .row .t, .row .e, .xt td, .meta strong, .hz .val, .time, .gbtn, .series-score .n { font-variant-numeric: tabular-nums; }
     button.row { width: 100%; text-align: left; background: transparent; border: 0; border-bottom: 1px solid var(--border-color); border-left: 3px solid transparent; font: inherit; color: inherit; }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
     a { color: var(--text-main); text-underline-offset: 2px; }
     .container { max-width: 1440px; margin: 0 auto; padding: 0 20px; }
     .mono { font-family: var(--mono); }
@@ -200,6 +202,12 @@
     .chart-wrap { position: relative; }
     #chart { width: 100%; height: auto; display: block; user-select: none; }
     #chart text { font-family: var(--font); font-variant-numeric: tabular-nums; font-size: 12px; fill: var(--chart-axis); }
+    @keyframes chart-window-in { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes chart-anchor-in { from { opacity: .2; transform: scaleY(.2); } to { opacity: 1; transform: scaleY(1); } }
+    @keyframes chart-pin-in { 0% { opacity: .4; transform: scale(.72); } 65% { transform: scale(1.18); } 100% { opacity: 1; transform: scale(1); } }
+    #chart.chart-emphasize .chart-selection-window { animation: chart-window-in var(--motion-medium) var(--ease-out); }
+    #chart.chart-emphasize .chart-selection-line { transform-box: fill-box; transform-origin: center; animation: chart-anchor-in var(--motion-emphasis) var(--ease-out); }
+    #chart.chart-emphasize .pin.is-selected { transform-box: fill-box; transform-origin: center; animation: chart-pin-in var(--motion-emphasis) var(--ease-out); }
     .tip .gain { color: var(--gain); } .tip .loss { color: var(--loss); } .tip .neutral { color: var(--neutral); }
     .tip { position: absolute; pointer-events: none; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 9px; font-size: .75rem; box-shadow: var(--shadow-md); display: none; max-width: 280px; z-index: 5; }
     .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .75rem; color: var(--text-muted); margin-top: 6px; }
@@ -826,6 +834,43 @@
   const fmtClock = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
   const game = () => GAMES.find(g => g.id === S.gameId);
   const SMOOTH = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const MOTION_EASE = 'cubic-bezier(.2, .8, .2, 1)';
+  const animateElement = (el, frames, options) => {
+    if (!el || reduceMotion() || typeof el.animate !== 'function') return;
+    el.animate(frames, { easing: MOTION_EASE, fill: 'none', ...options });
+  };
+  const animatePlaySelection = selectedRow => {
+    animateElement(document.getElementById('playCard'), [
+      { opacity: .55, transform: 'translateY(6px)' },
+      { opacity: 1, transform: 'translateY(0)' },
+    ], { duration: 220 });
+    animateElement(document.getElementById('mapSlot'), [
+      { opacity: .6 }, { opacity: 1 },
+    ], { duration: 220 });
+    animateElement(selectedRow, [
+      { transform: 'scale(.985)' }, { transform: 'scale(1)' },
+    ], { duration: 260 });
+  };
+  const rowPositions = container => new Map([...container.querySelectorAll('.row[data-id]')]
+    .map(row => [row.dataset.id, row.getBoundingClientRect()]));
+  const animateListFlip = (container, before) => {
+    if (!before || reduceMotion()) return;
+    container.querySelectorAll('.row[data-id]').forEach(row => {
+      const old = before.get(row.dataset.id);
+      if (!old) return;
+      const now = row.getBoundingClientRect();
+      const dx = old.left - now.left, dy = old.top - now.top;
+      if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+      const motionX = Math.max(-80, Math.min(80, dx));
+      const motionY = Math.max(-180, Math.min(180, dy));
+      const startOpacity = Math.abs(dy) > 180 ? .35 : .72;
+      animateElement(row, [
+        { opacity: startOpacity, transform: `translate(${motionX}px, ${motionY}px)` },
+        { opacity: 1, transform: 'translate(0, 0)' },
+      ], { duration: 280 });
+    });
+  };
   // Toggle buttons announce their state to screen readers.
   const syncPressed = () => document.querySelectorAll('.seg button, .gbtn, .hz').forEach(b => b.setAttribute('aria-pressed', String(b.classList.contains('on'))));
   // Plays outside the gold stream have no game clock; show the video time in brackets instead.
@@ -1133,13 +1178,16 @@
     if (!PLAY[id]) return;
     S.playId = id;
     const g = PLAY[id]._game;
-    renderChart(g);
+    renderChart(g, true);
     renderCard(g);
+    let selectedRow = null;
     document.querySelectorAll('#listCard .row[data-id]').forEach(r => {
       const on = r.dataset.id === id;
       r.classList.toggle('on', on);
+      if (on) selectedRow = r;
       if (on) r.setAttribute('aria-current', 'true'); else r.removeAttribute('aria-current');
     });
+    animatePlaySelection(selectedRow);
     writeHash();
     syncPressed();
     const stage = document.getElementById('workspaceStage');
@@ -1148,7 +1196,7 @@
 
   function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 
-  function renderChart(g) {
+  function renderChart(g, emphasize = false) {
     const svg = document.getElementById('chart');
     const W = Math.max(320, Math.round(svg.parentElement.clientWidth || 1200));
     const narrow = W < 640;
@@ -1222,8 +1270,8 @@
     if (sel && sel.gc != null && sel._game === g) {
       const w = Number(S.h);
       const xa = X(sel.gc), xb = X(Math.min(x1, sel.gc + w));
-      s += `<rect x="${xa}" y="${top}" width="${Math.max(2, xb - xa)}" height="${plotBottom - top}" fill="${css('--accent-bg')}"/>`;
-      s += `<line x1="${xa}" x2="${xa}" y1="${top}" y2="${laneTop + lanes * laneH - 4}" stroke="${acc}" stroke-width="1.5"/>`;
+      s += `<rect class="chart-selection-window" x="${xa}" y="${top}" width="${Math.max(2, xb - xa)}" height="${plotBottom - top}" fill="${css('--accent-bg')}"/>`;
+      s += `<line class="chart-selection-line" x1="${xa}" x2="${xa}" y1="${top}" y2="${laneTop + lanes * laneH - 4}" stroke="${acc}" stroke-width="1.5"/>`;
     }
     if (showWps) {
       let path = '', prev = null;
@@ -1258,13 +1306,13 @@
           const y = wpsBarY(Math.max(0, value)), hgt = Math.max(1.5, Math.abs(wpsBarY(value) - wpsBarY(0)));
           mark = `<rect x="${x}" y="${y}" width="${w}" height="${hgt}" fill="${c}"/>`;
         }
-        const group = `<g class="pin" data-id="${p.id}" style="cursor:pointer"${opacity}><rect x="${x - 4}" y="${wpsBarTrack.top}" width="${w + 8}" height="${wpsBarTrack.height}" fill="transparent"/>${mark}</g>`;
+        const group = `<g class="pin${on ? ' is-selected' : ''}" data-id="${p.id}" style="cursor:pointer"${opacity}><rect x="${x - 4}" y="${wpsBarTrack.top}" width="${w + 8}" height="${wpsBarTrack.height}" fill="transparent"/>${mark}</g>`;
         if (on) selectedMarks += group; else s += group;
         if (wpCurve.length) {
           const point = nearest(wpCurve, p.gc, row => row[0]);
           if (Math.abs(point[0] - p.gc) <= 5) {
             const probability = 100 * (sign > 0 ? point[2] : 1 - point[2]);
-            s += `<circle class="pin" data-id="${p.id}" cx="${x}" cy="${wpsCurveY(probability)}" r="${on ? 5 : 3}" fill="${on ? c : card}" stroke="${c}" stroke-width="1.5" style="cursor:pointer"/>`;
+            s += `<circle class="pin${on ? ' is-selected' : ''}" data-id="${p.id}" cx="${x}" cy="${wpsCurveY(probability)}" r="${on ? 5 : 3}" fill="${on ? c : card}" stroke="${c}" stroke-width="1.5" style="cursor:pointer"/>`;
           }
         }
       }
@@ -1277,10 +1325,10 @@
             ? `<rect x="${x + 0.75}" y="${y + 0.75}" width="${w - 1.5}" height="${Math.max(0.5, hgt - 1.5)}" fill="${card}" stroke="${c}" stroke-width="1.5"/>`
             : `<rect x="${x}" y="${y}" width="${w}" height="${hgt}" fill="${c}"/>`;
         }
-        const group = `<g class="pin" data-id="${p.id}" style="cursor:pointer"${opacity}><rect x="${x - 4}" y="${goldBarTrack.top}" width="${w + 8}" height="${goldBarTrack.height}" fill="transparent"/>${mark}</g>`;
+        const group = `<g class="pin${on ? ' is-selected' : ''}" data-id="${p.id}" style="cursor:pointer"${opacity}><rect x="${x - 4}" y="${goldBarTrack.top}" width="${w + 8}" height="${goldBarTrack.height}" fill="transparent"/>${mark}</g>`;
         if (on) selectedMarks += group; else s += group;
         const point = nearest(tl, p.gc, row => row.gc);
-        if (Math.abs(point.gc - p.gc) <= 5) s += `<circle class="pin" data-id="${p.id}" cx="${x}" cy="${goldY(goldGap(point.diff))}" r="${on ? 5 : 3}" fill="${on ? c : card}" stroke="${c}" stroke-width="1.5" style="cursor:pointer"/>`;
+        if (Math.abs(point.gc - p.gc) <= 5) s += `<circle class="pin${on ? ' is-selected' : ''}" data-id="${p.id}" cx="${x}" cy="${goldY(goldGap(point.diff))}" r="${on ? 5 : 3}" fill="${on ? c : card}" stroke="${c}" stroke-width="1.5" style="cursor:pointer"/>`;
       }
     }
     s += selectedMarks;
@@ -1305,6 +1353,7 @@
       });
     }
     svg.innerHTML = s;
+    svg.classList.toggle('chart-emphasize', emphasize);
     const tip = document.getElementById('tip');
     svg.querySelectorAll('.pin').forEach(el => {
       el.onclick = () => selectPlay(el.dataset.id, true);
@@ -1648,7 +1697,7 @@
     document.getElementById('listCard').scrollIntoView({ block: 'start' });
   }
 
-  function renderList(g) {
+  function renderList(g, previousRows = null) {
     const el = document.getElementById('listCard');
     const tagKeys = [...Object.keys(D.tags)];
     if (S.listSort === 'wps' && !g._wps) S.listSort = 'time';
@@ -1701,9 +1750,10 @@
       ${S.fPlayer ? `<p class="note-box" style="margin:-4px 0 8px">${t('playerNote')}</p>` : ''}
       <div class="rows"><div class="row head" aria-hidden="true"><span>${t('colTime')}</span><span>${t('colTeam')}</span><span>${t('colPlay')}</span><span class="famcell">${t('colType')}</span><span class="e">${valueHead}${S.persp ? t('colFrom')(S.persp) : ''}</span></div>${list.map(p => rowHtml(p, p.id === S.playId)).join('')}</div>`;
     el.querySelector('#listSort').onchange = e => {
+      const before = rowPositions(el);
       S.listSort = e.target.value;
       try { localStorage.setItem('lv_list_sort', S.listSort); } catch (err) {}
-      renderList(g);
+      renderList(g, before);
       writeHash();
     };
     el.querySelector('#fFamily').onchange = e => { S.fFamily = e.target.value; renderList(g); };
@@ -1714,6 +1764,7 @@
     const clear = el.querySelector('#fClear');
     if (clear) clear.onclick = () => { S.fFamily = S.fTag = S.fState = ''; S.fHl = false; pickPlayer(g, ''); };
     el.querySelectorAll('.row:not(.head)').forEach(r => r.onclick = () => selectPlay(r.dataset.id, true));
+    animateListFlip(el, previousRows);
   }
 
   // ------------------------------------------------------------------ cross-tab

@@ -29,6 +29,7 @@
       --gain: #247b50; --loss: #b53d0c; --neutral: #62666d; --brand-gold: #B9731A; --code-bg: #eceef1;
       --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Segoe UI', sans-serif;
       --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+      --motion-medium: 280ms; --ease-out: cubic-bezier(.2, .8, .2, 1);
       color-scheme: light;
     }
     [data-theme="dark"] {
@@ -93,6 +94,23 @@
     [id$="-coding-table"] td:first-child .mono { word-break: break-all; }
     .wps-eval table { min-width: 780px; }
     .wps-eval td:first-child { min-width: 9.5em; }
+    .measure-demo { margin: 18px 0 20px; padding: 16px 18px 14px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-main); --window-end: 66%; }
+    .measure-demo-head { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; }
+    .measure-demo-head strong { font-size: .9rem; }
+    .measure-demo-buttons { display: inline-flex; gap: 3px; padding: 3px; border-radius: 8px; background: var(--bg-pill); }
+    .measure-demo-buttons button { border: 0; border-radius: 6px; padding: 5px 10px; background: transparent; color: var(--text-muted); font: inherit; font-size: .78rem; font-weight: 700; cursor: pointer; }
+    .measure-demo-buttons button[aria-pressed="true"] { background: var(--bg-card); color: var(--text-main); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    .measure-track { position: relative; height: 64px; margin-top: 8px; }
+    .measure-axis { position: absolute; left: 12%; right: 6%; top: 29px; height: 2px; background: var(--border-color); }
+    .measure-window { position: absolute; left: 12%; top: 25px; width: calc(var(--window-end) - 12%); height: 10px; border-radius: 999px; background: color-mix(in srgb, var(--brand-gold) 28%, transparent); transition: width var(--motion-medium) var(--ease-out); }
+    .measure-dot { position: absolute; top: 22px; width: 16px; height: 16px; border: 3px solid var(--bg-main); border-radius: 50%; background: var(--brand-gold); box-shadow: 0 0 0 1px var(--brand-gold); transform: translateX(-50%); }
+    .measure-dot.start { left: 12%; }
+    .measure-dot.end { left: var(--window-end); transition: left var(--motion-medium) var(--ease-out); }
+    .measure-label { position: absolute; top: 43px; color: var(--text-muted); font-size: .72rem; font-weight: 700; transform: translateX(-50%); white-space: nowrap; }
+    .measure-label.start { left: 12%; }
+    .measure-label.end { left: var(--window-end); transition: left var(--motion-medium) var(--ease-out); }
+    .measure-demo-copy { min-height: 2.7em; margin-top: 2px; color: var(--text-muted); font-size: .82rem; line-height: 1.55; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
     h1 { font-size: 2rem; letter-spacing: -0.02em; line-height: 1.25; text-wrap: balance; }
     /* After the base rule, so it wins: the earlier 900px rule set 1.55rem but this line overrode it. */
     @media (max-width: 600px) { h1 { font-size: 1.5rem; } }
@@ -311,6 +329,11 @@ h = 15, 30, 60초</pre>
   <section id="ko-next">
     <h2>승률과 WPS 공개 베타</h2>
     <p>골드는 플레이가 남기는 흔적 중 재기 쉬운 하나일 뿐입니다. 시야를 잡거나, 상대 점멸을 빼거나, 오브젝트 앞 자리를 차지하면 당장 골드가 생기지 않아도 최종 승리 가능성이 바뀔 수 있습니다. 그래서 경기 시간, 골드·경험치, 킬·포탑·억제기·드래곤·바론·공허 유충, 생존과 리스폰, 오브젝트 버프, 대회 지역처럼 그 시점까지 알 수 있는 상태로 최종 승리 확률을 추정하는 동결 모델을 함께 공개합니다.</p>
+    <div class="measure-demo" data-measure-demo>
+      <div class="measure-demo-head"><strong>플레이 뒤 측정 창</strong><div class="measure-demo-buttons" role="group" aria-label="측정 창 선택"><button type="button" data-window="15">15초</button><button type="button" data-window="30">30초</button><button type="button" data-window="60">60초</button></div></div>
+      <div class="measure-track" aria-hidden="true"><span class="measure-axis"></span><span class="measure-window"></span><i class="measure-dot start"></i><i class="measure-dot end"></i><span class="measure-label start">플레이 시작</span><span class="measure-label end" data-end-label>+30초</span></div>
+      <p class="measure-demo-copy" data-demo-copy data-copy-15="짧은 창은 플레이 직후의 반응을 좁게 봅니다." data-copy-30="기본 창은 즉각적 보상과 이어진 교환을 함께 봅니다." data-copy-60="긴 창은 늦게 전환된 보상도 담지만 다른 사건이 섞일 가능성이 커집니다."></p>
+    </div>
     <p><b>WPS(Win Probability Swing)</b>는 플레이 직전과 직후, 또는 시작점에서 15·30·60초 뒤까지 모델 승률이 움직인 퍼센트포인트입니다. 월즈에는 v312를, MSI에는 v312 명세가 그대로 유지하는 동결 MSI 분기 v156을 씁니다. 브라우저에서 모델을 돌리지 않고, 검증된 방송 OCR 골드와 해당 시점까지의 Riot 이벤트에 미리 점수를 매긴 정적 결과만 제공합니다.</p>
     <p>v312는 2026년 10월 24일까지의 학습 자료 뒤에 열린 월즈 15경기에서 log loss 0.3668, Brier score 0.1176을 기록했습니다. 같은 상태에서 경기 시간과 골드 차이만 쓴 비교 모델은 0.4694와 0.1567이었습니다. 다만 15경기는 작고, 경기 단위 bootstrap 구간은 비교 차이의 0을 아주 조금 포함합니다. 따라서 WPS는 기존 골드와 나란히 제공하는 <b>베타</b>이며 골드를 대체하는 확정 지표가 아닙니다.</p>
     <p>승률이 움직였다고 해서 그 플레이가 그 변화를 만들었다는 뜻은 아닙니다. 같은 시간의 다른 라인, 상대의 대응, 이어진 교전과 오브젝트가 모두 상태에 들어갑니다. WPS는 <b>관측된 모델 상태 변화</b>이며, 반사실적 인과효과나 선수 개인의 기여분이 아닙니다. WPS 계산은 1초 단위 연구 곡선을 사용합니다. 웹 선 그래프만 2초 간격을 기본으로 하되 시작·끝, 플레이 시점과 1퍼센트포인트 이상 급변의 전후를 보존하며 smoothing하지 않습니다. 화면에서는 과도한 정밀도를 피하려고 승률과 WPS를 소수점 한 자리까지만 표시합니다.</p>
@@ -474,6 +497,11 @@ h = 15, 30, 60 seconds</pre>
   <section id="en-next">
     <h2>Public beta: win probability and WPS</h2>
     <p>Gold is only the easiest trace of a play to measure. Vision, a burned Flash or control of the ground in front of an objective can change the chance of eventually winning without producing gold at once. The beta therefore adds a frozen final-win forecast from information available at that moment: game time, gold and experience, kills, structures and epic objectives, alive and respawn state, objective buffs, and competition region.</p>
+    <div class="measure-demo" data-measure-demo>
+      <div class="measure-demo-head"><strong>Measurement window after a play</strong><div class="measure-demo-buttons" role="group" aria-label="Choose measurement window"><button type="button" data-window="15">15 s</button><button type="button" data-window="30">30 s</button><button type="button" data-window="60">60 s</button></div></div>
+      <div class="measure-track" aria-hidden="true"><span class="measure-axis"></span><span class="measure-window"></span><i class="measure-dot start"></i><i class="measure-dot end"></i><span class="measure-label start">Play starts</span><span class="measure-label end" data-end-label>+30 s</span></div>
+      <p class="measure-demo-copy" data-demo-copy data-copy-15="The short window isolates the immediate response." data-copy-30="The default window covers immediate rewards and the exchange that follows." data-copy-60="The long window can capture delayed rewards, but is more likely to include other events."></p>
+    </div>
     <p><b>WPS (win-probability swing)</b> is the percentage-point movement in that forecast across a play, or from its start to 15, 30 or 60 seconds later. Worlds uses v312; MSI uses the frozen MSI branch that the v312 specification preserves unchanged (v156). The browser does not run the model. It receives static scores precomputed from the same validated broadcast-OCR gold seconds and Riot events available up to each moment.</p>
     <p>On 15 Worlds games after the 24 October 2026 fitting cutoff, v312 recorded log loss 0.3668 and Brier score 0.1176. A comparator using only game time and the gold gap recorded 0.4694 and 0.1567 on the same states. Fifteen games are still a small holdout, and game-bootstrap intervals narrowly include zero for the paired comparison. WPS is therefore published beside gold as a <b>beta</b>, not as a definitive replacement.</p>
     <p>A probability move does not mean that the selected play caused it. Other lanes, the opponent's response, the rest of a fight and any ensuing objective all enter the state. WPS is an <b>observed modeled state change</b>, not a counterfactual causal effect or an allocation of credit to one player. WPS is calculated from the one-second research curve. Only the browser line uses a two-second display grid, while retaining endpoints, play anchors and both sides of moves of at least one percentage point; no smoothing is applied. The interface rounds probabilities and WPS to one decimal place to avoid false precision.</p>
@@ -514,6 +542,11 @@ h = 15, 30, 60 seconds</pre>
   <section id="zh-next">
     <h2>公开测试：胜率与WPS</h2>
     <p>WPS是冻结模型在操作前后或15、30、60秒内的胜率百分点变化。Worlds使用v312，MSI使用其冻结分支v156；模型不会在浏览器中运行。15场拟合截止日后的Worlds比赛中，v312的log loss为0.3668、Brier score为0.1176；仅使用时间和经济差的模型为0.4694和0.1567。由于样本仍小，WPS与经济并列作为测试指标。它是观测到的模型状态变化，不是单个操作的因果效果。WPS仍按每秒研究曲线计算；网页折线使用两秒显示网格，并保留端点、操作锚点及明显跳变前后，不进行平滑处理。</p>
+    <div class="measure-demo" data-measure-demo>
+      <div class="measure-demo-head"><strong>操作后的测量窗口</strong><div class="measure-demo-buttons" role="group" aria-label="选择测量窗口"><button type="button" data-window="15">15秒</button><button type="button" data-window="30">30秒</button><button type="button" data-window="60">60秒</button></div></div>
+      <div class="measure-track" aria-hidden="true"><span class="measure-axis"></span><span class="measure-window"></span><i class="measure-dot start"></i><i class="measure-dot end"></i><span class="measure-label start">操作开始</span><span class="measure-label end" data-end-label>+30秒</span></div>
+      <p class="measure-demo-copy" data-demo-copy data-copy-15="短窗口聚焦操作后的即时反应。" data-copy-30="默认窗口同时涵盖即时收益与随后交换。" data-copy-60="长窗口可捕捉延迟收益，但也更可能混入其他事件。"></p>
+    </div>
     <h3>能否识别重要场景：独立复盘视频对照</h3>
     <p>作为预测准确度之外的辅助检验，我们比较了金贡和独立编辑分析频道“프로관전러 P.S”在同6场Worlds八强赛中选出的重要场景。选择时不查看WPS、经济或PlayValue排名，先将视频与字幕标注冻结，再计算场景前10秒至后10秒的绝对变化，并与同局同阶段所有可用秒比较。Top-3和Top-10表示场景是否落在该阶段最大变化峰值的±10秒内。</p>
     <div class="tbl wps-eval"><table>
@@ -545,6 +578,11 @@ h = 15, 30, 60 seconds</pre>
   <section id="ja-next">
     <h2>公開ベータ：勝率とWPS</h2>
     <p>WPSは凍結モデルの勝率がプレー前後、または15・30・60秒で動いたパーセントポイントです。Worldsはv312、MSIは凍結分岐v156を使用し、ブラウザではモデルを実行しません。学習期限後のWorlds 15試合でv312はlog loss 0.3668、Brier score 0.1176、時間とゴールド差だけのモデルは0.4694と0.1567でした。標本はまだ小さいため、WPSはゴールドと並ぶベータ指標です。これは観測されたモデル状態の変化で、ひとつのプレーの因果効果ではありません。WPSの計算には1秒単位の研究曲線を使い、Webの線グラフだけを2秒間隔にしつつ、端点・プレー時点・大きな変化の前後を保持し、平滑化は行いません。</p>
+    <div class="measure-demo" data-measure-demo>
+      <div class="measure-demo-head"><strong>プレー後の測定窓</strong><div class="measure-demo-buttons" role="group" aria-label="測定窓を選択"><button type="button" data-window="15">15秒</button><button type="button" data-window="30">30秒</button><button type="button" data-window="60">60秒</button></div></div>
+      <div class="measure-track" aria-hidden="true"><span class="measure-axis"></span><span class="measure-window"></span><i class="measure-dot start"></i><i class="measure-dot end"></i><span class="measure-label start">プレー開始</span><span class="measure-label end" data-end-label>+30秒</span></div>
+      <p class="measure-demo-copy" data-demo-copy data-copy-15="短い窓はプレー直後の反応に絞ります。" data-copy-30="既定の窓は即時の報酬と続く交換を一緒に見ます。" data-copy-60="長い窓は遅れて現れる報酬も捉えますが、別の出来事が混ざりやすくなります。"></p>
+    </div>
     <h3>重要場面を捉えるか：独立レビュー動画との照合</h3>
     <p>予測精度とは別の補助検証として、GimGoonと独立編集分析チャンネル「프로관전러 P.S」が同じWorlds準々決勝6試合で重要と説明した場面を比較しました。WPS・ゴールド・PlayValueの順位を見ずに動画と字幕だけで場面を先に固定し、その後、場面の10秒前から10秒後までの絶対変化を同じ試合・フェーズの全秒と比較しました。Top-3とTop-10は、その場面が最大変化ピークの±10秒以内に入った割合です。</p>
     <div class="tbl wps-eval"><table>
@@ -789,6 +827,26 @@ h = 15, 30, 60 seconds</pre>
     toc.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id));
   }), { rootMargin: '-20% 0px -70% 0px' });
   document.querySelectorAll('article > section[id]').forEach(sec => io.observe(sec));
+})();
+
+// The horizon control explains the trade-off without changing or smoothing any observed curve.
+(() => {
+  const ends = { 15: '43%', 30: '66%', 60: '91%' };
+  document.querySelectorAll('[data-measure-demo]').forEach(demo => {
+    const buttons = [...demo.querySelectorAll('[data-window]')];
+    const copy = demo.querySelector('[data-demo-copy]');
+    const endLabel = demo.querySelector('[data-end-label]');
+    copy.setAttribute('aria-live', 'polite');
+    const choose = button => {
+      const value = button.dataset.window;
+      demo.style.setProperty('--window-end', ends[value]);
+      buttons.forEach(candidate => candidate.setAttribute('aria-pressed', String(candidate === button)));
+      endLabel.textContent = `+${button.textContent.trim()}`;
+      copy.textContent = copy.getAttribute(`data-copy-${value}`);
+    };
+    buttons.forEach(button => button.onclick = () => choose(button));
+    choose(buttons.find(button => button.dataset.window === '30'));
+  });
 })();
 </script>
 </body>
