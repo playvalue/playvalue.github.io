@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f4f5f7" id="themeColor">
   <title>방법론 — PlayValue</title>
-  <meta name="description" content="PlayValue가 해설에서 플레이를 뽑고, 골드 변화를 재고, 유형을 코딩하는 방법과 그 검증.">
+  <meta name="description" content="PlayValue가 해설에서 플레이를 뽑고, 골드와 승률 변화를 재며, WPS를 검증하는 방법.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="PlayValue">
   <meta property="og:title" content="방법론 — PlayValue">
-  <meta property="og:description" content="PlayValue가 해설에서 플레이를 뽑고, 골드 변화를 재고, 유형을 코딩하는 방법과 그 검증.">
+  <meta property="og:description" content="PlayValue가 해설에서 플레이를 뽑고, 골드와 승률 변화를 재며, WPS를 검증하는 방법.">
   <meta property="og:url" content="https://playvalue.github.io/methodology.html">
   <meta property="og:image" content="https://playvalue.github.io/assets/og.png">
   <meta property="og:image:width" content="1200">
@@ -91,6 +91,8 @@
     [id$="-coding-table"] td:first-child { min-width: 9em; }
     [id$="-coding-table"] td:nth-child(2) { min-width: 10em; }
     [id$="-coding-table"] td:first-child .mono { word-break: break-all; }
+    .wps-eval table { min-width: 780px; }
+    .wps-eval td:first-child { min-width: 9.5em; }
     h1 { font-size: 2rem; letter-spacing: -0.02em; line-height: 1.25; text-wrap: balance; }
     /* After the base rule, so it wins: the earlier 900px rule set 1.55rem but this line overrode it. */
     @media (max-width: 600px) { h1 { font-size: 1.5rem; } }
@@ -173,8 +175,8 @@
   <h1>PlayValue는 무엇을, 어떻게 재는가</h1>
   <p class="lede">해설진이 짚은 플레이를 골드와 승률을 보지 않은 채 먼저 골라 두고, 그 뒤 15·30·60초 동안 두 팀의 골드 차이와 동결된 모델의 승률이 어떻게 움직였는지 함께 보여 줍니다. 이 페이지는 그 절차와 숫자의 뜻, 그리고 숫자가 말하지 않는 것을 정리합니다.</p>
   <nav class="toc">
-    <a href="#ko-why">왜 팀으로 보나</a><a href="#ko-question">연구 질문</a><a href="#ko-steps">처리 절차</a><a href="#ko-metric">골드 변화</a><a href="#ko-coding">해설 코딩</a>
-    <a href="#ko-views">화면의 규칙</a><a href="#ko-numbers">현재 데이터</a><a href="#ko-check">검증</a><a href="#ko-limits">한계</a><a href="#ko-version">버전</a><a href="#ko-next">WPS 베타</a><a href="#ko-contact">데이터 협력</a>
+    <a href="#ko-why">왜 팀으로 보나</a><a href="#ko-question">연구 질문</a><a href="#ko-steps">처리 절차</a><a href="#ko-metric">골드 변화</a><a href="#ko-next">WPS 베타</a><a href="#ko-coding">해설 코딩</a>
+    <a href="#ko-views">화면의 규칙</a><a href="#ko-numbers">현재 데이터</a><a href="#ko-check">검증</a><a href="#ko-limits">한계</a><a href="#ko-version">버전</a><a href="#ko-contact">데이터 협력</a>
   </nav>
 
   <section id="ko-why">
@@ -312,6 +314,15 @@ h = 15, 30, 60초</pre>
     <p><b>WPS(Win Probability Swing)</b>는 플레이 직전과 직후, 또는 시작점에서 15·30·60초 뒤까지 모델 승률이 움직인 퍼센트포인트입니다. 월즈에는 v312를, MSI에는 v312 명세가 그대로 유지하는 동결 MSI 분기 v156을 씁니다. 브라우저에서 모델을 돌리지 않고, 검증된 방송 OCR 골드와 해당 시점까지의 Riot 이벤트에 미리 점수를 매긴 정적 결과만 제공합니다.</p>
     <p>v312는 2026년 10월 24일까지의 학습 자료 뒤에 열린 월즈 15경기에서 log loss 0.3668, Brier score 0.1176을 기록했습니다. 같은 상태에서 경기 시간과 골드 차이만 쓴 비교 모델은 0.4694와 0.1567이었습니다. 다만 15경기는 작고, 경기 단위 bootstrap 구간은 비교 차이의 0을 아주 조금 포함합니다. 따라서 WPS는 기존 골드와 나란히 제공하는 <b>베타</b>이며 골드를 대체하는 확정 지표가 아닙니다.</p>
     <p>승률이 움직였다고 해서 그 플레이가 그 변화를 만들었다는 뜻은 아닙니다. 같은 시간의 다른 라인, 상대의 대응, 이어진 교전과 오브젝트가 모두 상태에 들어갑니다. WPS는 <b>관측된 모델 상태 변화</b>이며, 반사실적 인과효과나 선수 개인의 기여분이 아닙니다. WPS 계산은 1초 단위 연구 곡선을 사용합니다. 웹 선 그래프만 2초 간격을 기본으로 하되 시작·끝, 플레이 시점과 1퍼센트포인트 이상 급변의 전후를 보존하며 smoothing하지 않습니다. 화면에서는 과도한 정밀도를 피하려고 승률과 WPS를 소수점 한 자리까지만 표시합니다.</p>
+    <h3>중요 장면을 잡는지: 독립 리뷰 영상 비교</h3>
+    <p>예측 정확도와는 별도로, 경기 뒤 리뷰어가 중요하다고 설명한 장면에서 WPS가 실제로 크게 움직이는지 확인했습니다. 김군과 독립 편집 분석 채널 프로관전러 P.S의 리뷰를 같은 월즈 8강 6경기에서 비교했습니다. 장면은 WPS·골드·PlayValue 순위를 보지 않고 영상과 자막만으로 먼저 골라 고정했습니다. 그 뒤 각 장면의 10초 전부터 10초 후까지 절대 변화를 같은 경기·같은 시간대의 모든 1초 기준점과 비교했습니다. Top-3와 Top-10은 장면이 그 시간대의 가장 큰 변화 봉우리 3개 또는 10개에서 ±10초 안에 잡혔는지 뜻합니다.</p>
+    <div class="tbl wps-eval"><table>
+      <tr><th>리뷰 소스</th><th>주요 장면 (경기)</th><th>평균 백분위<br>WPS / 골드</th><th>Top-3<br>WPS / 골드</th><th>Top-10<br>WPS / 골드</th><th>유리한 팀 방향<br>WPS / 골드</th></tr>
+      <tr><td>김군</td><td class="n">24 (6/6)</td><td class="n">77.9 / 78.0%</td><td class="n">55.8 / 32.2%</td><td class="n">91.7 / 74.4%</td><td class="n">83.3 / 83.3%</td></tr>
+      <tr><td>프로관전러 P.S</td><td class="n">16 (3/6)</td><td class="n">72.8 / 72.9%</td><td class="n">51.7 / 30.0%</td><td class="n">93.3 / 73.3%</td><td class="n">87.5 / 68.8%</td></tr>
+    </table></div>
+    <p>10초 창의 평균 백분위에서는 WPS와 골드가 사실상 같았지만, 두 소스 모두에서 WPS가 가장 큰 리뷰 장면을 Top-3와 Top-10으로 더 자주 잡았습니다. 미리 정한 5초·15초 창에서는 평균 백분위도 WPS가 더 높았고, 세 창 모두 WPS의 Top-3 일치율이 골드보다 높았습니다. 두 리뷰가 ±20초 안에 함께 고른 장면은 10쌍이었고, 그중 9쌍은 정확히 같은 초, 9쌍은 유리해진 팀까지 같았습니다.</p>
+    <p class="note">이 비교는 보조적인 수렴 타당도 확인입니다. 리뷰는 경기 결과를 안 뒤 만든 사후 자료이고, 말하지 않은 장면은 부정 사례가 아닙니다. P.S는 6경기 중 3경기에서만 조건에 맞는 구체적 인게임 장면을 다뤘고, 한 명의 실명 리뷰어가 아니라 편집 채널입니다. 따라서 이 결과는 모델 학습·선택·보정에 쓰지 않았고, 예측 정확도나 플레이의 인과효과를 대신 검증하지 않습니다.</p>
   </section>
 
   <section id="ko-contact">
@@ -327,8 +338,8 @@ h = 15, 30, 60초</pre>
   <h1>What PlayValue measures, and how</h1>
   <p class="lede">Plays the casters call out are picked first, without looking at gold or win probability. The site then shows both the observed gold-gap change and the change in a frozen model's win probability over 15, 30 and 60 seconds. This page sets out that procedure, what the numbers mean, and what they do not say.</p>
   <nav class="toc">
-    <a href="#en-why">Why the team</a><a href="#en-question">Question</a><a href="#en-steps">Procedure</a><a href="#en-metric">Gold change</a><a href="#en-coding">Coding</a>
-    <a href="#en-views">Display rules</a><a href="#en-numbers">Current data</a><a href="#en-check">Checks</a><a href="#en-limits">Limits</a><a href="#en-version">Version</a><a href="#en-next">WPS beta</a><a href="#en-contact">Data</a>
+    <a href="#en-why">Why the team</a><a href="#en-question">Question</a><a href="#en-steps">Procedure</a><a href="#en-metric">Gold change</a><a href="#en-next">WPS beta</a><a href="#en-coding">Coding</a>
+    <a href="#en-views">Display rules</a><a href="#en-numbers">Current data</a><a href="#en-check">Checks</a><a href="#en-limits">Limits</a><a href="#en-version">Version</a><a href="#en-contact">Data</a>
   </nav>
 
   <section id="en-why">
@@ -466,6 +477,15 @@ h = 15, 30, 60 seconds</pre>
     <p><b>WPS (win-probability swing)</b> is the percentage-point movement in that forecast across a play, or from its start to 15, 30 or 60 seconds later. Worlds uses v312; MSI uses the frozen MSI branch that the v312 specification preserves unchanged (v156). The browser does not run the model. It receives static scores precomputed from the same validated broadcast-OCR gold seconds and Riot events available up to each moment.</p>
     <p>On 15 Worlds games after the 24 October 2026 fitting cutoff, v312 recorded log loss 0.3668 and Brier score 0.1176. A comparator using only game time and the gold gap recorded 0.4694 and 0.1567 on the same states. Fifteen games are still a small holdout, and game-bootstrap intervals narrowly include zero for the paired comparison. WPS is therefore published beside gold as a <b>beta</b>, not as a definitive replacement.</p>
     <p>A probability move does not mean that the selected play caused it. Other lanes, the opponent's response, the rest of a fight and any ensuing objective all enter the state. WPS is an <b>observed modeled state change</b>, not a counterfactual causal effect or an allocation of credit to one player. WPS is calculated from the one-second research curve. Only the browser line uses a two-second display grid, while retaining endpoints, play anchors and both sides of moves of at least one percentage point; no smoothing is applied. The interface rounds probabilities and WPS to one decimal place to avoid false precision.</p>
+    <h3>Does it find important moments? Independent review-video comparison</h3>
+    <p>Separate from predictive accuracy, we checked whether WPS moves sharply at moments that post-match reviewers independently chose and explained as important. We compared GimGoon with the independent editorial analysis channel Professional Spectator (P.S) on the same six Worlds quarterfinal games. Moments were selected and frozen from the videos and transcripts without seeing WPS, gold or PlayValue rankings. Only then did we compare each absolute change from 10 seconds before to 10 seconds after the moment with every eligible one-second anchor in the same game and phase. Top-3 and Top-10 mean that the reviewed moment lies within ±10 seconds of one of that phase's three or ten largest separated peaks.</p>
+    <div class="tbl wps-eval"><table>
+      <tr><th>Review source</th><th>Primary moments (games)</th><th>Mean percentile<br>WPS / gold</th><th>Top-3<br>WPS / gold</th><th>Top-10<br>WPS / gold</th><th>Beneficiary direction<br>WPS / gold</th></tr>
+      <tr><td>GimGoon</td><td class="n">24 (6/6)</td><td class="n">77.9 / 78.0%</td><td class="n">55.8 / 32.2%</td><td class="n">91.7 / 74.4%</td><td class="n">83.3 / 83.3%</td></tr>
+      <tr><td>Professional Spectator (P.S)</td><td class="n">16 (3/6)</td><td class="n">72.8 / 72.9%</td><td class="n">51.7 / 30.0%</td><td class="n">93.3 / 73.3%</td><td class="n">87.5 / 68.8%</td></tr>
+    </table></div>
+    <p>At the 10-second window, mean percentile is effectively tied with gold, but WPS recovers the most extreme reviewed moments more often in both sources at Top-3 and Top-10. In the predeclared 5- and 15-second windows, WPS also has the higher mean percentile; its Top-3 rate is above gold in all three windows. The two sources select ten pairs within ±20 seconds: nine share the exact second, and nine name the same beneficiary.</p>
+    <p class="note">This is an auxiliary convergent-salience check. Reviews are post-hoc and outcome-aware, and omitted moments are not negative labels. P.S contains qualifying localized in-game analysis for only three of the six games and represents an editorial channel, not one named individual reviewer. These results were not used to fit, select or calibrate the model, and they do not replace predictive evaluation or identify a play's causal effect.</p>
   </section>
 
   <section id="en-contact">
@@ -479,8 +499,8 @@ h = 15, 30, 60 seconds</pre>
 <!-- ===================================================== Simplified Chinese -->
 <article data-lang="zh">
   <h1>PlayValue测量什么，以及如何测量</h1>
-  <p class="lede">我们先在不查看经济结果的情况下，从解说中选出具体操作，再从转播画面读取随后15、30、60秒内两队经济差的变化。本页说明完整流程、数字的含义，以及这些数字不能说明什么。</p>
-  <nav class="toc"><a href="#zh-why">为何看团队</a><a href="#zh-question">研究问题</a><a href="#zh-steps">处理流程</a><a href="#zh-metric">经济变化</a><a href="#zh-coding">解说编码</a><a href="#zh-views">显示规则</a><a href="#zh-numbers">当前数据</a><a href="#zh-check">验证</a><a href="#zh-limits">局限</a><a href="#zh-version">版本</a><a href="#zh-next">后续方向</a><a href="#zh-contact">数据合作</a></nav>
+  <p class="lede">我们先在不查看经济或胜率的情况下从解说中选出具体操作，再展示随后15、30、60秒内两队经济差与冻结模型胜率的变化。本页说明完整流程、数字的含义，以及这些数字不能说明什么。</p>
+  <nav class="toc"><a href="#zh-why">为何看团队</a><a href="#zh-question">研究问题</a><a href="#zh-steps">处理流程</a><a href="#zh-metric">经济变化</a><a href="#zh-next">WPS测试</a><a href="#zh-coding">解说编码</a><a href="#zh-views">显示规则</a><a href="#zh-numbers">当前数据</a><a href="#zh-check">验证</a><a href="#zh-limits">局限</a><a href="#zh-version">版本</a><a href="#zh-contact">数据合作</a></nav>
   <section id="zh-why"><h2>为何从团队视角观察</h2><p>《英雄联盟》是五名选手在同一张地图上协作的团队游戏。击杀、伤害和补刀等个人指标无法完整描述一个操作对比赛留下的影响。下路牵制打野可能让上路获得镀层；一次失败的Gank也可能逼出闪现，改变下一次资源争夺的站位。</p><p>因此PlayValue不把贡献拆给单个选手，而是观察操作后两队经济差如何变化，以“经济”这一共同单位呈现影响在地图上的扩散。</p><p class="muted">同一时间地图其他位置发生的事情也包含在经济变化中。数字表示团队在该时间窗内经历的结果，不能分离出单个操作的因果贡献。</p></section>
   <section id="zh-question"><h2>研究问题</h2><div class="quote">在看到经济结果之前，从整场解说中选出具体行动和尝试时，包括失败与无击杀操作在内的每个案例，伴随着怎样的实际相对经济收入？</div><p>经济只是操作留下的一种可观测痕迹。PlayValue展示这一观测值，不为操作价值或选手贡献打分。</p><h3>为何由解说选择</h3><p>国际赛事解说长期分析职业联赛，其中也有前职业选手和教练。实时指出重要操作正是他们的工作。使用解说提到的场景，可以避免研究者按结果编写筛选规则；但解说也可能更常谈论成功操作，这一点列在局限中。</p><h3>数字不能说明什么</h3><ul><li><b>因果：</b>经济变化汇总了时间窗内全地图的事情。</li><li><b>个人贡献：</b>指标是团队经济，不分配到个人。</li><li><b>决策质量：</b>不估计“如果选择别的行动会怎样”。</li></ul></section>
   <section id="zh-steps"><h2>处理流程</h2><ol class="steps"><li><b>从解说提取操作（遮蔽经济信息）。</b>读取整场英文自动字幕，收集失败、无击杀和普通兵线管理在内的具体行动。预先遮蔽经济相关词语及相邻字幕。每局独立提取、复读检查，并用SHA-256固定结果。</li><li><b>从转播画面读取经济。</b>OCR每秒读取比赛时间和两队经济，排除回放与暂停；每个比赛区间都经画面核对。</li><li><b>合并经济。</b>在固定操作的起点计算15、30、60秒后的变化。看到经济后不增删操作，无法读取的保留为“未测量”。</li><li><b>只依据解说编码。</b>操作类型、资源关联和涉及选手不使用经济。Claude、Gemma、Qwen三个模型系列独立编码，多数决定；代码本在正式编码前固定。</li><li><b>规则版本化。</b>时间窗、阶段和阈值集中在一个设置文件中，其哈希写入数据。</li></ol></section>
@@ -491,15 +511,27 @@ h = 15, 30, 60 seconds</pre>
   <section id="zh-check"><h2>使用Riot比赛数据验证</h2><p>Riot比赛记录包含每分钟选手累计经济和精确事件。其粒度不足以直接测量15或30秒变化，因此只在提取和编码完成后用于核验，不进入操作选择。</p><h3>经济读取</h3><p id="zh-check-gold"></p><h3>小地图位置</h3><p id="zh-check-mm"></p><h3>击杀</h3><p id="zh-check-kill"></p><div class="tbl" id="zh-check-table"></div></section>
   <section id="zh-limits"><h2>局限</h2><ul><li><b>解说选择的样本：</b>可能偏向成功或已产生收益的场景，不代表比赛中所有行动。</li><li><b>未用视频逐项核验：</b>字幕可能含识别错误、回放回顾和解说延迟。</li><li><b>四舍五入与缺口：</b>±200内方向不明，长回放可能没有可测终点。</li><li><b>重叠：</b>时间窗内包含其他操作和线路事件。<span id="zh-else"></span></li><li><b>只含被点名选手：</b>按团队描述的参与不会归到个人。</li><li><b>窗口内未转化为经济：</b>数据不能判断效果是更晚出现、太小，还是没有转化。</li><li><b>经济无法体现的收益：</b>长期增益、视野和站位需要未来的胜率模型。</li><li><b>模型编码误差：</b>已用独立人工标注样本检查，但仍有误差。</li><li><b>操作粒度：</b>书面规则采用后的比赛划分更细。<span id="zh-gran"></span></li><li><b>样本构成：</b><span id="zh-sample"></span> 比较时应考虑比赛数。</li><li><b>翻译：</b>中文界面与方法说明为机器辅助翻译；第一阶段中操作标题和说明暂以英文显示。</li></ul></section>
   <section id="zh-version"><h2>版本与来源</h2><p id="zh-version-text"></p><p class="note">来源：官方转播VOD、英文自动字幕、Oracle's Elixir阵容、Leaguepedia发布的Riot match-v5记录，以及Riot Data Dragon图像。访问量由Umami无Cookie统计。</p></section>
-  <section id="zh-next"><h2>公开测试：胜率与WPS</h2><p>WPS是冻结模型在操作前后或15、30、60秒内的胜率百分点变化。Worlds使用v312，MSI使用其冻结分支v156；模型不会在浏览器中运行。15场拟合截止日后的Worlds比赛中，v312的log loss为0.3668、Brier score为0.1176；仅使用时间和经济差的模型为0.4694和0.1567。由于样本仍小，WPS与经济并列作为测试指标。它是观测到的模型状态变化，不是单个操作的因果效果。WPS仍按每秒研究曲线计算；网页折线使用两秒显示网格，并保留端点、操作锚点及明显跳变前后，不进行平滑处理。</p></section>
+  <section id="zh-next">
+    <h2>公开测试：胜率与WPS</h2>
+    <p>WPS是冻结模型在操作前后或15、30、60秒内的胜率百分点变化。Worlds使用v312，MSI使用其冻结分支v156；模型不会在浏览器中运行。15场拟合截止日后的Worlds比赛中，v312的log loss为0.3668、Brier score为0.1176；仅使用时间和经济差的模型为0.4694和0.1567。由于样本仍小，WPS与经济并列作为测试指标。它是观测到的模型状态变化，不是单个操作的因果效果。WPS仍按每秒研究曲线计算；网页折线使用两秒显示网格，并保留端点、操作锚点及明显跳变前后，不进行平滑处理。</p>
+    <h3>能否识别重要场景：独立复盘视频对照</h3>
+    <p>作为预测准确度之外的辅助检验，我们比较了金贡和独立编辑分析频道“프로관전러 P.S”在同6场Worlds八强赛中选出的重要场景。选择时不查看WPS、经济或PlayValue排名，先将视频与字幕标注冻结，再计算场景前10秒至后10秒的绝对变化，并与同局同阶段所有可用秒比较。Top-3和Top-10表示场景是否落在该阶段最大变化峰值的±10秒内。</p>
+    <div class="tbl wps-eval"><table>
+      <tr><th>复盘来源</th><th>主要场景（比赛）</th><th>平均百分位<br>WPS / 经济</th><th>Top-3<br>WPS / 经济</th><th>Top-10<br>WPS / 经济</th><th>受益方方向<br>WPS / 经济</th></tr>
+      <tr><td>金贡</td><td class="n">24 (6/6)</td><td class="n">77.9 / 78.0%</td><td class="n">55.8 / 32.2%</td><td class="n">91.7 / 74.4%</td><td class="n">83.3 / 83.3%</td></tr>
+      <tr><td>프로관전러 P.S</td><td class="n">16 (3/6)</td><td class="n">72.8 / 72.9%</td><td class="n">51.7 / 30.0%</td><td class="n">93.3 / 73.3%</td><td class="n">87.5 / 68.8%</td></tr>
+    </table></div>
+    <p>在10秒窗口中，WPS与经济的平均百分位几乎相同，但两个来源中WPS都更常命中Top-3和Top-10的极端场景。预先规定的5秒与15秒窗口中，WPS的平均百分位也更高；三个窗口的WPS Top-3均高于经济。两个来源在±20秒内共同选出10对场景，其中9对是完全相同的一秒，9对判断了相同的受益方。</p>
+    <p class="note">这是辅助性的收敛效度检查。复盘是在知道结果后制作的，未提到的场景不是负例。P.S只有3场比赛含符合条件的具体局内分析，且代表编辑频道而非一名具名分析者。结果没有用于训练、选择或校准模型，也不能替代预测评估或识别单个操作的因果效果。</p>
+  </section>
   <section id="zh-contact"><h2>研究数据合作</h2><p>如果您能为研究分享更细粒度的每秒事件或选手位置数据，或希望开展合作，欢迎联系。</p><p><a class="gh-link" href="https://github.com/playvalue/playvalue.github.io" data-umami-event="github">GitHub · playvalue/playvalue.github.io</a></p></section>
 </article>
 
 <!-- ============================================================= Japanese -->
 <article data-lang="ja">
   <h1>PlayValueは何を、どう測るのか</h1>
-  <p class="lede">ゴールド結果を見ずに実況から具体的なプレーを先に選び、その後15・30・60秒で両チームのゴールド差がどう動いたかを放送画面から読み取ります。このページでは手順、数字の意味、そして数字が語らないことを説明します。</p>
-  <nav class="toc"><a href="#ja-why">なぜチームか</a><a href="#ja-question">研究質問</a><a href="#ja-steps">手順</a><a href="#ja-metric">ゴールド変化</a><a href="#ja-coding">実況コーディング</a><a href="#ja-views">表示ルール</a><a href="#ja-numbers">現在のデータ</a><a href="#ja-check">検証</a><a href="#ja-limits">限界</a><a href="#ja-version">バージョン</a><a href="#ja-next">今後</a><a href="#ja-contact">データ連携</a></nav>
+  <p class="lede">ゴールドや勝率を見ずに実況から具体的なプレーを先に選び、その後15・30・60秒で両チームのゴールド差と凍結モデルの勝率がどう動いたかを示します。このページでは手順、数字の意味、そして数字が語らないことを説明します。</p>
+  <nav class="toc"><a href="#ja-why">なぜチームか</a><a href="#ja-question">研究質問</a><a href="#ja-steps">手順</a><a href="#ja-metric">ゴールド変化</a><a href="#ja-next">WPSベータ</a><a href="#ja-coding">実況コーディング</a><a href="#ja-views">表示ルール</a><a href="#ja-numbers">現在のデータ</a><a href="#ja-check">検証</a><a href="#ja-limits">限界</a><a href="#ja-version">バージョン</a><a href="#ja-contact">データ連携</a></nav>
   <section id="ja-why"><h2>なぜチーム視点で見るのか</h2><p>League of Legendsは5人が同じマップで動くチームゲームです。キル、ダメージ、CSなどの個人指標だけではプレーが試合に残したものをすべて捉えられません。敵ジャングラーの足止めが別レーンのプレートにつながり、失敗したギャンクでもフラッシュを落とせば次のオブジェクト戦が変わります。</p><p>PlayValueは個人ではなく<b>チームの視点</b>から、プレー後に両チームのゴールド差がどう動いたかを共通単位として観察します。</p><p class="muted">同時刻に別の場所で起きたことも含まれます。数字はチームが経験した結果であり、ひとつのプレーの因果的な取り分ではありません。</p></section>
   <section id="ja-question"><h2>研究質問</h2><div class="quote">ゴールド結果を見る前に試合全体の実況から具体的な行動・試みを選んだとき、失敗やキルのないプレーを含む各事例には、どのような実際の相対ゴールド収入が伴うか。</div><p>ゴールドは観測可能な痕跡のひとつです。PlayValueは観測値を示しますが、価値や貢献を点数化しません。</p><h3>なぜ実況が選ぶのか</h3><p>国際大会のキャスターは重要なプレーをリアルタイムで伝える専門家です。研究者が結果に合わせた抽出ルールを書く危険を避けられる一方、成功したプレーへの言及が多い可能性は限界として扱います。</p><h3>数字が言わないこと</h3><ul><li><b>原因：</b>時間内のマップ全体が含まれます。</li><li><b>個人の貢献：</b>チームゴールドを個人に分けません。</li><li><b>判断の良し悪し：</b>別の選択をした場合は推定しません。</li></ul></section>
   <section id="ja-steps"><h2>処理手順</h2><ol class="steps"><li><b>実況から抽出（ゴールドをマスク）。</b>英語字幕全体から失敗、キルなし、通常のレーン管理を含む具体的な行動を抽出します。ゴールド関連語を隠し、試合ごとに漏れと重複を確認してSHA-256で固定します。</li><li><b>放送画面から読む。</b>OCRで毎秒の時間と両チームのゴールドを読み、リプレイと停止を除外します。</li><li><b>ゴールドを結合。</b>固定済みプレーの開始点から15・30・60秒後を計算し、結果を見た後で増減しません。</li><li><b>実況だけでコーディング。</b>タイプ、オブジェクトリンク、関与選手を3モデル系列が独立に回答し、多数決で決めます。</li><li><b>ルールを版管理。</b>区間、フェーズ、しきい値の設定ファイルのハッシュを記録します。</li></ol></section>
@@ -510,7 +542,19 @@ h = 15, 30, 60 seconds</pre>
   <section id="ja-check"><h2>Riot試合データによる検証</h2><p>1分ごとの選手ゴールドと精密なイベント記録は15・30秒変化の直接測定には粗いため、抽出とコーディング後の確認だけに使います。</p><h3>ゴールド読み取り</h3><p id="ja-check-gold"></p><h3>ミニマップ位置</h3><p id="ja-check-mm"></p><h3>キル</h3><p id="ja-check-kill"></p><div class="tbl" id="ja-check-table"></div></section>
   <section id="ja-limits"><h2>限界</h2><ul><li><b>実況が選んだ標本：</b>成功した場面に偏る可能性があります。</li><li><b>動画未確認：</b>字幕誤認識、回想、実況の遅れを含み得ます。</li><li><b>丸めと欠測：</b>±200内は方向不明です。</li><li><b>重なり：</b>他のプレーや別レーンの出来事が入ります。<span id="ja-else"></span></li><li><b>名前が出た選手のみ：</b>チームとして語られた関与は個人に付きません。</li><li><b>区間内でゴールドにならないプレー：</b>効果が後に出る、微小、または変換されない場合を区別できません。</li><li><b>ゴールドに表れない利益：</b>視界や長期バフには勝率モデルが必要です。</li><li><b>モデルコーディング：</b>人手標本で確認していますが誤差は残ります。</li><li><b>粒度：</b>書面ルール導入後は細かく分かれる傾向があります。<span id="ja-gran"></span></li><li><b>標本構成：</b><span id="ja-sample"></span> 比較では試合数も考慮してください。</li><li><b>翻訳：</b>日本語UIと方法説明は機械支援翻訳です。第1段階ではプレーのタイトルと説明を英語で表示します。</li></ul></section>
   <section id="ja-version"><h2>バージョンと出典</h2><p id="ja-version-text"></p><p class="note">出典：公式VOD、英語自動字幕、Oracle's Elixir、Leaguepedia公開のRiot match-v5記録、Riot Data Dragon。訪問数はCookieなしのUmamiで集計します。</p></section>
-  <section id="ja-next"><h2>公開ベータ：勝率とWPS</h2><p>WPSは凍結モデルの勝率がプレー前後、または15・30・60秒で動いたパーセントポイントです。Worldsはv312、MSIは凍結分岐v156を使用し、ブラウザではモデルを実行しません。学習期限後のWorlds 15試合でv312はlog loss 0.3668、Brier score 0.1176、時間とゴールド差だけのモデルは0.4694と0.1567でした。標本はまだ小さいため、WPSはゴールドと並ぶベータ指標です。これは観測されたモデル状態の変化で、ひとつのプレーの因果効果ではありません。WPSの計算には1秒単位の研究曲線を使い、Webの線グラフだけを2秒間隔にしつつ、端点・プレー時点・大きな変化の前後を保持し、平滑化は行いません。</p></section>
+  <section id="ja-next">
+    <h2>公開ベータ：勝率とWPS</h2>
+    <p>WPSは凍結モデルの勝率がプレー前後、または15・30・60秒で動いたパーセントポイントです。Worldsはv312、MSIは凍結分岐v156を使用し、ブラウザではモデルを実行しません。学習期限後のWorlds 15試合でv312はlog loss 0.3668、Brier score 0.1176、時間とゴールド差だけのモデルは0.4694と0.1567でした。標本はまだ小さいため、WPSはゴールドと並ぶベータ指標です。これは観測されたモデル状態の変化で、ひとつのプレーの因果効果ではありません。WPSの計算には1秒単位の研究曲線を使い、Webの線グラフだけを2秒間隔にしつつ、端点・プレー時点・大きな変化の前後を保持し、平滑化は行いません。</p>
+    <h3>重要場面を捉えるか：独立レビュー動画との照合</h3>
+    <p>予測精度とは別の補助検証として、GimGoonと独立編集分析チャンネル「프로관전러 P.S」が同じWorlds準々決勝6試合で重要と説明した場面を比較しました。WPS・ゴールド・PlayValueの順位を見ずに動画と字幕だけで場面を先に固定し、その後、場面の10秒前から10秒後までの絶対変化を同じ試合・フェーズの全秒と比較しました。Top-3とTop-10は、その場面が最大変化ピークの±10秒以内に入った割合です。</p>
+    <div class="tbl wps-eval"><table>
+      <tr><th>レビュー元</th><th>主要場面（試合）</th><th>平均パーセンタイル<br>WPS / ゴールド</th><th>Top-3<br>WPS / ゴールド</th><th>Top-10<br>WPS / ゴールド</th><th>有利なチームの方向<br>WPS / ゴールド</th></tr>
+      <tr><td>GimGoon</td><td class="n">24 (6/6)</td><td class="n">77.9 / 78.0%</td><td class="n">55.8 / 32.2%</td><td class="n">91.7 / 74.4%</td><td class="n">83.3 / 83.3%</td></tr>
+      <tr><td>프로관전러 P.S</td><td class="n">16 (3/6)</td><td class="n">72.8 / 72.9%</td><td class="n">51.7 / 30.0%</td><td class="n">93.3 / 73.3%</td><td class="n">87.5 / 68.8%</td></tr>
+    </table></div>
+    <p>10秒窓では平均パーセンタイルがゴールドとほぼ同じでしたが、両レビュー元でWPSの方がTop-3とTop-10の大きな場面を多く捉えました。事前に定めた5秒・15秒窓では平均パーセンタイルもWPSが高く、3つの窓すべてでWPSのTop-3がゴールドを上回りました。両者が±20秒以内で共通に選んだ場面は10組で、9組は同じ秒、9組は有利になったチームも一致しました。</p>
+    <p class="note">これは補助的な収束妥当性の確認です。レビューは結果を知った後の資料で、言及されない場面は負例ではありません。P.Sで条件を満たす具体的な試合内分析があったのは6試合中3試合だけで、個人ではなく編集チャンネルです。結果はモデルの学習・選択・較正には使っておらず、予測精度や個々のプレーの因果効果を検証するものではありません。</p>
+  </section>
   <section id="ja-contact"><h2>研究データの連携</h2><p>秒単位イベントや選手位置など、より細かな研究データを共有できる方、共同研究を希望する方はご連絡ください。</p><p><a class="gh-link" href="https://github.com/playvalue/playvalue.github.io" data-umami-event="github">GitHub · playvalue/playvalue.github.io</a></p></section>
 </article>
 
