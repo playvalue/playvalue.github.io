@@ -528,11 +528,49 @@
     .stats-narrative p + p { margin-top: 5px; color: var(--text-muted); }
     .stats-evidence { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 8px; }
     .stats-evidence span { padding: 2px 7px; border-radius: 999px; background: var(--bg-card); color: var(--text-muted); font-size: .65rem; font-weight: 700; }
-    .stats-narrative-link { margin-left: auto; padding: 2px 7px; border: 0; border-radius: 999px; background: var(--accent-bg); color: var(--accent); font: 700 .65rem/1.45 var(--font); cursor: pointer; }
+    .stats-narrative-link { margin-left: 0; padding: 2px 7px; border: 0; border-radius: 999px; background: var(--accent-bg); color: var(--accent); font: 700 .65rem/1.45 var(--font); cursor: pointer; }
+    .stats-evidence .stats-narrative-link:first-of-type { margin-left: auto; }
     .stats-narrative-link:hover { filter: brightness(.96); }
+    .stats-timeline { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color); }
+    .stats-timeline-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 10px; }
+    .stats-timeline-head strong { font-size: .78rem; }
+    .stats-timeline-head span { color: var(--text-muted); font-size: .66rem; font-weight: 700; }
+    .stats-timeline-svg { display: block; width: 100%; height: auto; margin-top: 7px; overflow: visible; }
+    .stats-timeline-svg text { font-family: var(--font); fill: var(--text-muted); font-size: 10px; }
+    .stats-timeline-svg .axis-label { font-family: var(--mono); font-size: 9px; }
+    .stats-timeline-svg .bin-games { font-size: 8px; }
+    .stats-timeline-legend { display: flex; flex-wrap: wrap; gap: 5px 10px; margin-top: 5px; color: var(--text-muted); font-size: .65rem; }
+    .stats-timeline-legend span { display: inline-flex; align-items: center; gap: 4px; }
+    .stats-timeline-legend i { width: 12px; height: 3px; border-radius: 999px; }
+    .stats-timeline-note { margin-top: 6px; color: var(--text-muted); font-size: .64rem; line-height: 1.5; }
     .stats-compare-narrative { margin: 14px 0; padding: 12px 14px; border-left: 3px solid var(--accent); border-radius: 0 var(--radius-control) var(--radius-control) 0; background: var(--accent-bg); }
     .stats-compare-narrative strong { display: block; margin-bottom: 3px; font-size: .76rem; }
     .stats-compare-narrative p { color: var(--text-muted); font-size: .78rem; line-height: 1.55; }
+    .stats-difference { margin: 14px 0 18px; padding: 14px; border: 1px solid var(--border-color); border-radius: var(--radius-card); background: color-mix(in srgb, var(--bg-pill) 56%, transparent); }
+    .stats-difference-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; margin-bottom: 10px; }
+    .stats-difference-head strong { font-size: .82rem; }
+    .stats-difference-head span { color: var(--text-muted); font-size: .68rem; font-weight: 700; }
+    .stats-difference-axis { display: grid; grid-template-columns: minmax(64px, .7fr) minmax(180px, 4fr) minmax(72px, .8fr); gap: 8px; align-items: end; margin-bottom: 4px; color: var(--text-muted); font: 600 .61rem/1.3 var(--font); }
+    .stats-difference-axis .scale { display: flex; justify-content: space-between; font-family: var(--mono); }
+    .stats-difference-axis .scale b { font: 700 .61rem/1.3 var(--font); }
+    .stats-difference-axis .side-b { color: var(--red-team); }
+    .stats-difference-axis .side-a { color: var(--blue-team); text-align: right; }
+    .stats-difference-rows { display: grid; gap: 7px; }
+    .stats-difference-row { display: grid; grid-template-columns: minmax(64px, .7fr) minmax(180px, 4fr) minmax(72px, .8fr); gap: 8px; align-items: center; }
+    .stats-difference-row > span { overflow: hidden; color: var(--text-muted); font-size: .7rem; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+    .stats-difference-row > strong { font: 750 .7rem/1.2 var(--mono); text-align: right; }
+    .stats-difference-row > strong.side-a { color: var(--blue-team); }
+    .stats-difference-row > strong.side-b { color: var(--red-team); }
+    .stats-difference-row > strong.uncertain { color: var(--text-muted); }
+    .stats-difference-track { position: relative; height: 18px; border-radius: 4px; background: linear-gradient(90deg, color-mix(in srgb, var(--red-team) 7%, transparent), transparent 45%, transparent 55%, color-mix(in srgb, var(--blue-team) 7%, transparent)); }
+    .stats-difference-track .zero { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: var(--chart-axis); }
+    .stats-difference-track .ci { position: absolute; top: 5px; height: 8px; border-radius: 999px; background: var(--text-muted); opacity: .26; }
+    .stats-difference-track .bar { position: absolute; top: 7px; height: 4px; border-radius: 999px; }
+    .stats-difference-track .bar.side-a, .stats-difference-track .point.side-a { background: var(--blue-team); }
+    .stats-difference-track .bar.side-b, .stats-difference-track .point.side-b { background: var(--red-team); }
+    .stats-difference-track .bar.uncertain, .stats-difference-track .point.uncertain { background: var(--text-muted); }
+    .stats-difference-track .point { position: absolute; top: 4px; width: 10px; height: 10px; border: 2px solid var(--bg-card); border-radius: 50%; transform: translateX(-50%); box-shadow: 0 0 0 1px color-mix(in srgb, var(--text-muted) 22%, transparent); }
+    .stats-difference-note { margin-top: 9px; color: var(--text-muted); font-size: .64rem; line-height: 1.5; }
     .stats-mini-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
     .stats-mini { padding: 9px; border-radius: var(--radius-control); background: var(--bg-pill); }
     .stats-mini small { display: block; color: var(--text-muted); font-size: .68rem; }
@@ -572,20 +610,26 @@
     .stats-role-key { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 5px; color: var(--text-muted); font-size: .72rem; }
     .stats-role-key i { display: inline-block; width: 8px; height: 8px; margin-right: 5px; background: var(--text-main); }
     .stats-role-key .actor { border-radius: 50%; } .stats-role-key .target { transform: rotate(45deg); } .stats-role-key .response { clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+    .stats-phase-key { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 7px; color: var(--text-muted); font-size: .68rem; }
+    .stats-phase-key strong { color: var(--text-main); font-size: .66rem; }
+    .stats-phase-key i { display: inline-block; width: 8px; height: 8px; margin-right: 4px; border-radius: 50%; box-shadow: 0 0 0 1px color-mix(in srgb, var(--text-main) 16%, transparent); }
     .stats-detail-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .8fr); gap: 16px; margin-top: 14px; }
     .stats-breakdown h3, .stats-scenes h3 { margin-bottom: 7px; }
+    .stats-scene-group + .stats-scene-group { margin-top: 12px; }
+    .stats-scene-group h4 { margin-bottom: 4px; color: var(--text-muted); font-size: .68rem; }
     .stats-state-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
     .stats-state-grid div { padding: 8px; border-radius: var(--radius-control); background: var(--bg-pill); text-align: center; }
     .stats-state-grid span { display: block; color: var(--text-muted); font-size: .66rem; }
     .stats-state-grid strong { font-size: 1rem; }
     .stats-type-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
-    .stats-scenes .scene { width: 100%; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 8px; padding: 7px 2px; border: 0; border-bottom: 1px solid var(--border-color); background: transparent; text-align: left; cursor: pointer; font-size: .75rem; }
+    .stats-scenes .scene { width: 100%; display: grid; grid-template-columns: 42px 48px minmax(0, 1fr) auto; gap: 7px; align-items: center; padding: 7px 2px; border: 0; border-bottom: 1px solid var(--border-color); background: transparent; text-align: left; cursor: pointer; font-size: .75rem; }
     .stats-scenes .scene:hover { background: var(--bg-card-hover); }
+    .stats-scenes .scene .actor { overflow: hidden; color: var(--text-muted); font-size: .64rem; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
     .stats-scenes .scene .v { font-weight: 700; font-variant-numeric: tabular-nums; }
     .team-link { border: 0; background: transparent; color: inherit; font: inherit; font-weight: inherit; cursor: pointer; padding: 0; }
     .team-link.team-blue { color: var(--blue-team); }
     .team-link.team-red { color: var(--red-team); }
-    @media (max-width: 760px) { .stats-compare-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 760px) { .stats-compare-layout { grid-template-columns: 1fr; } .stats-difference-axis, .stats-difference-row { grid-template-columns: 54px minmax(130px, 1fr) 64px; gap: 6px; } }
     @media (max-width: 900px) { .stats-team-layout, .stats-entity-layout { grid-template-columns: 1fr; } .stats-entity-list { position: static; max-height: none; } }
     @media (max-width: 620px) { .stats-mini-grid { grid-template-columns: 1fr; } .stats-detail-grid { grid-template-columns: 1fr; } .stats-state-grid { grid-template-columns: repeat(2, 1fr); } .stats-entity-row { grid-template-columns: minmax(82px, 1fr) 34px minmax(90px, 1fr) 50px; } }
     .planned { text-align: center; padding: 48px 20px; }
@@ -777,11 +821,14 @@
       statsRadarTitle: '중요 장면 관여 프로필', statsRadarSub: (windowLabel, m) => `${windowLabel} ${m}의 경기당 순변화 · 가운데 링은 0`,
       statsGames: '경기', statsScenes: '측정 장면', statsToward: '팀 방향', statsMedian: '중앙 변화폭', statsPerGame: '경기당 순변화',
       statsComparePlayer: '선수 비교', statsCompareChamp: '챔피언 비교', statsFingerprint: '플레이 지문', statsGood: '팀에 유리', statsBad: '팀에 불리',
-      statsRoles: '관여 역할', statsTypes: '주요 행동 유형', statsGoldBreak: '변화 방향 집계', statsTopScenes: '변화폭이 큰 장면',
+      statsRoles: '관여 역할', statsTypes: '주요 행동 유형', statsGoldBreak: '변화 방향 집계', statsTopScenes: '변화폭이 큰 장면', statsTopGainScenes: team => `${team}에 유리한 장면 (+)`, statsTopLossScenes: team => `${team}에 불리한 장면 (−)`,
       statsCaveat: '한 플레이에 여러 선수가 관여하면 각 선수에게 한 번씩 들어갑니다. 겹치는 시간창과 동시 사건도 포함되므로 개인 기여도로 읽지 않습니다.',
       statsBasis: '비교 기준', statsBasisSeries: '현재 시리즈', statsBasisH2h: '두 대상의 맞대결', statsBasisAll: '대회 전체', statsH2hUnavailable: '선택한 두 대상의 맞대결 경기가 없습니다.',
       statsPickTeamA: '팀 A', statsPickTeamB: '팀 B', statsPickPlayerA: '선수 A', statsPickPlayerB: '선수 B', statsPosition: '포지션', statsAllPositions: '전체 포지션',
       statsCompareHint: '각 값은 선택한 기준 안에서 해당 팀·선수가 실제로 뛴 경기 수로 나눕니다.',
+      statsDiffTitle: '직접 차이 (A − B)', statsDiffOverall: '전체', statsDiffLeft: label => `${label} 쪽`, statsDiffRight: label => `${label} 쪽`, statsDiffSample: (a, an, b, bn) => `${a} ${an}경기 · ${b} ${bn}경기`,
+      statsDiffNote: '점은 경기당 순변화의 A−B이고, 반투명 구간은 경기를 재표집한 95% bootstrap 신뢰구간입니다. 구간이 0을 포함하면 차이의 방향이 불확실합니다.',
+      statsDiffPoint: (category, value, low, high, a, b, an, bn, paired) => `${category} · ${a}−${b} ${value} · 95% bootstrap CI ${low}~${high} · ${an}/${bn}경기${paired ? ' · 맞대결 경기별 paired' : ''}`,
       statsNoData: '선택한 비교 기준에서 측정 가능한 장면이 없습니다.', statsOpenPlay: '플레이 열기',
       statsNarrativeTitle: '데이터로 본 플레이 패턴', statsNarrativeScope: '해설이 짚은 측정 장면', statsNarrativeCompareTitle: '선택 대상 차이',
       statsNarrativeTeamBoth: (gainPosition, gainValue, lossPosition, lossValue, windowLabel, metric) => `${windowLabel} ${metric} 기준으로 ${gainPosition} 관여 장면에서 경기당 ${gainValue}로 가장 많이 벌었고, ${lossPosition} 관여 장면에서 ${lossValue}로 가장 많이 잃었습니다.`,
@@ -789,21 +836,32 @@
       statsNarrativeTeamLossOnly: (position, value, windowLabel, metric) => `${windowLabel} ${metric} 기준으로 ${position} 관여 장면의 경기당 순손실이 ${value}로 가장 컸고, 순이득인 포지션은 없었습니다.`,
       statsNarrativeTeamFlat: (windowLabel, metric) => `${windowLabel} ${metric} 기준으로 뚜렷한 포지션별 순이득·순손실은 없었습니다.`,
       statsNarrativePlayerLead: (role, roleN, total, family, familyN) => `측정 장면에서는 ${role} 역할로 가장 자주 등장했고(${roleN}/${total}), ${family} 유형이 가장 많았습니다(${familyN}/${total}).`,
+      statsDetailScopeFamily: '행동 유형별', statsDetailScopeChampion: '챔피언별', statsDetailScopeTeamChampion: '챔피언 관여 장면별', statsDetailScopePhase: '시간대별', statsDetailWithFamily: (objective, family) => `${objective} ${family}`, statsChampionPlayerLabel: name => `${name} 플레이`, statsChampionTeamLabel: name => `${name} 관여`, statsPhaseLegend: '마커 색 · 시간대',
+      statsObjective: { dragon: '드래곤', baron: '바론', herald: '전령', elder: '장로 드래곤', atakhan: '아타칸', grubs: '공허 유충' },
+      statsNarrativeTeamGainDetail: (position, detail, value, scenes, games) => `${position} 관여 장면을 세분하면 ${detail}에서 경기당 ${value}로 가장 많이 벌었습니다 (${scenes}장면 · ${games}경기).`,
+      statsNarrativeTeamLossDetail: (position, detail, value, scenes, games) => `${position} 관여 장면을 세분하면 ${detail}에서 경기당 ${value}로 가장 많이 잃었습니다 (${scenes}장면 · ${games}경기).`,
+      statsNarrativePlayerGainLoss: (scope, high, highValue, highScenes, highGames, low, lowValue, lowScenes, lowGames) => `${scope}로는 ${high}에서 경기당 ${highValue}로 가장 많이 벌었고 (${highScenes}장면 · ${highGames}경기), ${low}에서 ${lowValue}로 가장 많이 잃었습니다 (${lowScenes}장면 · ${lowGames}경기).`,
+      statsNarrativePlayerGainOnly: (scope, high, highValue, highScenes, highGames, low, lowValue, lowScenes, lowGames) => `${scope}로는 ${high}에서 경기당 ${highValue}로 가장 많이 벌었고 (${highScenes}장면 · ${highGames}경기), ${low}에서 ${lowValue}로 순이득이 가장 작았습니다 (${lowScenes}장면 · ${lowGames}경기).`,
+      statsNarrativePlayerLossOnly: (scope, high, highValue, highScenes, highGames, low, lowValue, lowScenes, lowGames) => `${scope}로는 ${high}에서 경기당 ${highValue}로 손실이 가장 작았고 (${highScenes}장면 · ${highGames}경기), ${low}에서 ${lowValue}로 가장 많이 잃었습니다 (${lowScenes}장면 · ${lowGames}경기).`,
+      statsNarrativeChampionSparse: '반복 표본이 부족해 챔피언별 통계를 낼 수 없습니다 (2경기·2장면 이상인 챔피언이 둘 필요합니다).',
       statsNarrativeSparse: n => `측정 가능한 장면이 ${n}개여서 뚜렷한 플레이 패턴을 말하기 어렵습니다.`,
       statsNarrativeWps: (kind, n, total, horizon) => ({
-        amplified: `즉시 변화와 ${horizon} 변화가 같은 방향이면서 더 커진 장면이 가장 많았습니다(${n}/${total}). 초기 변화가 후속 전개에서 증폭된 관찰 패턴입니다.`,
-        faded: `즉시 변화보다 ${horizon} 변화폭이 줄어든 장면이 가장 많았습니다(${n}/${total}). 초기 변화가 시간창 안에서 일부 상쇄된 관찰 패턴입니다.`,
-        reversed: `즉시 변화와 ${horizon} 변화의 방향이 뒤집힌 장면이 가장 많았습니다(${n}/${total}). 초기 흐름이 후속 전개에서 반전된 관찰 패턴입니다.`,
-        held: `즉시 변화와 ${horizon} 변화의 방향과 폭이 비슷하게 유지된 장면이 가장 많았습니다(${n}/${total}).`,
-        mixed: `즉시 변화와 ${horizon} 변화의 관계는 증폭·상쇄·반전이 섞여 한 가지 패턴이 두드러지지 않았습니다(${total}개 장면).`,
+        amplified: `즉시 변화와 ${horizon} 변화가 같은 방향이면서 더 커진 장면이 가장 많았습니다 (${n}/${total}). 초기 변화가 후속 전개에서 증폭된 관찰 패턴입니다.`,
+        faded: `즉시 변화보다 ${horizon} 변화폭이 줄어든 장면이 가장 많았습니다 (${n}/${total}). 초기 변화가 시간창 안에서 일부 상쇄된 관찰 패턴입니다.`,
+        reversed: `즉시 변화와 ${horizon} 변화의 방향이 뒤집힌 장면이 가장 많았습니다 (${n}/${total}). 초기 흐름이 후속 전개에서 반전된 관찰 패턴입니다.`,
+        held: `즉시 변화와 ${horizon} 변화의 방향과 폭이 비슷하게 유지된 장면이 가장 많았습니다 (${n}/${total}).`,
+        mixed: `즉시 변화와 ${horizon} 변화의 관계는 증폭·상쇄·반전이 섞여 한 가지 패턴이 두드러지지 않았습니다 (${total}개 장면).`,
       })[kind],
       statsNarrativeGold: (positive, total, net) => `선택한 골드 변화가 팀에 유리한 방향인 장면은 ${positive}/${total}개였고, 경기당 순변화는 ${net}였습니다.`,
       statsNarrativeCompare: (a, av, b, bv, windowLabel, metric) => `${windowLabel} ${metric}의 경기당 순변화는 ${a} ${av}, ${b} ${bv}입니다. 각 대상이 실제로 뛴 경기 수로 나눈 관측값입니다.`,
-      statsEvidenceGain: (label, value, n) => `가장 많이 번 곳 · ${label} ${value} · ${n}장면`, statsEvidenceLoss: (label, value, n) => `가장 많이 잃은 곳 · ${label} ${value} · ${n}장면`, statsEvidenceRole: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceFamily: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceSample: n => `측정 장면 ${n}`, statsViewExample: '대표 장면 보기',
+      statsEvidenceGain: (label, value, n) => `가장 많이 번 곳 · ${label} ${value} · ${n}장면`, statsEvidenceLoss: (label, value, n) => `가장 많이 잃은 곳 · ${label} ${value} · ${n}장면`, statsEvidenceRole: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceFamily: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceSample: n => `측정 장면 ${n}`, statsViewExample: '대표 장면 보기', statsViewGainExample: actor => `대표 이득 · ${actor} 행동`, statsViewLossExample: actor => `대표 손실 · ${actor} 행동`,
+      statsTimelineTitle: '시간대별 포지션 손익', statsTimelineSub: (windowLabel, metric) => `${windowLabel} ${metric} · 경기당 순변화와 95% CI`, statsTimelineBins: ['0–10분', '10–20분', '20–30분', '30분+'],
+      statsTimelineGames: n => `${n}경기`, statsTimelinePoint: (position, bin, mean, low, high, games, scenes) => `${position} · ${bin} · 경기당 ${mean} · 95% CI ${low}~${high} · ${games}경기 · ${scenes}장면`,
+      statsTimelineNote: '각 점은 해당 시간대에 도달한 경기별 순변화를 합산한 뒤 낸 경기당 평균입니다. 관여 장면이 없던 해당 경기는 0으로 포함하며, 반투명 영역은 경기 간 95% t 신뢰구간입니다.',
       statsPhaseShort: { lane: '초반', mid: '중반', late: '후반' },
       statsNarrativePhase: (phase, share, baseline, games, totalGames) => `${phase} 장면 비중이 비교 기준보다 높았고(${share} 대 ${baseline}), 이 패턴이 ${games}/${totalGames}경기에서 반복돼 지속적인 시간대 패턴으로 관찰됐습니다.`,
       statsEvidencePhase: (phase, share, baseline, p, games, totalGames) => `${phase} ${share} · 기준 ${baseline} · 보정 p=${p} · ${games}/${totalGames}경기`,
-      statsNarrativeCaveat: '전체 플레이 스타일이나 개인 기여도의 판정이 아니라, 해설이 짚은 장면에서 관찰된 패턴입니다.',
+      statsNarrativeCaveat: '전체 플레이 스타일이나 개인 기여도의 판정이 아니라, 해설이 짚은 장면에서 관찰된 패턴입니다. 챔피언 수치도 해당 챔피언 자체의 효과를 뜻하지 않습니다.',
       skip: '본문으로 건너뛰기', loading: '불러오는 중…', loadError: '데이터를 불러오지 못했습니다. 새로고침해 주세요.',
       plannedTitle: '준비 중', plannedBody: '이 대회는 아직 분석한 경기가 없습니다.',
       gameN: n => `${n}세트`, gameAria: (n, w) => `${n}세트, ${w} 승리`,
@@ -906,11 +964,14 @@
       statsRadarTitle: 'High-salience involvement profile', statsRadarSub: (windowLabel, m) => `Net ${windowLabel} ${m} per game · the middle ring is zero`,
       statsGames: 'Games', statsScenes: 'Measured moments', statsToward: 'Toward team', statsMedian: 'Median swing', statsPerGame: 'Net change per game',
       statsComparePlayer: 'Compare players', statsCompareChamp: 'Compare champions', statsFingerprint: 'Play fingerprint', statsGood: 'Toward the team', statsBad: 'Against the team',
-      statsRoles: 'Involvement roles', statsTypes: 'Main play types', statsGoldBreak: 'Change-direction counts', statsTopScenes: 'Largest-swing moments',
+      statsRoles: 'Involvement roles', statsTypes: 'Main play types', statsGoldBreak: 'Change-direction counts', statsTopScenes: 'Largest-swing moments', statsTopGainScenes: team => `Toward ${team} (+)`, statsTopLossScenes: team => `Against ${team} (−)`,
       statsCaveat: 'A play appears once for every involved player. Overlapping windows and simultaneous events remain in the values, so this is not individual contribution.',
       statsBasis: 'Comparison basis', statsBasisSeries: 'Current series', statsBasisH2h: 'Head-to-head', statsBasisAll: 'Whole event', statsH2hUnavailable: 'The selected pair has no head-to-head games.',
       statsPickTeamA: 'Team A', statsPickTeamB: 'Team B', statsPickPlayerA: 'Player A', statsPickPlayerB: 'Player B', statsPosition: 'Position', statsAllPositions: 'All positions',
       statsCompareHint: 'Each value is divided by the games that team or player actually played within the selected basis.',
+      statsDiffTitle: 'Direct difference (A − B)', statsDiffOverall: 'Overall', statsDiffLeft: label => `Toward ${label}`, statsDiffRight: label => `Toward ${label}`, statsDiffSample: (a, an, b, bn) => `${a} ${an} games · ${b} ${bn} games`,
+      statsDiffNote: 'The point is A−B in net change per game; the translucent interval is a 95% bootstrap confidence interval from resampling games. An interval crossing zero has an uncertain direction.',
+      statsDiffPoint: (category, value, low, high, a, b, an, bn, paired) => `${category} · ${a}−${b} ${value} · 95% bootstrap CI ${low} to ${high} · ${an}/${bn} games${paired ? ' · paired by head-to-head game' : ''}`,
       statsNoData: 'No measurable moments for this comparison.', statsOpenPlay: 'Open play',
       statsNarrativeTitle: 'Observed play pattern', statsNarrativeScope: 'measured commentary moments', statsNarrativeCompareTitle: 'Selected-pair difference',
       statsNarrativeTeamBoth: (gainPosition, gainValue, lossPosition, lossValue, windowLabel, metric) => `On net ${windowLabel} ${metric} per game, ${gainPosition}-involved moments gained the most (${gainValue}), while ${lossPosition}-involved moments lost the most (${lossValue}).`,
@@ -918,6 +979,14 @@
       statsNarrativeTeamLossOnly: (position, value, windowLabel, metric) => `On net ${windowLabel} ${metric} per game, ${position}-involved moments lost the most (${value}); no position had a net gain.`,
       statsNarrativeTeamFlat: (windowLabel, metric) => `No position had a clear net gain or loss in ${windowLabel} ${metric} per game.`,
       statsNarrativePlayerLead: (role, roleN, total, family, familyN) => `In measurable moments, ${role} was the most common involvement role (${roleN}/${total}), and ${family} the most common play type (${familyN}/${total}).`,
+      statsDetailScopeFamily: 'By play type', statsDetailScopeChampion: 'By champion', statsDetailScopeTeamChampion: 'By champion-involved moment', statsDetailScopePhase: 'By game phase', statsDetailWithFamily: (objective, family) => `${objective} ${family}`, statsChampionPlayerLabel: name => name, statsChampionTeamLabel: name => `${name} involvement`, statsPhaseLegend: 'Marker colour · phase',
+      statsObjective: { dragon: 'Dragon', baron: 'Baron', herald: 'Rift Herald', elder: 'Elder Dragon', atakhan: 'Atakhan', grubs: 'Void Grubs' },
+      statsNarrativeTeamGainDetail: (position, detail, value, scenes, games) => `Within ${position}-involved moments, ${detail} produced the largest gain at ${value} per game (${scenes} moments · ${games} games).`,
+      statsNarrativeTeamLossDetail: (position, detail, value, scenes, games) => `Within ${position}-involved moments, ${detail} produced the largest loss at ${value} per game (${scenes} moments · ${games} games).`,
+      statsNarrativePlayerGainLoss: (scope, high, highValue, highScenes, highGames, low, lowValue, lowScenes, lowGames) => `${scope}, ${high} gained the most at ${highValue} per game (${highScenes} moments · ${highGames} games), while ${low} lost the most at ${lowValue} (${lowScenes} moments · ${lowGames} games).`,
+      statsNarrativePlayerGainOnly: (scope, high, highValue, highScenes, highGames, low, lowValue, lowScenes, lowGames) => `${scope}, ${high} gained the most at ${highValue} per game (${highScenes} moments · ${highGames} games), while ${low} had the smallest gain at ${lowValue} (${lowScenes} moments · ${lowGames} games).`,
+      statsNarrativePlayerLossOnly: (scope, high, highValue, highScenes, highGames, low, lowValue, lowScenes, lowGames) => `${scope}, ${high} had the smallest loss at ${highValue} per game (${highScenes} moments · ${highGames} games), while ${low} lost the most at ${lowValue} (${lowScenes} moments · ${lowGames} games).`,
+      statsNarrativeChampionSparse: 'There is not enough repeated evidence for champion-level statistics (at least two champions need two games and two moments each).',
       statsNarrativeSparse: n => `Only ${n} moments are measurable here, too few for a clear play pattern.`,
       statsNarrativeWps: (kind, n, total, horizon) => ({
         amplified: `The largest group moved in the same direction immediately and grew by ${horizon} (${n}/${total}), an observed pattern of the initial shift amplifying during follow-up.`,
@@ -928,11 +997,14 @@
       })[kind],
       statsNarrativeGold: (positive, total, net) => `${positive} of ${total} measured gold changes favoured the team; net change per game was ${net}.`,
       statsNarrativeCompare: (a, av, b, bv, windowLabel, metric) => `Net ${windowLabel} ${metric} per game is ${av} for ${a} and ${bv} for ${b}. Each is an observed total divided by games actually played.`,
-      statsEvidenceGain: (label, value, n) => `Largest gain · ${label} ${value} · ${n} moments`, statsEvidenceLoss: (label, value, n) => `Largest loss · ${label} ${value} · ${n} moments`, statsEvidenceRole: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceFamily: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceSample: n => `${n} measured moments`, statsViewExample: 'Open example',
+      statsEvidenceGain: (label, value, n) => `Largest gain · ${label} ${value} · ${n} moments`, statsEvidenceLoss: (label, value, n) => `Largest loss · ${label} ${value} · ${n} moments`, statsEvidenceRole: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceFamily: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceSample: n => `${n} measured moments`, statsViewExample: 'Open example', statsViewGainExample: actor => `Gain example · ${actor} acted`, statsViewLossExample: actor => `Loss example · ${actor} acted`,
+      statsTimelineTitle: 'Position gains and losses over time', statsTimelineSub: (windowLabel, metric) => `${windowLabel} ${metric} · net change per game with 95% CI`, statsTimelineBins: ['0–10m', '10–20m', '20–30m', '30m+'],
+      statsTimelineGames: n => `${n} games`, statsTimelinePoint: (position, bin, mean, low, high, games, scenes) => `${position} · ${bin} · ${mean} per game · 95% CI ${low} to ${high} · ${games} games · ${scenes} moments`,
+      statsTimelineNote: 'Each point averages the game-level net change among games that reached that interval. Eligible games with no involved moment count as zero; translucent bands are 95% t confidence intervals across games.',
       statsPhaseShort: { lane: 'early', mid: 'mid game', late: 'late game' },
       statsNarrativePhase: (phase, share, baseline, games, totalGames) => `${phase} moments are overrepresented against the comparison baseline (${share} versus ${baseline}) and recur in ${games}/${totalGames} games, a persistent phase pattern in this sample.`,
       statsEvidencePhase: (phase, share, baseline, p, games, totalGames) => `${phase} ${share} · baseline ${baseline} · adjusted p=${p} · ${games}/${totalGames} games`,
-      statsNarrativeCaveat: 'This describes commentary-selected moments, not a verdict on overall style or individual contribution.',
+      statsNarrativeCaveat: 'This describes commentary-selected moments, not a verdict on overall style or individual contribution. Champion values are not effects caused by the champion itself.',
       skip: 'Skip to content', loading: 'Loading…', loadError: 'Could not load the data. Please reload.',
       plannedTitle: 'Coming soon', plannedBody: 'No games from this event have been analysed yet.',
       gameN: n => `Game ${n}`, gameAria: (n, w) => `Game ${n}, won by ${w}`,
@@ -974,13 +1046,16 @@
     xtPlayerNote: '按选手或英雄拆分时，计算其执行、成为目标或参与应对的操作，并从该选手队伍视角显示；对方操作会翻转经济变化正负号。多人参与的操作会对每位选手各计一次，只统计解说点名的情况。', sortBy: c => `按${c}排序`, rowLabel: '项目', xtGames: '比赛', xtPerGame: '每局', xtCum: '累计', total: '合计', usedBy: '使用者', played: '使用英雄', games: n => `${n}局`,
     xtNote: '四栏之和为总数。收益与损失只统计超出误差范围、方向明确的变化。这些是观测到的经济变化，并非操作造成的因果效果。', xtPick: '点击数字后，对应操作会显示在这里。',
     statsTitle:'本系列赛队伍与选手',statsSub:'展示当前系列赛中解说点名的重要场景；与其他队伍、选手的比较请前往独立比较页面。',compareTitle:'队伍与选手比较',compareSub:'不受系列赛选择影响，按整个赛事或双方交手比较队伍与选手。',statsOpenCompare:'在整个赛事中比较 →',statsPlayerList:'本系列赛选手',statsTeam:'队伍',statsPlayer:'选手',statsChamp:'英雄',statsMetric:'指标',statsWps:'胜率变化',statsGold:'经济变化',statsRadarTitle:'重要场景参与画像',statsRadarSub:(windowLabel,m)=>`每局${windowLabel}${m}净变化 · 中间环为0`,statsGames:'比赛',statsScenes:'已测场景',statsToward:'有利于本队',statsMedian:'中位变化',statsPerGame:'每局净变化',statsComparePlayer:'选手比较',statsCompareChamp:'英雄比较',statsFingerprint:'操作指纹',statsGood:'有利于本队',statsBad:'不利于本队',statsRoles:'参与角色',statsTypes:'主要操作类型',statsGoldBreak:'变化方向统计',statsTopScenes:'变化最大的场景',statsCaveat:'同一操作会对每位参与选手各计一次；重叠时间窗与同时发生的事件仍包含在数值中，因此不能解读为个人贡献。',statsBasis:'比较范围',statsBasisSeries:'当前系列赛',statsBasisH2h:'双方交手',statsBasisAll:'整个赛事',statsH2hUnavailable:'所选双方没有交手比赛。',statsPickTeamA:'队伍A',statsPickTeamB:'队伍B',statsPickPlayerA:'选手A',statsPickPlayerB:'选手B',statsPosition:'位置',statsAllPositions:'全部位置',statsCompareHint:'各数值按所选范围内其实际出场数计算。',statsNoData:'当前比较没有可测场景。',statsOpenPlay:'打开操作',
-    statsNarrativeTitle:'数据中的操作模式',statsNarrativeScope:'解说指出且可测量的场景',statsNarrativeCompareTitle:'所选对象的差异',
+    statsNarrativeTitle:'数据中的操作模式',statsNarrativeScope:'解说指出且可测量的场景',statsNarrativeCompareTitle:'所选对象的差异',statsDiffTitle:'直接差异（A − B）',statsDiffOverall:'全部',statsDiffLeft:label=>`偏向${label}`,statsDiffRight:label=>`偏向${label}`,statsDiffSample:(a,an,b,bn)=>`${a} ${an}场 · ${b} ${bn}场`,statsDiffNote:'点表示每场净变化的A−B；半透明区间为按比赛重抽样得到的95% bootstrap置信区间。区间跨过0时，差异方向不确定。',statsDiffPoint:(category,value,low,high,a,b,an,bn,paired)=>`${category} · ${a}−${b} ${value} · 95% bootstrap CI ${low}至${high} · ${an}/${bn}场${paired?' · 按交手比赛配对':''}`,
+    statsDetailScopeFamily:'按操作类型',statsDetailScopeChampion:'按英雄',statsDetailScopeTeamChampion:'按英雄参与场景',statsDetailScopePhase:'按比赛阶段',statsDetailWithFamily:(objective,family)=>`${objective}${family}`,statsChampionPlayerLabel:name=>`${name}使用`,statsChampionTeamLabel:name=>`${name}参与`,statsPhaseLegend:'标记颜色 · 阶段',statsObjective:{dragon:'小龙',baron:'纳什男爵',herald:'峡谷先锋',elder:'远古巨龙',atakhan:'厄塔汗',grubs:'虚空巢虫'},statsNarrativeTeamGainDetail:(position,detail,value,scenes,games)=>`细分${position}参与场景后，${detail}的每场收益最高，为${value}（${scenes}个场景 · ${games}场）。`,statsNarrativeTeamLossDetail:(position,detail,value,scenes,games)=>`细分${position}参与场景后，${detail}的每场损失最大，为${value}（${scenes}个场景 · ${games}场）。`,statsNarrativePlayerGainLoss:(scope,high,highValue,highScenes,highGames,low,lowValue,lowScenes,lowGames)=>`${scope}，${high}每场收益最高（${highValue}；${highScenes}个场景 · ${highGames}场），${low}损失最大（${lowValue}；${lowScenes}个场景 · ${lowGames}场）。`,statsNarrativePlayerGainOnly:(scope,high,highValue,highScenes,highGames,low,lowValue,lowScenes,lowGames)=>`${scope}，${high}每场收益最高（${highValue}；${highScenes}个场景 · ${highGames}场），${low}净收益最小（${lowValue}；${lowScenes}个场景 · ${lowGames}场）。`,statsNarrativePlayerLossOnly:(scope,high,highValue,highScenes,highGames,low,lowValue,lowScenes,lowGames)=>`${scope}，${high}每场损失最小（${highValue}；${highScenes}个场景 · ${highGames}场），${low}损失最大（${lowValue}；${lowScenes}个场景 · ${lowGames}场）。`,statsNarrativeChampionSparse:'重复样本不足，无法计算英雄层级统计（至少需要两名英雄各有2场比赛和2个场景）。',
+    statsTopGainScenes:team=>`有利于${team}的场景（+）`,statsTopLossScenes:team=>`不利于${team}的场景（−）`,statsViewGainExample:actor=>`代表收益 · ${actor}行动`,statsViewLossExample:actor=>`代表损失 · ${actor}行动`,
     statsNarrativeTeamBoth:(gainPosition,gainValue,lossPosition,lossValue,windowLabel,metric)=>`按每局${windowLabel}${metric}净变化，涉及${gainPosition}的场景收益最多（${gainValue}），涉及${lossPosition}的场景损失最多（${lossValue}）。`,statsNarrativeTeamGainOnly:(position,value,windowLabel,metric)=>`按每局${windowLabel}${metric}净变化，涉及${position}的场景收益最多（${value}），没有位置出现净损失。`,statsNarrativeTeamLossOnly:(position,value,windowLabel,metric)=>`按每局${windowLabel}${metric}净变化，涉及${position}的场景损失最多（${value}），没有位置出现净收益。`,statsNarrativeTeamFlat:(windowLabel,metric)=>`按每局${windowLabel}${metric}净变化，没有位置出现明显的净收益或净损失。`,
     statsNarrativePlayerLead:(role,roleN,total,family,familyN)=>`在可测场景中，最常以${role}身份参与（${roleN}/${total}），最多的操作类型是${family}（${familyN}/${total}）。`,statsNarrativeSparse:n=>`只有${n}个可测场景，不足以判断明确的操作模式。`,
     statsNarrativeWps:(kind,n,total,horizon)=>({amplified:`即时变化与${horizon}变化同向且继续扩大的场景最多（${n}/${total}），呈现初始变化在后续中放大的模式。`,faded:`到${horizon}时变化幅度小于即时变化的场景最多（${n}/${total}），呈现初始变化被部分抵消的模式。`,reversed:`即时变化与${horizon}变化反向的场景最多（${n}/${total}），呈现初始走势在后续中反转的模式。`,held:`即时到${horizon}的方向和幅度大致保持的场景最多（${n}/${total}）。`,mixed:`${total}个配对场景中放大、抵消与反转并存，没有单一模式占优。`})[kind],
     statsNarrativeGold:(positive,total,net)=>`${positive}/${total}个经济变化对本队有利；每局净变化为${net}。`,statsNarrativeCompare:(a,av,b,bv,windowLabel,metric)=>`每局${windowLabel}${metric}净变化为${a} ${av}、${b} ${bv}。数值均除以各自实际出场数。`,
     statsEvidenceGain:(label,value,n)=>`收益最多 · ${label} ${value} · ${n}个场景`,statsEvidenceLoss:(label,value,n)=>`损失最多 · ${label} ${value} · ${n}个场景`,statsEvidenceRole:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceFamily:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceSample:n=>`${n}个可测场景`,statsViewExample:'查看代表场景',statsPhaseShort:{lane:'前期',mid:'中期',late:'后期'},
-    statsNarrativePhase:(phase,share,baseline,games,totalGames)=>`${phase}场景占比高于比较基准（${share}对${baseline}），并在${games}/${totalGames}场比赛中重复出现，是本样本中的持续时段模式。`,statsEvidencePhase:(phase,share,baseline,p,games,totalGames)=>`${phase} ${share} · 基准 ${baseline} · 校正p=${p} · ${games}/${totalGames}场`,statsNarrativeCaveat:'这只描述解说指出的场景，不是对整体风格或个人贡献的判定。',
+    statsTimelineTitle:'各时段位置收益与损失',statsTimelineSub:(windowLabel,metric)=>`${windowLabel}${metric} · 每局净变化与95% CI`,statsTimelineBins:['0–10分钟','10–20分钟','20–30分钟','30分钟+'],statsTimelineGames:n=>`${n}场`,statsTimelinePoint:(position,bin,mean,low,high,games,scenes)=>`${position} · ${bin} · 每局${mean} · 95% CI ${low}至${high} · ${games}场 · ${scenes}个场景`,statsTimelineNote:'每个点是在到达该时段的比赛中，先汇总每场净变化再计算的平均值。该时段没有相关场景的合格比赛按0计入；半透明区域为比赛间95% t置信区间。',
+    statsNarrativePhase:(phase,share,baseline,games,totalGames)=>`${phase}场景占比高于比较基准（${share}对${baseline}），并在${games}/${totalGames}场比赛中重复出现，是本样本中的持续时段模式。`,statsEvidencePhase:(phase,share,baseline,p,games,totalGames)=>`${phase} ${share} · 基准 ${baseline} · 校正p=${p} · ${games}/${totalGames}场`,statsNarrativeCaveat:'这只描述解说指出的场景，不是对整体风格或个人贡献的判定。英雄数值也不代表英雄本身造成的效果。',
     skip: '跳到正文', loading: '加载中…', loadError: '无法加载数据，请刷新页面。', plannedTitle: '即将推出', plannedBody: '此赛事尚无已分析比赛。', gameN: n => `第${n}局`, gameAria: (n,w) => `第${n}局，${w}获胜`, serLabel: '系列赛', serCount: (i,n) => `第${i}/${n}个系列赛`, phaseBracket: '淘汰赛阶段', phasePlayIn: '入围赛', sourceEnglish: '操作标题与说明暂以英文显示',
   };
   T.ja = { ...T.en,
@@ -1003,12 +1078,15 @@
     dvText:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}速く拡大（±${b}）`, dvTextNeg:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}遅く拡大（±${b}）`, verification:'実況のみから整理し、動画では確認していません', retro:'後から振り返った場面', hzHead:'15・30・60秒の全体変化', wpsBoundary:'即時勝率変化', wpsBoundaryWindow:(pre,post)=>`開始前5秒窓の${pre}観測の中央値 → 終了後5秒窓の${post}観測の中央値`, wpsTotalNote:'プレー開始から各終点までの後続イベントをすべて含みます。', wpsMissing:'勝率を測る観測区間が不足しています', wpsProb:(a,b)=>`モデル勝率 ${a} → ${b}`, wpsCausal:'観測されたモデル状態の変化であり、このプレーだけの因果効果ではありません。', wpsCoverage:(im,total,n,h)=>`即時WPS <strong>${im}</strong> · ${h}秒全体 <strong>${total}</strong> / ${n}`, bothCoverage:(im,total,n,gm,gr,h)=>`即時WPS <strong>${im}</strong> · ${h}秒全体 <strong>${total}</strong> / ${n} · ゴールド <strong>${gm}</strong> · 方向判定 <strong>${gr}</strong>`, colWps:h=>`即時 · ${h}秒全体WPS`, colBoth:h=>`即時 · ${h}秒全体 · ゴールド`, wpsGuide:[['即時変化と全体変化','即時WPSは開始前5秒と終了後5秒の勝率中央値を比較します。全体WPSは開始から15・30・60秒の終点までの後続イベントを含みます。'],['ベータモデル','Worldsは凍結v312、MSIは凍結MSI分岐v156を使用し、新しい試合で再学習・再校正していません。'],['因果ではありません','同時刻の全状態変化がWPSに入るため、このプレーだけの効果ではありません。']], hzOk:b=>`誤差±${b}`, hzUnres:b=>`±${b}以内のため不明`,
     xtTitle:'タイプ別集計', xtSub:'各プレーは実行したチーム基準で一度だけ数えます。数字を押すと該当プレーが下に表示されます。', scope:'範囲', scopeGame:'選択した試合', scopeStage:'このシリーズ', scopeAll:'大会全体', rowsBy:'分け方', rFamily:'プレータイプ', rOutcome:'結果', rKill:'キル', rFamOut:'タイプ × 結果', rPlayer:'選手', rChamp:'チャンピオン', xtPlayerNote:'選手・チャンピオン別では、実行・対象・対応として関わったプレーをその選手のチーム視点で数えます。相手のプレーはゴールド変化の符号を反転します。複数の選手が関わるプレーは選手ごとに一度入り、実況が名前を挙げたものだけを数えます。', sortBy:c=>`${c}で並べ替え`, rowLabel:'項目', xtGames:'試合', xtPerGame:'1試合当たり', xtCum:'累計', total:'合計', usedBy:'使用者', played:'使用チャンピオン', games:n=>`${n}試合`, xtNote:'4列の合計が総数です。利益と損失は誤差範囲を超えて方向が明確な場合だけ数えます。これは観測されたゴールド変化であり、プレーの因果効果ではありません。', xtPick:'数字を押すと該当プレーがここに表示されます。',
     statsTitle:'このシリーズのチーム・選手',statsSub:'現在のシリーズで実況が名前を挙げた重要場面を示します。他のチーム・選手との比較は別の比較画面で行います。',compareTitle:'チーム・選手比較',compareSub:'シリーズ選択とは独立して、大会全体または直接対戦で比較します。',statsOpenCompare:'大会全体で比較 →',statsPlayerList:'このシリーズの選手',statsTeam:'チーム',statsPlayer:'選手',statsChamp:'チャンピオン',statsMetric:'指標',statsWps:'勝率変化',statsGold:'ゴールド変化',statsRadarTitle:'重要場面への関与プロフィール',statsRadarSub:(windowLabel,m)=>`1試合当たりの${windowLabel}${m}純変化 · 中央のリングは0`,statsGames:'試合',statsScenes:'測定場面',statsToward:'自チーム方向',statsMedian:'変化幅中央値',statsPerGame:'1試合当たり純変化',statsComparePlayer:'選手比較',statsCompareChamp:'チャンピオン比較',statsFingerprint:'プレー分布',statsGood:'自チームに有利',statsBad:'自チームに不利',statsRoles:'関与役割',statsTypes:'主なプレータイプ',statsGoldBreak:'変化方向の集計',statsTopScenes:'変化幅の大きい場面',statsCaveat:'一つのプレーは関与した各選手に一度ずつ入ります。重なる時間窓や同時イベントも含むため、個人貢献とは解釈しません。',statsBasis:'比較基準',statsBasisSeries:'現在のシリーズ',statsBasisH2h:'直接対戦',statsBasisAll:'大会全体',statsH2hUnavailable:'選択した2者の直接対戦はありません。',statsPickTeamA:'チームA',statsPickTeamB:'チームB',statsPickPlayerA:'選手A',statsPickPlayerB:'選手B',statsPosition:'ポジション',statsAllPositions:'全ポジション',statsCompareHint:'各値は選択範囲内で実際に出場した試合数で割ります。',statsNoData:'この比較で測定可能な場面はありません。',statsOpenPlay:'プレーを開く',
-    statsNarrativeTitle:'データから見たプレーパターン',statsNarrativeScope:'実況が取り上げた測定場面',statsNarrativeCompareTitle:'選択対象の差',
+    statsNarrativeTitle:'データから見たプレーパターン',statsNarrativeScope:'実況が取り上げた測定場面',statsNarrativeCompareTitle:'選択対象の差',statsDiffTitle:'直接差（A − B）',statsDiffOverall:'全体',statsDiffLeft:label=>`${label}側`,statsDiffRight:label=>`${label}側`,statsDiffSample:(a,an,b,bn)=>`${a} ${an}試合 · ${b} ${bn}試合`,statsDiffNote:'点は1試合当たり純変化のA−B、半透明区間は試合を再標本化した95% bootstrap信頼区間です。0をまたぐ区間は方向が不確実です。',statsDiffPoint:(category,value,low,high,a,b,an,bn,paired)=>`${category} · ${a}−${b} ${value} · 95% bootstrap CI ${low}〜${high} · ${an}/${bn}試合${paired?' · 対戦試合でペア化':''}`,
+    statsDetailScopeFamily:'プレータイプ別',statsDetailScopeChampion:'チャンピオン別',statsDetailScopeTeamChampion:'チャンピオン関与場面別',statsDetailScopePhase:'時間帯別',statsDetailWithFamily:(objective,family)=>`${objective} ${family}`,statsChampionPlayerLabel:name=>`${name}使用`,statsChampionTeamLabel:name=>`${name}関与`,statsPhaseLegend:'マーカー色 · 時間帯',statsObjective:{dragon:'ドラゴン',baron:'バロン',herald:'ヘラルド',elder:'エルダードラゴン',atakhan:'アタカン',grubs:'ヴォイドグラブ'},statsNarrativeTeamGainDetail:(position,detail,value,scenes,games)=>`${position}関与場面を分けると、${detail}が1試合当たり${value}で最大の利益でした（${scenes}場面 · ${games}試合）。`,statsNarrativeTeamLossDetail:(position,detail,value,scenes,games)=>`${position}関与場面を分けると、${detail}が1試合当たり${value}で最大の損失でした（${scenes}場面 · ${games}試合）。`,statsNarrativePlayerGainLoss:(scope,high,highValue,highScenes,highGames,low,lowValue,lowScenes,lowGames)=>`${scope}では${high}が1試合当たり${highValue}で最も稼ぎ（${highScenes}場面 · ${highGames}試合）、${low}が${lowValue}で最も失いました（${lowScenes}場面 · ${lowGames}試合）。`,statsNarrativePlayerGainOnly:(scope,high,highValue,highScenes,highGames,low,lowValue,lowScenes,lowGames)=>`${scope}では${high}が1試合当たり${highValue}で最も稼ぎ（${highScenes}場面 · ${highGames}試合）、${low}が${lowValue}で純利益最小でした（${lowScenes}場面 · ${lowGames}試合）。`,statsNarrativePlayerLossOnly:(scope,high,highValue,highScenes,highGames,low,lowValue,lowScenes,lowGames)=>`${scope}では${high}が1試合当たり${highValue}で損失最小（${highScenes}場面 · ${highGames}試合）、${low}が${lowValue}で最も失いました（${lowScenes}場面 · ${lowGames}試合）。`,statsNarrativeChampionSparse:'反復標本が不足しているため、チャンピオン別統計を算出できません（2試合・2場面以上のチャンピオンが2体必要です）。',
+    statsTopGainScenes:team=>`${team}に有利な場面（+）`,statsTopLossScenes:team=>`${team}に不利な場面（−）`,statsViewGainExample:actor=>`代表利益 · ${actor}の行動`,statsViewLossExample:actor=>`代表損失 · ${actor}の行動`,
     statsNarrativeTeamBoth:(gainPosition,gainValue,lossPosition,lossValue,windowLabel,metric)=>`1試合当たりの${windowLabel}${metric}純変化では、${gainPosition}関与場面の利益が最大（${gainValue}）、${lossPosition}関与場面の損失が最大でした（${lossValue}）。`,statsNarrativeTeamGainOnly:(position,value,windowLabel,metric)=>`1試合当たりの${windowLabel}${metric}純変化では、${position}関与場面の利益が最大でした（${value}）。純損失のポジションはありません。`,statsNarrativeTeamLossOnly:(position,value,windowLabel,metric)=>`1試合当たりの${windowLabel}${metric}純変化では、${position}関与場面の損失が最大でした（${value}）。純利益のポジションはありません。`,statsNarrativeTeamFlat:(windowLabel,metric)=>`1試合当たりの${windowLabel}${metric}では、明確なポジション別の純利益・純損失はありませんでした。`,statsNarrativePlayerLead:(role,roleN,total,family,familyN)=>`測定場面では${role}での関与が最も多く（${roleN}/${total}）、${family}タイプが最多でした（${familyN}/${total}）。`,statsNarrativeSparse:n=>`測定できる場面が${n}件だけのため、明確なプレーパターンは判断できません。`,
     statsNarrativeWps:(kind,n,total,horizon)=>({amplified:`即時変化と${horizon}変化が同方向で拡大した場面が最多でした（${n}/${total}）。初期変化が後続展開で増幅した観察パターンです。`,faded:`${horizon}時点の変化幅が即時より小さい場面が最多でした（${n}/${total}）。初期変化が一部相殺された観察パターンです。`,reversed:`即時変化と${horizon}変化の方向が反転した場面が最多でした（${n}/${total}）。初期の流れが後続で反転した観察パターンです。`,held:`即時から${horizon}まで方向と幅がほぼ維持された場面が最多でした（${n}/${total}）。`,mixed:`${total}の対応場面では増幅・相殺・反転が混在し、単一パターンは優勢ではありません。`})[kind],
     statsNarrativeGold:(positive,total,net)=>`${positive}/${total}のゴールド変化が自チームに有利で、1試合当たり純変化は${net}でした。`,statsNarrativeCompare:(a,av,b,bv,windowLabel,metric)=>`1試合当たりの${windowLabel}${metric}純変化は${a} ${av}、${b} ${bv}です。各対象の実出場数で割った観測値です。`,
     statsEvidenceGain:(label,value,n)=>`利益最大 · ${label} ${value} · ${n}場面`,statsEvidenceLoss:(label,value,n)=>`損失最大 · ${label} ${value} · ${n}場面`,statsEvidenceRole:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceFamily:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceSample:n=>`測定場面 ${n}`,statsViewExample:'代表場面を開く',statsPhaseShort:{lane:'序盤',mid:'中盤',late:'終盤'},
-    statsNarrativePhase:(phase,share,baseline,games,totalGames)=>`${phase}場面の比率が比較基準より高く（${share}対${baseline}）、${games}/${totalGames}試合で反復したため、この標本で持続的な時間帯パターンとして観察されました。`,statsEvidencePhase:(phase,share,baseline,p,games,totalGames)=>`${phase} ${share} · 基準 ${baseline} · 補正p=${p} · ${games}/${totalGames}試合`,statsNarrativeCaveat:'実況が取り上げた場面の記述であり、全体的なスタイルや個人貢献の判定ではありません。',
+    statsTimelineTitle:'時間帯別ポジション損益',statsTimelineSub:(windowLabel,metric)=>`${windowLabel}${metric} · 1試合当たり純変化と95% CI`,statsTimelineBins:['0–10分','10–20分','20–30分','30分+'],statsTimelineGames:n=>`${n}試合`,statsTimelinePoint:(position,bin,mean,low,high,games,scenes)=>`${position} · ${bin} · 1試合当たり${mean} · 95% CI ${low}〜${high} · ${games}試合 · ${scenes}場面`,statsTimelineNote:'各点は、その時間帯に到達した試合ごとの純変化を合計してから平均した値です。該当する関与場面がない対象試合は0として含め、半透明の領域は試合間の95% t信頼区間です。',
+    statsNarrativePhase:(phase,share,baseline,games,totalGames)=>`${phase}場面の比率が比較基準より高く（${share}対${baseline}）、${games}/${totalGames}試合で反復したため、この標本で持続的な時間帯パターンとして観察されました。`,statsEvidencePhase:(phase,share,baseline,p,games,totalGames)=>`${phase} ${share} · 基準 ${baseline} · 補正p=${p} · ${games}/${totalGames}試合`,statsNarrativeCaveat:'実況が取り上げた場面の記述であり、全体的なスタイルや個人貢献の判定ではありません。チャンピオン数値も、そのチャンピオン自体の効果を意味しません。',
     skip:'本文へ移動', loading:'読み込み中…', loadError:'データを読み込めませんでした。再読み込みしてください。', plannedTitle:'準備中', plannedBody:'この大会ではまだ分析済みの試合がありません。', gameN:n=>`第${n}ゲーム`, gameAria:(n,w)=>`第${n}ゲーム、${w}の勝利`, serLabel:'シリーズ', serCount:(i,n)=>`${n}シリーズ中${i}番目`, phaseBracket:'ブラケットステージ', phasePlayIn:'プレイイン', sourceEnglish:'プレーのタイトルと説明は現在英語で表示されます',
   };
   const LBL = {
@@ -2426,6 +2504,84 @@
     main.querySelectorAll('#statsMetric button').forEach(b => b.onclick = () => { S.statsMetric = b.dataset.stat; if (S.statsMetric === 'gold' && S.statsH === 'instant') S.statsH = String(D.default_horizon_s); render(); });
   }
   const topEntry = map => [...map.entries()].sort((a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0])))[0] || ['', 0];
+  const PHASE_COLORS = { lane: '#38bdf8', mid: '#f59e0b', late: '#a855f7' };
+  const phaseOfPlay = p => p.context?.phase || (Number(p.gc) < 840 ? 'lane' : Number(p.gc) < 1500 ? 'mid' : 'late');
+  function playObjectiveKey(p) {
+    const linked = (p.objective_links || []).map(link => link.objective).find(key => ['elder', 'baron', 'herald'].includes(key));
+    if (linked) return linked;
+    const text = `${p.action || ''} ${p.title_ko || ''} ${p.title_en || ''}`.toLowerCase();
+    if (/elder|장로|远古|エルダー/.test(text)) return 'elder';
+    if (/baron|nashor|바론|纳什|バロン/.test(text)) return 'baron';
+    if (/rift[_ -]?herald|herald|전령|峡谷先锋|ヘラルド/.test(text)) return 'herald';
+    if (/atakhan|아타칸|厄塔汗|アタカン/.test(text)) return 'atakhan';
+    if (/void[_ -]?grub|horde|유충|巢虫|グラブ/.test(text)) return 'grubs';
+    if (/dragon|drake|드래곤|小龙|ドラゴン/.test(text)) return 'dragon';
+    return '';
+  }
+  function playDetailKey(p) {
+    const objective = playObjectiveKey(p);
+    return objective ? `${objective}|${p.family || 'other'}` : p.family || 'other';
+  }
+  function playDetailLabel(p) {
+    const objective = playObjectiveKey(p), family = famLabel(p.family || 'other');
+    return objective ? t('statsDetailWithFamily')(t('statsObjective')[objective], family) : family;
+  }
+  function rankedNetGroups(obs, denominator, keyOf, labelOf) {
+    const groups = new Map();
+    obs.filter(x => x.value != null).forEach(x => {
+      const key = keyOf(x), group = groups.get(key) || { key, label: labelOf(x), net: 0, n: 0, games: new Set() };
+      group.net += x.value; group.n += 1; group.games.add(x.game.id); groups.set(key, group);
+    });
+    const all = [...groups.values()].map(group => ({ ...group, gameN: group.games.size, perGame: denominator ? group.net / denominator : 0 }));
+    const stable = all.filter(group => group.n >= 2 && group.gameN >= 2), repeated = all.filter(group => group.n >= 2);
+    const candidates = stable.length >= 2 ? stable : repeated.length >= 2 ? repeated : all;
+    return candidates.sort((a, b) => b.perGame - a.perGame || b.n - a.n || a.label.localeCompare(b.label));
+  }
+  function rankedChampionGroups(groups, gameCounts) {
+    const all = [...groups.values()].map(group => {
+      const gameN = gameCounts.get(group.key) || group.games.size;
+      return { ...group, gameN, perGame: gameN ? group.net / gameN : 0 };
+    });
+    return all.filter(group => group.n >= 2 && group.gameN >= 2)
+      .sort((a, b) => b.perGame - a.perGame || b.n - a.n || a.label.localeCompare(b.label));
+  }
+  function playerChampionGroups(row) {
+    const groups = new Map();
+    row.summary.valid.forEach(obs => {
+      const key = obs.roster.champion;
+      if (!key) return;
+      const group = groups.get(key) || { key, label: t('statsChampionPlayerLabel')(champName(obs.roster)), net: 0, n: 0, games: new Set() };
+      group.net += obs.value; group.n += 1; group.games.add(obs.game.id); groups.set(key, group);
+    });
+    return rankedChampionGroups(groups, row.champs);
+  }
+  function teamChampionGroups(profile) {
+    const gameCounts = new Map(), labels = new Map();
+    profile.gameIds.forEach(gameId => {
+      const seen = new Set();
+      Object.values(ROSTER[gameId] || {}).filter(roster => roster.team === profile.team && roster.champion).forEach(roster => {
+        if (seen.has(roster.champion)) return;
+        seen.add(roster.champion); gameCounts.set(roster.champion, (gameCounts.get(roster.champion) || 0) + 1); labels.set(roster.champion, champName(roster));
+      });
+    });
+    const groups = new Map();
+    profile.moments.forEach(moment => {
+      const champions = new Set(involvedOf(moment.p).filter(x => x.team === profile.team).map(x => ROSTER[moment.game.id]?.[x.player]?.champion).filter(Boolean));
+      champions.forEach(key => {
+        const group = groups.get(key) || { key, label: t('statsChampionTeamLabel')(labels.get(key) || key), net: 0, n: 0, games: new Set() };
+        group.net += moment.value; group.n += 1; group.games.add(moment.game.id); groups.set(key, group);
+      });
+    });
+    return rankedChampionGroups(groups, gameCounts);
+  }
+  function netRangeNarrative(scope, groups) {
+    if (groups.length < 2) return '';
+    const high = groups[0], low = groups[groups.length - 1];
+    const args = [scope, high.label, fmtStat(high.perGame), high.n, high.gameN, low.label, fmtStat(low.perGame), low.n, low.gameN];
+    if (high.perGame > 0 && low.perGame < 0) return t('statsNarrativePlayerGainLoss')(...args);
+    if (low.perGame >= 0) return t('statsNarrativePlayerGainOnly')(...args);
+    return t('statsNarrativePlayerLossOnly')(...args);
+  }
   function logChoose(n, k) {
     if (k < 0 || k > n) return -Infinity;
     k = Math.min(k, n - k);
@@ -2447,14 +2603,14 @@
   }
   function phaseSignal(entityObs, referenceObs) {
     const phases = ['lane', 'mid', 'late'];
-    const clean = obs => obs.filter(x => phases.includes(x.p.context?.phase));
+    const clean = obs => obs.filter(x => phases.includes(phaseOfPlay(x.p)));
     const entity = clean(entityObs), reference = clean(referenceObs);
     const entityGames = new Set(entity.map(x => x.game.id));
     if (entityGames.size < 3 || entity.length < 5 || reference.length < 5) return null;
     return phases.map(phase => {
-      const entityN = entity.filter(x => x.p.context.phase === phase).length;
-      const refN = reference.filter(x => x.p.context.phase === phase).length;
-      const gameN = new Set(entity.filter(x => x.p.context.phase === phase).map(x => x.game.id)).size;
+      const entityN = entity.filter(x => phaseOfPlay(x.p) === phase).length;
+      const refN = reference.filter(x => phaseOfPlay(x.p) === phase).length;
+      const gameN = new Set(entity.filter(x => phaseOfPlay(x.p) === phase).map(x => x.game.id)).size;
       const share = entityN / entity.length, baseline = refN / reference.length;
       const adjustedP = Math.min(1, fisherExact(entityN, entity.length - entityN, refN, reference.length - refN) * 3);
       return { phase, entityN, entityTotal: entity.length, share, baseline, gameN, totalGames: entityGames.size, adjustedP };
@@ -2489,15 +2645,20 @@
     })));
     return out;
   }
-  function narrativeShell(paragraphs, evidence, example) {
+  function representativeExamples(obs) {
+    const gain = [...obs].filter(x => x.value > 0).sort((a, b) => b.value - a.value)[0];
+    const loss = [...obs].filter(x => x.value < 0).sort((a, b) => a.value - b.value)[0];
+    return [[gain, 'gain'], [loss, 'loss']].filter(([example]) => example).map(([example, kind]) => ({ ...example, kind }));
+  }
+  function narrativeShell(paragraphs, evidence, examples = []) {
     return `<div class="stats-narrative"><div class="stats-narrative-head"><strong>${esc(t('statsNarrativeTitle'))}</strong><span>${esc(t('statsNarrativeScope'))}</span></div>
       ${paragraphs.map(text => `<p>${esc(text)}</p>`).join('')}
-      <div class="stats-evidence">${evidence.map(text => `<span>${esc(text)}</span>`).join('')}${example ? `<button type="button" class="stats-narrative-link" data-play="${esc(example.p.id)}">${esc(t('statsViewExample'))}</button>` : ''}</div>
+      <div class="stats-evidence">${evidence.map(text => `<span>${esc(text)}</span>`).join('')}${examples.map(example => `<button type="button" class="stats-narrative-link ${example.kind}" data-play="${esc(example.p.id)}">${esc(t(example.kind === 'gain' ? 'statsViewGainExample' : 'statsViewLossExample')(example.p.actor || '—'))}</button>`).join('')}</div>
       <p>${esc(t('statsNarrativeCaveat'))}</p></div>`;
   }
   function teamNarrative(profile, gs) {
-    const n = profile.moments.length, example = [...profile.moments].sort((a, b) => Math.abs(b.value) - Math.abs(a.value))[0];
-    if (n < 8) return narrativeShell([t('statsNarrativeSparse')(n)], [t('statsEvidenceSample')(n)], example);
+    const n = profile.moments.length, examples = representativeExamples(profile.moments);
+    if (n < 8) return narrativeShell([t('statsNarrativeSparse')(n)], [t('statsEvidenceSample')(n)], examples);
     const threshold = S.statsMetric === 'wps' ? .05 : .5;
     const positions = STAT_POSITIONS.map(pos => ({ pos, n: profile.positions[pos].n, value: profile.games ? profile.positions[pos].net / profile.games : 0 }));
     const gain = positions.filter(x => x.value >= threshold).sort((a, b) => b.value - a.value)[0] || null;
@@ -2508,6 +2669,22 @@
     else if (gain) lead = t('statsNarrativeTeamGainOnly')(posLabel(gain.pos), fmtStat(gain.value), windowLabel, metricLabel);
     else if (loss) lead = t('statsNarrativeTeamLossOnly')(posLabel(loss.pos), fmtStat(loss.value), windowLabel, metricLabel);
     const paragraphs = [lead];
+    const positionDetails = pos => rankedNetGroups(profile.moments.filter(moment => involvedOf(moment.p).some(x => x.team === profile.team && ROSTER[moment.game.id]?.[x.player]?.position === pos)), profile.games, moment => playDetailKey(moment.p), moment => playDetailLabel(moment.p));
+    if (gain) {
+      const detail = positionDetails(gain.pos)[0];
+      if (detail?.perGame > 0) paragraphs.push(t('statsNarrativeTeamGainDetail')(posLabel(gain.pos), detail.label, fmtStat(detail.perGame), detail.n, detail.gameN));
+    }
+    if (loss) {
+      const details = positionDetails(loss.pos), detail = details[details.length - 1];
+      if (detail?.perGame < 0) paragraphs.push(t('statsNarrativeTeamLossDetail')(posLabel(loss.pos), detail.label, fmtStat(detail.perGame), detail.n, detail.gameN));
+    }
+    const familyRange = rankedNetGroups(profile.moments, profile.games, moment => playDetailKey(moment.p), moment => playDetailLabel(moment.p));
+    const championRange = teamChampionGroups(profile);
+    const phaseRange = rankedNetGroups(profile.moments, profile.games, moment => phaseOfPlay(moment.p), moment => t('statsPhaseShort')[phaseOfPlay(moment.p)]);
+    const familyText = netRangeNarrative(t('statsDetailScopeFamily'), familyRange), championText = netRangeNarrative(t('statsDetailScopeTeamChampion'), championRange), phaseText = netRangeNarrative(t('statsDetailScopePhase'), phaseRange);
+    if (familyText) paragraphs.push(familyText);
+    paragraphs.push(championText || t('statsNarrativeChampionSparse'));
+    if (phaseText) paragraphs.push(phaseText);
     const pattern = S.statsMetric === 'wps' ? pairedWpsPattern(profile.moments) : null;
     if (S.statsMetric === 'wps' && pattern) paragraphs.push(t('statsNarrativeWps')(pattern.kind, pattern.n, pattern.total, pattern.horizon));
     if (S.statsMetric === 'gold') paragraphs.push(t('statsNarrativeGold')(profile.positive, n, fmtStat(profile.perGame)));
@@ -2518,15 +2695,22 @@
     if (loss) evidence.push(t('statsEvidenceLoss')(posLabel(loss.pos), fmtStat(loss.value), loss.n));
     evidence.push(t('statsEvidenceSample')(n));
     if (phase) evidence.push(t('statsEvidencePhase')(t('statsPhaseShort')[phase.phase], pct0(phase.entityN, phase.entityTotal), pct0(Math.round(phase.baseline * 1000), 1000), formatP(phase.adjustedP), phase.gameN, phase.totalGames));
-    return narrativeShell(paragraphs, evidence, example);
+    return narrativeShell(paragraphs, evidence, examples);
   }
   function entityNarrative(row, referenceRows) {
-    const obs = row.summary.valid, n = obs.length, example = [...obs].sort((a, b) => Math.abs(b.value) - Math.abs(a.value))[0];
-    if (n < 5) return narrativeShell([t('statsNarrativeSparse')(n)], [t('statsEvidenceSample')(n)], example);
+    const obs = row.summary.valid, n = obs.length, examples = representativeExamples(obs);
+    if (n < 5) return narrativeShell([t('statsNarrativeSparse')(n)], [t('statsEvidenceSample')(n)], examples);
     const roles = obs.reduce((map, x) => map.set(x.role, (map.get(x.role) || 0) + 1), new Map());
     const families = obs.reduce((map, x) => map.set(x.p.family, (map.get(x.p.family) || 0) + 1), new Map());
     const [role, roleN] = topEntry(roles), [family, familyN] = topEntry(families);
     const paragraphs = [t('statsNarrativePlayerLead')(L('inv', role), roleN, n, famLabel(family), familyN)];
+    const familyRange = rankedNetGroups(obs, row.games.size, x => playDetailKey(x.p), x => playDetailLabel(x.p));
+    const championRange = playerChampionGroups(row);
+    const phaseRange = rankedNetGroups(obs, row.games.size, x => phaseOfPlay(x.p), x => t('statsPhaseShort')[phaseOfPlay(x.p)]);
+    const familyText = netRangeNarrative(t('statsDetailScopeFamily'), familyRange), championText = netRangeNarrative(t('statsDetailScopeChampion'), championRange), phaseText = netRangeNarrative(t('statsDetailScopePhase'), phaseRange);
+    if (familyText) paragraphs.push(familyText);
+    paragraphs.push(championText || t('statsNarrativeChampionSparse'));
+    if (phaseText) paragraphs.push(phaseText);
     const pattern = S.statsMetric === 'wps' ? pairedWpsPattern(obs) : null;
     if (S.statsMetric === 'wps' && pattern) paragraphs.push(t('statsNarrativeWps')(pattern.kind, pattern.n, pattern.total, pattern.horizon));
     if (S.statsMetric === 'gold') paragraphs.push(t('statsNarrativeGold')(row.summary.pos.length, n, fmtStat(row.summary.netPerGame)));
@@ -2535,13 +2719,82 @@
     if (phase) paragraphs.push(t('statsNarrativePhase')(t('statsPhaseShort')[phase.phase], pct0(phase.entityN, phase.entityTotal), pct0(Math.round(phase.baseline * 1000), 1000), phase.gameN, phase.totalGames));
     const evidence = [t('statsEvidenceRole')(L('inv', role), roleN, n), t('statsEvidenceFamily')(famLabel(family), familyN, n), t('statsEvidenceSample')(n)];
     if (phase) evidence.push(t('statsEvidencePhase')(t('statsPhaseShort')[phase.phase], pct0(phase.entityN, phase.entityTotal), pct0(Math.round(phase.baseline * 1000), 1000), formatP(phase.adjustedP), phase.gameN, phase.totalGames));
-    return narrativeShell(paragraphs, evidence, example);
+    return narrativeShell(paragraphs, evidence, examples);
   }
   function comparisonNarrative(a, b, teamMode = false) {
     if (!a || !b) return '';
     const aLabel = teamMode ? a.team : a.label, bLabel = teamMode ? b.team : b.label;
     const aValue = teamMode ? a.perGame : a.summary.netPerGame, bValue = teamMode ? b.perGame : b.summary.netPerGame;
     return `<div class="stats-compare-narrative"><strong>${esc(t('statsNarrativeCompareTitle'))}</strong><p>${esc(t('statsNarrativeCompare')(aLabel, fmtStat(aValue), bLabel, fmtStat(bValue), statsWindowLabel(), S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')))}</p></div>`;
+  }
+  const seriesMean = values => values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
+  function stableSeed(text) {
+    let hash = 2166136261;
+    for (let i = 0; i < text.length; i += 1) { hash ^= text.charCodeAt(i); hash = Math.imul(hash, 16777619); }
+    return hash >>> 0;
+  }
+  function seededRandom(seed) {
+    let state = seed || 1;
+    return () => { state = (Math.imul(state, 1664525) + 1013904223) >>> 0; return state / 4294967296; };
+  }
+  function percentile(values, p) {
+    if (!values.length) return 0;
+    const index = (values.length - 1) * p, low = Math.floor(index), high = Math.ceil(index);
+    return values[low] + (values[high] - values[low]) * (index - low);
+  }
+  function bootstrapDifference(aEntries, bEntries, seedKey) {
+    if (!aEntries.length || !bEntries.length) return null;
+    const aValues = aEntries.map(([, value]) => value), bValues = bEntries.map(([, value]) => value);
+    const aMap = new Map(aEntries), bMap = new Map(bEntries), shared = [...aMap.keys()].filter(id => bMap.has(id));
+    const paired = shared.length > 1 && shared.length === aEntries.length && shared.length === bEntries.length;
+    const point = seriesMean(aValues) - seriesMean(bValues), random = seededRandom(stableSeed(seedKey)), samples = [];
+    const draws = 2000;
+    if (paired) {
+      const differences = shared.map(id => aMap.get(id) - bMap.get(id));
+      for (let draw = 0; draw < draws; draw += 1) {
+        let total = 0;
+        for (let i = 0; i < differences.length; i += 1) total += differences[Math.floor(random() * differences.length)];
+        samples.push(total / differences.length);
+      }
+    } else if (aValues.length > 1 && bValues.length > 1) {
+      for (let draw = 0; draw < draws; draw += 1) {
+        let aTotal = 0, bTotal = 0;
+        for (let i = 0; i < aValues.length; i += 1) aTotal += aValues[Math.floor(random() * aValues.length)];
+        for (let i = 0; i < bValues.length; i += 1) bTotal += bValues[Math.floor(random() * bValues.length)];
+        samples.push(aTotal / aValues.length - bTotal / bValues.length);
+      }
+    }
+    samples.sort((x, y) => x - y);
+    return { point, low: samples.length ? percentile(samples, .025) : point, high: samples.length ? percentile(samples, .975) : point, nA: aValues.length, nB: bValues.length, paired };
+  }
+  function comparisonGameSeries(profile, dimension, teamMode) {
+    if (teamMode) return profile.gameIds.map(gameId => {
+      const value = profile.moments.filter(moment => moment.game.id === gameId && (dimension === 'all' || involvedOf(moment.p).some(x => x.team === profile.team && ROSTER[gameId]?.[x.player]?.position === dimension)))
+        .reduce((sum, moment) => sum + moment.value, 0);
+      return [gameId, value];
+    });
+    return [...profile.games].map(gameId => [gameId, profile.summary.valid.filter(obs => obs.game.id === gameId && (dimension === 'all' || obs.role === dimension)).reduce((sum, obs) => sum + obs.value, 0)]);
+  }
+  function comparisonDifference(a, b, teamMode = false) {
+    if (!a || !b) return '';
+    const aLabel = teamMode ? a.team : a.label, bLabel = teamMode ? b.team : b.label;
+    const dimensions = teamMode ? [['all', t('statsDiffOverall')], ...STAT_POSITIONS.map(pos => [pos, posLabel(pos)])] : [['all', t('statsDiffOverall')], ...INV_ROLES.map(role => [role, L('inv', role)])];
+    const rows = dimensions.map(([key, label]) => {
+      const aSeries = comparisonGameSeries(a, key, teamMode), bSeries = comparisonGameSeries(b, key, teamMode);
+      return { key, label, ...bootstrapDifference(aSeries, bSeries, `${aLabel}|${bLabel}|${key}|${S.statsMetric}|${S.statsH}|${S.statsScope}`) };
+    }).filter(row => row.point != null);
+    if (!rows.length) return '';
+    const rawMax = Math.max(...rows.flatMap(row => [Math.abs(row.point), Math.abs(row.low), Math.abs(row.high)]), S.statsMetric === 'wps' ? 1 : 100);
+    const step = S.statsMetric === 'wps' ? (rawMax <= 5 ? 1 : rawMax <= 20 ? 5 : rawMax <= 50 ? 10 : 20) : (rawMax <= 2000 ? 500 : rawMax <= 5000 ? 1000 : 2000);
+    const max = Math.ceil(rawMax / step) * step, xOf = value => 100 * (Math.max(-max, Math.min(max, value)) + max) / (2 * max);
+    const rowHtml = rows.map(row => {
+      const point = xOf(row.point), low = xOf(row.low), high = xOf(row.high), uncertain = row.low <= 0 && row.high >= 0;
+      const side = uncertain ? 'uncertain' : row.point >= 0 ? 'side-a' : 'side-b', barLeft = Math.min(50, point), barWidth = Math.max(.7, Math.abs(point - 50));
+      const title = t('statsDiffPoint')(row.label, fmtStat(row.point), fmtStat(row.low), fmtStat(row.high), aLabel, bLabel, row.nA, row.nB, row.paired);
+      return `<div class="stats-difference-row"><span>${esc(row.label)}</span><div class="stats-difference-track" role="img" aria-label="${esc(title)}" title="${esc(title)}"><i class="zero"></i><i class="ci" style="left:${low.toFixed(2)}%;width:${Math.max(.7, high - low).toFixed(2)}%"></i><i class="bar ${side}" style="left:${barLeft.toFixed(2)}%;width:${barWidth.toFixed(2)}%"></i><i class="point ${side}" style="left:${point.toFixed(2)}%"></i></div><strong class="${side}">${esc(fmtStat(row.point))}</strong></div>`;
+    }).join('');
+    const sample = rows[0];
+    return `<section class="stats-difference"><div class="stats-difference-head"><strong>${esc(t('statsDiffTitle'))}</strong><span>${esc(t('statsDiffSample')(aLabel, sample.nA, bLabel, sample.nB))}</span></div><div class="stats-difference-axis"><span></span><span class="scale"><b class="side-b">${esc(t('statsDiffLeft')(bLabel))}</b><i>0</i><b class="side-a">${esc(t('statsDiffRight')(aLabel))}</b></span><span></span></div><div class="stats-difference-rows">${rowHtml}</div><p class="stats-difference-note">${esc(t('statsDiffNote'))}</p></section>`;
   }
   function teamProfile(team, gs) {
     const teamGames = gs.filter(g => g.blue_team === team || g.red_team === team);
@@ -2564,7 +2817,7 @@
     teamGames.forEach(g => Object.values(ROSTER[g.id] || {}).filter(x => x.team === team).forEach(x => roster.set(`${x.position}|${x.player}`, x)));
     const moments = [...unique.values()];
     return {
-      team, games: teamGames.length, positions, roster: [...roster.values()], moments,
+      team, games: teamGames.length, gameIds: teamGames.map(g => g.id), positions, roster: [...roster.values()], moments,
       positive: moments.filter(x => x.value > 0).length,
       median: median(moments.map(x => Math.abs(x.value))),
       perGame: teamGames.length ? moments.reduce((s, x) => s + x.value, 0) / teamGames.length : 0,
@@ -2605,6 +2858,77 @@
       <text x="${cx}" y="${cy + 4}" text-anchor="middle" class="value">−${esc(valueLabel)}</text>
     </svg>`;
   }
+  const TEAM_TIMELINE_BINS = [{ start: 0, end: 600 }, { start: 600, end: 1200 }, { start: 1200, end: 1800 }, { start: 1800, end: Infinity }];
+  const POSITION_COLORS = { top: '#8b5cf6', jungle: '#16a34a', mid: '#f59e0b', bot: '#2563eb', support: '#db2777' };
+  function tCritical95(n) {
+    const df = n - 1, exact = [0, 12.706, 4.303, 3.182, 2.776, 2.571, 2.447, 2.365, 2.306, 2.262, 2.228, 2.201, 2.179, 2.160, 2.145, 2.131, 2.120, 2.110, 2.101, 2.093, 2.086, 2.080, 2.074, 2.069, 2.064, 2.060, 2.056, 2.052, 2.048, 2.045, 2.042];
+    if (df <= 30) return exact[df];
+    if (df <= 40) return 2.021;
+    if (df <= 60) return 2.000;
+    if (df <= 120) return 1.980;
+    return 1.960;
+  }
+  function meanWithCi(values) {
+    const n = values.length, mean = n ? values.reduce((sum, value) => sum + value, 0) / n : 0;
+    if (n < 2) return { mean, low: mean, high: mean };
+    const variance = values.reduce((sum, value) => sum + (value - mean) ** 2, 0) / (n - 1);
+    const margin = tCritical95(n) * Math.sqrt(variance / n);
+    return { mean, low: mean - margin, high: mean + margin };
+  }
+  function teamTimelineSvg(profile, gs) {
+    const teamGames = gs.filter(g => g.blue_team === profile.team || g.red_team === profile.team);
+    const durationOf = g => Number(g.duration_gc) || Math.max(0, ...playsOf(g).map(p => Number(p.gc) || 0));
+    const momentPositions = new Map(profile.moments.map(moment => [moment, new Set(involvedOf(moment.p).filter(x => x.team === profile.team)
+      .map(x => ROSTER[moment.game.id]?.[x.player]?.position).filter(pos => STAT_POSITIONS.includes(pos)))]));
+    const bins = TEAM_TIMELINE_BINS.map((bin, index) => {
+      const games = teamGames.filter(g => durationOf(g) > bin.start), gameIds = new Set(games.map(g => g.id));
+      const moments = profile.moments.filter(moment => gameIds.has(moment.game.id) && Number(moment.p.gc) >= bin.start && Number(moment.p.gc) < bin.end);
+      const positions = STAT_POSITIONS.map(pos => {
+        const scenes = moments.filter(moment => momentPositions.get(moment).has(pos));
+        if (!scenes.length || !games.length) return { pos, scenes: 0, games: games.length, valid: false, mean: 0, low: 0, high: 0 };
+        const values = games.map(g => scenes.filter(moment => moment.game.id === g.id).reduce((sum, moment) => sum + moment.value, 0));
+        return { pos, scenes: scenes.length, games: games.length, valid: true, ...meanWithCi(values) };
+      });
+      return { ...bin, index, games: games.length, label: t('statsTimelineBins')[index], positions };
+    });
+    const valid = bins.flatMap(bin => bin.positions.filter(point => point.valid));
+    if (!valid.length) return '';
+    const rawMax = Math.max(...valid.flatMap(point => [Math.abs(point.low), Math.abs(point.high), Math.abs(point.mean)]), S.statsMetric === 'wps' ? 1 : 100);
+    const step = S.statsMetric === 'wps' ? (rawMax <= 5 ? 1 : rawMax <= 20 ? 5 : rawMax <= 50 ? 10 : 20) : (rawMax <= 2000 ? 500 : rawMax <= 5000 ? 1000 : 2000);
+    const max = Math.ceil(rawMax / step) * step, W = 700, H = 300, left = 58, right = 674, top = 24, bottom = 238;
+    const xOf = index => left + index * (right - left) / (bins.length - 1), seriesX = (pos, index) => xOf(index) + (STAT_POSITIONS.indexOf(pos) - 2) * 4.5, yOf = value => top + (max - value) / (2 * max) * (bottom - top);
+    const grid = [max, 0, -max].map(value => `<line x1="${left}" y1="${yOf(value)}" x2="${right}" y2="${yOf(value)}" stroke="${value === 0 ? 'var(--chart-axis)' : 'var(--chart-grid)'}" stroke-width="${value === 0 ? 1.3 : 1}" ${value === 0 ? 'stroke-dasharray="5 4"' : ''}/><text class="axis-label" x="${left - 7}" y="${yOf(value) + 3}" text-anchor="end">${esc(fmtStat(value))}</text>`).join('');
+    const series = STAT_POSITIONS.map(pos => {
+      let open = false, path = '', segment = [];
+      const segments = [], flush = () => { if (segment.length > 1) segments.push(segment); segment = []; };
+      bins.forEach(bin => {
+        const point = bin.positions.find(x => x.pos === pos);
+        if (!point?.valid) { open = false; flush(); return; }
+        const x = seriesX(pos, bin.index);
+        path += `${open ? ' L' : ' M'}${x} ${yOf(point.mean)}`; open = true;
+        segment.push({ x, low: point.low, high: point.high });
+      });
+      flush();
+      const color = POSITION_COLORS[pos];
+      const bands = segments.map(points => {
+        const upper = points.map((point, i) => `${i ? 'L' : 'M'}${point.x} ${yOf(point.high)}`).join(' ');
+        const lower = [...points].reverse().map(point => `L${point.x} ${yOf(point.low)}`).join(' ');
+        return `<path d="${upper} ${lower} Z" fill="${color}" fill-opacity=".10" stroke="none"/>`;
+      }).join('');
+      const marks = bins.map(bin => {
+        const point = bin.positions.find(x => x.pos === pos);
+        if (!point?.valid) return '';
+        const x = seriesX(pos, bin.index), y = yOf(point.mean);
+        const title = t('statsTimelinePoint')(posLabel(pos), bin.label, fmtStat(point.mean), fmtStat(point.low), fmtStat(point.high), point.games, point.scenes);
+        return `<circle cx="${x}" cy="${y}" r="4" fill="${color}" stroke="var(--bg-card)" stroke-width="1.5"><title>${esc(title)}</title></circle>`;
+      }).join('');
+      return `${bands}<path d="${path}" fill="none" stroke="${color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>${marks}`;
+    }).join('');
+    const xLabels = bins.map(bin => `<text x="${xOf(bin.index)}" y="258" text-anchor="middle"><tspan x="${xOf(bin.index)}">${esc(bin.label)}</tspan><tspan class="bin-games" x="${xOf(bin.index)}" dy="12">${esc(t('statsTimelineGames')(bin.games))}</tspan></text>`).join('');
+    return `<div class="stats-timeline"><div class="stats-timeline-head"><strong>${esc(t('statsTimelineTitle'))}</strong><span>${esc(t('statsTimelineSub')(statsWindowLabel(), S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')))}</span></div>
+      <svg class="stats-timeline-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t('statsTimelineTitle'))}"><rect x="${left}" y="${top}" width="${right - left}" height="${yOf(0) - top}" fill="var(--gain)" opacity=".035"/><rect x="${left}" y="${yOf(0)}" width="${right - left}" height="${bottom - yOf(0)}" fill="var(--loss)" opacity=".035"/>${grid}${series}${xLabels}</svg>
+      <div class="stats-timeline-legend">${STAT_POSITIONS.map(pos => `<span><i style="background:${POSITION_COLORS[pos]}"></i>${esc(posLabel(pos))}</span>`).join('')}</div><p class="stats-timeline-note">${esc(t('statsTimelineNote'))}</p></div>`;
+  }
   function teamCard(profile, side, gs) {
     const roster = [...profile.roster].sort((a, b) => STAT_POSITIONS.indexOf(a.position) - STAT_POSITIONS.indexOf(b.position) || a.player.localeCompare(b.player));
     return `<article class="stats-team-card">
@@ -2618,6 +2942,7 @@
       </div>
       <div class="stats-roster">${roster.map(x => `<button type="button" data-stats-player="${esc(x.player)}">${esc(posLabel(x.position))} · ${esc(x.player)}</button>`).join('')}</div>
       ${teamNarrative(profile, gs)}
+      ${teamTimelineSvg(profile, gs)}
     </article>`;
   }
   function renderTeamStats(gs, teams, selectable = true) {
@@ -2626,7 +2951,7 @@
     return `<section class="card">
       <div class="stats-head"><div><h2>${t('statsRadarTitle')}</h2><p class="stats-sub">${esc(t('statsRadarSub')(statsWindowLabel(), S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')))}</p></div>
         ${selectable ? `<div class="stats-team-picks"><label class="stats-pick a"><span>${t('statsPickTeamA')}</span><select id="statsTeamA">${options(S.statsTeamA)}</select></label><label class="stats-pick b"><span>${t('statsPickTeamB')}</span><select id="statsTeamB">${options(S.statsTeamB)}</select></label></div>` : ''}</div>
-      ${gs.length ? `${comparisonNarrative(a, b, true)}<div class="stats-team-layout"><div class="stats-radar-wrap">${radarSvg(a, b)}<div class="stats-legend"><span><i class="a"></i>${esc(a.team)}</span><span><i class="b"></i>${esc(b.team)}</span></div></div>
+      ${gs.length ? `${comparisonNarrative(a, b, true)}${comparisonDifference(a, b, true)}<div class="stats-team-layout"><div class="stats-radar-wrap">${radarSvg(a, b)}<div class="stats-legend"><span><i class="a"></i>${esc(a.team)}</span><span><i class="b"></i>${esc(b.team)}</span></div></div>
         <div class="stats-team-cards">${teamCard(a, 'blue', gs)}${teamCard(b, 'red', gs)}</div></div>
       ` : `<p class="empty">${t('statsNoData')}</p>`}
       <p class="note-box">${t('statsCaveat')}</p>
@@ -2679,10 +3004,10 @@
     const max = Math.ceil(raw / step) * step, xOf = v => left + (v + max) / (2 * max) * (right - left);
     const roleY = { actor: 78, target: 143, response: 208 };
     const shape = (o, i) => {
-      const x = xOf(o.value), y = roleY[o.role] + ((i % 5) - 2) * 4, fill = o.value >= 0 ? 'var(--gain)' : 'var(--loss)';
-      const common = `class="pin" data-play="${esc(o.p.id)}" tabindex="0" role="button" fill="${fill}" fill-opacity=".78" stroke="var(--bg-card)" stroke-width="1.5"`;
+      const phase = phaseOfPlay(o.p), x = xOf(o.value), y = roleY[o.role] + ((i % 5) - 2) * 4, fill = PHASE_COLORS[phase] || 'var(--text-muted)';
+      const common = `class="pin" data-play="${esc(o.p.id)}" tabindex="0" role="button" fill="${fill}" fill-opacity=".86" stroke="var(--bg-card)" stroke-width="1.5"`;
       const mark = o.role === 'target' ? `<rect ${common} x="${x - 5}" y="${y - 5}" width="10" height="10" transform="rotate(45 ${x} ${y})"/>` : o.role === 'response' ? `<path ${common} d="M${x} ${y - 7} L${x + 7} ${y + 6} L${x - 7} ${y + 6} Z"/>` : `<circle ${common} cx="${x}" cy="${y}" r="6"/>`;
-      return `${mark}<title>${esc(`${clock(o.p)} · ${contentText(o.p, 'title')} · ${fmtStat(o.value)}`)}</title>`;
+      return `${mark}<title>${esc(`${clock(o.p)} · ${t('statsPhaseShort')[phase]} · ${contentText(o.p, 'title')} · ${fmtStat(o.value)}`)}</title>`;
     };
     return `<svg class="stats-dotplot" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t('statsFingerprint'))}">
       <rect x="${left}" y="40" width="${(right - left) / 2}" height="205" fill="var(--loss)" opacity=".035"/><rect x="${(left + right) / 2}" y="40" width="${(right - left) / 2}" height="205" fill="var(--gain)" opacity=".035"/>
@@ -2694,10 +3019,14 @@
   }
   function entityDetail(row, kind, side = '', showCaveat = true, referenceRows = []) {
     if (!row) return `<section class="card"><p class="empty">${t('statsNoData')}</p></section>`;
+    const scenePerspective = kind === 'player' ? topKey(row.teams) : t('statsTeam');
     const roles = Object.fromEntries(INV_ROLES.map(role => [role, row.obs.filter(x => x.role === role).length]));
+    const phases = Object.fromEntries(['lane', 'mid', 'late'].map(phase => [phase, row.summary.valid.filter(x => phaseOfPlay(x.p) === phase).length]));
     const states = Object.fromEntries(STATES.map(state => [state, row.obs.filter(x => x.goldState === state).length]));
     const types = [...row.obs.reduce((m, x) => m.set(x.p.family, (m.get(x.p.family) || 0) + 1), new Map()).entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
-    const scenes = [...row.summary.valid].sort((a, b) => Math.abs(b.value) - Math.abs(a.value)).slice(0, 6);
+    const gainScenes = [...row.summary.valid].filter(x => x.value > 0).sort((a, b) => b.value - a.value).slice(0, 3);
+    const lossScenes = [...row.summary.valid].filter(x => x.value < 0).sort((a, b) => a.value - b.value).slice(0, 3);
+    const sceneRows = scenes => scenes.map(o => `<button type="button" class="scene" data-play="${esc(o.p.id)}"><span>${clock(o.p)}</span><span class="actor">${esc(o.p.actor || '—')}</span><span>${esc(contentText(o.p, 'title'))}</span><span class="v ${o.value >= 0 ? 'gain' : 'loss'}">${esc(fmtStat(o.value))}</span></button>`).join('');
     return `<section class="card ${side ? `stats-compare-card side-${side}` : ''}">
       <div class="stats-detail-head"><div><h2 class="${side === 'a' ? 'team-blue' : side === 'b' ? 'team-red' : ''}">${esc(row.label)}</h2><p>${esc(entitySubtitle(row, kind))}</p></div><div class="stats-mini-grid">
         <div class="stats-mini"><small>${t('statsGames')}</small><strong>${row.games.size}</strong></div>
@@ -2710,10 +3039,11 @@
       <h3 style="margin-top:16px">${t('statsFingerprint')} <span class="sub">${esc(statsWindowLabel())} · ${S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')}</span></h3>
       ${row.summary.valid.length ? dotplotSvg(row) : `<p class="empty">${t('statsNoData')}</p>`}
       <div class="stats-role-key">${INV_ROLES.map(role => `<span><i class="${role}"></i>${esc(L('inv', role))} ${roles[role]}</span>`).join('')}</div>
+      <div class="stats-phase-key"><strong>${esc(t('statsPhaseLegend'))}</strong>${['lane', 'mid', 'late'].map(phase => `<span><i style="background:${PHASE_COLORS[phase]}"></i>${esc(t('statsPhaseShort')[phase])} ${phases[phase]}</span>`).join('')}</div>
       <div class="stats-detail-grid"><div class="stats-breakdown">
         <h3>${t('statsGoldBreak')}</h3><div class="stats-state-grid">${STATES.map(state => `<div><span>${esc(L('state', state))}</span><strong>${states[state]}</strong></div>`).join('')}</div>
         <h3 style="margin-top:14px">${t('statsTypes')}</h3><div class="stats-type-list">${types.map(([family, n]) => `${famChip(family, famLabel(family))}<span class="chip">${n}</span>`).join('')}</div>
-      </div><div class="stats-scenes"><h3>${t('statsTopScenes')}</h3>${scenes.map(o => `<button type="button" class="scene" data-play="${esc(o.p.id)}"><span>${clock(o.p)}</span><span>${esc(contentText(o.p, 'title'))}</span><span class="v ${o.value >= 0 ? 'gain' : 'loss'}">${esc(fmtStat(o.value))}</span></button>`).join('') || `<p class="empty">${t('statsNoData')}</p>`}</div></div>
+      </div><div class="stats-scenes"><h3>${t('statsTopScenes')}</h3>${gainScenes.length ? `<div class="stats-scene-group gain"><h4>${esc(t('statsTopGainScenes')(scenePerspective))}</h4>${sceneRows(gainScenes)}</div>` : ''}${lossScenes.length ? `<div class="stats-scene-group loss"><h4>${esc(t('statsTopLossScenes')(scenePerspective))}</h4>${sceneRows(lossScenes)}</div>` : ''}${!gainScenes.length && !lossScenes.length ? `<p class="empty">${t('statsNoData')}</p>` : ''}</div></div>
       ${showCaveat ? `<p class="note-box">${t('statsCaveat')}</p>` : ''}
     </section>`;
   }
@@ -2725,7 +3055,7 @@
       <div class="stats-compare-picks"><label class="stats-pick a"><span>${t('statsPickPlayerA')}</span><select id="statsPlayerA">${options(S.statsPick)}</select></label><label class="stats-pick b"><span>${t('statsPickPlayerB')}</span><select id="statsPlayerB">${options(S.statsCompare)}</select></label></div>
       <label class="stats-pick stats-role-pick"><span>${t('statsPosition')}</span><select id="statsRole">${roles.map(([key, label]) => `<option value="${key}" ${key === S.statsRole ? 'selected' : ''}>${esc(label)}</option>`).join('')}</select></label>
     </div></section>
-    ${gs.length ? `<div>${comparisonNarrative(byKey.get(S.statsPick), byKey.get(S.statsCompare))}<div class="stats-compare-layout">${entityDetail(byKey.get(S.statsPick), 'player', 'a', false, rows)}${entityDetail(byKey.get(S.statsCompare), 'player', 'b', false, rows)}</div><p class="note-box">${t('statsCaveat')}</p></div>` : `<section class="card"><p class="empty">${t('statsNoData')}</p></section>`}`;
+    ${gs.length ? `<div>${comparisonNarrative(byKey.get(S.statsPick), byKey.get(S.statsCompare))}${comparisonDifference(byKey.get(S.statsPick), byKey.get(S.statsCompare))}<div class="stats-compare-layout">${entityDetail(byKey.get(S.statsPick), 'player', 'a', false, rows)}${entityDetail(byKey.get(S.statsCompare), 'player', 'b', false, rows)}</div><p class="note-box">${t('statsCaveat')}</p></div>` : `<section class="card"><p class="empty">${t('statsNoData')}</p></section>`}`;
   }
   function renderEntityStats(gs, kind) {
     const rows = buildEntities(kind, gs);
