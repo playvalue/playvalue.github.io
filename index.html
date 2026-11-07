@@ -50,6 +50,11 @@
       --neutral-bg: #eceef1;
       --accent: #95580d;
       --accent-bg: rgba(185, 115, 26, 0.10);
+      --compare-bg: #edf1f6;
+      --compare-border: #bdc9d7;
+      --compare-text: #30445c;
+      --compare-active: #355d89;
+      --compare-active-text: #ffffff;
       --f-objective_hunt: var(--neutral); --f-objective_contest: var(--neutral); --f-structure: var(--neutral); --f-gank: var(--neutral); --f-fight: var(--neutral);
       --f-lane: var(--neutral); --f-defense: var(--neutral); --f-vision: var(--neutral); --f-other: var(--neutral); --star: #b9731a;
       --chart-grid: #e9ebee;
@@ -87,6 +92,11 @@
       --neutral-bg: #242427;
       --accent: #e9a23b;
       --accent-bg: rgba(233, 162, 59, 0.14);
+      --compare-bg: #202833;
+      --compare-border: #46586e;
+      --compare-text: #dce7f3;
+      --compare-active: #3f6f9e;
+      --compare-active-text: #ffffff;
       --star: #e9a23b;
       --chart-grid: #262629;
       --chart-axis: #9a9ca2;
@@ -134,7 +144,7 @@
     .tagline span { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: .9rem; }
     html[lang="en"] .tagline span { font-size: .84rem; letter-spacing: -0.012em; }
     .header-actions { display: flex; gap: 8px; flex: none; flex-wrap: nowrap; align-items: center; }
-    header .btn, header .ser-step, header select.ser-select, header .gbtn:not(.on), header .seg button.on { background: var(--header-control); }
+    header .btn, header select.ser-select, header .gbtn:not(.on), header .seg button.on { background: var(--header-control); }
     .btn { background: var(--bg-card); border: 1px solid var(--border-color); font-size: .82rem; font-weight: 600; padding: 6px 12px; border-radius: var(--radius-control); cursor: pointer; text-decoration: none; color: var(--text-main); display: inline-flex; gap: 6px; align-items: center; }
     .btn:hover { border-color: var(--border-focus); }
     .btn.icon-only { width: 36px; height: 36px; padding: 0; justify-content: center; flex: none; }
@@ -153,6 +163,11 @@
 
     .navbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 28px; padding: 14px 0; }
     .nav { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+    .view-nav { display: inline-flex; align-items: stretch; gap: 10px; }
+    .view-compare-slot { display: inline-flex; align-items: stretch; border-left: 1px solid var(--border-color); padding-left: 10px; }
+    .view-compare { border: 1px solid var(--compare-border); background: var(--compare-bg); padding: 5px 12px; border-radius: var(--radius-control); font-size: .82rem; font-weight: 700; cursor: pointer; color: var(--compare-text); }
+    .view-compare:hover { border-color: var(--compare-active); background: color-mix(in srgb, var(--compare-active) 16%, var(--compare-bg)); }
+    .view-compare.on { background: var(--compare-active); border-color: var(--compare-active); color: var(--compare-active-text); box-shadow: 0 1px 3px color-mix(in srgb, var(--compare-active) 28%, transparent); }
     .seg { display: inline-flex; background: var(--bg-pill); border-radius: 8px; padding: 3px; gap: 2px; flex-wrap: wrap; }
     .seg button { border: 0; background: transparent; padding: 5px 12px; border-radius: var(--radius-control); font-size: .82rem; font-weight: 600; cursor: pointer; color: var(--text-muted); }
     .seg button.on { background: var(--bg-card); color: var(--text-main); }
@@ -160,11 +175,8 @@
     .seg .badge { font-size: .68rem; font-weight: 600; color: var(--text-muted); margin-left: 4px; }
     .nav-label { font-size: .75rem; color: var(--text-muted); font-weight: 600; }
     /* One row however many series there are: step through series, pick one from a grouped list, then a game. */
-    .series { display: flex; gap: 8px 14px; flex-wrap: wrap; align-items: center; }
+    .series { display: flex; flex: 1 0 100%; gap: 8px 14px; flex-wrap: wrap; align-items: center; }
     .ser-pick { display: flex; align-items: center; gap: 4px; min-width: 0; flex: 0 1 auto; }
-    .ser-step { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-size: 1.05rem; font-weight: 700; cursor: pointer; flex: none; }
-    .ser-step:hover:not(:disabled) { border-color: var(--border-focus); }
-    .ser-step:disabled { opacity: .35; cursor: default; }
     .series select.ser-select { height: 34px; font-size: .9rem; font-weight: 700; padding: 0 10px; min-width: 0; max-width: 100%; font-variant-numeric: tabular-nums; }
     .ser-count { font-size: .75rem; color: var(--text-muted); font-weight: 600; font-variant-numeric: tabular-nums; }
     .games { display: flex; gap: 4px; }
@@ -415,6 +427,7 @@
     .row .e.gain { color: var(--gain); } .row .e.loss { color: var(--loss); } .row .e.neutral { color: var(--neutral); }
     .row .title { min-width: 0; }
     .row .title .ttl, .row .title .who { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .row .title .ttl { font-size: .78rem; line-height: 1.35; font-weight: 600; }
     .row .title .who { font-size: .74rem; color: var(--text-muted); margin-top: 1px; }
     .row .title .who b { color: var(--text-main); }
     /* On a phone the team chip gives its width to the title; the time takes the side's colour instead. */
@@ -447,6 +460,8 @@
     .empty { color: var(--text-muted); font-size: .85rem; padding: 10px 0; }
     .stats-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; }
     .stats-head .xt-title { margin-bottom: 2px; }
+    .series-context-action { flex: 0 0 auto; white-space: nowrap; }
+    .stats-open-compare { white-space: nowrap; align-self: flex-start; }
     .stats-sub { max-width: 820px; color: var(--text-muted); font-size: .82rem; }
     .stats-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 14px; }
     .stats-team-picks, .stats-compare-picks { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -462,7 +477,7 @@
     .stats-basis-note { margin-top: 8px; color: var(--text-muted); font-size: .75rem; }
     .stats-team-layout { display: grid; grid-template-columns: minmax(380px, 1.05fr) minmax(320px, .95fr); gap: 16px; }
     .stats-radar-wrap { min-width: 0; }
-    .stats-radar { display: block; width: min(100%, 620px); height: auto; margin: 0 auto; }
+    .stats-radar { display: block; width: min(100%, 680px); height: auto; margin: 0 auto; }
     .stats-radar text { font-family: var(--font); fill: var(--text-muted); font-size: 11px; }
     .stats-radar .entity { fill: var(--text-main); font-weight: 700; }
     .stats-radar .value { font-family: var(--mono); font-size: 10px; }
@@ -524,6 +539,8 @@
     .stats-scenes .scene:hover { background: var(--bg-card-hover); }
     .stats-scenes .scene .v { font-weight: 700; font-variant-numeric: tabular-nums; }
     .team-link { border: 0; background: transparent; color: inherit; font: inherit; font-weight: inherit; cursor: pointer; padding: 0; }
+    .team-link.team-blue { color: var(--blue-team); }
+    .team-link.team-red { color: var(--red-team); }
     @media (max-width: 760px) { .stats-compare-layout { grid-template-columns: 1fr; } }
     @media (max-width: 900px) { .stats-team-layout, .stats-entity-layout { grid-template-columns: 1fr; } .stats-entity-list { position: static; max-height: none; } }
     @media (max-width: 620px) { .stats-mini-grid { grid-template-columns: 1fr; } .stats-detail-grid { grid-template-columns: 1fr; } .stats-state-grid { grid-template-columns: repeat(2, 1fr); } .stats-entity-row { grid-template-columns: minmax(82px, 1fr) 34px minmax(90px, 1fr) 50px; } }
@@ -573,7 +590,10 @@
     <div class="navbar">
       <div class="nav">
         <div class="seg" id="tournTabs"></div>
-        <div class="seg" id="viewTabs"></div>
+        <div class="view-nav" id="viewNav">
+          <div class="seg" id="viewTabs"></div>
+          <div class="view-compare-slot"><button type="button" class="view-compare" id="compareTab"></button></div>
+        </div>
       </div>
       <div class="series" id="series"></div>
     </div>
@@ -622,7 +642,8 @@
       legal: 'PlayValue는 Riot Games의 보증을 받지 않았으며, Riot Games 또는 Riot Games 자산의 제작·관리에 공식적으로 관여하는 누구의 견해나 의견도 반영하지 않습니다. Riot Games 및 관련 모든 자산은 Riot Games, Inc.의 상표 또는 등록 상표입니다.',
       taglineSub: '킬 없는 플레이와 실패한 시도까지, 해설이 짚은 중요 플레이의 밸류를 직후 15·30·60초의 두 팀 골드 차이로 봅니다.',
       methodology: '방법론', lang: 'English', languagePicker: '언어 선택', themeDark: '다크 모드', themeLight: '라이트 모드',
-      viewSet: '경기별 보기', viewXtab: '유형별 집계', viewStats: '팀·선수', winner: '승리',
+      viewSet: '경기별 보기', viewXtab: '유형별 집계', viewCompare: '비교', winner: '승리',
+      contextOpenStats: '시리즈 팀·선수 보기 →', contextBackGame: '← 선택 경기로 돌아가기',
       cov: (n, m, k) => `플레이 <strong>${n}</strong>건 중 골드 변화를 잰 것 <strong>${m}</strong>건, 그중 이득·손해가 판정된 것 <strong>${k}</strong>건`,
       duration: '경기 시간', horizon: '변화 구간', sec: s => `${s}초`,
       metric: '표시 지표', metricWps: '승률', metricGold: '골드', metricBoth: '둘 다', beta: 'Beta',
@@ -647,7 +668,7 @@
       detailEmpty: '플레이를 고르면 여기에 자세히 나옵니다.', prevWord: '이전', nextWord: '다음', keyPrev: '이전 플레이 (키보드 ←)', keyNext: '다음 플레이 (키보드 →)',
       colTime: '시간', colTeam: '팀', colPlay: '플레이', colType: '행동 유형', colGold: h => `${h}초 골드 변화`,
       hlOnly: '눈여겨볼 장면만', hlCriteriaTitle: h => `눈여겨볼 장면 · ${h}초 기준`,
-      hlCriteria: h => `성공했는데 골드 손해, 실패·중단했는데 골드 이득, 또는 같은 시간대에서 ${h}초 골드 변화 폭이 상위 10%인 플레이입니다.`,
+      hlCriteria: h => `성공했는데 골드 손해, 실패·중단했는데 골드 이득, 같은 시간대에서 ${h}초 골드 변화 폭이 상위 10%이거나 같은 경기·페이즈의 해설 플레이 중 ${h}초 WPS 변화 폭이 상위 10%인 플레이입니다.`,
       hlCriteriaOpen: '기준 보기', hlCriteriaClose: '접기',
       listTitle: '플레이 목록', listSub: (n, total) => n === total ? `${total}건` : `${n} / ${total}건`,
       listCoverage: (h, m, k) => `${h}초 골드 측정 <strong>${m}</strong> · 방향 판정 <strong>${k}</strong>`,
@@ -695,21 +716,22 @@
       total: '합계', usedBy: '사용', played: '플레이한 챔피언', games: n => `${n}경기`,
       xtNote: '네 칸을 더하면 합계입니다. 이득과 손해는 오차 범위를 넘어 방향이 확실한 경우만 셉니다. 숫자는 관측된 골드 변화이며, 그 플레이 때문에 생긴 효과라는 뜻은 아닙니다.',
       xtPick: '숫자를 누르면 해당 플레이가 여기에 나옵니다.',
-      statsTitle: '팀·선수 통계', statsSub: '해설에 이름이 나온 중요 장면의 관여 양상을 보여 줍니다. 기여도나 인과효과 점수가 아닙니다.',
+      statsTitle: '이 시리즈 팀·선수', statsSub: '현재 시리즈에서 해설에 이름이 나온 중요 장면의 관여 양상입니다. 다른 팀·선수와의 비교는 별도 비교 화면에서 볼 수 있습니다.',
+      compareTitle: '팀·선수 비교', compareSub: '시리즈 선택과 독립적으로, 대회 전체 또는 두 대상의 맞대결에서 팀과 선수를 비교합니다.', statsOpenCompare: '대회 전체에서 비교 →', statsPlayerList: '이 시리즈 선수',
       statsTeam: '팀', statsPlayer: '선수', statsChamp: '챔피언', statsMetric: '지표', statsWps: '승률 변화', statsGold: '골드 변화',
       statsRadarTitle: '중요 장면 관여 프로필', statsRadarSub: (h, m) => `${h}초 ${m}의 경기당 순변화 · 가운데 링은 0`,
       statsGames: '경기', statsScenes: '측정 장면', statsToward: '팀 방향', statsMedian: '중앙 변화폭', statsPerGame: '경기당 순변화',
       statsComparePlayer: '선수 비교', statsCompareChamp: '챔피언 비교', statsFingerprint: '플레이 지문', statsGood: '팀에 유리', statsBad: '팀에 불리',
       statsRoles: '관여 역할', statsTypes: '주요 행동 유형', statsGoldBreak: '변화 방향 집계', statsTopScenes: '변화폭이 큰 장면',
       statsCaveat: '한 플레이에 여러 선수가 관여하면 각 선수에게 한 번씩 들어갑니다. 겹치는 시간창과 동시 사건도 포함되므로 개인 기여도로 읽지 않습니다.',
-      statsBasis: '비교 기준', statsBasisSeries: '현재 시리즈', statsBasisH2h: '두 대상의 맞대결', statsBasisAll: '대회 전체',
+      statsBasis: '비교 기준', statsBasisSeries: '현재 시리즈', statsBasisH2h: '두 대상의 맞대결', statsBasisAll: '대회 전체', statsH2hUnavailable: '선택한 두 대상의 맞대결 경기가 없습니다.',
       statsPickTeamA: '팀 A', statsPickTeamB: '팀 B', statsPickPlayerA: '선수 A', statsPickPlayerB: '선수 B', statsPosition: '포지션', statsAllPositions: '전체 포지션',
-      statsCompareHint: '팀과 선수는 대회 전체에서 고를 수 있습니다. 각 값은 선택한 기준 안에서 해당 팀·선수가 실제로 뛴 경기 수로 나눕니다.',
+      statsCompareHint: '각 값은 선택한 기준 안에서 해당 팀·선수가 실제로 뛴 경기 수로 나눕니다.',
       statsNoData: '선택한 비교 기준에서 측정 가능한 장면이 없습니다.', statsOpenPlay: '플레이 열기',
       skip: '본문으로 건너뛰기', loading: '불러오는 중…', loadError: '데이터를 불러오지 못했습니다. 새로고침해 주세요.',
       plannedTitle: '준비 중', plannedBody: '이 대회는 아직 분석한 경기가 없습니다.',
       gameN: n => `${n}세트`, gameAria: (n, w) => `${n}세트, ${w} 승리`,
-      serLabel: '시리즈', serOlder: '이전 시리즈', serNewer: '다음 시리즈', serCount: (i, n) => `${n}개 시리즈 중 ${i}번째`,
+      serLabel: '시리즈', serCount: (i, n) => `${n}개 시리즈 중 ${i}번째`,
       phaseBracket: '본선', phasePlayIn: '플레이인',
     },
     en: {
@@ -717,7 +739,8 @@
       tagline: 'The value of a play, seen from the team',
       taglineSub: 'Key plays the casters point out, including kill-free ones and failed attempts, valued by the gold gap between the teams 15, 30 and 60 seconds later.',
       methodology: 'Methodology', lang: '한국어', languagePicker: 'Choose language', themeDark: 'Dark mode', themeLight: 'Light mode',
-      viewSet: 'By game', viewXtab: 'Totals by type', viewStats: 'Teams & players', winner: 'Winner',
+      viewSet: 'By game', viewXtab: 'Totals by type', viewCompare: 'Compare', winner: 'Winner',
+      contextOpenStats: 'View series teams & players →', contextBackGame: '← Back to selected game',
       cov: (n, m, k) => `<strong>${n}</strong> plays: gold change measured for <strong>${m}</strong>, of which <strong>${k}</strong> are a clear gain or loss`,
       duration: 'Length', horizon: 'Change over', sec: s => `${s}s`,
       metric: 'Metric', metricWps: 'Win probability', metricGold: 'Gold', metricBoth: 'Both', beta: 'Beta',
@@ -742,7 +765,7 @@
       detailEmpty: 'Pick a play to see it here.', prevWord: 'Previous', nextWord: 'Next', keyPrev: 'Previous play (← key)', keyNext: 'Next play (→ key)',
       colTime: 'Time', colTeam: 'Team', colPlay: 'Play', colType: 'Play type', colGold: h => `Gold change, ${h}s`,
       hlOnly: 'Worth a look only', hlCriteriaTitle: h => `Worth a look · ${h}s window`,
-      hlCriteria: h => `A success with a gold loss, a failure or called-off play with a gold gain, or a ${h}s gold swing in the largest 10% for that phase of the game.`,
+      hlCriteria: h => `A success with a gold loss, a failure or called-off play with a gold gain, a ${h}s gold swing in the largest 10% for that phase, or a ${h}s WPS swing in the largest 10% among commentary plays in the same game and phase.`,
       hlCriteriaOpen: 'View criteria', hlCriteriaClose: 'Close',
       listTitle: 'Plays', listSub: (n, total) => n === total ? `${total}` : `${n} of ${total}`,
       listCoverage: (h, m, k) => `${h}s gold measured <strong>${m}</strong> · direction resolved <strong>${k}</strong>`,
@@ -790,21 +813,22 @@
       total: 'Total', usedBy: 'Played by', played: 'Champions', games: n => `${n} game${n > 1 ? 's' : ''}`,
       xtNote: 'The four columns add up to the total. Gain and loss count only changes clearly beyond the margin. These are observed gold changes, not effects caused by the plays.',
       xtPick: 'Click a number to list its plays here.',
-      statsTitle: 'Teams & players', statsSub: 'How teams, players and champions appear in commentary-selected high-salience moments. These are not contribution or causal-effect scores.',
+      statsTitle: 'Teams & players in this series', statsSub: 'How the current series’ teams and named players appear in commentary-selected high-salience moments. Compare them with others on the separate comparison screen.',
+      compareTitle: 'Team & player comparison', compareSub: 'Compare teams and players over the whole event or their head-to-head games, independently of any selected series.', statsOpenCompare: 'Compare across the event →', statsPlayerList: 'Players in this series',
       statsTeam: 'Team', statsPlayer: 'Player', statsChamp: 'Champion', statsMetric: 'Metric', statsWps: 'Win-probability change', statsGold: 'Gold change',
       statsRadarTitle: 'High-salience involvement profile', statsRadarSub: (h, m) => `Net ${h}s ${m} per game · the middle ring is zero`,
       statsGames: 'Games', statsScenes: 'Measured moments', statsToward: 'Toward team', statsMedian: 'Median swing', statsPerGame: 'Net change per game',
       statsComparePlayer: 'Compare players', statsCompareChamp: 'Compare champions', statsFingerprint: 'Play fingerprint', statsGood: 'Toward the team', statsBad: 'Against the team',
       statsRoles: 'Involvement roles', statsTypes: 'Main play types', statsGoldBreak: 'Change-direction counts', statsTopScenes: 'Largest-swing moments',
       statsCaveat: 'A play appears once for every involved player. Overlapping windows and simultaneous events remain in the values, so this is not individual contribution.',
-      statsBasis: 'Comparison basis', statsBasisSeries: 'Current series', statsBasisH2h: 'Head-to-head', statsBasisAll: 'Whole event',
+      statsBasis: 'Comparison basis', statsBasisSeries: 'Current series', statsBasisH2h: 'Head-to-head', statsBasisAll: 'Whole event', statsH2hUnavailable: 'The selected pair has no head-to-head games.',
       statsPickTeamA: 'Team A', statsPickTeamB: 'Team B', statsPickPlayerA: 'Player A', statsPickPlayerB: 'Player B', statsPosition: 'Position', statsAllPositions: 'All positions',
-      statsCompareHint: 'Choose any team or player in the event. Each value is divided by the games that team or player actually played within the selected basis.',
+      statsCompareHint: 'Each value is divided by the games that team or player actually played within the selected basis.',
       statsNoData: 'No measurable moments for this comparison.', statsOpenPlay: 'Open play',
       skip: 'Skip to content', loading: 'Loading…', loadError: 'Could not load the data. Please reload.',
       plannedTitle: 'Coming soon', plannedBody: 'No games from this event have been analysed yet.',
       gameN: n => `Game ${n}`, gameAria: (n, w) => `Game ${n}, won by ${w}`,
-      serLabel: 'Series', serOlder: 'Earlier series', serNewer: 'Later series', serCount: (i, n) => `Series ${i} of ${n}`,
+      serLabel: 'Series', serCount: (i, n) => `Series ${i} of ${n}`,
       phaseBracket: 'Bracket stage', phasePlayIn: 'Play-In',
     },
   };
@@ -813,7 +837,7 @@
     taglineSub: '包括无击杀操作与失败尝试，用随后15、30、60秒的两队经济差来观察解说提到的重要操作。',
     legal: 'PlayValue 未经 Riot Games 认可，也不代表 Riot Games 或任何参与制作、管理 Riot Games 产品人员的观点。Riot Games 及其相关资产均为 Riot Games, Inc. 的商标或注册商标。',
     methodology: '研究方法', languagePicker: '选择语言', themeDark: '深色模式', themeLight: '浅色模式',
-    viewSet: '按比赛查看', viewXtab: '按类型汇总', viewStats: '队伍与选手', winner: '胜者',
+    viewSet: '按比赛查看', viewXtab: '按类型汇总', viewCompare: '比较', winner: '胜者', contextOpenStats:'查看系列赛队伍与选手 →', contextBackGame:'← 返回所选比赛',
     cov: (n, m, k) => `共 <strong>${n}</strong> 个操作：测得经济变化 <strong>${m}</strong> 个，其中 <strong>${k}</strong> 个可明确判为收益或损失`,
     duration: '比赛时长', horizon: '变化区间', sec: s => `${s}秒`, metric:'显示指标', metricWps:'胜率', metricGold:'经济', metricBoth:'两者', beta:'测试版',
     guideTitle: '如何读懂数字',
@@ -825,7 +849,7 @@
     gameLine: (w, d) => `${w}获胜 · ${d}`, gameNav: (n, w, d) => `第${n}局 · ${w}获胜 · ${d}`,
     detailEmpty: '选择一个操作即可在此查看详情。', prevWord: '上一个', nextWord: '下一个', keyPrev: '上一个操作（←键）', keyNext: '下一个操作（→键）',
     colTime: '时间', colTeam: '队伍', colPlay: '操作', colType: '操作类型', colGold: h => `${h}秒经济变化`,
-    hlOnly: '只看值得关注', hlCriteriaTitle: h => `值得关注 · ${h}秒区间`, hlCriteria: h => `成功却损失经济、失败或取消却获得经济，或${h}秒经济波动位于该阶段最大10%的操作。`, hlCriteriaOpen: '查看标准', hlCriteriaClose: '收起',
+    hlOnly: '只看值得关注', hlCriteriaTitle: h => `值得关注 · ${h}秒区间`, hlCriteria: h => `成功却损失经济、失败或取消却获得经济、${h}秒经济波动位于该阶段最大10%，或${h}秒WPS波动位于同场比赛同阶段解说操作最大10%的操作。`, hlCriteriaOpen: '查看标准', hlCriteriaClose: '收起',
     listTitle: '操作列表', listSub: (n, total) => n === total ? `${total}个` : `${n} / ${total}个`, listCoverage: (h, m, k) => `${h}秒经济已测 <strong>${m}</strong> · 方向明确 <strong>${k}</strong>`, listSortLabel:'排序', sortTime:'按时间', sortWps:'胜率变化从大到小', sortGold:'经济变化从大到小',
     fFamily: '所有操作类型', fTag: '所有结果', fState: '所有经济变化', fPlayer: '所有选手与英雄', clearFilters: '清除筛选', playerNote: '显示该选手执行、成为目标或参与应对的操作。筛选不会改变数值或判定标准，只包含解说点名的操作。',
     ctxEpPlayers: '此场景涉及的选手', prev: '← 上一个', next: '下一个 →', vod: '观看视频', vodNew: '在YouTube打开 ↗', ytNote: '作为本地文件打开时，YouTube可能无法播放。请使用上方链接。',
@@ -840,20 +864,20 @@
     xtTitle: '按类型汇总', xtSub: '每个操作按执行方只计一次。点击数字可在下方查看对应操作。', scope: '范围', scopeGame: '所选比赛', scopeStage: '本系列赛', scopeAll: '整个赛事', rowsBy: '拆分方式', rFamily: '操作类型', rOutcome: '结果', rKill: '击杀', rFamOut: '类型 × 结果', rPlayer: '选手', rChamp: '英雄',
     xtPlayerNote: '按选手或英雄拆分时，计算其执行、成为目标或参与应对的操作，并从该选手队伍视角显示；对方操作会翻转经济变化正负号。多人参与的操作会对每位选手各计一次，只统计解说点名的情况。', sortBy: c => `按${c}排序`, rowLabel: '项目', xtGames: '比赛', xtPerGame: '每局', xtCum: '累计', total: '合计', usedBy: '使用者', played: '使用英雄', games: n => `${n}局`,
     xtNote: '四栏之和为总数。收益与损失只统计超出误差范围、方向明确的变化。这些是观测到的经济变化，并非操作造成的因果效果。', xtPick: '点击数字后，对应操作会显示在这里。',
-    statsTitle:'队伍与选手数据',statsSub:'展示解说点名的重要场景中队伍、选手和英雄的参与方式，并非贡献度或因果效果评分。',statsTeam:'队伍',statsPlayer:'选手',statsChamp:'英雄',statsMetric:'指标',statsWps:'胜率变化',statsGold:'经济变化',statsRadarTitle:'重要场景参与画像',statsRadarSub:(h,m)=>`每局${h}秒${m}净变化 · 中间环为0`,statsGames:'比赛',statsScenes:'已测场景',statsToward:'有利于本队',statsMedian:'中位变化',statsPerGame:'每局净变化',statsComparePlayer:'选手比较',statsCompareChamp:'英雄比较',statsFingerprint:'操作指纹',statsGood:'有利于本队',statsBad:'不利于本队',statsRoles:'参与角色',statsTypes:'主要操作类型',statsGoldBreak:'变化方向统计',statsTopScenes:'变化最大的场景',statsCaveat:'同一操作会对每位参与选手各计一次；重叠时间窗与同时发生的事件仍包含在数值中，因此不能解读为个人贡献。',statsBasis:'比较范围',statsBasisSeries:'当前系列赛',statsBasisH2h:'双方交手',statsBasisAll:'整个赛事',statsPickTeamA:'队伍A',statsPickTeamB:'队伍B',statsPickPlayerA:'选手A',statsPickPlayerB:'选手B',statsPosition:'位置',statsAllPositions:'全部位置',statsCompareHint:'可从整个赛事中选择队伍或选手；各数值按所选范围内其实际出场数计算。',statsNoData:'当前比较没有可测场景。',statsOpenPlay:'打开操作',
-    skip: '跳到正文', loading: '加载中…', loadError: '无法加载数据，请刷新页面。', plannedTitle: '即将推出', plannedBody: '此赛事尚无已分析比赛。', gameN: n => `第${n}局`, gameAria: (n,w) => `第${n}局，${w}获胜`, serLabel: '系列赛', serOlder: '上一系列赛', serNewer: '下一系列赛', serCount: (i,n) => `第${i}/${n}个系列赛`, phaseBracket: '淘汰赛阶段', phasePlayIn: '入围赛', sourceEnglish: '操作标题与说明暂以英文显示',
+    statsTitle:'本系列赛队伍与选手',statsSub:'展示当前系列赛中解说点名的重要场景；与其他队伍、选手的比较请前往独立比较页面。',compareTitle:'队伍与选手比较',compareSub:'不受系列赛选择影响，按整个赛事或双方交手比较队伍与选手。',statsOpenCompare:'在整个赛事中比较 →',statsPlayerList:'本系列赛选手',statsTeam:'队伍',statsPlayer:'选手',statsChamp:'英雄',statsMetric:'指标',statsWps:'胜率变化',statsGold:'经济变化',statsRadarTitle:'重要场景参与画像',statsRadarSub:(h,m)=>`每局${h}秒${m}净变化 · 中间环为0`,statsGames:'比赛',statsScenes:'已测场景',statsToward:'有利于本队',statsMedian:'中位变化',statsPerGame:'每局净变化',statsComparePlayer:'选手比较',statsCompareChamp:'英雄比较',statsFingerprint:'操作指纹',statsGood:'有利于本队',statsBad:'不利于本队',statsRoles:'参与角色',statsTypes:'主要操作类型',statsGoldBreak:'变化方向统计',statsTopScenes:'变化最大的场景',statsCaveat:'同一操作会对每位参与选手各计一次；重叠时间窗与同时发生的事件仍包含在数值中，因此不能解读为个人贡献。',statsBasis:'比较范围',statsBasisSeries:'当前系列赛',statsBasisH2h:'双方交手',statsBasisAll:'整个赛事',statsH2hUnavailable:'所选双方没有交手比赛。',statsPickTeamA:'队伍A',statsPickTeamB:'队伍B',statsPickPlayerA:'选手A',statsPickPlayerB:'选手B',statsPosition:'位置',statsAllPositions:'全部位置',statsCompareHint:'各数值按所选范围内其实际出场数计算。',statsNoData:'当前比较没有可测场景。',statsOpenPlay:'打开操作',
+    skip: '跳到正文', loading: '加载中…', loadError: '无法加载数据，请刷新页面。', plannedTitle: '即将推出', plannedBody: '此赛事尚无已分析比赛。', gameN: n => `第${n}局`, gameAria: (n,w) => `第${n}局，${w}获胜`, serLabel: '系列赛', serCount: (i,n) => `第${i}/${n}个系列赛`, phaseBracket: '淘汰赛阶段', phasePlayIn: '入围赛', sourceEnglish: '操作标题与说明暂以英文显示',
   };
   T.ja = { ...T.en,
     tagline: 'チーム視点で見るプレーの価値', taglineSub: 'キルのないプレーや失敗した試みも含め、実況が注目したプレーを15・30・60秒後の両チームのゴールド差で見ます。',
     legal: 'PlayValueはRiot Gamesの承認を受けておらず、Riot GamesまたはRiot Gamesの資産の制作・管理に正式に関わる個人の見解を示すものではありません。Riot Gamesおよび関連資産はRiot Games, Inc.の商標または登録商標です。',
-    methodology:'調査方法', languagePicker:'言語を選択', themeDark:'ダークモード', themeLight:'ライトモード', viewSet:'試合別', viewXtab:'タイプ別集計', viewStats:'チーム・選手', winner:'勝者',
+    methodology:'調査方法', languagePicker:'言語を選択', themeDark:'ダークモード', themeLight:'ライトモード', viewSet:'試合別', viewXtab:'タイプ別集計', viewCompare:'比較', winner:'勝者', contextOpenStats:'シリーズのチーム・選手を見る →', contextBackGame:'← 選択した試合に戻る',
     cov:(n,m,k)=>`全<strong>${n}</strong>プレー中、ゴールド変化を測定できたものは<strong>${m}</strong>件、そのうち利益・損失を判定できたものは<strong>${k}</strong>件`, duration:'試合時間', horizon:'変化区間', sec:s=>`${s}秒`, metric:'表示指標', metricWps:'勝率', metricGold:'ゴールド', metricBoth:'両方', beta:'ベータ',
     guideTitle:'数字の読み方', guide:[['ゴールド変化','プレー開始から15・30・60秒の間に、実行したチームと相手のゴールド差がどれだけ広がったか、または縮まったかを示します。放送画面のチームゴールドから計算します。'],['誤差±200','画面のチームゴールドは100単位に丸められるため生じる範囲です。この範囲内の変化は「不明」と表示します。'],['未測定','リプレイなどで開始時点または終了時点のゴールドを読み取れなかった場合です。'],['同じ時間帯と比較','同じ試合・同じフェーズの全30秒区間を集め、その分布内での位置を示します。効果の大きさではありません。'],['因果ではありません','同時刻に別の場所で起きた出来事もゴールド変化に含まれます。変化がそのプレーによるとは限りません。'],['チーム方向','試合の流れはブルー側基準で固定します。一覧のバーとチーム名が、どちらのチームにどれだけ有利だったかを直接示します。説明と判定は実況が示した実行チーム基準です。']],
     chartTitle:'試合の流れ', chartSub:(h,blue,red)=>`線はブルー側基準、棒は${h}秒の変化です。上${blue} · 下${red}。`, laneWinProb:team=>`${team}勝率`, laneWps:(h,blue,red)=>`${h}秒の勝率変化 · ↑${blue} / ↓${red}`,
     lgBlue:'ブルー側のプレー', lgRed:'レッド側のプレー', lgUnres:'誤差範囲内', lgWin:'選択したプレーの区間', lgFlow:'関連プレー（90秒以内）', lgObj:'ヘラルド・バロン・エルダー獲得と後続プレー', laneFlow:'関連', laneObj:'オブジェクト', laneGap:(blue,red)=>`${blue} − ${red} ゴールド`, laneBars:(h,blue,red)=>`${h}秒のゴールド変化 · ↑${blue} / ↓${red}`,
     finding:(h,clk,title,team,e)=>`${h}秒で最大の変化：${clk} ${title}（${team} ${e}）`, findingCompact:(h,clk,team,e)=>`↗ ${h}秒最大変化 · ${clk} · ${team} ${e}`, noFinding:h=>`${h}秒で利益・損失を判定できるプレーはありません。`, gameLine:(w,d)=>`${w}勝利 · ${d}`, gameNav:(n,w,d)=>`第${n}ゲーム · ${w}勝利 · ${d}`,
     detailEmpty:'プレーを選ぶと詳細が表示されます。', prevWord:'前', nextWord:'次', keyPrev:'前のプレー（←キー）', keyNext:'次のプレー（→キー）', colTime:'時間', colTeam:'チーム', colPlay:'プレー', colType:'プレータイプ', colGold:h=>`${h}秒のゴールド変化`,
-    hlOnly:'注目シーンのみ', hlCriteriaTitle:h=>`注目シーン · ${h}秒基準`, hlCriteria:h=>`成功したのにゴールド損、失敗・中止したのにゴールド益、または同フェーズで${h}秒の変動幅が上位10%のプレーです。`, hlCriteriaOpen:'基準を見る', hlCriteriaClose:'閉じる', listTitle:'プレー一覧', listSub:(n,total)=>n===total?`${total}件`:`${n} / ${total}件`, listCoverage:(h,m,k)=>`${h}秒ゴールド測定 <strong>${m}</strong> · 方向判定 <strong>${k}</strong>`, listSortLabel:'並べ替え', sortTime:'時間順', sortWps:'勝率変化の大きい順', sortGold:'ゴールド変化の大きい順',
+    hlOnly:'注目シーンのみ', hlCriteriaTitle:h=>`注目シーン · ${h}秒基準`, hlCriteria:h=>`成功したのにゴールド損、失敗・中止したのにゴールド益、同フェーズで${h}秒のゴールド変動幅が上位10%、または同じ試合・フェーズの実況プレーで${h}秒WPS変動幅が上位10%のプレーです。`, hlCriteriaOpen:'基準を見る', hlCriteriaClose:'閉じる', listTitle:'プレー一覧', listSub:(n,total)=>n===total?`${total}件`:`${n} / ${total}件`, listCoverage:(h,m,k)=>`${h}秒ゴールド測定 <strong>${m}</strong> · 方向判定 <strong>${k}</strong>`, listSortLabel:'並べ替え', sortTime:'時間順', sortWps:'勝率変化の大きい順', sortGold:'ゴールド変化の大きい順',
     fFamily:'すべてのプレータイプ', fTag:'すべての結果', fState:'すべてのゴールド変化', fPlayer:'すべての選手・チャンピオン', clearFilters:'フィルターを解除', playerNote:'その選手が実行・対象・対応として関わったプレーです。フィルターを変えても数値と判定の基準は変わらず、実況が名前を挙げたものだけ表示します。', ctxEpPlayers:'この場面に関わった選手', prev:'← 前', next:'次 →', vod:'動画を見る', vodNew:'YouTubeで開く ↗', ytNote:'ローカルファイルとして開くとYouTubeが再生できない場合があります。上のリンクを使ってください。',
     ctxSummary:'判定サマリー', ctxMore:n=>`詳しい状況 · ${n}項目`, ctxOutcome:'プレー結果', ctxKill:'キル', ctxLead:'プレー直前', ctxBg:'同じフェーズとの比較', ctxDv:'ゴールドペースの変化（参考）', ctxOverlap:h=>`${h}秒以内に重なるプレー`, ctxOverlapNote:'これらの影響もゴールド変化に含まれます',
     mmHead:'マップ位置', mmSrc:'放送ミニマップ・画面 + Riot記録 · 画像 Riot Data Dragon', mmPlay:'再生', mmPause:'停止', mmAt:(d,c)=>`開始${d>=0?'+':''}${d}秒 · ${c}`, mmGuide:'位置の読み方', mmUnavailable:'このプレーには表示できる位置データがありません。', mmNote:'白い縁の大きなアイコンはこのプレーで名前が挙がった選手、線はその後の移動です。位置は放送ミニマップまたは選手名が映る画面から読み、1分ごとにRiotの正確な位置へ合わせます。薄い破線は既知位置間の補間、灰色の×はRiot記録上のデス、短く出る×印の円はキル地点です。読み取れない選手は表示しません。',
@@ -861,8 +885,8 @@
     riotKind:{kill:'キル',tower:'タワー',inhibitor:'インヒビター',plate:'タワープレート'}, riotMonster:{DRAGON:'ドラゴン',BARON_NASHOR:'バロン',RIFTHERALD:'リフトヘラルド',HORDE:'ヴォイドグラブ',ATAKHAN:'アタカン',ELDER_DRAGON:'エルダードラゴン'}, ctxEpisode:'同じ場面', ctxRelated:'関連プレー', ctxObj:'オブジェクト', leadText:(state,g)=>`チームゴールド ${g}（${state}）`, bgText:(pct,h)=>pct>=50?`この試合同フェーズの${h}秒区間で上位${Math.max(1,Math.round(100-pct))}%`:`この試合同フェーズの${h}秒区間で下位${Math.max(1,Math.round(pct))}%`, bgNote:'位置を示すだけで効果の大きさではありません',
     dvText:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}速く拡大（±${b}）`, dvTextNeg:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}遅く拡大（±${b}）`, verification:'実況のみから整理し、動画では確認していません', retro:'後から振り返った場面', hzHead:'プレー後の変化', wpsBoundary:'プレー前後の勝率変化', wpsMissing:'勝率を測る観測区間が不足しています', wpsProb:(a,b)=>`モデル勝率 ${a} → ${b}`, wpsCausal:'観測されたモデル状態の変化であり、このプレーだけの因果効果ではありません。', wpsCoverage:(m,n)=>`WPS測定 <strong>${m}</strong> / ${n}`, bothCoverage:(wm,n,gm,gr,h)=>`WPS測定 <strong>${wm}</strong> / ${n} · ${h}秒ゴールド測定 <strong>${gm}</strong> · 方向判定 <strong>${gr}</strong>`, colWps:h=>`${h}秒WPS`, colBoth:h=>`${h}秒WPS · ゴールド`, wpsGuide:[['勝率とWPS','勝率はv312がその時点の試合状態から最終勝者を予測した値です。WPSはプレー前後または15・30・60秒後のパーセントポイント変化です。'],['ベータモデル','Worldsは凍結v312、MSIは凍結MSI分岐v156を使用し、新しい試合で再学習・再校正していません。'],['因果ではありません','同時刻の全状態変化がWPSに入るため、このプレーだけの効果ではありません。']], hzOk:b=>`誤差±${b}`, hzUnres:b=>`±${b}以内のため不明`,
     xtTitle:'タイプ別集計', xtSub:'各プレーは実行したチーム基準で一度だけ数えます。数字を押すと該当プレーが下に表示されます。', scope:'範囲', scopeGame:'選択した試合', scopeStage:'このシリーズ', scopeAll:'大会全体', rowsBy:'分け方', rFamily:'プレータイプ', rOutcome:'結果', rKill:'キル', rFamOut:'タイプ × 結果', rPlayer:'選手', rChamp:'チャンピオン', xtPlayerNote:'選手・チャンピオン別では、実行・対象・対応として関わったプレーをその選手のチーム視点で数えます。相手のプレーはゴールド変化の符号を反転します。複数の選手が関わるプレーは選手ごとに一度入り、実況が名前を挙げたものだけを数えます。', sortBy:c=>`${c}で並べ替え`, rowLabel:'項目', xtGames:'試合', xtPerGame:'1試合当たり', xtCum:'累計', total:'合計', usedBy:'使用者', played:'使用チャンピオン', games:n=>`${n}試合`, xtNote:'4列の合計が総数です。利益と損失は誤差範囲を超えて方向が明確な場合だけ数えます。これは観測されたゴールド変化であり、プレーの因果効果ではありません。', xtPick:'数字を押すと該当プレーがここに表示されます。',
-    statsTitle:'チーム・選手統計',statsSub:'実況が名前を挙げた重要場面でのチーム、選手、チャンピオンの関わり方を示します。貢献度や因果効果のスコアではありません。',statsTeam:'チーム',statsPlayer:'選手',statsChamp:'チャンピオン',statsMetric:'指標',statsWps:'勝率変化',statsGold:'ゴールド変化',statsRadarTitle:'重要場面への関与プロフィール',statsRadarSub:(h,m)=>`1試合当たりの${h}秒${m}純変化 · 中央のリングは0`,statsGames:'試合',statsScenes:'測定場面',statsToward:'自チーム方向',statsMedian:'変化幅中央値',statsPerGame:'1試合当たり純変化',statsComparePlayer:'選手比較',statsCompareChamp:'チャンピオン比較',statsFingerprint:'プレー分布',statsGood:'自チームに有利',statsBad:'自チームに不利',statsRoles:'関与役割',statsTypes:'主なプレータイプ',statsGoldBreak:'変化方向の集計',statsTopScenes:'変化幅の大きい場面',statsCaveat:'一つのプレーは関与した各選手に一度ずつ入ります。重なる時間窓や同時イベントも含むため、個人貢献とは解釈しません。',statsBasis:'比較基準',statsBasisSeries:'現在のシリーズ',statsBasisH2h:'直接対戦',statsBasisAll:'大会全体',statsPickTeamA:'チームA',statsPickTeamB:'チームB',statsPickPlayerA:'選手A',statsPickPlayerB:'選手B',statsPosition:'ポジション',statsAllPositions:'全ポジション',statsCompareHint:'大会全体からチーム・選手を選べます。各値は選択範囲内で実際に出場した試合数で割ります。',statsNoData:'この比較で測定可能な場面はありません。',statsOpenPlay:'プレーを開く',
-    skip:'本文へ移動', loading:'読み込み中…', loadError:'データを読み込めませんでした。再読み込みしてください。', plannedTitle:'準備中', plannedBody:'この大会ではまだ分析済みの試合がありません。', gameN:n=>`第${n}ゲーム`, gameAria:(n,w)=>`第${n}ゲーム、${w}の勝利`, serLabel:'シリーズ', serOlder:'前のシリーズ', serNewer:'次のシリーズ', serCount:(i,n)=>`${n}シリーズ中${i}番目`, phaseBracket:'ブラケットステージ', phasePlayIn:'プレイイン', sourceEnglish:'プレーのタイトルと説明は現在英語で表示されます',
+    statsTitle:'このシリーズのチーム・選手',statsSub:'現在のシリーズで実況が名前を挙げた重要場面を示します。他のチーム・選手との比較は別の比較画面で行います。',compareTitle:'チーム・選手比較',compareSub:'シリーズ選択とは独立して、大会全体または直接対戦で比較します。',statsOpenCompare:'大会全体で比較 →',statsPlayerList:'このシリーズの選手',statsTeam:'チーム',statsPlayer:'選手',statsChamp:'チャンピオン',statsMetric:'指標',statsWps:'勝率変化',statsGold:'ゴールド変化',statsRadarTitle:'重要場面への関与プロフィール',statsRadarSub:(h,m)=>`1試合当たりの${h}秒${m}純変化 · 中央のリングは0`,statsGames:'試合',statsScenes:'測定場面',statsToward:'自チーム方向',statsMedian:'変化幅中央値',statsPerGame:'1試合当たり純変化',statsComparePlayer:'選手比較',statsCompareChamp:'チャンピオン比較',statsFingerprint:'プレー分布',statsGood:'自チームに有利',statsBad:'自チームに不利',statsRoles:'関与役割',statsTypes:'主なプレータイプ',statsGoldBreak:'変化方向の集計',statsTopScenes:'変化幅の大きい場面',statsCaveat:'一つのプレーは関与した各選手に一度ずつ入ります。重なる時間窓や同時イベントも含むため、個人貢献とは解釈しません。',statsBasis:'比較基準',statsBasisSeries:'現在のシリーズ',statsBasisH2h:'直接対戦',statsBasisAll:'大会全体',statsH2hUnavailable:'選択した2者の直接対戦はありません。',statsPickTeamA:'チームA',statsPickTeamB:'チームB',statsPickPlayerA:'選手A',statsPickPlayerB:'選手B',statsPosition:'ポジション',statsAllPositions:'全ポジション',statsCompareHint:'各値は選択範囲内で実際に出場した試合数で割ります。',statsNoData:'この比較で測定可能な場面はありません。',statsOpenPlay:'プレーを開く',
+    skip:'本文へ移動', loading:'読み込み中…', loadError:'データを読み込めませんでした。再読み込みしてください。', plannedTitle:'準備中', plannedBody:'この大会ではまだ分析済みの試合がありません。', gameN:n=>`第${n}ゲーム`, gameAria:(n,w)=>`第${n}ゲーム、${w}の勝利`, serLabel:'シリーズ', serCount:(i,n)=>`${n}シリーズ中${i}番目`, phaseBracket:'ブラケットステージ', phasePlayIn:'プレイイン', sourceEnglish:'プレーのタイトルと説明は現在英語で表示されます',
   };
   const LBL = {
     ko: {
@@ -873,7 +897,7 @@
       lead: { ahead: '앞섬', even: '비슷함', behind: '뒤짐' },
       phase: { lane: '라인전 (14분 전)', mid: '중반 (14–25분)', late: '후반 (25분 이후)' },
       reason: { no_common_valid_endpoint_source: '화면 골드를 읽지 못함', outside_comparison_grid: '골드 기록 구간 밖', actor_unspecified: '플레이한 팀을 알 수 없음', unconfirmed_retrospective_event_time: '회상 장면이라 시각을 모름' },
-      hl: { success_loss: '성공했는데 골드 손해', failure_gain: '실패·중단했는데 골드 이득', bg_top: '같은 시간대 변화 폭 상위 10%', bg_bottom: '같은 시간대 변화 폭 상위 10%' },
+      hl: { success_loss: '성공했는데 골드 손해', failure_gain: '실패·중단했는데 골드 이득', bg_top: '같은 시간대 변화 폭 상위 10%', bg_bottom: '같은 시간대 변화 폭 상위 10%', wps_top: '같은 경기·페이즈 WPS 변화 폭 상위 10%' },
       role: { acquire: '획득', use: '소환', buff_play: '버프 중 플레이' },
       inv: { actor: '행동', target: '타깃', response: '대응', mentioned: '언급' },
     },
@@ -885,15 +909,15 @@
       lead: { ahead: 'ahead', even: 'level', behind: 'behind' },
       phase: { lane: 'Laning (before 14:00)', mid: 'Mid game (14–25 min)', late: 'Late game (after 25:00)' },
       reason: { no_common_valid_endpoint_source: 'Gold could not be read on screen', outside_comparison_grid: 'Outside the recorded gold', actor_unspecified: 'Team that made the play is unknown', unconfirmed_retrospective_event_time: 'Recalled later, time unknown' },
-      hl: { success_loss: 'Success, gold loss', failure_gain: 'Failure or called off, gold gain', bg_top: 'Largest 10% swing for the phase', bg_bottom: 'Largest 10% swing for the phase' },
+      hl: { success_loss: 'Success, gold loss', failure_gain: 'Failure or called off, gold gain', bg_top: 'Largest 10% gold swing for the phase', bg_bottom: 'Largest 10% gold swing for the phase', wps_top: 'Largest 10% WPS swing for the game phase' },
       role: { acquire: 'Taken', use: 'Summoned', buff_play: 'Play under the buff' },
       inv: { actor: 'Acted', target: 'Targeted', response: 'Responded', mentioned: 'Mentioned' },
     },
     zh: {
-      state:{positive:'收益',negative:'损失',unresolved:'无法判断',missing:'未测量'}, tag:{success_gain:'成功 · 经济收益',success_loss:'成功 · 经济损失',failure_gain:'失败 · 经济收益',failure_loss:'失败 · 经济损失',unresolved:'经济变化不明确'}, outcome:{success:'成功',mixed:'部分成功',failure:'失败',aborted:'取消',unknown:'未知'}, kill:{kill_mentioned:'有',explicit_no_kill:'无',not_established:'未确认'}, lead:{ahead:'领先',even:'接近',behind:'落后'}, phase:{lane:'对线期（14分钟前）',mid:'中期（14–25分钟）',late:'后期（25分钟后）'}, reason:{no_common_valid_endpoint_source:'无法从画面读取经济',outside_comparison_grid:'超出经济记录区间',actor_unspecified:'无法确定执行方',unconfirmed_retrospective_event_time:'事后回顾，时间未知'}, hl:{success_loss:'成功但经济损失',failure_gain:'失败或取消但经济收益',bg_top:'同阶段波动幅度前10%',bg_bottom:'同阶段波动幅度前10%'}, role:{acquire:'获取',use:'召唤',buff_play:'增益期间操作'}, inv:{actor:'执行',target:'目标',response:'应对',mentioned:'提及'},
+      state:{positive:'收益',negative:'损失',unresolved:'无法判断',missing:'未测量'}, tag:{success_gain:'成功 · 经济收益',success_loss:'成功 · 经济损失',failure_gain:'失败 · 经济收益',failure_loss:'失败 · 经济损失',unresolved:'经济变化不明确'}, outcome:{success:'成功',mixed:'部分成功',failure:'失败',aborted:'取消',unknown:'未知'}, kill:{kill_mentioned:'有',explicit_no_kill:'无',not_established:'未确认'}, lead:{ahead:'领先',even:'接近',behind:'落后'}, phase:{lane:'对线期（14分钟前）',mid:'中期（14–25分钟）',late:'后期（25分钟后）'}, reason:{no_common_valid_endpoint_source:'无法从画面读取经济',outside_comparison_grid:'超出经济记录区间',actor_unspecified:'无法确定执行方',unconfirmed_retrospective_event_time:'事后回顾，时间未知'}, hl:{success_loss:'成功但经济损失',failure_gain:'失败或取消但经济收益',bg_top:'同阶段经济波动前10%',bg_bottom:'同阶段经济波动前10%',wps_top:'同场比赛同阶段WPS波动前10%'}, role:{acquire:'获取',use:'召唤',buff_play:'增益期间操作'}, inv:{actor:'执行',target:'目标',response:'应对',mentioned:'提及'},
     },
     ja: {
-      state:{positive:'利益',negative:'損失',unresolved:'不明',missing:'未測定'}, tag:{success_gain:'成功 · ゴールド利益',success_loss:'成功 · ゴールド損失',failure_gain:'失敗 · ゴールド利益',failure_loss:'失敗 · ゴールド損失',unresolved:'ゴールド変化不明'}, outcome:{success:'成功',mixed:'一部成功',failure:'失敗',aborted:'中止',unknown:'不明'}, kill:{kill_mentioned:'あり',explicit_no_kill:'なし',not_established:'未確認'}, lead:{ahead:'リード',even:'互角',behind:'ビハインド'}, phase:{lane:'レーン戦（14分前）',mid:'中盤（14–25分）',late:'終盤（25分以降）'}, reason:{no_common_valid_endpoint_source:'画面のゴールドを読めない',outside_comparison_grid:'ゴールド記録区間外',actor_unspecified:'プレーしたチームが不明',unconfirmed_retrospective_event_time:'後からの回想で時刻不明'}, hl:{success_loss:'成功したがゴールド損失',failure_gain:'失敗・中止したがゴールド利益',bg_top:'同フェーズの変動幅上位10%',bg_bottom:'同フェーズの変動幅上位10%'}, role:{acquire:'獲得',use:'召喚',buff_play:'バフ中のプレー'}, inv:{actor:'実行',target:'対象',response:'対応',mentioned:'言及'},
+      state:{positive:'利益',negative:'損失',unresolved:'不明',missing:'未測定'}, tag:{success_gain:'成功 · ゴールド利益',success_loss:'成功 · ゴールド損失',failure_gain:'失敗 · ゴールド利益',failure_loss:'失敗 · ゴールド損失',unresolved:'ゴールド変化不明'}, outcome:{success:'成功',mixed:'一部成功',failure:'失敗',aborted:'中止',unknown:'不明'}, kill:{kill_mentioned:'あり',explicit_no_kill:'なし',not_established:'未確認'}, lead:{ahead:'リード',even:'互角',behind:'ビハインド'}, phase:{lane:'レーン戦（14分前）',mid:'中盤（14–25分）',late:'終盤（25分以降）'}, reason:{no_common_valid_endpoint_source:'画面のゴールドを読めない',outside_comparison_grid:'ゴールド記録区間外',actor_unspecified:'プレーしたチームが不明',unconfirmed_retrospective_event_time:'後からの回想で時刻不明'}, hl:{success_loss:'成功したがゴールド損失',failure_gain:'失敗・中止したがゴールド利益',bg_top:'同フェーズのゴールド変動上位10%',bg_bottom:'同フェーズのゴールド変動上位10%',wps_top:'同じ試合・フェーズのWPS変動上位10%'}, role:{acquire:'獲得',use:'召喚',buff_play:'バフ中のプレー'}, inv:{actor:'実行',target:'対象',response:'対応',mentioned:'言及'},
     },
   };
   const STATES = ['positive', 'negative', 'unresolved', 'missing'];
@@ -1062,15 +1086,45 @@
     if (!value || value.status !== 'valid' || value.observed_wps_pp == null) return null;
     return value;
   };
-  const hlOf = id => (HL_BY_H[S.h] || {})[id];
+  function wpsHighlightIds(g, h) {
+    if (!g?._wpsPlays || !g.plays) return new Set();
+    g._wpsHighlights = g._wpsHighlights || {};
+    if (g._wpsHighlights[h]) return g._wpsHighlights[h];
+    const phases = {};
+    g.plays.forEach(p => {
+      const w = wpsHorizon(p, h);
+      if (!w) return;
+      const phase = p.context?.phase || 'unknown';
+      (phases[phase] = phases[phase] || []).push({ id: p.id, magnitude: Math.abs(w.observed_wps_pp) });
+    });
+    const ids = new Set();
+    Object.values(phases).forEach(items => {
+      items.sort((a, b) => b.magnitude - a.magnitude);
+      const topCount = Math.max(1, Math.ceil(items.length * 0.1));
+      const cutoff = items[topCount - 1].magnitude;
+      items.filter(x => x.magnitude >= cutoff).forEach(x => ids.add(x.id));
+    });
+    g._wpsHighlights[h] = ids;
+    return ids;
+  }
+  const hlOf = id => {
+    const reasons = [...((HL_BY_H[S.h] || {})[id] || [])];
+    const p = PLAY[id];
+    if (p && wpsHighlightIds(p._game, S.h).has(id)) reasons.push('wps_top');
+    return reasons.length ? [...new Set(reasons)] : null;
+  };
   const famChip = (key, text, extra = '') => `<span class="chip fam ${extra}" style="--c:var(--f-${key || 'other'})">${esc(text)}</span>`;
   const playerText = (g, name) => { const x = ROSTER[g.id][name]; return x ? `${name} (${posLabel(x.position)} · ${champName(x)})` : name; };
 
   function readHash() {
     const q = new URLSearchParams(location.hash.slice(1));
+    if (q.get('tourn') && DATA.tournaments.some(tour => tour.id === q.get('tourn')) && gamesIn(q.get('tourn')).length) { S.tourn = q.get('tourn'); S.gameId = firstGame(S.tourn).id; }
     if (q.get('game') && GAMES.some(g => g.id === q.get('game'))) { S.gameId = q.get('game'); S.tourn = GAMES.find(g => g.id === S.gameId).tournament_id; }
     if (q.get('play')) S.playId = q.get('play');
-    if (['xtab', 'stats'].includes(q.get('view'))) S.view = q.get('view');
+    if (q.get('view') === 'xtab') S.view = 'xtab';
+    if (q.get('view') === 'compare') S.view = 'compare';
+    // Old global team/player links used view=stats. Preserve them by routing non-series scopes to Compare.
+    if (q.get('view') === 'stats') S.view = ['h2h', 'all'].includes(q.get('scope')) ? 'compare' : 'stats';
     if (['15', '30', '60'].includes(q.get('h'))) S.h = q.get('h');
     if (WPS_INDEX && ['wps', 'gold', 'both'].includes(q.get('metric'))) S.metric = q.get('metric');
     if (['time', 'gold'].includes(q.get('sort')) || (WPS_INDEX && q.get('sort') === 'wps')) S.listSort = q.get('sort');
@@ -1084,15 +1138,20 @@
     if (q.get('teamB')) S.statsTeamB = q.get('teamB');
   }
   function writeHash() {
-    const q = new URLSearchParams({ view: S.view, game: S.gameId, h: S.h, metric: S.metric, sort: S.listSort });
-    if (S.playId) q.set('play', S.playId);
-    if (S.view === 'stats') {
+    const base = { view: S.view, h: S.h, metric: S.metric, sort: S.listSort };
+    if (S.view === 'compare') base.tourn = S.tourn; else base.game = S.gameId;
+    const q = new URLSearchParams(base);
+    if (S.playId && S.view === 'set') q.set('play', S.playId);
+    if (S.view === 'compare') {
       q.set('scope', S.statsScope); q.set('tab', S.statsTab); q.set('stat', S.statsMetric);
       if (S.statsPick) q.set('entity', S.statsPick);
       if (S.statsCompare) q.set('compare', S.statsCompare);
       if (S.statsRole !== 'all') q.set('role', S.statsRole);
       if (S.statsTeamA) q.set('teamA', S.statsTeamA);
       if (S.statsTeamB) q.set('teamB', S.statsTeamB);
+    } else if (S.view === 'stats') {
+      q.set('scope', 'stage'); q.set('tab', S.statsTab); q.set('stat', S.statsMetric);
+      if (S.statsPick) q.set('entity', S.statsPick);
     }
     history.replaceState(null, '', '#' + q.toString());
     trackView();
@@ -1107,10 +1166,10 @@
   window.__umFlush = () => { while (umQueue.length) window.umami.track(...umQueue.shift()); };
   let lastView = '';
   function trackView() {
-    const url = S.view === 'xtab' ? `/totals/${S.tourn}` : S.view === 'stats' ? `/stats/${S.tourn}` : `/game/${S.gameId}`;
+    const url = S.view === 'xtab' ? `/totals/${S.tourn}` : S.view === 'compare' ? `/compare/${S.tourn}` : S.view === 'stats' ? `/series-stats/${seriesOf(game())}` : `/game/${S.gameId}`;
     if (url === lastView) return;
     lastView = url;
-    const title = S.view === 'xtab' ? `Totals · ${S.tourn}` : S.view === 'stats' ? `Teams & players · ${S.tourn}` : `${game().title_en} · ${game().tournament_id}`;
+    const title = S.view === 'xtab' ? `Totals · ${S.tourn}` : S.view === 'compare' ? `Compare · ${S.tourn}` : S.view === 'stats' ? `Series teams & players · ${seriesOf(game())}` : `${game().title_en} · ${game().tournament_id}`;
     um(props => ({ ...props, url, title }));
   }
 
@@ -1173,12 +1232,28 @@
     });
 
     const planned = (DATA.tournaments.find(x => x.id === S.tourn) || {}).status === 'planned';
+    const vn = document.getElementById('viewNav');
     const vt = document.getElementById('viewTabs');
+    const vc = document.getElementById('compareTab');
     const se = document.getElementById('series');
-    vt.style.display = se.style.display = planned ? 'none' : '';
+    vn.style.display = planned ? 'none' : '';
+    se.style.display = planned || S.view === 'compare' ? 'none' : '';
     if (planned) return;
-    vt.innerHTML = [['set', t('viewSet')], ['xtab', t('viewXtab')], ['stats', t('viewStats')]].map(([k, v]) => `<button data-v="${k}" class="${S.view === k ? 'on' : ''}">${v}</button>`).join('');
-    vt.querySelectorAll('button').forEach(b => b.onclick = () => { S.view = b.dataset.v; render(); });
+    const primaryView = S.view === 'stats' ? 'set' : S.view;
+    vt.innerHTML = [['set', t('viewSet')], ['xtab', t('viewXtab')]].map(([k, v]) => `<button data-v="${k}" class="${primaryView === k ? 'on' : ''}">${v}</button>`).join('');
+    vt.querySelectorAll('button').forEach(b => b.onclick = () => {
+      S.view = b.dataset.v;
+      render();
+    });
+    vc.textContent = t('viewCompare');
+    vc.classList.toggle('on', primaryView === 'compare');
+    vc.setAttribute('aria-pressed', String(primaryView === 'compare'));
+    vc.onclick = () => {
+      S.view = 'compare'; S.statsScope = 'all';
+      if (!['team', 'player'].includes(S.statsTab)) S.statsTab = 'team';
+      render();
+    };
+    if (S.view === 'compare') { se.innerHTML = ''; return; }
 
     // Series latest first, in a grouped list (bracket stage, then play-in) with steps to the neighbouring series;
     // the selected series' games sit beside it, each with a bar in the winner's side colour.
@@ -1200,12 +1275,11 @@
     const selectedGame = game();
     se.innerHTML = `
       <div class="ser-pick">
-        <button type="button" class="ser-step" id="serOlder" aria-label="${esc(t('serOlder'))}" title="${esc(t('serOlder'))}" ${ci >= series.length - 1 ? 'disabled' : ''}>‹</button>
         <label class="sr-only" for="serSel">${t('serLabel')}</label>
         <select class="ser-select" id="serSel">${options}</select>
-        <button type="button" class="ser-step" id="serNewer" aria-label="${esc(t('serNewer'))}" title="${esc(t('serNewer'))}" ${ci <= 0 ? 'disabled' : ''}>›</button>
       </div>
       ${S.view === 'stats' ? `<span class="ser-count">${esc(t('statsBasisSeries'))} · ${esc(selectedGame.blue_team)} vs ${esc(selectedGame.red_team)}</span>` : `<div class="games">${gamesOf(cur).map(g => `<button class="gbtn ${g.id === S.gameId ? 'on' : ''}" data-g="${g.id}" title="${esc(t('gameAria')(g.game_num, g.winner))}" aria-label="${esc(t('gameAria')(g.game_num, g.winner))}">${g.game_num}<span class="win" style="background:var(${g.winner === g.blue_team ? '--blue-team' : '--red-team'})"></span></button>`).join('')}</div><span class="ser-count">${t('serCount')(ci + 1, series.length)}</span>`}
+      ${['set', 'stats'].includes(S.view) ? `<button type="button" class="btn series-context-action" id="contextAction" data-context="${S.view === 'set' ? 'stats' : 'set'}">${esc(t(S.view === 'set' ? 'contextOpenStats' : 'contextBackGame'))}</button>` : ''}
       ${S.view === 'set' ? `<span class="game-summary"><span class="matchup"><button type="button" class="team-link team-blue" data-stats-team="${esc(selectedGame.blue_team)}" data-other-team="${esc(selectedGame.red_team)}">${esc(selectedGame.blue_team)}</button><span class="muted"> vs </span><button type="button" class="team-link team-red" data-stats-team="${esc(selectedGame.red_team)}" data-other-team="${esc(selectedGame.blue_team)}">${esc(selectedGame.red_team)}</button></span><span class="match-meta">${esc(t('gameNav')(selectedGame.game_num, selectedGame.winner, fmtClock(selectedGame.duration_gc)))}</span></span>` : ''}`;
     const openGame = id => {
       S.gameId = id; S.playId = null; S.xCell = null; S.fPlayer = '';
@@ -1214,12 +1288,11 @@
     };
     const openSeries = s => openGame(gamesOf(s)[0].id);
     se.querySelectorAll('.gbtn').forEach(b => b.onclick = () => openGame(b.dataset.g));
+    se.querySelectorAll('[data-context]').forEach(b => b.onclick = () => { S.view = b.dataset.context; if (S.view === 'stats') { S.statsScope = 'stage'; if (!['team', 'player'].includes(S.statsTab)) S.statsTab = 'team'; } render(); });
     se.querySelectorAll('[data-stats-team]').forEach(b => b.onclick = () => openStatsEntity('team', b.dataset.statsTeam, b.dataset.otherTeam));
     // The bar is rebuilt on every render, so keep keyboard focus on the control that was used.
     const refocus = id => { const el = document.getElementById(id); if (el && !el.disabled) el.focus(); };
     se.querySelector('#serSel').onchange = e => { openSeries(e.target.value); refocus('serSel'); };
-    se.querySelector('#serOlder').onclick = () => { openSeries(series[ci + 1]); refocus('serOlder'); };
-    se.querySelector('#serNewer').onclick = () => { openSeries(series[ci - 1]); refocus('serNewer'); };
   }
 
   // ------------------------------------------------------------------ set view
@@ -2074,13 +2147,6 @@
   const statsEventGames = () => gamesIn(S.tourn);
   const statsSeriesGames = () => statsEventGames().filter(x => seriesOf(x) === seriesOf(game()));
   const statsEventTeams = () => [...new Set(statsEventGames().flatMap(g => [g.blue_team, g.red_team]))].sort();
-  function entityTeams(kind, key, gs = statsEventGames()) {
-    const teams = new Set();
-    gs.forEach(g => Object.values(ROSTER[g.id] || {}).forEach(r => {
-      if ((kind === 'player' ? r.player : r.champion) === key) teams.add(r.team);
-    }));
-    return teams;
-  }
   function playerChoices(role = S.statsRole) {
     const rows = new Map();
     statsEventGames().forEach(g => Object.values(ROSTER[g.id] || {}).forEach(r => {
@@ -2110,26 +2176,38 @@
     if (!keys.includes(S.statsPick)) S.statsPick = keys.includes(fallbackA) ? fallbackA : keys[0] || '';
     if (!keys.includes(S.statsCompare) || S.statsCompare === S.statsPick) S.statsCompare = keys.includes(fallbackB) && fallbackB !== S.statsPick ? fallbackB : keys.find(x => x !== S.statsPick) || S.statsPick;
   }
+  function statsH2hGames() {
+    const all = statsEventGames();
+    if (S.statsTab === 'team') {
+      return all.filter(g => [g.blue_team, g.red_team].includes(S.statsTeamA) && [g.blue_team, g.red_team].includes(S.statsTeamB));
+    }
+    return all.filter(g => {
+      const roster = Object.values(ROSTER[g.id] || {}), a = roster.find(r => r.player === S.statsPick), b = roster.find(r => r.player === S.statsCompare);
+      return a && b && a.team !== b.team;
+    });
+  }
   function normalizeStatsSelections() {
+    if (S.view === 'stats') {
+      S.statsScope = 'stage';
+      if (!['team', 'player'].includes(S.statsTab)) S.statsTab = 'team';
+      const teams = [...new Set(statsSeriesGames().flatMap(g => [g.blue_team, g.red_team]))];
+      S.statsTeamA = teams.includes(game().blue_team) ? game().blue_team : teams[0] || '';
+      S.statsTeamB = teams.includes(game().red_team) && game().red_team !== S.statsTeamA ? game().red_team : teams.find(team => team !== S.statsTeamA) || S.statsTeamA;
+      S.statsCompare = '';
+      return;
+    }
+    if (!['team', 'player'].includes(S.statsTab)) S.statsTab = 'team';
+    if (!['h2h', 'all'].includes(S.statsScope)) S.statsScope = 'all';
     if (S.statsTab === 'team') normalizeTeamSelections();
     if (S.statsTab === 'player') normalizePlayerSelections();
-    if (S.statsTab === 'champ' && S.statsScope === 'h2h') S.statsScope = 'all';
-    if (S.statsScope === 'stage') {
-      const series = statsSeriesGames();
-      if (S.statsTab === 'team' && (!series.some(g => [g.blue_team, g.red_team].includes(S.statsTeamA)) || !series.some(g => [g.blue_team, g.red_team].includes(S.statsTeamB)))) S.statsScope = 'all';
-      if (S.statsTab === 'player' && (!entityTeams('player', S.statsPick, series).size || !entityTeams('player', S.statsCompare, series).size)) S.statsScope = 'all';
-    }
+    if (S.statsScope === 'h2h' && !statsH2hGames().length) S.statsScope = 'all';
   }
   function statsGames() {
     const all = statsEventGames();
-    if (S.statsScope === 'stage') return statsSeriesGames();
-    if (S.statsTab === 'champ') return all;
+    if (S.view === 'stats') return statsSeriesGames();
     if (S.statsScope === 'all' && S.statsTab === 'team') return all.filter(g => [g.blue_team, g.red_team].includes(S.statsTeamA) || [g.blue_team, g.red_team].includes(S.statsTeamB));
     if (S.statsScope === 'all' && S.statsTab === 'player') return all.filter(g => Object.values(ROSTER[g.id] || {}).some(r => r.player === S.statsPick || r.player === S.statsCompare));
-    let teamsA = new Set(), teamsB = new Set();
-    if (S.statsTab === 'team') { teamsA.add(S.statsTeamA); teamsB.add(S.statsTeamB); }
-    if (S.statsTab === 'player') { teamsA = entityTeams('player', S.statsPick, all); teamsB = entityTeams('player', S.statsCompare, all); }
-    return all.filter(g => (teamsA.has(g.blue_team) && teamsB.has(g.red_team)) || (teamsA.has(g.red_team) && teamsB.has(g.blue_team)));
+    return statsH2hGames();
   }
   function statValue(p, team) {
     if (!p.actor || !team) return null;
@@ -2151,19 +2229,29 @@
     if (kind === 'team') { S.statsTeamA = key; S.statsTeamB = other || opponentOf(game(), key) || ''; }
     render(); window.scrollTo({ top: 0, behavior: SMOOTH });
   }
+  function openCompare(kind, key = '', other = '') {
+    S.view = 'compare'; S.statsTab = kind; S.statsScope = 'all'; S.statsPick = kind === 'player' ? key : ''; S.statsCompare = ''; S.statsRole = 'all';
+    if (kind === 'team') { S.statsTeamA = key || game().blue_team; S.statsTeamB = other || opponentOf(game(), S.statsTeamA) || game().red_team; }
+    if (kind === 'player' && key) {
+      const roster = statsEventGames().flatMap(g => Object.values(ROSTER[g.id] || {})).find(r => r.player === key);
+      if (roster?.position) S.statsRole = roster.position;
+    }
+    render(); window.scrollTo({ top: 0, behavior: SMOOTH });
+  }
   function statsControls() {
-    const basis = S.statsTab === 'champ' ? [['stage', t('statsBasisSeries')], ['all', t('statsBasisAll')]] : [['stage', t('statsBasisSeries')], ['h2h', t('statsBasisH2h')], ['all', t('statsBasisAll')]];
+    const contextual = S.view === 'stats', h2hAvailable = contextual || statsH2hGames().length > 0;
+    const basis = [['h2h', t('statsBasisH2h'), !h2hAvailable], ['all', t('statsBasisAll'), false]];
     return `<div class="stats-controls">
-      <div class="seg" id="statsTab">${[['team', t('statsTeam')], ['player', t('statsPlayer')], ['champ', t('statsChamp')]].map(([k, v]) => `<button data-tab="${k}" class="${S.statsTab === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
-      <span class="nav-label">${t('statsBasis')}</span><div class="seg" id="statsScope">${basis.map(([k, v]) => `<button data-scope="${k}" class="${S.statsScope === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
+      <div class="seg" id="statsTab">${[['team', t('statsTeam')], ['player', t('statsPlayer')]].map(([k, v]) => `<button data-tab="${k}" class="${S.statsTab === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
+      ${contextual ? '' : `<span class="nav-label">${t('statsBasis')}</span><div class="seg" id="statsScope">${basis.map(([k, v, disabled]) => `<button data-scope="${k}" class="${S.statsScope === k ? 'on' : ''}" ${disabled ? `disabled title="${esc(t('statsH2hUnavailable'))}"` : ''}>${esc(v)}</button>`).join('')}</div>`}
       <span class="nav-label">${t('horizon')}</span><div class="seg" id="statsH">${D.horizons_s.map(h => `<button data-h="${h}" class="${S.h === String(h) ? 'on' : ''}">${t('sec')(h)}</button>`).join('')}</div>
       <span class="nav-label">${t('statsMetric')}</span><div class="seg" id="statsMetric">${(WPS_INDEX ? [['wps', t('statsWps')], ['gold', t('statsGold')]] : [['gold', t('statsGold')]]).map(([k, v]) => `<button data-stat="${k}" class="${S.statsMetric === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
-    </div><p class="stats-basis-note">${esc(t('statsCompareHint'))}</p>`;
+    </div>${contextual ? '' : `<p class="stats-basis-note">${esc(t('statsCompareHint'))}</p>`}`;
   }
   function wireStatsControls() {
     const main = document.getElementById('main');
-    main.querySelectorAll('#statsTab button').forEach(b => b.onclick = () => { S.statsTab = b.dataset.tab; S.statsPick = ''; S.statsCompare = ''; if (S.statsTab === 'champ' && S.statsScope === 'h2h') S.statsScope = 'all'; render(); });
-    main.querySelectorAll('#statsScope button').forEach(b => b.onclick = () => { S.statsScope = b.dataset.scope; render(); });
+    main.querySelectorAll('#statsTab button').forEach(b => b.onclick = () => { S.statsTab = b.dataset.tab; S.statsPick = ''; S.statsCompare = ''; render(); });
+    main.querySelectorAll('#statsScope button').forEach(b => b.onclick = () => { if (!b.disabled) { S.statsScope = b.dataset.scope; render(); } });
     main.querySelectorAll('#statsH button').forEach(b => b.onclick = () => { S.h = b.dataset.h; render(); });
     main.querySelectorAll('#statsMetric button').forEach(b => b.onclick = () => { S.statsMetric = b.dataset.stat; render(); });
   }
@@ -2195,7 +2283,9 @@
   }
   const dominantPlayer = slot => [...slot.players.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0] || '—';
   function radarSvg(a, b) {
-    const W = 600, H = 520, cx = 300, cy = 250, radius = 158;
+    // Leave generous side margins: support labels extend left and jungle labels extend right.
+    // Without them, a leading minus sign or the final "pp" can be clipped by the SVG viewport.
+    const W = 720, H = 520, cx = 360, cy = 250, radius = 158;
     const netValue = (p, pos) => p.games ? p.positions[pos].net / p.games : 0;
     const values = [a, b].flatMap(p => STAT_POSITIONS.map(pos => netValue(p, pos)));
     const rawMax = Math.max(...values.map(Math.abs), S.statsMetric === 'wps' ? 1 : 100);
@@ -2240,12 +2330,12 @@
       <div class="stats-roster">${roster.map(x => `<button type="button" data-stats-player="${esc(x.player)}">${esc(posLabel(x.position))} · ${esc(x.player)}</button>`).join('')}</div>
     </article>`;
   }
-  function renderTeamStats(gs, teams) {
+  function renderTeamStats(gs, teams, selectable = true) {
     const a = teamProfile(S.statsTeamA, gs), b = teamProfile(S.statsTeamB, gs);
     const options = selected => teams.map(team => `<option value="${esc(team)}" ${team === selected ? 'selected' : ''}>${esc(team)}</option>`).join('');
     return `<section class="card">
       <div class="stats-head"><div><h2>${t('statsRadarTitle')}</h2><p class="stats-sub">${esc(t('statsRadarSub')(S.h, S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')))}</p></div>
-        <div class="stats-team-picks"><label class="stats-pick a"><span>${t('statsPickTeamA')}</span><select id="statsTeamA">${options(S.statsTeamA)}</select></label><label class="stats-pick b"><span>${t('statsPickTeamB')}</span><select id="statsTeamB">${options(S.statsTeamB)}</select></label></div></div>
+        ${selectable ? `<div class="stats-team-picks"><label class="stats-pick a"><span>${t('statsPickTeamA')}</span><select id="statsTeamA">${options(S.statsTeamA)}</select></label><label class="stats-pick b"><span>${t('statsPickTeamB')}</span><select id="statsTeamB">${options(S.statsTeamB)}</select></label></div>` : ''}</div>
       ${gs.length ? `<div class="stats-team-layout"><div class="stats-radar-wrap">${radarSvg(a, b)}<div class="stats-legend"><span><i class="a"></i>${esc(a.team)}</span><span><i class="b"></i>${esc(b.team)}</span></div></div>
         <div class="stats-team-cards">${teamCard(a, 'blue')}${teamCard(b, 'red')}</div></div>
       ` : `<p class="empty">${t('statsNoData')}</p>`}
@@ -2350,7 +2440,8 @@
     const rows = buildEntities(kind, gs);
     if (!rows.some(x => x.key === S.statsPick)) S.statsPick = rows[0]?.key || '';
     const chosen = rows.find(x => x.key === S.statsPick), maxSide = Math.max(1, ...rows.flatMap(x => [x.summary.posPerGame, x.summary.negPerGame]));
-    const list = `<section class="card stats-entity-list"><h3>${kind === 'player' ? t('statsComparePlayer') : t('statsCompareChamp')}</h3>${rows.map(row => {
+    const listTitle = kind === 'player' && S.view === 'stats' ? t('statsPlayerList') : kind === 'player' ? t('statsComparePlayer') : t('statsCompareChamp');
+    const list = `<section class="card stats-entity-list"><h3>${listTitle}</h3>${rows.map(row => {
       const neg = Math.min(50, row.summary.negPerGame / maxSide * 50), pos = Math.min(50, row.summary.posPerGame / maxSide * 50), net = row.summary.netPerGame;
       return `<button type="button" class="stats-entity-row ${row.key === S.statsPick ? 'on' : ''}" data-entity="${esc(row.key)}" title="${esc(`${t('statsPerGame')}: ${fmtStat(net)}`)}"><span class="name">${esc(row.label)}</span><span class="meta">${esc(t('games')(row.games.size))}</span><span class="stats-diverge"><i class="neg" style="width:${neg}%"></i><i class="pos" style="width:${pos}%"></i></span><span class="n ${net > 0 ? 'gain' : net < 0 ? 'loss' : 'neutral'}">${esc(fmtStat(net))}</span></button>`;
     }).join('') || `<p class="empty">${t('statsNoData')}</p>`}</section>`;
@@ -2359,10 +2450,30 @@
   function renderStats() {
     if (!WPS_INDEX && S.statsMetric === 'wps') S.statsMetric = 'gold';
     normalizeStatsSelections();
+    const gs = statsGames(), teams = [...new Set(gs.flatMap(g => [g.blue_team, g.red_team]))];
+    const main = document.getElementById('main');
+    main.innerHTML = `<section class="card"><div class="stats-head"><div><h1 class="xt-title">${esc(teams.join(' vs '))} · ${t('statsTitle')}</h1><p class="stats-sub">${t('statsSub')}</p></div><button type="button" class="btn stats-open-compare" id="statsOpenCompare">${t('statsOpenCompare')}</button></div>${statsControls()}</section>
+      ${S.statsTab === 'team' ? renderTeamStats(gs, teams, false) : renderEntityStats(gs, 'player')}`;
+    wireStatsControls();
+    main.querySelector('#statsOpenCompare').onclick = () => S.statsTab === 'team' ? openCompare('team', S.statsTeamA, S.statsTeamB) : openCompare('player', S.statsPick);
+    main.querySelectorAll('[data-stats-player]').forEach(el => el.onclick = () => openStatsEntity('player', el.dataset.statsPlayer));
+    main.querySelectorAll('[data-entity]').forEach(el => el.onclick = () => { S.statsPick = el.dataset.entity; renderStats(); });
+    wireStatsPlayLinks(main);
+    writeHash(); syncPressed(); main.removeAttribute('aria-busy');
+  }
+  function wireStatsPlayLinks(main) {
+    main.querySelectorAll('[data-play]').forEach(el => {
+      el.onclick = () => openStatsPlay(el.dataset.play);
+      el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStatsPlay(el.dataset.play); } };
+    });
+  }
+  function renderCompare() {
+    if (!WPS_INDEX && S.statsMetric === 'wps') S.statsMetric = 'gold';
+    normalizeStatsSelections();
     const gs = statsGames(), teams = statsEventTeams();
     const main = document.getElementById('main');
-    main.innerHTML = `<section class="card"><div class="stats-head"><div><h1 class="xt-title">${t('statsTitle')}</h1><p class="stats-sub">${t('statsSub')}</p></div></div>${statsControls()}</section>
-      ${S.statsTab === 'team' ? renderTeamStats(gs, teams) : S.statsTab === 'player' ? renderPlayerStats(gs) : renderEntityStats(gs, S.statsTab)}`;
+    main.innerHTML = `<section class="card"><div class="stats-head"><div><h1 class="xt-title">${t('compareTitle')}</h1><p class="stats-sub">${t('compareSub')}</p></div></div>${statsControls()}</section>
+      ${S.statsTab === 'team' ? renderTeamStats(gs, teams, true) : renderPlayerStats(gs)}`;
     wireStatsControls();
     const a = main.querySelector('#statsTeamA'), b = main.querySelector('#statsTeamB');
     if (a) a.onchange = () => { S.statsTeamA = a.value; if (S.statsTeamB === a.value) S.statsTeamB = teams.find(x => x !== a.value) || a.value; render(); };
@@ -2371,12 +2482,8 @@
     if (playerA) playerA.onchange = () => { S.statsPick = playerA.value; if (S.statsCompare === S.statsPick) S.statsCompare = playerChoices().find(x => x.key !== S.statsPick)?.key || S.statsPick; render(); };
     if (playerB) playerB.onchange = () => { S.statsCompare = playerB.value; if (S.statsPick === S.statsCompare) S.statsPick = playerChoices().find(x => x.key !== S.statsCompare)?.key || S.statsCompare; render(); };
     if (role) role.onchange = () => { S.statsRole = role.value; S.statsPick = ''; S.statsCompare = ''; render(); };
-    main.querySelectorAll('[data-stats-player]').forEach(el => el.onclick = () => openStatsEntity('player', el.dataset.statsPlayer));
-    main.querySelectorAll('[data-entity]').forEach(el => el.onclick = () => { S.statsPick = el.dataset.entity; renderStats(); });
-    main.querySelectorAll('[data-play]').forEach(el => {
-      el.onclick = () => openStatsPlay(el.dataset.play);
-      el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStatsPlay(el.dataset.play); } };
-    });
+    main.querySelectorAll('[data-stats-player]').forEach(el => el.onclick = () => openCompare('player', el.dataset.statsPlayer));
+    wireStatsPlayLinks(main);
     writeHash(); syncPressed(); main.removeAttribute('aria-busy');
   }
 
@@ -2396,13 +2503,14 @@
         if (!tour._plays) main.innerHTML = wait;
         await ensurePlays(S.tourn);
         if (S.view === 'xtab') renderXtab();
-      } else if (S.view === 'stats') {
+      } else if (S.view === 'stats' || S.view === 'compare') {
         if (!tour._plays) main.innerHTML = wait;
         await ensurePlays(S.tourn);
         normalizeStatsSelections();
         const ids = statsGames().map(g => g.id);
         if (S.statsMetric === 'wps' && WPS_INDEX) await Promise.all(ids.map(ensureWps));
         if (S.view === 'stats') renderStats();
+        if (S.view === 'compare') renderCompare();
       } else {
         const id = S.gameId;
         if (!isFull(game())) main.innerHTML = wait;
