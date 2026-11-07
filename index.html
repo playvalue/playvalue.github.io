@@ -456,6 +456,8 @@
     .stats-radar text { font-family: var(--font); fill: var(--text-muted); font-size: 11px; }
     .stats-radar .entity { fill: var(--text-main); font-weight: 700; }
     .stats-radar .value { font-family: var(--mono); font-size: 10px; }
+    .stats-radar .team-a { fill: var(--blue-team); }
+    .stats-radar .team-b { fill: var(--red-team); }
     .stats-legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 6px 0; color: var(--text-muted); font-size: .78rem; }
     .stats-legend span { display: inline-flex; align-items: center; gap: 6px; }
     .stats-legend i { width: 18px; height: 3px; border-radius: 3px; }
@@ -2124,13 +2126,16 @@
     // values favourable to the team move outward, and unfavourable values move inward.
     const radial = value => radius * (0.5 + 0.5 * Math.max(-1, Math.min(1, value / max)));
     const poly = p => STAT_POSITIONS.map((pos, i) => point(i, radial(netValue(p, pos))).join(',')).join(' ');
-    const rings = [0.25, 0.5, 0.75, 1].map(s => `<polygon points="${STAT_POSITIONS.map((_, i) => point(i, radius * s).join(',')).join(' ')}" fill="none" stroke="${s === 0.5 ? 'var(--chart-axis)' : 'var(--chart-grid)'}" stroke-width="${s === 0.5 ? 2 : 1}"/>`).join('');
+    const rings = [0.25, 0.5, 0.75, 1].map(s => {
+      const zero = s === 0.5;
+      return `<polygon points="${STAT_POSITIONS.map((_, i) => point(i, radius * s).join(',')).join(' ')}" fill="none" stroke="${zero ? 'var(--chart-axis)' : 'var(--chart-grid)'}" stroke-width="${zero ? 1.25 : 1}" ${zero ? 'stroke-dasharray="5 5" stroke-opacity=".72"' : ''}/>`;
+    }).join('');
     const axes = STAT_POSITIONS.map((_, i) => { const [x, y] = point(i, radius); return `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--chart-grid)"/>`; }).join('');
     const labels = STAT_POSITIONS.map((pos, i) => {
       const [x, y] = point(i, radius + 58), anchor = x < cx - 15 ? 'end' : x > cx + 15 ? 'start' : 'middle';
-      const people = `${dominantPlayer(a.positions[pos])} / ${dominantPlayer(b.positions[pos])}`;
-      const net = `${fmtStat(netValue(a, pos))} / ${fmtStat(netValue(b, pos))}`;
-      return `<text x="${x}" y="${y - 13}" text-anchor="${anchor}" class="entity"><tspan x="${x}">${esc(posLabel(pos))}</tspan><tspan x="${x}" dy="15">${esc(people)}</tspan><tspan x="${x}" dy="14" class="value">${esc(net)}</tspan></text>`;
+      const playerA = dominantPlayer(a.positions[pos]), playerB = dominantPlayer(b.positions[pos]);
+      const valueA = fmtStat(netValue(a, pos)), valueB = fmtStat(netValue(b, pos));
+      return `<text x="${x}" y="${y - 13}" text-anchor="${anchor}" class="entity"><tspan x="${x}">${esc(posLabel(pos))}</tspan><tspan x="${x}" dy="15" class="team-a">${esc(playerA)}</tspan><tspan> / </tspan><tspan class="team-b">${esc(playerB)}</tspan><tspan x="${x}" dy="14" class="value team-a">${esc(valueA)}</tspan><tspan class="value"> / </tspan><tspan class="value team-b">${esc(valueB)}</tspan></text>`;
     }).join('');
     const valueLabel = S.statsMetric === 'wps' ? `${max.toFixed(max < 10 ? 1 : 0)}pp` : Math.round(max).toLocaleString();
     return `<svg class="stats-radar" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t('statsRadarTitle'))}">
