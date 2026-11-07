@@ -249,7 +249,7 @@
     .list-panel .filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .list-panel .filters select { width: 100%; min-width: 0; }
     .list-panel .filters .highlight-toggle, .list-panel .filters .btn { grid-column: 1 / -1; justify-self: start; }
-    .list-panel .row { grid-template-columns: 48px minmax(0, 1fr) 92px; grid-template-areas: "time title gold" "team family gold"; gap: 3px 8px; padding: 8px 10px 8px 18px; position: relative; }
+    .list-panel .row { grid-template-columns: 48px minmax(0, 1fr) 112px; grid-template-areas: "time title gold" "team family gold"; gap: 3px 8px; padding: 8px 10px 8px 18px; position: relative; }
     .list-panel button.row { border-left: 0; }
     /* Keep the noteworthy marker visually separate from the time and title rather than using the
        row's border, which sat almost flush against its content. */
@@ -267,7 +267,7 @@
       .detail { position: static; max-height: none; overflow: visible; }
       .workspace-stage { order: -2; }
       .detail { order: -1; }
-      .list-panel .row { grid-template-columns: 56px 52px minmax(0, 1fr) 170px 104px; grid-template-areas: none; gap: 10px; padding: 7px 10px 7px 18px; }
+      .list-panel .row { grid-template-columns: 56px 52px minmax(0, 1fr) 170px 128px; grid-template-areas: none; gap: 10px; padding: 7px 10px 7px 18px; }
       .list-panel .row > :nth-child(n) { grid-area: auto; justify-self: auto; }
       .list-panel .row > :nth-child(2) { justify-self: center; }
       .list-panel .row > :nth-child(5) { text-align: initial; }
@@ -278,7 +278,7 @@
     }
     @media (max-width: 720px) {
       .game-summary { flex-basis: 100%; border-left: 0; padding-left: 0; }
-      .list-panel .row { grid-template-columns: 48px minmax(0, 1fr) 92px; }
+      .list-panel .row { grid-template-columns: 48px minmax(0, 1fr) 104px; }
       .list-panel .filters { display: grid; grid-template-columns: 1fr; }
       .list-panel .filters select { width: 100%; }
       .stage-toolbar { align-items: flex-start; }
@@ -334,8 +334,23 @@
     .wps-hero .value.gain { color: var(--gain); } .wps-hero .value.loss { color: var(--loss); } .wps-hero .value.neutral { color: var(--neutral); }
     .wps-hero .prob { margin-top: 3px; color: var(--text-muted); font-size: .76rem; }
     .wps-hero .model-note { margin-top: 5px; color: var(--text-muted); font-size: .68rem; line-height: 1.45; }
-    .row .e.dual { display: grid; gap: 2px; line-height: 1.15; }
-    .row .e.dual small { color: var(--text-muted); font-size: .62rem; font-weight: 700; }
+    .row .e.metric-cell { display: grid; gap: 5px; width: 100%; min-width: 0; line-height: 1.1; }
+    .metric-block { display: grid; gap: 2px; min-width: 0; }
+    .metric-meter { position: relative; display: block; width: 100%; height: 6px; overflow: hidden; border-radius: 999px; background: var(--chart-grid); }
+    .metric-meter .axis { position: absolute; z-index: 2; left: 50%; top: 0; width: 1px; height: 100%; background: var(--chart-axis); opacity: .8; }
+    .metric-meter .fill { position: absolute; top: 0; width: var(--meter-width); height: 100%; }
+    .metric-meter.side-blue .fill { right: 50%; background: var(--blue-team); border-radius: 999px 0 0 999px; }
+    .metric-meter.side-red .fill { left: 50%; background: var(--red-team); border-radius: 0 999px 999px 0; }
+    .metric-meter.clipped::after { content: ""; position: absolute; z-index: 3; top: 0; width: 2px; height: 100%; background: var(--text-main); }
+    .metric-meter.clipped.side-blue::after { left: 0; } .metric-meter.clipped.side-red::after { right: 0; }
+    .metric-caption { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; min-width: 0; white-space: nowrap; }
+    .metric-caption small { color: var(--text-muted); font-size: .58rem; font-weight: 800; text-transform: uppercase; }
+    .metric-benefit { overflow: hidden; text-overflow: ellipsis; font-size: .68rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .metric-benefit.side-blue { color: var(--blue-team); } .metric-benefit.side-red { color: var(--red-team); } .metric-benefit.neutral { color: var(--neutral); }
+    .value-head { display: grid; gap: 2px; width: 100%; min-width: 0; line-height: 1.15; }
+    .meter-legend { display: grid; grid-template-columns: 1fr 1px 1fr; align-items: center; gap: 4px; font-size: .6rem; font-weight: 800; }
+    .meter-legend .blue { color: var(--blue-team); text-align: left; } .meter-legend .red { color: var(--red-team); text-align: right; }
+    .meter-legend .axis { width: 1px; height: 8px; background: var(--chart-axis); }
     .ival { height: 8px; position: relative; margin-top: 6px; }
     .ival .axis { position: absolute; left: 0; right: 0; top: 3px; height: 2px; background: var(--chart-grid); }
     .ival .zero { position: absolute; left: 50%; top: -1px; width: 1px; height: 10px; background: var(--chart-axis); }
@@ -1673,6 +1688,29 @@
     return `<span class="who">${line}</span>`;
   }
 
+  const LIST_WPS_SCALE = 20;
+  const LIST_GOLD_SCALE = 2000;
+  const compactGold = value => {
+    const amount = Math.abs(value);
+    if (amount < 1000) return amount.toLocaleString();
+    const scaled = amount / 1000;
+    return `${scaled % 1 ? scaled.toFixed(1) : scaled.toFixed(0)}k`;
+  };
+  function listMetric(g, label, value, scale, kind, directional = true) {
+    if (value == null) return `<span class="metric-block"><span class="sr-only">${esc(label)}: —</span><span class="metric-meter" aria-hidden="true"><i class="axis"></i></span><span class="metric-caption" aria-hidden="true"><small>${esc(label)}</small><span class="metric-benefit neutral">—</span></span></span>`;
+    const amount = Math.abs(value);
+    const isZero = kind === 'wps' ? Math.round(amount * 10) === 0 : amount === 0;
+    const perspective = S.persp || g.blue_team;
+    const opponent = perspective === g.blue_team ? g.red_team : g.blue_team;
+    const beneficiary = directional && !isZero ? (value > 0 ? perspective : opponent) : null;
+    const side = beneficiary === g.blue_team ? 'blue' : beneficiary === g.red_team ? 'red' : '';
+    const formatted = kind === 'wps' ? `${amount.toFixed(1)}pp` : compactGold(amount);
+    const shown = beneficiary ? `${beneficiary} +${formatted}` : `±${formatted}`;
+    const width = Math.min(50, amount / scale * 50).toFixed(2);
+    const clipped = amount > scale ? ' clipped' : '';
+    return `<span class="metric-block"><span class="sr-only">${esc(label)}: ${esc(shown)}</span><span class="metric-meter ${side ? `side-${side}` : ''}${clipped}" style="--meter-width:${width}%" aria-hidden="true"><i class="axis"></i>${side ? '<i class="fill"></i>' : ''}</span><span class="metric-caption" aria-hidden="true"><small>${esc(label)}</small><span class="metric-benefit ${side ? `side-${side}` : 'neutral'}">${esc(shown)}</span></span></span>`;
+  }
+
   function rowHtml(p, selected) {
     const v = viewOf(p);
     const h = v.hz[S.h];
@@ -1680,13 +1718,13 @@
     const g = p._game;
     const side = p.actor === g.blue_team ? 'blue' : p.actor === g.red_team ? 'red' : '';
     const hl = hlOf(p.id);
+    const wpsMetric = listMetric(g, 'WPS', w?.observed_wps_pp ?? null, LIST_WPS_SCALE, 'wps');
+    const goldMetric = listMetric(g, t('metricGold'), h.state === 'missing' ? null : h.e, LIST_GOLD_SCALE, 'gold', ['positive', 'negative'].includes(h.state));
     return `<button type="button" class="row side-${side || 'none'} ${selected ? 'on' : ''} ${hl ? 'star' : ''}" data-id="${p.id}" ${selected ? 'aria-current="true"' : ''} ${hl ? `title="${esc(hl.map(r => L('hl', r)).join(' · '))}"` : ''}>
       <span class="t">${clock(p)}</span><span class="chip ${side}">${esc(p.actor || '?')}</span>
       <span class="title"><span class="ttl">${hl ? `<span class="sr-only">${esc(t('hlOnly'))}</span>` : ''}${S.fPlayer && invOf(p, S.fPlayer) ? `<span class="chip">${esc(L('inv', invOf(p, S.fPlayer).role))}</span> ` : ''}${esc(contentText(p, 'title'))}${p.objective_links.length ? ' <span class="chip fam">' + p.objective_links.map(o => esc(objLabel(o.objective))).join('·') + '</span>' : ''}</span>${whoLine(p)}</span>
       <span class="famcell">${famChip(v.famKey, v.familyText, 'dot')}</span>
-      ${S.metric === 'wps' ? `<span class="e ${w ? stateCls(w.observed_wps_pp > 0 ? 'positive' : w.observed_wps_pp < 0 ? 'negative' : 'unresolved') : 'neutral'}">${w ? fmtPP(w.observed_wps_pp) : '—'}</span>`
-        : S.metric === 'both' ? `<span class="e dual"><span class="${w ? stateCls(w.observed_wps_pp > 0 ? 'positive' : w.observed_wps_pp < 0 ? 'negative' : 'unresolved') : 'neutral'}">${w ? fmtPP(w.observed_wps_pp) : '—'} <small>WPS</small></span><span class="${stateCls(h.state)}">${h.state === 'missing' ? '—' : fmtG(h.e)} <small>${esc(t('metricGold'))}</small></span></span>`
-        : `<span class="e ${stateCls(h.state)}" title="${esc(L('state', h.state))}">${h.state === 'missing' ? '—' : fmtG(h.e)}</span>`}</button>`;
+      <span class="e metric-cell">${S.metric === 'wps' ? wpsMetric : S.metric === 'both' ? wpsMetric + goldMetric : goldMetric}</span></button>`;
   }
 
   // Picking a player filters the list and turns the view to that player's team.
@@ -1734,6 +1772,7 @@
       : S.metric === 'both' ? t('bothCoverage')(wpsMeasured, g.plays.length, measured, resolved, S.h)
       : t('listCoverage')(S.h, measured, resolved);
     const valueHead = S.metric === 'wps' ? t('colWps')(S.h) : S.metric === 'both' ? t('colBoth')(S.h) : t('colGold')(S.h);
+    const compactValueHead = S.metric === 'both' ? t('sec')(S.h) : valueHead;
     const sortOptions = [['time', t('sortTime')], ...(g._wps ? [['wps', t('sortWps')]] : []), ['gold', t('sortGold')]];
     el.innerHTML = `<h3>${t('listTitle')} <span class="sub">${t('listSub')(list.length, g.plays.length)}</span></h3>
       <p class="list-coverage">${coverage}</p>
@@ -1748,7 +1787,7 @@
       </div>
       <details class="highlight-criteria"><summary><span class="criteria-title">${SPARK_ICON}<span>${t('hlCriteriaTitle')(S.h)}</span></span><span class="criteria-action"><span class="criteria-open">${t('hlCriteriaOpen')}</span><span class="criteria-close">${t('hlCriteriaClose')}</span></span></summary><p>${t('hlCriteria')(S.h)}</p></details>
       ${S.fPlayer ? `<p class="note-box" style="margin:-4px 0 8px">${t('playerNote')}</p>` : ''}
-      <div class="rows"><div class="row head" aria-hidden="true"><span>${t('colTime')}</span><span>${t('colTeam')}</span><span>${t('colPlay')}</span><span class="famcell">${t('colType')}</span><span class="e">${valueHead}${S.persp ? t('colFrom')(S.persp) : ''}</span></div>${list.map(p => rowHtml(p, p.id === S.playId)).join('')}</div>`;
+      <div class="rows"><div class="row head" aria-hidden="true"><span>${t('colTime')}</span><span>${t('colTeam')}</span><span>${t('colPlay')}</span><span class="famcell">${t('colType')}</span><span class="e value-head"><span>${compactValueHead}</span><span class="meter-legend"><i class="blue">${esc(g.blue_team)}</i><i class="axis"></i><i class="red">${esc(g.red_team)}</i></span></span></div>${list.map(p => rowHtml(p, p.id === S.playId)).join('')}</div>`;
     el.querySelector('#listSort').onchange = e => {
       const before = rowPositions(el);
       S.listSort = e.target.value;
