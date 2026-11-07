@@ -520,6 +520,19 @@
     .stats-team-cards { display: grid; gap: 12px; align-content: start; }
     .stats-team-card { padding: 14px; border: 1px solid var(--border-color); border-radius: var(--radius-card); }
     .stats-team-card h3 { margin-bottom: 8px; }
+    .stats-narrative { margin-top: 12px; padding: 11px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-control); background: color-mix(in srgb, var(--bg-pill) 72%, transparent); }
+    .stats-narrative-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+    .stats-narrative-head strong { font-size: .76rem; }
+    .stats-narrative-head span { color: var(--text-muted); font-size: .64rem; font-weight: 700; }
+    .stats-narrative p { color: var(--text-main); font-size: .78rem; line-height: 1.58; }
+    .stats-narrative p + p { margin-top: 5px; color: var(--text-muted); }
+    .stats-evidence { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 8px; }
+    .stats-evidence span { padding: 2px 7px; border-radius: 999px; background: var(--bg-card); color: var(--text-muted); font-size: .65rem; font-weight: 700; }
+    .stats-narrative-link { margin-left: auto; padding: 2px 7px; border: 0; border-radius: 999px; background: var(--accent-bg); color: var(--accent); font: 700 .65rem/1.45 var(--font); cursor: pointer; }
+    .stats-narrative-link:hover { filter: brightness(.96); }
+    .stats-compare-narrative { margin: 14px 0; padding: 12px 14px; border-left: 3px solid var(--accent); border-radius: 0 var(--radius-control) var(--radius-control) 0; background: var(--accent-bg); }
+    .stats-compare-narrative strong { display: block; margin-bottom: 3px; font-size: .76rem; }
+    .stats-compare-narrative p { color: var(--text-muted); font-size: .78rem; line-height: 1.55; }
     .stats-mini-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
     .stats-mini { padding: 9px; border-radius: var(--radius-control); background: var(--bg-pill); }
     .stats-mini small { display: block; color: var(--text-muted); font-size: .68rem; }
@@ -551,6 +564,7 @@
     .stats-detail-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px; }
     .stats-detail-head h2 { font-size: 1.3rem; }
     .stats-detail-head p { color: var(--text-muted); font-size: .78rem; }
+    .stats-detail-head + .stats-narrative { margin-top: 14px; }
     .stats-dotplot { display: block; width: 100%; min-height: 250px; margin-top: 12px; }
     .stats-dotplot text { font-family: var(--font); fill: var(--chart-axis); font-size: 11px; }
     .stats-dotplot .pin { cursor: pointer; }
@@ -769,6 +783,24 @@
       statsPickTeamA: '팀 A', statsPickTeamB: '팀 B', statsPickPlayerA: '선수 A', statsPickPlayerB: '선수 B', statsPosition: '포지션', statsAllPositions: '전체 포지션',
       statsCompareHint: '각 값은 선택한 기준 안에서 해당 팀·선수가 실제로 뛴 경기 수로 나눕니다.',
       statsNoData: '선택한 비교 기준에서 측정 가능한 장면이 없습니다.', statsOpenPlay: '플레이 열기',
+      statsNarrativeTitle: '데이터로 본 플레이 패턴', statsNarrativeScope: '해설이 짚은 측정 장면', statsNarrativeCompareTitle: '선택 대상 차이',
+      statsNarrativeTeamLead: (position, positionN, positionTotal, family, familyN, scenes) => `측정 가능한 ${scenes}개 장면에서 ${position} 관여가 가장 자주 나타났고(${positionN}/${positionTotal}), 행동 유형은 ${family}가 가장 많았습니다(${familyN}/${scenes}).`,
+      statsNarrativePlayerLead: (role, roleN, total, family, familyN) => `측정 장면에서는 ${role} 역할로 가장 자주 등장했고(${roleN}/${total}), ${family} 유형이 가장 많았습니다(${familyN}/${total}).`,
+      statsNarrativeSparse: n => `측정 가능한 장면이 ${n}개여서 뚜렷한 플레이 패턴을 말하기 어렵습니다.`,
+      statsNarrativeWps: (kind, n, total, horizon) => ({
+        amplified: `즉시 변화와 ${horizon} 변화가 같은 방향이면서 더 커진 장면이 가장 많았습니다(${n}/${total}). 초기 변화가 후속 전개에서 증폭된 관찰 패턴입니다.`,
+        faded: `즉시 변화보다 ${horizon} 변화폭이 줄어든 장면이 가장 많았습니다(${n}/${total}). 초기 변화가 시간창 안에서 일부 상쇄된 관찰 패턴입니다.`,
+        reversed: `즉시 변화와 ${horizon} 변화의 방향이 뒤집힌 장면이 가장 많았습니다(${n}/${total}). 초기 흐름이 후속 전개에서 반전된 관찰 패턴입니다.`,
+        held: `즉시 변화와 ${horizon} 변화의 방향과 폭이 비슷하게 유지된 장면이 가장 많았습니다(${n}/${total}).`,
+        mixed: `즉시 변화와 ${horizon} 변화의 관계는 증폭·상쇄·반전이 섞여 한 가지 패턴이 두드러지지 않았습니다(${total}개 장면).`,
+      })[kind],
+      statsNarrativeGold: (positive, total, net) => `선택한 골드 변화가 팀에 유리한 방향인 장면은 ${positive}/${total}개였고, 경기당 순변화는 ${net}였습니다.`,
+      statsNarrativeCompare: (a, av, b, bv, windowLabel, metric) => `${windowLabel} ${metric}의 경기당 순변화는 ${a} ${av}, ${b} ${bv}입니다. 각 대상이 실제로 뛴 경기 수로 나눈 관측값입니다.`,
+      statsEvidencePosition: (label, n, total) => `${label} 관여 ${n}/${total}`, statsEvidenceRole: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceFamily: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceSample: n => `측정 장면 ${n}`, statsViewExample: '대표 장면 보기',
+      statsPhaseShort: { lane: '초반', mid: '중반', late: '후반' },
+      statsNarrativePhase: (phase, share, baseline, games, totalGames) => `${phase} 장면 비중이 비교 기준보다 높았고(${share} 대 ${baseline}), 이 패턴이 ${games}/${totalGames}경기에서 반복돼 지속적인 시간대 패턴으로 관찰됐습니다.`,
+      statsEvidencePhase: (phase, share, baseline, p, games, totalGames) => `${phase} ${share} · 기준 ${baseline} · 보정 p=${p} · ${games}/${totalGames}경기`,
+      statsNarrativeCaveat: '전체 플레이 스타일이나 개인 기여도의 판정이 아니라, 해설이 짚은 장면에서 관찰된 패턴입니다.',
       skip: '본문으로 건너뛰기', loading: '불러오는 중…', loadError: '데이터를 불러오지 못했습니다. 새로고침해 주세요.',
       plannedTitle: '준비 중', plannedBody: '이 대회는 아직 분석한 경기가 없습니다.',
       gameN: n => `${n}세트`, gameAria: (n, w) => `${n}세트, ${w} 승리`,
@@ -877,6 +909,24 @@
       statsPickTeamA: 'Team A', statsPickTeamB: 'Team B', statsPickPlayerA: 'Player A', statsPickPlayerB: 'Player B', statsPosition: 'Position', statsAllPositions: 'All positions',
       statsCompareHint: 'Each value is divided by the games that team or player actually played within the selected basis.',
       statsNoData: 'No measurable moments for this comparison.', statsOpenPlay: 'Open play',
+      statsNarrativeTitle: 'Observed play pattern', statsNarrativeScope: 'measured commentary moments', statsNarrativeCompareTitle: 'Selected-pair difference',
+      statsNarrativeTeamLead: (position, positionN, positionTotal, family, familyN, scenes) => `Across ${scenes} measurable moments, ${position} involvement appeared most often (${positionN}/${positionTotal}), and ${family} was the most common play type (${familyN}/${scenes}).`,
+      statsNarrativePlayerLead: (role, roleN, total, family, familyN) => `In measurable moments, ${role} was the most common involvement role (${roleN}/${total}), and ${family} the most common play type (${familyN}/${total}).`,
+      statsNarrativeSparse: n => `Only ${n} moments are measurable here, too few for a clear play pattern.`,
+      statsNarrativeWps: (kind, n, total, horizon) => ({
+        amplified: `The largest group moved in the same direction immediately and grew by ${horizon} (${n}/${total}), an observed pattern of the initial shift amplifying during follow-up.`,
+        faded: `The largest group was smaller by ${horizon} than immediately (${n}/${total}), an observed pattern of the initial shift being partly offset.`,
+        reversed: `The largest group reversed direction between immediate and ${horizon} WPS (${n}/${total}), an observed pattern of the initial trajectory turning during follow-up.`,
+        held: `The largest group kept a similar direction and magnitude from immediate to ${horizon} WPS (${n}/${total}).`,
+        mixed: `Amplification, offset and reversal are mixed across the ${total} paired moments; no single immediate-to-${horizon} pattern dominates.`,
+      })[kind],
+      statsNarrativeGold: (positive, total, net) => `${positive} of ${total} measured gold changes favoured the team; net change per game was ${net}.`,
+      statsNarrativeCompare: (a, av, b, bv, windowLabel, metric) => `Net ${windowLabel} ${metric} per game is ${av} for ${a} and ${bv} for ${b}. Each is an observed total divided by games actually played.`,
+      statsEvidencePosition: (label, n, total) => `${label} involvement ${n}/${total}`, statsEvidenceRole: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceFamily: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceSample: n => `${n} measured moments`, statsViewExample: 'Open example',
+      statsPhaseShort: { lane: 'early', mid: 'mid game', late: 'late game' },
+      statsNarrativePhase: (phase, share, baseline, games, totalGames) => `${phase} moments are overrepresented against the comparison baseline (${share} versus ${baseline}) and recur in ${games}/${totalGames} games, a persistent phase pattern in this sample.`,
+      statsEvidencePhase: (phase, share, baseline, p, games, totalGames) => `${phase} ${share} · baseline ${baseline} · adjusted p=${p} · ${games}/${totalGames} games`,
+      statsNarrativeCaveat: 'This describes commentary-selected moments, not a verdict on overall style or individual contribution.',
       skip: 'Skip to content', loading: 'Loading…', loadError: 'Could not load the data. Please reload.',
       plannedTitle: 'Coming soon', plannedBody: 'No games from this event have been analysed yet.',
       gameN: n => `Game ${n}`, gameAria: (n, w) => `Game ${n}, won by ${w}`,
@@ -918,6 +968,13 @@
     xtPlayerNote: '按选手或英雄拆分时，计算其执行、成为目标或参与应对的操作，并从该选手队伍视角显示；对方操作会翻转经济变化正负号。多人参与的操作会对每位选手各计一次，只统计解说点名的情况。', sortBy: c => `按${c}排序`, rowLabel: '项目', xtGames: '比赛', xtPerGame: '每局', xtCum: '累计', total: '合计', usedBy: '使用者', played: '使用英雄', games: n => `${n}局`,
     xtNote: '四栏之和为总数。收益与损失只统计超出误差范围、方向明确的变化。这些是观测到的经济变化，并非操作造成的因果效果。', xtPick: '点击数字后，对应操作会显示在这里。',
     statsTitle:'本系列赛队伍与选手',statsSub:'展示当前系列赛中解说点名的重要场景；与其他队伍、选手的比较请前往独立比较页面。',compareTitle:'队伍与选手比较',compareSub:'不受系列赛选择影响，按整个赛事或双方交手比较队伍与选手。',statsOpenCompare:'在整个赛事中比较 →',statsPlayerList:'本系列赛选手',statsTeam:'队伍',statsPlayer:'选手',statsChamp:'英雄',statsMetric:'指标',statsWps:'胜率变化',statsGold:'经济变化',statsRadarTitle:'重要场景参与画像',statsRadarSub:(windowLabel,m)=>`每局${windowLabel}${m}净变化 · 中间环为0`,statsGames:'比赛',statsScenes:'已测场景',statsToward:'有利于本队',statsMedian:'中位变化',statsPerGame:'每局净变化',statsComparePlayer:'选手比较',statsCompareChamp:'英雄比较',statsFingerprint:'操作指纹',statsGood:'有利于本队',statsBad:'不利于本队',statsRoles:'参与角色',statsTypes:'主要操作类型',statsGoldBreak:'变化方向统计',statsTopScenes:'变化最大的场景',statsCaveat:'同一操作会对每位参与选手各计一次；重叠时间窗与同时发生的事件仍包含在数值中，因此不能解读为个人贡献。',statsBasis:'比较范围',statsBasisSeries:'当前系列赛',statsBasisH2h:'双方交手',statsBasisAll:'整个赛事',statsH2hUnavailable:'所选双方没有交手比赛。',statsPickTeamA:'队伍A',statsPickTeamB:'队伍B',statsPickPlayerA:'选手A',statsPickPlayerB:'选手B',statsPosition:'位置',statsAllPositions:'全部位置',statsCompareHint:'各数值按所选范围内其实际出场数计算。',statsNoData:'当前比较没有可测场景。',statsOpenPlay:'打开操作',
+    statsNarrativeTitle:'数据中的操作模式',statsNarrativeScope:'解说指出且可测量的场景',statsNarrativeCompareTitle:'所选对象的差异',
+    statsNarrativeTeamLead:(position,positionN,positionTotal,family,familyN,scenes)=>`在${scenes}个可测场景中，${position}参与最常见（${positionN}/${positionTotal}），最多的操作类型是${family}（${familyN}/${scenes}）。`,
+    statsNarrativePlayerLead:(role,roleN,total,family,familyN)=>`在可测场景中，最常以${role}身份参与（${roleN}/${total}），最多的操作类型是${family}（${familyN}/${total}）。`,statsNarrativeSparse:n=>`只有${n}个可测场景，不足以判断明确的操作模式。`,
+    statsNarrativeWps:(kind,n,total,horizon)=>({amplified:`即时变化与${horizon}变化同向且继续扩大的场景最多（${n}/${total}），呈现初始变化在后续中放大的模式。`,faded:`到${horizon}时变化幅度小于即时变化的场景最多（${n}/${total}），呈现初始变化被部分抵消的模式。`,reversed:`即时变化与${horizon}变化反向的场景最多（${n}/${total}），呈现初始走势在后续中反转的模式。`,held:`即时到${horizon}的方向和幅度大致保持的场景最多（${n}/${total}）。`,mixed:`${total}个配对场景中放大、抵消与反转并存，没有单一模式占优。`})[kind],
+    statsNarrativeGold:(positive,total,net)=>`${positive}/${total}个经济变化对本队有利；每局净变化为${net}。`,statsNarrativeCompare:(a,av,b,bv,windowLabel,metric)=>`每局${windowLabel}${metric}净变化为${a} ${av}、${b} ${bv}。数值均除以各自实际出场数。`,
+    statsEvidencePosition:(label,n,total)=>`${label}参与 ${n}/${total}`,statsEvidenceRole:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceFamily:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceSample:n=>`${n}个可测场景`,statsViewExample:'查看代表场景',statsPhaseShort:{lane:'前期',mid:'中期',late:'后期'},
+    statsNarrativePhase:(phase,share,baseline,games,totalGames)=>`${phase}场景占比高于比较基准（${share}对${baseline}），并在${games}/${totalGames}场比赛中重复出现，是本样本中的持续时段模式。`,statsEvidencePhase:(phase,share,baseline,p,games,totalGames)=>`${phase} ${share} · 基准 ${baseline} · 校正p=${p} · ${games}/${totalGames}场`,statsNarrativeCaveat:'这只描述解说指出的场景，不是对整体风格或个人贡献的判定。',
     skip: '跳到正文', loading: '加载中…', loadError: '无法加载数据，请刷新页面。', plannedTitle: '即将推出', plannedBody: '此赛事尚无已分析比赛。', gameN: n => `第${n}局`, gameAria: (n,w) => `第${n}局，${w}获胜`, serLabel: '系列赛', serCount: (i,n) => `第${i}/${n}个系列赛`, phaseBracket: '淘汰赛阶段', phasePlayIn: '入围赛', sourceEnglish: '操作标题与说明暂以英文显示',
   };
   T.ja = { ...T.en,
@@ -940,6 +997,12 @@
     dvText:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}速く拡大（±${b}）`, dvTextNeg:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}遅く拡大（±${b}）`, verification:'実況のみから整理し、動画では確認していません', retro:'後から振り返った場面', hzHead:'15・30・60秒の全体変化', wpsBoundary:'即時勝率変化', wpsBoundaryWindow:(pre,post)=>`開始前5秒窓の${pre}観測の中央値 → 終了後5秒窓の${post}観測の中央値`, wpsTotalNote:'プレー開始から各終点までの後続イベントをすべて含みます。', wpsMissing:'勝率を測る観測区間が不足しています', wpsProb:(a,b)=>`モデル勝率 ${a} → ${b}`, wpsCausal:'観測されたモデル状態の変化であり、このプレーだけの因果効果ではありません。', wpsCoverage:(im,total,n,h)=>`即時WPS <strong>${im}</strong> · ${h}秒全体 <strong>${total}</strong> / ${n}`, bothCoverage:(im,total,n,gm,gr,h)=>`即時WPS <strong>${im}</strong> · ${h}秒全体 <strong>${total}</strong> / ${n} · ゴールド <strong>${gm}</strong> · 方向判定 <strong>${gr}</strong>`, colWps:h=>`即時 · ${h}秒全体WPS`, colBoth:h=>`即時 · ${h}秒全体 · ゴールド`, wpsGuide:[['即時変化と全体変化','即時WPSは開始前5秒と終了後5秒の勝率中央値を比較します。全体WPSは開始から15・30・60秒の終点までの後続イベントを含みます。'],['ベータモデル','Worldsは凍結v312、MSIは凍結MSI分岐v156を使用し、新しい試合で再学習・再校正していません。'],['因果ではありません','同時刻の全状態変化がWPSに入るため、このプレーだけの効果ではありません。']], hzOk:b=>`誤差±${b}`, hzUnres:b=>`±${b}以内のため不明`,
     xtTitle:'タイプ別集計', xtSub:'各プレーは実行したチーム基準で一度だけ数えます。数字を押すと該当プレーが下に表示されます。', scope:'範囲', scopeGame:'選択した試合', scopeStage:'このシリーズ', scopeAll:'大会全体', rowsBy:'分け方', rFamily:'プレータイプ', rOutcome:'結果', rKill:'キル', rFamOut:'タイプ × 結果', rPlayer:'選手', rChamp:'チャンピオン', xtPlayerNote:'選手・チャンピオン別では、実行・対象・対応として関わったプレーをその選手のチーム視点で数えます。相手のプレーはゴールド変化の符号を反転します。複数の選手が関わるプレーは選手ごとに一度入り、実況が名前を挙げたものだけを数えます。', sortBy:c=>`${c}で並べ替え`, rowLabel:'項目', xtGames:'試合', xtPerGame:'1試合当たり', xtCum:'累計', total:'合計', usedBy:'使用者', played:'使用チャンピオン', games:n=>`${n}試合`, xtNote:'4列の合計が総数です。利益と損失は誤差範囲を超えて方向が明確な場合だけ数えます。これは観測されたゴールド変化であり、プレーの因果効果ではありません。', xtPick:'数字を押すと該当プレーがここに表示されます。',
     statsTitle:'このシリーズのチーム・選手',statsSub:'現在のシリーズで実況が名前を挙げた重要場面を示します。他のチーム・選手との比較は別の比較画面で行います。',compareTitle:'チーム・選手比較',compareSub:'シリーズ選択とは独立して、大会全体または直接対戦で比較します。',statsOpenCompare:'大会全体で比較 →',statsPlayerList:'このシリーズの選手',statsTeam:'チーム',statsPlayer:'選手',statsChamp:'チャンピオン',statsMetric:'指標',statsWps:'勝率変化',statsGold:'ゴールド変化',statsRadarTitle:'重要場面への関与プロフィール',statsRadarSub:(windowLabel,m)=>`1試合当たりの${windowLabel}${m}純変化 · 中央のリングは0`,statsGames:'試合',statsScenes:'測定場面',statsToward:'自チーム方向',statsMedian:'変化幅中央値',statsPerGame:'1試合当たり純変化',statsComparePlayer:'選手比較',statsCompareChamp:'チャンピオン比較',statsFingerprint:'プレー分布',statsGood:'自チームに有利',statsBad:'自チームに不利',statsRoles:'関与役割',statsTypes:'主なプレータイプ',statsGoldBreak:'変化方向の集計',statsTopScenes:'変化幅の大きい場面',statsCaveat:'一つのプレーは関与した各選手に一度ずつ入ります。重なる時間窓や同時イベントも含むため、個人貢献とは解釈しません。',statsBasis:'比較基準',statsBasisSeries:'現在のシリーズ',statsBasisH2h:'直接対戦',statsBasisAll:'大会全体',statsH2hUnavailable:'選択した2者の直接対戦はありません。',statsPickTeamA:'チームA',statsPickTeamB:'チームB',statsPickPlayerA:'選手A',statsPickPlayerB:'選手B',statsPosition:'ポジション',statsAllPositions:'全ポジション',statsCompareHint:'各値は選択範囲内で実際に出場した試合数で割ります。',statsNoData:'この比較で測定可能な場面はありません。',statsOpenPlay:'プレーを開く',
+    statsNarrativeTitle:'データから見たプレーパターン',statsNarrativeScope:'実況が取り上げた測定場面',statsNarrativeCompareTitle:'選択対象の差',
+    statsNarrativeTeamLead:(position,positionN,positionTotal,family,familyN,scenes)=>`${scenes}の測定場面では${position}の関与が最も多く（${positionN}/${positionTotal}）、プレータイプは${family}が最多でした（${familyN}/${scenes}）。`,statsNarrativePlayerLead:(role,roleN,total,family,familyN)=>`測定場面では${role}での関与が最も多く（${roleN}/${total}）、${family}タイプが最多でした（${familyN}/${total}）。`,statsNarrativeSparse:n=>`測定できる場面が${n}件だけのため、明確なプレーパターンは判断できません。`,
+    statsNarrativeWps:(kind,n,total,horizon)=>({amplified:`即時変化と${horizon}変化が同方向で拡大した場面が最多でした（${n}/${total}）。初期変化が後続展開で増幅した観察パターンです。`,faded:`${horizon}時点の変化幅が即時より小さい場面が最多でした（${n}/${total}）。初期変化が一部相殺された観察パターンです。`,reversed:`即時変化と${horizon}変化の方向が反転した場面が最多でした（${n}/${total}）。初期の流れが後続で反転した観察パターンです。`,held:`即時から${horizon}まで方向と幅がほぼ維持された場面が最多でした（${n}/${total}）。`,mixed:`${total}の対応場面では増幅・相殺・反転が混在し、単一パターンは優勢ではありません。`})[kind],
+    statsNarrativeGold:(positive,total,net)=>`${positive}/${total}のゴールド変化が自チームに有利で、1試合当たり純変化は${net}でした。`,statsNarrativeCompare:(a,av,b,bv,windowLabel,metric)=>`1試合当たりの${windowLabel}${metric}純変化は${a} ${av}、${b} ${bv}です。各対象の実出場数で割った観測値です。`,
+    statsEvidencePosition:(label,n,total)=>`${label}関与 ${n}/${total}`,statsEvidenceRole:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceFamily:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceSample:n=>`測定場面 ${n}`,statsViewExample:'代表場面を開く',statsPhaseShort:{lane:'序盤',mid:'中盤',late:'終盤'},
+    statsNarrativePhase:(phase,share,baseline,games,totalGames)=>`${phase}場面の比率が比較基準より高く（${share}対${baseline}）、${games}/${totalGames}試合で反復したため、この標本で持続的な時間帯パターンとして観察されました。`,statsEvidencePhase:(phase,share,baseline,p,games,totalGames)=>`${phase} ${share} · 基準 ${baseline} · 補正p=${p} · ${games}/${totalGames}試合`,statsNarrativeCaveat:'実況が取り上げた場面の記述であり、全体的なスタイルや個人貢献の判定ではありません。',
     skip:'本文へ移動', loading:'読み込み中…', loadError:'データを読み込めませんでした。再読み込みしてください。', plannedTitle:'準備中', plannedBody:'この大会ではまだ分析済みの試合がありません。', gameN:n=>`第${n}ゲーム`, gameAria:(n,w)=>`第${n}ゲーム、${w}の勝利`, serLabel:'シリーズ', serCount:(i,n)=>`${n}シリーズ中${i}番目`, phaseBracket:'ブラケットステージ', phasePlayIn:'プレイイン', sourceEnglish:'プレーのタイトルと説明は現在英語で表示されます',
   };
   const LBL = {
@@ -2356,6 +2419,115 @@
     main.querySelectorAll('#statsH button').forEach(b => b.onclick = () => { S.statsH = b.dataset.h; render(); });
     main.querySelectorAll('#statsMetric button').forEach(b => b.onclick = () => { S.statsMetric = b.dataset.stat; if (S.statsMetric === 'gold' && S.statsH === 'instant') S.statsH = String(D.default_horizon_s); render(); });
   }
+  const topEntry = map => [...map.entries()].sort((a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0])))[0] || ['', 0];
+  function logChoose(n, k) {
+    if (k < 0 || k > n) return -Infinity;
+    k = Math.min(k, n - k);
+    let out = 0;
+    for (let i = 1; i <= k; i += 1) out += Math.log(n - k + i) - Math.log(i);
+    return out;
+  }
+  function fisherExact(a, b, c, d) {
+    const row1 = a + b, row2 = c + d, col1 = a + c, total = row1 + row2;
+    if (!total) return 1;
+    const probability = x => Math.exp(logChoose(row1, x) + logChoose(row2, col1 - x) - logChoose(total, col1));
+    const observed = probability(a), low = Math.max(0, col1 - row2), high = Math.min(row1, col1);
+    let p = 0;
+    for (let x = low; x <= high; x += 1) {
+      const px = probability(x);
+      if (px <= observed + 1e-12) p += px;
+    }
+    return Math.min(1, p);
+  }
+  function phaseSignal(entityObs, referenceObs) {
+    const phases = ['lane', 'mid', 'late'];
+    const clean = obs => obs.filter(x => phases.includes(x.p.context?.phase));
+    const entity = clean(entityObs), reference = clean(referenceObs);
+    const entityGames = new Set(entity.map(x => x.game.id));
+    if (entityGames.size < 3 || entity.length < 5 || reference.length < 5) return null;
+    return phases.map(phase => {
+      const entityN = entity.filter(x => x.p.context.phase === phase).length;
+      const refN = reference.filter(x => x.p.context.phase === phase).length;
+      const gameN = new Set(entity.filter(x => x.p.context.phase === phase).map(x => x.game.id)).size;
+      const share = entityN / entity.length, baseline = refN / reference.length;
+      const adjustedP = Math.min(1, fisherExact(entityN, entity.length - entityN, refN, reference.length - refN) * 3);
+      return { phase, entityN, entityTotal: entity.length, share, baseline, gameN, totalGames: entityGames.size, adjustedP };
+    }).filter(x => x.entityN >= 5 && x.gameN / x.totalGames >= .6 && x.share - x.baseline >= .15 && x.adjustedP < .05)
+      .sort((a, b) => a.adjustedP - b.adjustedP || b.share - a.share)[0] || null;
+  }
+  function pairedWpsPattern(obs) {
+    const horizon = S.statsH === 'instant' ? String(D.default_horizon_s) : S.statsH;
+    const groups = new Map([['amplified', 0], ['faded', 0], ['reversed', 0], ['held', 0]]);
+    let total = 0;
+    obs.forEach(x => {
+      const instantRaw = wpsBoundaryOf(x.p)?.wps_pp, totalRaw = wpsHorizon(x.p, horizon)?.observed_wps_pp;
+      if (instantRaw == null || totalRaw == null) return;
+      const flip = x.team === x.p.actor ? 1 : -1, instant = instantRaw * flip, after = totalRaw * flip;
+      let kind = 'held';
+      if (Math.abs(instant) >= .5 && Math.abs(after) >= .5 && Math.sign(instant) !== Math.sign(after)) kind = 'reversed';
+      else if (Math.abs(after) - Math.abs(instant) >= .5) kind = 'amplified';
+      else if (Math.abs(instant) - Math.abs(after) >= .5) kind = 'faded';
+      groups.set(kind, groups.get(kind) + 1); total += 1;
+    });
+    if (total < 5) return null;
+    const ranked = [...groups.entries()].sort((a, b) => b[1] - a[1]);
+    const dominant = ranked[0][1] / total >= .4 && ranked[0][1] > ranked[1][1] ? ranked[0][0] : 'mixed';
+    return { kind: dominant, n: dominant === 'mixed' ? total : ranked[0][1], total, horizon: t('sec')(horizon) };
+  }
+  const formatP = p => p < .001 ? '<.001' : p.toFixed(3).replace(/^0/, '');
+  function teamReferenceObs(gs, excludedTeam) {
+    const out = [];
+    gs.forEach(g => playsOf(g).forEach(p => [g.blue_team, g.red_team].forEach(team => {
+      if (team === excludedTeam || !involvedOf(p).some(x => x.team === team) || statValue(p, team) == null) return;
+      out.push({ p, game: g, team });
+    })));
+    return out;
+  }
+  function narrativeShell(paragraphs, evidence, example) {
+    return `<div class="stats-narrative"><div class="stats-narrative-head"><strong>${esc(t('statsNarrativeTitle'))}</strong><span>${esc(t('statsNarrativeScope'))}</span></div>
+      ${paragraphs.map(text => `<p>${esc(text)}</p>`).join('')}
+      <div class="stats-evidence">${evidence.map(text => `<span>${esc(text)}</span>`).join('')}${example ? `<button type="button" class="stats-narrative-link" data-play="${esc(example.p.id)}">${esc(t('statsViewExample'))}</button>` : ''}</div>
+      <p>${esc(t('statsNarrativeCaveat'))}</p></div>`;
+  }
+  function teamNarrative(profile, gs) {
+    const n = profile.moments.length, example = [...profile.moments].sort((a, b) => Math.abs(b.value) - Math.abs(a.value))[0];
+    if (n < 8) return narrativeShell([t('statsNarrativeSparse')(n)], [t('statsEvidenceSample')(n)], example);
+    const positionCounts = new Map(STAT_POSITIONS.map(pos => [pos, profile.positions[pos].n]));
+    const positionTotal = [...positionCounts.values()].reduce((sum, value) => sum + value, 0);
+    const [position, positionN] = topEntry(positionCounts), [family, familyN] = topEntry(profile.families);
+    const paragraphs = [t('statsNarrativeTeamLead')(posLabel(position), positionN, positionTotal, famLabel(family), familyN, n)];
+    const pattern = S.statsMetric === 'wps' ? pairedWpsPattern(profile.moments) : null;
+    if (S.statsMetric === 'wps' && pattern) paragraphs.push(t('statsNarrativeWps')(pattern.kind, pattern.n, pattern.total, pattern.horizon));
+    if (S.statsMetric === 'gold') paragraphs.push(t('statsNarrativeGold')(profile.positive, n, fmtStat(profile.perGame)));
+    const phase = phaseSignal(profile.moments, teamReferenceObs(gs, profile.team));
+    if (phase) paragraphs.push(t('statsNarrativePhase')(t('statsPhaseShort')[phase.phase], pct0(phase.entityN, phase.entityTotal), pct0(Math.round(phase.baseline * 1000), 1000), phase.gameN, phase.totalGames));
+    const evidence = [t('statsEvidencePosition')(posLabel(position), positionN, positionTotal), t('statsEvidenceFamily')(famLabel(family), familyN, n), t('statsEvidenceSample')(n)];
+    if (phase) evidence.push(t('statsEvidencePhase')(t('statsPhaseShort')[phase.phase], pct0(phase.entityN, phase.entityTotal), pct0(Math.round(phase.baseline * 1000), 1000), formatP(phase.adjustedP), phase.gameN, phase.totalGames));
+    return narrativeShell(paragraphs, evidence, example);
+  }
+  function entityNarrative(row, referenceRows) {
+    const obs = row.summary.valid, n = obs.length, example = [...obs].sort((a, b) => Math.abs(b.value) - Math.abs(a.value))[0];
+    if (n < 5) return narrativeShell([t('statsNarrativeSparse')(n)], [t('statsEvidenceSample')(n)], example);
+    const roles = obs.reduce((map, x) => map.set(x.role, (map.get(x.role) || 0) + 1), new Map());
+    const families = obs.reduce((map, x) => map.set(x.p.family, (map.get(x.p.family) || 0) + 1), new Map());
+    const [role, roleN] = topEntry(roles), [family, familyN] = topEntry(families);
+    const paragraphs = [t('statsNarrativePlayerLead')(L('inv', role), roleN, n, famLabel(family), familyN)];
+    const pattern = S.statsMetric === 'wps' ? pairedWpsPattern(obs) : null;
+    if (S.statsMetric === 'wps' && pattern) paragraphs.push(t('statsNarrativeWps')(pattern.kind, pattern.n, pattern.total, pattern.horizon));
+    if (S.statsMetric === 'gold') paragraphs.push(t('statsNarrativeGold')(row.summary.pos.length, n, fmtStat(row.summary.netPerGame)));
+    const reference = referenceRows.filter(other => other.key !== row.key).flatMap(other => other.summary.valid);
+    const phase = phaseSignal(obs, reference);
+    if (phase) paragraphs.push(t('statsNarrativePhase')(t('statsPhaseShort')[phase.phase], pct0(phase.entityN, phase.entityTotal), pct0(Math.round(phase.baseline * 1000), 1000), phase.gameN, phase.totalGames));
+    const evidence = [t('statsEvidenceRole')(L('inv', role), roleN, n), t('statsEvidenceFamily')(famLabel(family), familyN, n), t('statsEvidenceSample')(n)];
+    if (phase) evidence.push(t('statsEvidencePhase')(t('statsPhaseShort')[phase.phase], pct0(phase.entityN, phase.entityTotal), pct0(Math.round(phase.baseline * 1000), 1000), formatP(phase.adjustedP), phase.gameN, phase.totalGames));
+    return narrativeShell(paragraphs, evidence, example);
+  }
+  function comparisonNarrative(a, b, teamMode = false) {
+    if (!a || !b) return '';
+    const aLabel = teamMode ? a.team : a.label, bLabel = teamMode ? b.team : b.label;
+    const aValue = teamMode ? a.perGame : a.summary.netPerGame, bValue = teamMode ? b.perGame : b.summary.netPerGame;
+    return `<div class="stats-compare-narrative"><strong>${esc(t('statsNarrativeCompareTitle'))}</strong><p>${esc(t('statsNarrativeCompare')(aLabel, fmtStat(aValue), bLabel, fmtStat(bValue), statsWindowLabel(), S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')))}</p></div>`;
+  }
   function teamProfile(team, gs) {
     const teamGames = gs.filter(g => g.blue_team === team || g.red_team === team);
     const positions = Object.fromEntries(STAT_POSITIONS.map(pos => [pos, { net: 0, players: new Map(), n: 0 }]));
@@ -2363,7 +2535,8 @@
     teamGames.forEach(g => playsOf(g).forEach(p => {
       const named = involvedOf(p).filter(x => x.team === team);
       const value = statValue(p, team);
-      if (named.length && value != null && !unique.has(p.id)) unique.set(p.id, { p, value });
+      const uniqueKey = `${g.id}|${p.id}`;
+      if (named.length && value != null && !unique.has(uniqueKey)) unique.set(uniqueKey, { p, value, game: g, team });
       named.forEach(x => {
         const r = ROSTER[g.id]?.[x.player];
         if (!r || !positions[r.position] || value == null) return;
@@ -2374,9 +2547,9 @@
     }));
     const roster = new Map();
     teamGames.forEach(g => Object.values(ROSTER[g.id] || {}).filter(x => x.team === team).forEach(x => roster.set(`${x.position}|${x.player}`, x)));
-    const moments = [...unique.values()];
+    const moments = [...unique.values()], families = moments.reduce((map, x) => map.set(x.p.family, (map.get(x.p.family) || 0) + 1), new Map());
     return {
-      team, games: teamGames.length, positions, roster: [...roster.values()], moments,
+      team, games: teamGames.length, positions, roster: [...roster.values()], moments, families,
       positive: moments.filter(x => x.value > 0).length,
       median: median(moments.map(x => Math.abs(x.value))),
       perGame: teamGames.length ? moments.reduce((s, x) => s + x.value, 0) / teamGames.length : 0,
@@ -2417,7 +2590,7 @@
       <text x="${cx}" y="${cy + 4}" text-anchor="middle" class="value">−${esc(valueLabel)}</text>
     </svg>`;
   }
-  function teamCard(profile, side) {
+  function teamCard(profile, side, gs) {
     const roster = [...profile.roster].sort((a, b) => STAT_POSITIONS.indexOf(a.position) - STAT_POSITIONS.indexOf(b.position) || a.player.localeCompare(b.player));
     return `<article class="stats-team-card">
       <h3 class="team-${side}">${esc(profile.team)}</h3>
@@ -2429,6 +2602,7 @@
         <div class="stats-mini"><small>${t('statsPerGame')}</small><strong class="${profile.perGame > 0 ? 'gain' : profile.perGame < 0 ? 'loss' : 'neutral'}">${fmtStat(profile.perGame)}</strong></div>
       </div>
       <div class="stats-roster">${roster.map(x => `<button type="button" data-stats-player="${esc(x.player)}">${esc(posLabel(x.position))} · ${esc(x.player)}</button>`).join('')}</div>
+      ${teamNarrative(profile, gs)}
     </article>`;
   }
   function renderTeamStats(gs, teams, selectable = true) {
@@ -2437,8 +2611,8 @@
     return `<section class="card">
       <div class="stats-head"><div><h2>${t('statsRadarTitle')}</h2><p class="stats-sub">${esc(t('statsRadarSub')(statsWindowLabel(), S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')))}</p></div>
         ${selectable ? `<div class="stats-team-picks"><label class="stats-pick a"><span>${t('statsPickTeamA')}</span><select id="statsTeamA">${options(S.statsTeamA)}</select></label><label class="stats-pick b"><span>${t('statsPickTeamB')}</span><select id="statsTeamB">${options(S.statsTeamB)}</select></label></div>` : ''}</div>
-      ${gs.length ? `<div class="stats-team-layout"><div class="stats-radar-wrap">${radarSvg(a, b)}<div class="stats-legend"><span><i class="a"></i>${esc(a.team)}</span><span><i class="b"></i>${esc(b.team)}</span></div></div>
-        <div class="stats-team-cards">${teamCard(a, 'blue')}${teamCard(b, 'red')}</div></div>
+      ${gs.length ? `${comparisonNarrative(a, b, true)}<div class="stats-team-layout"><div class="stats-radar-wrap">${radarSvg(a, b)}<div class="stats-legend"><span><i class="a"></i>${esc(a.team)}</span><span><i class="b"></i>${esc(b.team)}</span></div></div>
+        <div class="stats-team-cards">${teamCard(a, 'blue', gs)}${teamCard(b, 'red', gs)}</div></div>
       ` : `<p class="empty">${t('statsNoData')}</p>`}
       <p class="note-box">${t('statsCaveat')}</p>
     </section>`;
@@ -2503,7 +2677,7 @@
       ${obs.map(shape).join('')}
     </svg>`;
   }
-  function entityDetail(row, kind, side = '', showCaveat = true) {
+  function entityDetail(row, kind, side = '', showCaveat = true, referenceRows = []) {
     if (!row) return `<section class="card"><p class="empty">${t('statsNoData')}</p></section>`;
     const roles = Object.fromEntries(INV_ROLES.map(role => [role, row.obs.filter(x => x.role === role).length]));
     const states = Object.fromEntries(STATES.map(state => [state, row.obs.filter(x => x.goldState === state).length]));
@@ -2517,6 +2691,7 @@
         <div class="stats-mini"><small>${t('statsMedian')}</small><strong>${fmtStatAbs(row.summary.median)}</strong></div>
         <div class="stats-mini"><small>${t('statsPerGame')}</small><strong class="${row.summary.netPerGame > 0 ? 'gain' : row.summary.netPerGame < 0 ? 'loss' : 'neutral'}">${fmtStat(row.summary.netPerGame)}</strong></div>
       </div></div>
+      ${entityNarrative(row, referenceRows)}
       <h3 style="margin-top:16px">${t('statsFingerprint')} <span class="sub">${esc(statsWindowLabel())} · ${S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')}</span></h3>
       ${row.summary.valid.length ? dotplotSvg(row) : `<p class="empty">${t('statsNoData')}</p>`}
       <div class="stats-role-key">${INV_ROLES.map(role => `<span><i class="${role}"></i>${esc(L('inv', role))} ${roles[role]}</span>`).join('')}</div>
@@ -2535,7 +2710,7 @@
       <div class="stats-compare-picks"><label class="stats-pick a"><span>${t('statsPickPlayerA')}</span><select id="statsPlayerA">${options(S.statsPick)}</select></label><label class="stats-pick b"><span>${t('statsPickPlayerB')}</span><select id="statsPlayerB">${options(S.statsCompare)}</select></label></div>
       <label class="stats-pick stats-role-pick"><span>${t('statsPosition')}</span><select id="statsRole">${roles.map(([key, label]) => `<option value="${key}" ${key === S.statsRole ? 'selected' : ''}>${esc(label)}</option>`).join('')}</select></label>
     </div></section>
-    ${gs.length ? `<div><div class="stats-compare-layout">${entityDetail(byKey.get(S.statsPick), 'player', 'a', false)}${entityDetail(byKey.get(S.statsCompare), 'player', 'b', false)}</div><p class="note-box">${t('statsCaveat')}</p></div>` : `<section class="card"><p class="empty">${t('statsNoData')}</p></section>`}`;
+    ${gs.length ? `<div>${comparisonNarrative(byKey.get(S.statsPick), byKey.get(S.statsCompare))}<div class="stats-compare-layout">${entityDetail(byKey.get(S.statsPick), 'player', 'a', false, rows)}${entityDetail(byKey.get(S.statsCompare), 'player', 'b', false, rows)}</div><p class="note-box">${t('statsCaveat')}</p></div>` : `<section class="card"><p class="empty">${t('statsNoData')}</p></section>`}`;
   }
   function renderEntityStats(gs, kind) {
     const rows = buildEntities(kind, gs);
@@ -2546,7 +2721,7 @@
       const neg = Math.min(50, row.summary.negPerGame / maxSide * 50), pos = Math.min(50, row.summary.posPerGame / maxSide * 50), net = row.summary.netPerGame;
       return `<button type="button" class="stats-entity-row ${row.key === S.statsPick ? 'on' : ''}" data-entity="${esc(row.key)}" title="${esc(`${t('statsPerGame')}: ${fmtStat(net)}`)}"><span class="name">${esc(row.label)}</span><span class="meta">${esc(t('games')(row.games.size))}</span><span class="stats-diverge"><i class="neg" style="width:${neg}%"></i><i class="pos" style="width:${pos}%"></i></span><span class="n ${net > 0 ? 'gain' : net < 0 ? 'loss' : 'neutral'}">${esc(fmtStat(net))}</span></button>`;
     }).join('') || `<p class="empty">${t('statsNoData')}</p>`}</section>`;
-    return `<div class="stats-entity-layout">${list}${entityDetail(chosen, kind)}</div>`;
+    return `<div class="stats-entity-layout">${list}${entityDetail(chosen, kind, '', true, rows)}</div>`;
   }
   function renderStats() {
     if (!WPS_INDEX && S.statsMetric === 'wps') S.statsMetric = 'gold';
