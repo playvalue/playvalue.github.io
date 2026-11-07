@@ -784,7 +784,10 @@
       statsCompareHint: '각 값은 선택한 기준 안에서 해당 팀·선수가 실제로 뛴 경기 수로 나눕니다.',
       statsNoData: '선택한 비교 기준에서 측정 가능한 장면이 없습니다.', statsOpenPlay: '플레이 열기',
       statsNarrativeTitle: '데이터로 본 플레이 패턴', statsNarrativeScope: '해설이 짚은 측정 장면', statsNarrativeCompareTitle: '선택 대상 차이',
-      statsNarrativeTeamLead: (position, positionN, positionTotal, family, familyN, scenes) => `측정 가능한 ${scenes}개 장면에서 ${position} 관여가 가장 자주 나타났고(${positionN}/${positionTotal}), 행동 유형은 ${family}가 가장 많았습니다(${familyN}/${scenes}).`,
+      statsNarrativeTeamBoth: (gainPosition, gainValue, lossPosition, lossValue, windowLabel, metric) => `${windowLabel} ${metric} 기준으로 ${gainPosition} 관여 장면에서 경기당 ${gainValue}로 가장 많이 벌었고, ${lossPosition} 관여 장면에서 ${lossValue}로 가장 많이 잃었습니다.`,
+      statsNarrativeTeamGainOnly: (position, value, windowLabel, metric) => `${windowLabel} ${metric} 기준으로 ${position} 관여 장면의 경기당 순변화가 ${value}로 가장 컸고, 순손실인 포지션은 없었습니다.`,
+      statsNarrativeTeamLossOnly: (position, value, windowLabel, metric) => `${windowLabel} ${metric} 기준으로 ${position} 관여 장면의 경기당 순손실이 ${value}로 가장 컸고, 순이득인 포지션은 없었습니다.`,
+      statsNarrativeTeamFlat: (windowLabel, metric) => `${windowLabel} ${metric} 기준으로 뚜렷한 포지션별 순이득·순손실은 없었습니다.`,
       statsNarrativePlayerLead: (role, roleN, total, family, familyN) => `측정 장면에서는 ${role} 역할로 가장 자주 등장했고(${roleN}/${total}), ${family} 유형이 가장 많았습니다(${familyN}/${total}).`,
       statsNarrativeSparse: n => `측정 가능한 장면이 ${n}개여서 뚜렷한 플레이 패턴을 말하기 어렵습니다.`,
       statsNarrativeWps: (kind, n, total, horizon) => ({
@@ -796,7 +799,7 @@
       })[kind],
       statsNarrativeGold: (positive, total, net) => `선택한 골드 변화가 팀에 유리한 방향인 장면은 ${positive}/${total}개였고, 경기당 순변화는 ${net}였습니다.`,
       statsNarrativeCompare: (a, av, b, bv, windowLabel, metric) => `${windowLabel} ${metric}의 경기당 순변화는 ${a} ${av}, ${b} ${bv}입니다. 각 대상이 실제로 뛴 경기 수로 나눈 관측값입니다.`,
-      statsEvidencePosition: (label, n, total) => `${label} 관여 ${n}/${total}`, statsEvidenceRole: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceFamily: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceSample: n => `측정 장면 ${n}`, statsViewExample: '대표 장면 보기',
+      statsEvidenceGain: (label, value, n) => `가장 많이 번 곳 · ${label} ${value} · ${n}장면`, statsEvidenceLoss: (label, value, n) => `가장 많이 잃은 곳 · ${label} ${value} · ${n}장면`, statsEvidenceRole: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceFamily: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceSample: n => `측정 장면 ${n}`, statsViewExample: '대표 장면 보기',
       statsPhaseShort: { lane: '초반', mid: '중반', late: '후반' },
       statsNarrativePhase: (phase, share, baseline, games, totalGames) => `${phase} 장면 비중이 비교 기준보다 높았고(${share} 대 ${baseline}), 이 패턴이 ${games}/${totalGames}경기에서 반복돼 지속적인 시간대 패턴으로 관찰됐습니다.`,
       statsEvidencePhase: (phase, share, baseline, p, games, totalGames) => `${phase} ${share} · 기준 ${baseline} · 보정 p=${p} · ${games}/${totalGames}경기`,
@@ -910,7 +913,10 @@
       statsCompareHint: 'Each value is divided by the games that team or player actually played within the selected basis.',
       statsNoData: 'No measurable moments for this comparison.', statsOpenPlay: 'Open play',
       statsNarrativeTitle: 'Observed play pattern', statsNarrativeScope: 'measured commentary moments', statsNarrativeCompareTitle: 'Selected-pair difference',
-      statsNarrativeTeamLead: (position, positionN, positionTotal, family, familyN, scenes) => `Across ${scenes} measurable moments, ${position} involvement appeared most often (${positionN}/${positionTotal}), and ${family} was the most common play type (${familyN}/${scenes}).`,
+      statsNarrativeTeamBoth: (gainPosition, gainValue, lossPosition, lossValue, windowLabel, metric) => `On net ${windowLabel} ${metric} per game, ${gainPosition}-involved moments gained the most (${gainValue}), while ${lossPosition}-involved moments lost the most (${lossValue}).`,
+      statsNarrativeTeamGainOnly: (position, value, windowLabel, metric) => `On net ${windowLabel} ${metric} per game, ${position}-involved moments gained the most (${value}); no position had a net loss.`,
+      statsNarrativeTeamLossOnly: (position, value, windowLabel, metric) => `On net ${windowLabel} ${metric} per game, ${position}-involved moments lost the most (${value}); no position had a net gain.`,
+      statsNarrativeTeamFlat: (windowLabel, metric) => `No position had a clear net gain or loss in ${windowLabel} ${metric} per game.`,
       statsNarrativePlayerLead: (role, roleN, total, family, familyN) => `In measurable moments, ${role} was the most common involvement role (${roleN}/${total}), and ${family} the most common play type (${familyN}/${total}).`,
       statsNarrativeSparse: n => `Only ${n} moments are measurable here, too few for a clear play pattern.`,
       statsNarrativeWps: (kind, n, total, horizon) => ({
@@ -922,7 +928,7 @@
       })[kind],
       statsNarrativeGold: (positive, total, net) => `${positive} of ${total} measured gold changes favoured the team; net change per game was ${net}.`,
       statsNarrativeCompare: (a, av, b, bv, windowLabel, metric) => `Net ${windowLabel} ${metric} per game is ${av} for ${a} and ${bv} for ${b}. Each is an observed total divided by games actually played.`,
-      statsEvidencePosition: (label, n, total) => `${label} involvement ${n}/${total}`, statsEvidenceRole: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceFamily: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceSample: n => `${n} measured moments`, statsViewExample: 'Open example',
+      statsEvidenceGain: (label, value, n) => `Largest gain · ${label} ${value} · ${n} moments`, statsEvidenceLoss: (label, value, n) => `Largest loss · ${label} ${value} · ${n} moments`, statsEvidenceRole: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceFamily: (label, n, total) => `${label} ${n}/${total}`, statsEvidenceSample: n => `${n} measured moments`, statsViewExample: 'Open example',
       statsPhaseShort: { lane: 'early', mid: 'mid game', late: 'late game' },
       statsNarrativePhase: (phase, share, baseline, games, totalGames) => `${phase} moments are overrepresented against the comparison baseline (${share} versus ${baseline}) and recur in ${games}/${totalGames} games, a persistent phase pattern in this sample.`,
       statsEvidencePhase: (phase, share, baseline, p, games, totalGames) => `${phase} ${share} · baseline ${baseline} · adjusted p=${p} · ${games}/${totalGames} games`,
@@ -969,11 +975,11 @@
     xtNote: '四栏之和为总数。收益与损失只统计超出误差范围、方向明确的变化。这些是观测到的经济变化，并非操作造成的因果效果。', xtPick: '点击数字后，对应操作会显示在这里。',
     statsTitle:'本系列赛队伍与选手',statsSub:'展示当前系列赛中解说点名的重要场景；与其他队伍、选手的比较请前往独立比较页面。',compareTitle:'队伍与选手比较',compareSub:'不受系列赛选择影响，按整个赛事或双方交手比较队伍与选手。',statsOpenCompare:'在整个赛事中比较 →',statsPlayerList:'本系列赛选手',statsTeam:'队伍',statsPlayer:'选手',statsChamp:'英雄',statsMetric:'指标',statsWps:'胜率变化',statsGold:'经济变化',statsRadarTitle:'重要场景参与画像',statsRadarSub:(windowLabel,m)=>`每局${windowLabel}${m}净变化 · 中间环为0`,statsGames:'比赛',statsScenes:'已测场景',statsToward:'有利于本队',statsMedian:'中位变化',statsPerGame:'每局净变化',statsComparePlayer:'选手比较',statsCompareChamp:'英雄比较',statsFingerprint:'操作指纹',statsGood:'有利于本队',statsBad:'不利于本队',statsRoles:'参与角色',statsTypes:'主要操作类型',statsGoldBreak:'变化方向统计',statsTopScenes:'变化最大的场景',statsCaveat:'同一操作会对每位参与选手各计一次；重叠时间窗与同时发生的事件仍包含在数值中，因此不能解读为个人贡献。',statsBasis:'比较范围',statsBasisSeries:'当前系列赛',statsBasisH2h:'双方交手',statsBasisAll:'整个赛事',statsH2hUnavailable:'所选双方没有交手比赛。',statsPickTeamA:'队伍A',statsPickTeamB:'队伍B',statsPickPlayerA:'选手A',statsPickPlayerB:'选手B',statsPosition:'位置',statsAllPositions:'全部位置',statsCompareHint:'各数值按所选范围内其实际出场数计算。',statsNoData:'当前比较没有可测场景。',statsOpenPlay:'打开操作',
     statsNarrativeTitle:'数据中的操作模式',statsNarrativeScope:'解说指出且可测量的场景',statsNarrativeCompareTitle:'所选对象的差异',
-    statsNarrativeTeamLead:(position,positionN,positionTotal,family,familyN,scenes)=>`在${scenes}个可测场景中，${position}参与最常见（${positionN}/${positionTotal}），最多的操作类型是${family}（${familyN}/${scenes}）。`,
+    statsNarrativeTeamBoth:(gainPosition,gainValue,lossPosition,lossValue,windowLabel,metric)=>`按每局${windowLabel}${metric}净变化，涉及${gainPosition}的场景收益最多（${gainValue}），涉及${lossPosition}的场景损失最多（${lossValue}）。`,statsNarrativeTeamGainOnly:(position,value,windowLabel,metric)=>`按每局${windowLabel}${metric}净变化，涉及${position}的场景收益最多（${value}），没有位置出现净损失。`,statsNarrativeTeamLossOnly:(position,value,windowLabel,metric)=>`按每局${windowLabel}${metric}净变化，涉及${position}的场景损失最多（${value}），没有位置出现净收益。`,statsNarrativeTeamFlat:(windowLabel,metric)=>`按每局${windowLabel}${metric}净变化，没有位置出现明显的净收益或净损失。`,
     statsNarrativePlayerLead:(role,roleN,total,family,familyN)=>`在可测场景中，最常以${role}身份参与（${roleN}/${total}），最多的操作类型是${family}（${familyN}/${total}）。`,statsNarrativeSparse:n=>`只有${n}个可测场景，不足以判断明确的操作模式。`,
     statsNarrativeWps:(kind,n,total,horizon)=>({amplified:`即时变化与${horizon}变化同向且继续扩大的场景最多（${n}/${total}），呈现初始变化在后续中放大的模式。`,faded:`到${horizon}时变化幅度小于即时变化的场景最多（${n}/${total}），呈现初始变化被部分抵消的模式。`,reversed:`即时变化与${horizon}变化反向的场景最多（${n}/${total}），呈现初始走势在后续中反转的模式。`,held:`即时到${horizon}的方向和幅度大致保持的场景最多（${n}/${total}）。`,mixed:`${total}个配对场景中放大、抵消与反转并存，没有单一模式占优。`})[kind],
     statsNarrativeGold:(positive,total,net)=>`${positive}/${total}个经济变化对本队有利；每局净变化为${net}。`,statsNarrativeCompare:(a,av,b,bv,windowLabel,metric)=>`每局${windowLabel}${metric}净变化为${a} ${av}、${b} ${bv}。数值均除以各自实际出场数。`,
-    statsEvidencePosition:(label,n,total)=>`${label}参与 ${n}/${total}`,statsEvidenceRole:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceFamily:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceSample:n=>`${n}个可测场景`,statsViewExample:'查看代表场景',statsPhaseShort:{lane:'前期',mid:'中期',late:'后期'},
+    statsEvidenceGain:(label,value,n)=>`收益最多 · ${label} ${value} · ${n}个场景`,statsEvidenceLoss:(label,value,n)=>`损失最多 · ${label} ${value} · ${n}个场景`,statsEvidenceRole:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceFamily:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceSample:n=>`${n}个可测场景`,statsViewExample:'查看代表场景',statsPhaseShort:{lane:'前期',mid:'中期',late:'后期'},
     statsNarrativePhase:(phase,share,baseline,games,totalGames)=>`${phase}场景占比高于比较基准（${share}对${baseline}），并在${games}/${totalGames}场比赛中重复出现，是本样本中的持续时段模式。`,statsEvidencePhase:(phase,share,baseline,p,games,totalGames)=>`${phase} ${share} · 基准 ${baseline} · 校正p=${p} · ${games}/${totalGames}场`,statsNarrativeCaveat:'这只描述解说指出的场景，不是对整体风格或个人贡献的判定。',
     skip: '跳到正文', loading: '加载中…', loadError: '无法加载数据，请刷新页面。', plannedTitle: '即将推出', plannedBody: '此赛事尚无已分析比赛。', gameN: n => `第${n}局`, gameAria: (n,w) => `第${n}局，${w}获胜`, serLabel: '系列赛', serCount: (i,n) => `第${i}/${n}个系列赛`, phaseBracket: '淘汰赛阶段', phasePlayIn: '入围赛', sourceEnglish: '操作标题与说明暂以英文显示',
   };
@@ -998,10 +1004,10 @@
     xtTitle:'タイプ別集計', xtSub:'各プレーは実行したチーム基準で一度だけ数えます。数字を押すと該当プレーが下に表示されます。', scope:'範囲', scopeGame:'選択した試合', scopeStage:'このシリーズ', scopeAll:'大会全体', rowsBy:'分け方', rFamily:'プレータイプ', rOutcome:'結果', rKill:'キル', rFamOut:'タイプ × 結果', rPlayer:'選手', rChamp:'チャンピオン', xtPlayerNote:'選手・チャンピオン別では、実行・対象・対応として関わったプレーをその選手のチーム視点で数えます。相手のプレーはゴールド変化の符号を反転します。複数の選手が関わるプレーは選手ごとに一度入り、実況が名前を挙げたものだけを数えます。', sortBy:c=>`${c}で並べ替え`, rowLabel:'項目', xtGames:'試合', xtPerGame:'1試合当たり', xtCum:'累計', total:'合計', usedBy:'使用者', played:'使用チャンピオン', games:n=>`${n}試合`, xtNote:'4列の合計が総数です。利益と損失は誤差範囲を超えて方向が明確な場合だけ数えます。これは観測されたゴールド変化であり、プレーの因果効果ではありません。', xtPick:'数字を押すと該当プレーがここに表示されます。',
     statsTitle:'このシリーズのチーム・選手',statsSub:'現在のシリーズで実況が名前を挙げた重要場面を示します。他のチーム・選手との比較は別の比較画面で行います。',compareTitle:'チーム・選手比較',compareSub:'シリーズ選択とは独立して、大会全体または直接対戦で比較します。',statsOpenCompare:'大会全体で比較 →',statsPlayerList:'このシリーズの選手',statsTeam:'チーム',statsPlayer:'選手',statsChamp:'チャンピオン',statsMetric:'指標',statsWps:'勝率変化',statsGold:'ゴールド変化',statsRadarTitle:'重要場面への関与プロフィール',statsRadarSub:(windowLabel,m)=>`1試合当たりの${windowLabel}${m}純変化 · 中央のリングは0`,statsGames:'試合',statsScenes:'測定場面',statsToward:'自チーム方向',statsMedian:'変化幅中央値',statsPerGame:'1試合当たり純変化',statsComparePlayer:'選手比較',statsCompareChamp:'チャンピオン比較',statsFingerprint:'プレー分布',statsGood:'自チームに有利',statsBad:'自チームに不利',statsRoles:'関与役割',statsTypes:'主なプレータイプ',statsGoldBreak:'変化方向の集計',statsTopScenes:'変化幅の大きい場面',statsCaveat:'一つのプレーは関与した各選手に一度ずつ入ります。重なる時間窓や同時イベントも含むため、個人貢献とは解釈しません。',statsBasis:'比較基準',statsBasisSeries:'現在のシリーズ',statsBasisH2h:'直接対戦',statsBasisAll:'大会全体',statsH2hUnavailable:'選択した2者の直接対戦はありません。',statsPickTeamA:'チームA',statsPickTeamB:'チームB',statsPickPlayerA:'選手A',statsPickPlayerB:'選手B',statsPosition:'ポジション',statsAllPositions:'全ポジション',statsCompareHint:'各値は選択範囲内で実際に出場した試合数で割ります。',statsNoData:'この比較で測定可能な場面はありません。',statsOpenPlay:'プレーを開く',
     statsNarrativeTitle:'データから見たプレーパターン',statsNarrativeScope:'実況が取り上げた測定場面',statsNarrativeCompareTitle:'選択対象の差',
-    statsNarrativeTeamLead:(position,positionN,positionTotal,family,familyN,scenes)=>`${scenes}の測定場面では${position}の関与が最も多く（${positionN}/${positionTotal}）、プレータイプは${family}が最多でした（${familyN}/${scenes}）。`,statsNarrativePlayerLead:(role,roleN,total,family,familyN)=>`測定場面では${role}での関与が最も多く（${roleN}/${total}）、${family}タイプが最多でした（${familyN}/${total}）。`,statsNarrativeSparse:n=>`測定できる場面が${n}件だけのため、明確なプレーパターンは判断できません。`,
+    statsNarrativeTeamBoth:(gainPosition,gainValue,lossPosition,lossValue,windowLabel,metric)=>`1試合当たりの${windowLabel}${metric}純変化では、${gainPosition}関与場面の利益が最大（${gainValue}）、${lossPosition}関与場面の損失が最大でした（${lossValue}）。`,statsNarrativeTeamGainOnly:(position,value,windowLabel,metric)=>`1試合当たりの${windowLabel}${metric}純変化では、${position}関与場面の利益が最大でした（${value}）。純損失のポジションはありません。`,statsNarrativeTeamLossOnly:(position,value,windowLabel,metric)=>`1試合当たりの${windowLabel}${metric}純変化では、${position}関与場面の損失が最大でした（${value}）。純利益のポジションはありません。`,statsNarrativeTeamFlat:(windowLabel,metric)=>`1試合当たりの${windowLabel}${metric}では、明確なポジション別の純利益・純損失はありませんでした。`,statsNarrativePlayerLead:(role,roleN,total,family,familyN)=>`測定場面では${role}での関与が最も多く（${roleN}/${total}）、${family}タイプが最多でした（${familyN}/${total}）。`,statsNarrativeSparse:n=>`測定できる場面が${n}件だけのため、明確なプレーパターンは判断できません。`,
     statsNarrativeWps:(kind,n,total,horizon)=>({amplified:`即時変化と${horizon}変化が同方向で拡大した場面が最多でした（${n}/${total}）。初期変化が後続展開で増幅した観察パターンです。`,faded:`${horizon}時点の変化幅が即時より小さい場面が最多でした（${n}/${total}）。初期変化が一部相殺された観察パターンです。`,reversed:`即時変化と${horizon}変化の方向が反転した場面が最多でした（${n}/${total}）。初期の流れが後続で反転した観察パターンです。`,held:`即時から${horizon}まで方向と幅がほぼ維持された場面が最多でした（${n}/${total}）。`,mixed:`${total}の対応場面では増幅・相殺・反転が混在し、単一パターンは優勢ではありません。`})[kind],
     statsNarrativeGold:(positive,total,net)=>`${positive}/${total}のゴールド変化が自チームに有利で、1試合当たり純変化は${net}でした。`,statsNarrativeCompare:(a,av,b,bv,windowLabel,metric)=>`1試合当たりの${windowLabel}${metric}純変化は${a} ${av}、${b} ${bv}です。各対象の実出場数で割った観測値です。`,
-    statsEvidencePosition:(label,n,total)=>`${label}関与 ${n}/${total}`,statsEvidenceRole:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceFamily:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceSample:n=>`測定場面 ${n}`,statsViewExample:'代表場面を開く',statsPhaseShort:{lane:'序盤',mid:'中盤',late:'終盤'},
+    statsEvidenceGain:(label,value,n)=>`利益最大 · ${label} ${value} · ${n}場面`,statsEvidenceLoss:(label,value,n)=>`損失最大 · ${label} ${value} · ${n}場面`,statsEvidenceRole:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceFamily:(label,n,total)=>`${label} ${n}/${total}`,statsEvidenceSample:n=>`測定場面 ${n}`,statsViewExample:'代表場面を開く',statsPhaseShort:{lane:'序盤',mid:'中盤',late:'終盤'},
     statsNarrativePhase:(phase,share,baseline,games,totalGames)=>`${phase}場面の比率が比較基準より高く（${share}対${baseline}）、${games}/${totalGames}試合で反復したため、この標本で持続的な時間帯パターンとして観察されました。`,statsEvidencePhase:(phase,share,baseline,p,games,totalGames)=>`${phase} ${share} · 基準 ${baseline} · 補正p=${p} · ${games}/${totalGames}試合`,statsNarrativeCaveat:'実況が取り上げた場面の記述であり、全体的なスタイルや個人貢献の判定ではありません。',
     skip:'本文へ移動', loading:'読み込み中…', loadError:'データを読み込めませんでした。再読み込みしてください。', plannedTitle:'準備中', plannedBody:'この大会ではまだ分析済みの試合がありません。', gameN:n=>`第${n}ゲーム`, gameAria:(n,w)=>`第${n}ゲーム、${w}の勝利`, serLabel:'シリーズ', serCount:(i,n)=>`${n}シリーズ中${i}番目`, phaseBracket:'ブラケットステージ', phasePlayIn:'プレイイン', sourceEnglish:'プレーのタイトルと説明は現在英語で表示されます',
   };
@@ -2492,16 +2498,25 @@
   function teamNarrative(profile, gs) {
     const n = profile.moments.length, example = [...profile.moments].sort((a, b) => Math.abs(b.value) - Math.abs(a.value))[0];
     if (n < 8) return narrativeShell([t('statsNarrativeSparse')(n)], [t('statsEvidenceSample')(n)], example);
-    const positionCounts = new Map(STAT_POSITIONS.map(pos => [pos, profile.positions[pos].n]));
-    const positionTotal = [...positionCounts.values()].reduce((sum, value) => sum + value, 0);
-    const [position, positionN] = topEntry(positionCounts), [family, familyN] = topEntry(profile.families);
-    const paragraphs = [t('statsNarrativeTeamLead')(posLabel(position), positionN, positionTotal, famLabel(family), familyN, n)];
+    const threshold = S.statsMetric === 'wps' ? .05 : .5;
+    const positions = STAT_POSITIONS.map(pos => ({ pos, n: profile.positions[pos].n, value: profile.games ? profile.positions[pos].net / profile.games : 0 }));
+    const gain = positions.filter(x => x.value >= threshold).sort((a, b) => b.value - a.value)[0] || null;
+    const loss = positions.filter(x => x.value <= -threshold).sort((a, b) => a.value - b.value)[0] || null;
+    const windowLabel = statsWindowLabel(), metricLabel = S.statsMetric === 'wps' ? t('statsWps') : t('statsGold');
+    let lead = t('statsNarrativeTeamFlat')(windowLabel, metricLabel);
+    if (gain && loss) lead = t('statsNarrativeTeamBoth')(posLabel(gain.pos), fmtStat(gain.value), posLabel(loss.pos), fmtStat(loss.value), windowLabel, metricLabel);
+    else if (gain) lead = t('statsNarrativeTeamGainOnly')(posLabel(gain.pos), fmtStat(gain.value), windowLabel, metricLabel);
+    else if (loss) lead = t('statsNarrativeTeamLossOnly')(posLabel(loss.pos), fmtStat(loss.value), windowLabel, metricLabel);
+    const paragraphs = [lead];
     const pattern = S.statsMetric === 'wps' ? pairedWpsPattern(profile.moments) : null;
     if (S.statsMetric === 'wps' && pattern) paragraphs.push(t('statsNarrativeWps')(pattern.kind, pattern.n, pattern.total, pattern.horizon));
     if (S.statsMetric === 'gold') paragraphs.push(t('statsNarrativeGold')(profile.positive, n, fmtStat(profile.perGame)));
     const phase = phaseSignal(profile.moments, teamReferenceObs(gs, profile.team));
     if (phase) paragraphs.push(t('statsNarrativePhase')(t('statsPhaseShort')[phase.phase], pct0(phase.entityN, phase.entityTotal), pct0(Math.round(phase.baseline * 1000), 1000), phase.gameN, phase.totalGames));
-    const evidence = [t('statsEvidencePosition')(posLabel(position), positionN, positionTotal), t('statsEvidenceFamily')(famLabel(family), familyN, n), t('statsEvidenceSample')(n)];
+    const evidence = [];
+    if (gain) evidence.push(t('statsEvidenceGain')(posLabel(gain.pos), fmtStat(gain.value), gain.n));
+    if (loss) evidence.push(t('statsEvidenceLoss')(posLabel(loss.pos), fmtStat(loss.value), loss.n));
+    evidence.push(t('statsEvidenceSample')(n));
     if (phase) evidence.push(t('statsEvidencePhase')(t('statsPhaseShort')[phase.phase], pct0(phase.entityN, phase.entityTotal), pct0(Math.round(phase.baseline * 1000), 1000), formatP(phase.adjustedP), phase.gameN, phase.totalGames));
     return narrativeShell(paragraphs, evidence, example);
   }
@@ -2547,9 +2562,9 @@
     }));
     const roster = new Map();
     teamGames.forEach(g => Object.values(ROSTER[g.id] || {}).filter(x => x.team === team).forEach(x => roster.set(`${x.position}|${x.player}`, x)));
-    const moments = [...unique.values()], families = moments.reduce((map, x) => map.set(x.p.family, (map.get(x.p.family) || 0) + 1), new Map());
+    const moments = [...unique.values()];
     return {
-      team, games: teamGames.length, positions, roster: [...roster.values()], moments, families,
+      team, games: teamGames.length, positions, roster: [...roster.values()], moments,
       positive: moments.filter(x => x.value > 0).length,
       median: median(moments.map(x => Math.abs(x.value))),
       perGame: teamGames.length ? moments.reduce((s, x) => s + x.value, 0) / teamGames.length : 0,
