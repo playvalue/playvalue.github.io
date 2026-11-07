@@ -193,6 +193,8 @@
     .guide dt { font-weight: 700; }
     .guide dd { color: var(--text-muted); }
     .hz-head { font-size: .78rem; color: var(--text-muted); font-weight: 700; margin-top: 12px; }
+    .hz-head strong { color: var(--text-main); }
+    .hz-head span { font-weight: 500; }
 
     /* main.container: .container's padding shorthand would otherwise reset the top space to 0. */
     main.container { padding-top: 20px; display: flex; flex-direction: column; gap: 16px; }
@@ -296,7 +298,7 @@
       .stage-toolbar { align-items: flex-start; }
       .stage-control { width: 100%; justify-content: space-between; }
     }
-    .detail .hz-head { margin-top: 14px; }
+    .detail .hz-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 3px 8px; margin-top: 14px; }
     .detail .yt { margin: 14px 0 4px; }
     /* The arrow keys step through plays; the key caps on the buttons say so. Touch screens have no keys to press. */
     kbd { display: inline-block; min-width: 20px; padding: 0 5px; border: 1px solid var(--border-color); border-bottom-width: 2px; border-radius: 4px; background: var(--bg-main); font: 600 .75rem/1.4 var(--font); color: var(--text-muted); text-align: center; }
@@ -345,6 +347,7 @@
     .wps-hero .value { font-size: 1.55rem; font-weight: 800; }
     .wps-hero .value.gain { color: var(--gain); } .wps-hero .value.loss { color: var(--loss); } .wps-hero .value.neutral { color: var(--neutral); }
     .wps-hero .prob { margin-top: 3px; color: var(--text-muted); font-size: .76rem; }
+    .wps-hero .window { margin-top: 3px; color: var(--text-muted); font-size: .7rem; line-height: 1.45; }
     .wps-hero .model-note { margin-top: 5px; color: var(--text-muted); font-size: .68rem; line-height: 1.45; }
     .row .e.metric-cell { display: grid; gap: 5px; width: 100%; min-width: 0; line-height: 1.1; }
     .metric-block { display: grid; gap: 2px; min-width: 0; }
@@ -696,14 +699,16 @@
       dvText: (v, b, w) => `플레이 전후 ${w}초를 비교하면 분당 골드 차이가 ${v} 빨라짐 (오차 ±${b})`,
       dvTextNeg: (v, b, w) => `플레이 전후 ${w}초를 비교하면 분당 골드 차이가 ${v} 느려짐 (오차 ±${b})`,
       verification: '해설만 보고 정리했으며 영상으로 확인하지 않았습니다', retro: '지난 장면 회상',
-      hzHead: '플레이 이후 변화', wpsBoundary: '플레이 전후 승률 변화',
+      hzHead: '15·30·60초 전체 변화', wpsBoundary: '즉시 승률 변화',
+      wpsBoundaryWindow: (pre, post) => `시작 전 5초 창 ${pre}개 관측 중앙값 → 종료 후 5초 창 ${post}개 관측 중앙값`,
+      wpsTotalNote: '플레이 시작부터 각 시점까지의 후속 사건을 모두 포함합니다.',
       wpsMissing: '승률을 측정할 관측 구간이 부족합니다',
       wpsProb: (a, b) => `모델 승률 ${a} → ${b}`,
       wpsCausal: '관측된 모델 상태 변화이며, 이 플레이만의 인과효과는 아닙니다.',
       wpsCoverage: (m, n) => `WPS 측정 <strong>${m}</strong> / ${n}`, bothCoverage: (wm, n, gm, gr, h) => `WPS 측정 <strong>${wm}</strong> / ${n} · ${h}초 골드 측정 <strong>${gm}</strong> · 방향 판정 <strong>${gr}</strong>`,
       colWps: h => `${h}초 WPS`, colBoth: h => `${h}초 WPS · 골드`,
       wpsGuide: [
-        ['승률과 WPS', '승률은 v312가 각 시점의 경기 상태에서 최종 승리를 예측한 값입니다. WPS는 플레이 전후 또는 15·30·60초 뒤 그 승률이 몇 퍼센트포인트 움직였는지입니다.'],
+        ['즉시 변화와 전체 변화', '즉시 WPS는 플레이 시작 전 5초와 종료 후 5초의 중앙값을 비교합니다. 15·30·60초 전체 WPS는 시작점에서 각 시점까지의 후속 사건을 포함한 승률 변화입니다.'],
         ['베타 모델', '월즈는 동결된 v312, MSI는 v312의 동결된 MSI 분기(v156)를 씁니다. 새 경기 결과로 모델이나 calibration을 다시 맞추지 않았습니다.'],
         ['원인은 아닙니다', '같은 시간에 일어난 모든 상태 변화가 WPS에 들어갑니다. 승률이 움직였다고 해서 그 플레이만의 인과효과라는 뜻은 아닙니다.'],
       ],
@@ -793,14 +798,16 @@
       dvText: (v, b, w) => `the gold gap per minute grew ${v} faster over ${w} s after than before (±${b})`,
       dvTextNeg: (v, b, w) => `the gold gap per minute grew ${v} slower over ${w} s after than before (±${b})`,
       verification: 'Written from commentary only; not checked against the video', retro: 'Recalled later',
-      hzHead: 'Change after the play', wpsBoundary: 'Win-probability change across the play',
+      hzHead: 'Total change over 15, 30 and 60 seconds', wpsBoundary: 'Immediate win-probability change',
+      wpsBoundaryWindow: (pre, post) => `Median of ${pre} observed seconds in the 5s pre-start window → ${post} in the 5s post-end window`,
+      wpsTotalNote: 'Includes every subsequent event from the play start to each endpoint.',
       wpsMissing: 'Not enough observed states to measure win probability',
       wpsProb: (a, b) => `Model probability ${a} → ${b}`,
       wpsCausal: 'Observed modeled state change, not the causal effect of this play alone.',
       wpsCoverage: (m, n) => `WPS measured <strong>${m}</strong> of ${n}`, bothCoverage: (wm, n, gm, gr, h) => `WPS measured <strong>${wm}</strong> of ${n} · ${h}s gold measured <strong>${gm}</strong> · direction resolved <strong>${gr}</strong>`,
       colWps: h => `WPS, ${h}s`, colBoth: h => `${h}s WPS · gold`,
       wpsGuide: [
-        ['Win probability and WPS', 'Win probability is v312’s forecast of the final winner from the state at that moment. WPS is its percentage-point movement across the play or after 15, 30 or 60 seconds.'],
+        ['Immediate and total change', 'Immediate WPS compares the median probability in the 5s before the play starts with the median in the 5s after it ends. Total WPS includes all subsequent events from the start to the 15, 30 or 60s endpoint.'],
         ['Beta model', 'Worlds uses frozen v312; MSI uses its frozen MSI branch (v156). Neither the model nor calibration was refit to the new games.'],
         ['Not a cause', 'Every simultaneous state change enters WPS. A probability move is not the causal effect of this play alone.'],
       ],
@@ -860,7 +867,7 @@
     riotKind: { kill:'击杀', tower:'防御塔', inhibitor:'召唤水晶', plate:'镀层' }, riotMonster: { DRAGON:'元素亚龙', BARON_NASHOR:'纳什男爵', RIFTHERALD:'峡谷先锋', HORDE:'虚空巢虫', ATAKHAN:'厄塔汗', ELDER_DRAGON:'远古巨龙' },
     ctxEpisode: '同一场景', ctxRelated: '关联操作', ctxObj: '地图资源', leadText: (state,g) => `团队经济 ${g}（${state}）`, bgText: (pct,h) => pct >= 50 ? `本局同阶段${h}秒区间的前${Math.max(1,Math.round(100-pct))}%` : `本局同阶段${h}秒区间的后${Math.max(1,Math.round(pct))}%`, bgNote: '仅表示位置，不是效果大小',
     dvText: (v,b,w) => `比较操作前后${w}秒，每分钟经济差加快${v}（±${b}）`, dvTextNeg: (v,b,w) => `比较操作前后${w}秒，每分钟经济差减慢${v}（±${b}）`, verification: '仅依据解说整理，未用视频核验', retro: '事后回顾',
-    hzHead:'操作后的变化', wpsBoundary:'操作前后胜率变化', wpsMissing:'观测区间不足，无法测量胜率', wpsProb:(a,b)=>`模型胜率 ${a} → ${b}`, wpsCausal:'这是观测到的模型状态变化，并非该操作单独造成的因果效果。', wpsCoverage:(m,n)=>`WPS已测 <strong>${m}</strong> / ${n}`, bothCoverage:(wm,n,gm,gr,h)=>`WPS已测 <strong>${wm}</strong> / ${n} · ${h}秒经济已测 <strong>${gm}</strong> · 方向明确 <strong>${gr}</strong>`, colWps:h=>`${h}秒WPS`, colBoth:h=>`${h}秒WPS · 经济`, wpsGuide:[['胜率与WPS','胜率是v312根据当时比赛状态预测最终胜方的概率；WPS是该概率在操作前后或15、30、60秒后的百分点变化。'],['测试版模型','Worlds使用冻结的v312，MSI使用其冻结的MSI分支v156；未用新比赛重新拟合模型或校准。'],['不代表因果','同一时间的全部状态变化都会进入WPS，因此并非该操作单独造成的效果。']], hzOk: b => `误差±${b}`, hzUnres: b => `在±${b}内，无法判断`,
+    hzHead:'15·30·60秒整体变化', wpsBoundary:'即时胜率变化', wpsBoundaryWindow:(pre,post)=>`开始前5秒窗口${pre}个观测的中位数 → 结束后5秒窗口${post}个观测的中位数`, wpsTotalNote:'包含从操作开始到各终点之间的所有后续事件。', wpsMissing:'观测区间不足，无法测量胜率', wpsProb:(a,b)=>`模型胜率 ${a} → ${b}`, wpsCausal:'这是观测到的模型状态变化，并非该操作单独造成的因果效果。', wpsCoverage:(m,n)=>`WPS已测 <strong>${m}</strong> / ${n}`, bothCoverage:(wm,n,gm,gr,h)=>`WPS已测 <strong>${wm}</strong> / ${n} · ${h}秒经济已测 <strong>${gm}</strong> · 方向明确 <strong>${gr}</strong>`, colWps:h=>`${h}秒WPS`, colBoth:h=>`${h}秒WPS · 经济`, wpsGuide:[['即时与整体变化','即时WPS比较操作开始前5秒与结束后5秒的中位胜率；整体WPS包含从开始到15、30或60秒终点的全部后续事件。'],['测试版模型','Worlds使用冻结的v312，MSI使用其冻结的MSI分支v156；未用新比赛重新拟合模型或校准。'],['不代表因果','同一时间的全部状态变化都会进入WPS，因此并非该操作单独造成的效果。']], hzOk: b => `误差±${b}`, hzUnres: b => `在±${b}内，无法判断`,
     xtTitle: '按类型汇总', xtSub: '每个操作按执行方只计一次。点击数字可在下方查看对应操作。', scope: '范围', scopeGame: '所选比赛', scopeStage: '本系列赛', scopeAll: '整个赛事', rowsBy: '拆分方式', rFamily: '操作类型', rOutcome: '结果', rKill: '击杀', rFamOut: '类型 × 结果', rPlayer: '选手', rChamp: '英雄',
     xtPlayerNote: '按选手或英雄拆分时，计算其执行、成为目标或参与应对的操作，并从该选手队伍视角显示；对方操作会翻转经济变化正负号。多人参与的操作会对每位选手各计一次，只统计解说点名的情况。', sortBy: c => `按${c}排序`, rowLabel: '项目', xtGames: '比赛', xtPerGame: '每局', xtCum: '累计', total: '合计', usedBy: '使用者', played: '使用英雄', games: n => `${n}局`,
     xtNote: '四栏之和为总数。收益与损失只统计超出误差范围、方向明确的变化。这些是观测到的经济变化，并非操作造成的因果效果。', xtPick: '点击数字后，对应操作会显示在这里。',
@@ -883,7 +890,7 @@
     mmHead:'マップ位置', mmSrc:'放送ミニマップ・画面 + Riot記録 · 画像 Riot Data Dragon', mmPlay:'再生', mmPause:'停止', mmAt:(d,c)=>`開始${d>=0?'+':''}${d}秒 · ${c}`, mmGuide:'位置の読み方', mmUnavailable:'このプレーには表示できる位置データがありません。', mmNote:'白い縁の大きなアイコンはこのプレーで名前が挙がった選手、線はその後の移動です。位置は放送ミニマップまたは選手名が映る画面から読み、1分ごとにRiotの正確な位置へ合わせます。薄い破線は既知位置間の補間、灰色の×はRiot記録上のデス、短く出る×印の円はキル地点です。読み取れない選手は表示しません。',
     ctxNear:'開始時に近くにいた選手（ミニマップ）', ctxNearNone:'なし', ctxNearNote:n=>`このプレーで名前が挙がった選手（${n}）から約1,500ユニット以内`, ctxElse:h=>`${h}秒以内に別の場所で起きたこと`, ctxElseNone:'Riot記録ではなし', ctxElseNote:'このプレーの選手が関与していないキル、エピックモンスター、建造物です。そのゴールドも上の変化に含まれます。',
     riotKind:{kill:'キル',tower:'タワー',inhibitor:'インヒビター',plate:'タワープレート'}, riotMonster:{DRAGON:'ドラゴン',BARON_NASHOR:'バロン',RIFTHERALD:'リフトヘラルド',HORDE:'ヴォイドグラブ',ATAKHAN:'アタカン',ELDER_DRAGON:'エルダードラゴン'}, ctxEpisode:'同じ場面', ctxRelated:'関連プレー', ctxObj:'オブジェクト', leadText:(state,g)=>`チームゴールド ${g}（${state}）`, bgText:(pct,h)=>pct>=50?`この試合同フェーズの${h}秒区間で上位${Math.max(1,Math.round(100-pct))}%`:`この試合同フェーズの${h}秒区間で下位${Math.max(1,Math.round(pct))}%`, bgNote:'位置を示すだけで効果の大きさではありません',
-    dvText:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}速く拡大（±${b}）`, dvTextNeg:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}遅く拡大（±${b}）`, verification:'実況のみから整理し、動画では確認していません', retro:'後から振り返った場面', hzHead:'プレー後の変化', wpsBoundary:'プレー前後の勝率変化', wpsMissing:'勝率を測る観測区間が不足しています', wpsProb:(a,b)=>`モデル勝率 ${a} → ${b}`, wpsCausal:'観測されたモデル状態の変化であり、このプレーだけの因果効果ではありません。', wpsCoverage:(m,n)=>`WPS測定 <strong>${m}</strong> / ${n}`, bothCoverage:(wm,n,gm,gr,h)=>`WPS測定 <strong>${wm}</strong> / ${n} · ${h}秒ゴールド測定 <strong>${gm}</strong> · 方向判定 <strong>${gr}</strong>`, colWps:h=>`${h}秒WPS`, colBoth:h=>`${h}秒WPS · ゴールド`, wpsGuide:[['勝率とWPS','勝率はv312がその時点の試合状態から最終勝者を予測した値です。WPSはプレー前後または15・30・60秒後のパーセントポイント変化です。'],['ベータモデル','Worldsは凍結v312、MSIは凍結MSI分岐v156を使用し、新しい試合で再学習・再校正していません。'],['因果ではありません','同時刻の全状態変化がWPSに入るため、このプレーだけの効果ではありません。']], hzOk:b=>`誤差±${b}`, hzUnres:b=>`±${b}以内のため不明`,
+    dvText:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}速く拡大（±${b}）`, dvTextNeg:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}遅く拡大（±${b}）`, verification:'実況のみから整理し、動画では確認していません', retro:'後から振り返った場面', hzHead:'15・30・60秒の全体変化', wpsBoundary:'即時勝率変化', wpsBoundaryWindow:(pre,post)=>`開始前5秒窓の${pre}観測の中央値 → 終了後5秒窓の${post}観測の中央値`, wpsTotalNote:'プレー開始から各終点までの後続イベントをすべて含みます。', wpsMissing:'勝率を測る観測区間が不足しています', wpsProb:(a,b)=>`モデル勝率 ${a} → ${b}`, wpsCausal:'観測されたモデル状態の変化であり、このプレーだけの因果効果ではありません。', wpsCoverage:(m,n)=>`WPS測定 <strong>${m}</strong> / ${n}`, bothCoverage:(wm,n,gm,gr,h)=>`WPS測定 <strong>${wm}</strong> / ${n} · ${h}秒ゴールド測定 <strong>${gm}</strong> · 方向判定 <strong>${gr}</strong>`, colWps:h=>`${h}秒WPS`, colBoth:h=>`${h}秒WPS · ゴールド`, wpsGuide:[['即時変化と全体変化','即時WPSは開始前5秒と終了後5秒の勝率中央値を比較します。全体WPSは開始から15・30・60秒の終点までの後続イベントを含みます。'],['ベータモデル','Worldsは凍結v312、MSIは凍結MSI分岐v156を使用し、新しい試合で再学習・再校正していません。'],['因果ではありません','同時刻の全状態変化がWPSに入るため、このプレーだけの効果ではありません。']], hzOk:b=>`誤差±${b}`, hzUnres:b=>`±${b}以内のため不明`,
     xtTitle:'タイプ別集計', xtSub:'各プレーは実行したチーム基準で一度だけ数えます。数字を押すと該当プレーが下に表示されます。', scope:'範囲', scopeGame:'選択した試合', scopeStage:'このシリーズ', scopeAll:'大会全体', rowsBy:'分け方', rFamily:'プレータイプ', rOutcome:'結果', rKill:'キル', rFamOut:'タイプ × 結果', rPlayer:'選手', rChamp:'チャンピオン', xtPlayerNote:'選手・チャンピオン別では、実行・対象・対応として関わったプレーをその選手のチーム視点で数えます。相手のプレーはゴールド変化の符号を反転します。複数の選手が関わるプレーは選手ごとに一度入り、実況が名前を挙げたものだけを数えます。', sortBy:c=>`${c}で並べ替え`, rowLabel:'項目', xtGames:'試合', xtPerGame:'1試合当たり', xtCum:'累計', total:'合計', usedBy:'使用者', played:'使用チャンピオン', games:n=>`${n}試合`, xtNote:'4列の合計が総数です。利益と損失は誤差範囲を超えて方向が明確な場合だけ数えます。これは観測されたゴールド変化であり、プレーの因果効果ではありません。', xtPick:'数字を押すと該当プレーがここに表示されます。',
     statsTitle:'このシリーズのチーム・選手',statsSub:'現在のシリーズで実況が名前を挙げた重要場面を示します。他のチーム・選手との比較は別の比較画面で行います。',compareTitle:'チーム・選手比較',compareSub:'シリーズ選択とは独立して、大会全体または直接対戦で比較します。',statsOpenCompare:'大会全体で比較 →',statsPlayerList:'このシリーズの選手',statsTeam:'チーム',statsPlayer:'選手',statsChamp:'チャンピオン',statsMetric:'指標',statsWps:'勝率変化',statsGold:'ゴールド変化',statsRadarTitle:'重要場面への関与プロフィール',statsRadarSub:(h,m)=>`1試合当たりの${h}秒${m}純変化 · 中央のリングは0`,statsGames:'試合',statsScenes:'測定場面',statsToward:'自チーム方向',statsMedian:'変化幅中央値',statsPerGame:'1試合当たり純変化',statsComparePlayer:'選手比較',statsCompareChamp:'チャンピオン比較',statsFingerprint:'プレー分布',statsGood:'自チームに有利',statsBad:'自チームに不利',statsRoles:'関与役割',statsTypes:'主なプレータイプ',statsGoldBreak:'変化方向の集計',statsTopScenes:'変化幅の大きい場面',statsCaveat:'一つのプレーは関与した各選手に一度ずつ入ります。重なる時間窓や同時イベントも含むため、個人貢献とは解釈しません。',statsBasis:'比較基準',statsBasisSeries:'現在のシリーズ',statsBasisH2h:'直接対戦',statsBasisAll:'大会全体',statsH2hUnavailable:'選択した2者の直接対戦はありません。',statsPickTeamA:'チームA',statsPickTeamB:'チームB',statsPickPlayerA:'選手A',statsPickPlayerB:'選手B',statsPosition:'ポジション',statsAllPositions:'全ポジション',statsCompareHint:'各値は選択範囲内で実際に出場した試合数で割ります。',statsNoData:'この比較で測定可能な場面はありません。',statsOpenPlay:'プレーを開く',
     skip:'本文へ移動', loading:'読み込み中…', loadError:'データを読み込めませんでした。再読み込みしてください。', plannedTitle:'準備中', plannedBody:'この大会ではまだ分析済みの試合がありません。', gameN:n=>`第${n}ゲーム`, gameAria:(n,w)=>`第${n}ゲーム、${w}の勝利`, serLabel:'シリーズ', serCount:(i,n)=>`${n}シリーズ中${i}番目`, phaseBracket:'ブラケットステージ', phasePlayIn:'プレイイン', sourceEnglish:'プレーのタイトルと説明は現在英語で表示されます',
@@ -1829,7 +1836,8 @@
         <div class="navbtns"><button class="btn" id="prevP" title="${esc(t('keyPrev'))}" ${idx <= 0 ? 'disabled' : ''}><kbd>←</kbd>${t('prevWord')}</button><button class="btn" id="nextP" title="${esc(t('keyNext'))}" ${idx >= g.plays.length - 1 ? 'disabled' : ''}>${t('nextWord')}<kbd>→</kbd></button></div></div>
       <h2 class="play-title">${esc(contentText(p, 'title'))}</h2>
       ${S.lang === 'zh' || S.lang === 'ja' ? `<p class="muted" style="font-size:.74rem;margin-top:-2px">${esc(t('sourceEnglish'))}</p>` : ''}
-      ${S.metric !== 'gold' && g._wps ? `<div class="wps-hero"><div class="top"><span><strong>${t('wpsBoundary')}</strong> <span class="metric-beta">${esc(g._wps.model_version)} ${t('beta')}</span></span><span class="value ${boundaryClass}">${boundaryValue == null ? '—' : fmtPP(boundaryValue)}</span></div><div class="prob">${boundaryValid ? esc(t('wpsProb')(fmtProb(boundaryBefore), fmtProb(boundaryAfter))) : t('wpsMissing')}</div><div class="model-note">${t('wpsCausal')}</div></div>` : ''}
+      ${S.metric !== 'gold' && g._wps ? `<div class="wps-hero"><div class="top"><span><strong>${t('wpsBoundary')}</strong> <span class="metric-beta">${esc(g._wps.model_version)} ${t('beta')}</span></span><span class="value ${boundaryClass}">${boundaryValue == null ? '—' : fmtPP(boundaryValue)}</span></div><div class="prob">${boundaryValid ? esc(t('wpsProb')(fmtProb(boundaryBefore), fmtProb(boundaryAfter))) : t('wpsMissing')}</div>${boundaryValid ? `<div class="window">${esc(t('wpsBoundaryWindow')(boundary.pre_observed_seconds, boundary.post_observed_seconds))}</div>` : ''}<div class="model-note">${t('wpsCausal')}</div></div>` : ''}
+      <div class="hz-head"><strong>${t('hzHead')}</strong>${S.metric !== 'gold' && g._wps ? `<span>${t('wpsTotalNote')}</span>` : ''}</div>
       <div class="horizons" aria-label="${esc(t('hzHead'))}">${hzHtml}</div>
       ${involvedOf(p).length ? `<p class="players">${INV_ROLES.map(r => [r, involvedOf(p).filter(x => x.role === r)]).filter(([, xs]) => xs.length)
         .map(([r, xs]) => `<span class="role-lbl">${esc(L('inv', r))}</span> ${xs.map(x => `<button class="linkbtn" data-player="${esc(x.player)}">${esc(playerText(g, x.player))}</button>`).join(', ')}`).join('<br>')}</p>` : ''}
