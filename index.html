@@ -542,7 +542,7 @@
       methodology: '방법론', lang: 'English', languagePicker: '언어 선택', themeDark: '다크 모드', themeLight: '라이트 모드',
       viewSet: '경기별 보기', viewXtab: '유형별 집계', winner: '승리',
       cov: (n, m, k) => `플레이 <strong>${n}</strong>건 중 골드 변화를 잰 것 <strong>${m}</strong>건, 그중 이득·손해가 판정된 것 <strong>${k}</strong>건`,
-      duration: '경기 시간', perspective: '누구 입장에서', horizon: '변화 구간', sec: s => `${s}초`,
+      duration: '경기 시간', horizon: '변화 구간', sec: s => `${s}초`,
       metric: '표시 지표', metricWps: '승률', metricGold: '골드', metricBoth: '둘 다', beta: 'Beta',
       guideTitle: '숫자 읽는 법',
       guide: [
@@ -551,19 +551,19 @@
         ['측정 없음', '리플레이 화면 등으로 앞이나 뒤 시점의 골드를 읽지 못한 경우입니다.'],
         ['같은 시간대와 비교', '이 경기의 같은 시간대(라인전·중반·후반)에서 모든 30초 구간의 골드 변화를 모아, 이 플레이의 변화가 어느 쪽 끝에 있는지 보여 줍니다. 위치만 알려 줄 뿐 효과의 크기는 아닙니다.'],
         ['원인은 아닙니다', '같은 시간에 다른 곳에서 일어난 일도 골드 변화에 섞여 있습니다. 골드가 움직였다고 해서 그 플레이 때문이라는 뜻은 아닙니다.'],
-        ['누구 입장에서', '고른 팀 입장에서 차트와 목록을 읽습니다. 상대 팀이 한 플레이는 골드 변화의 부호가 뒤집히고, 갱킹은 “갱킹 대응”으로 보입니다. 유형별 집계는 해설이 짚은 쪽 기준으로 한 번만 셉니다.'],
+        ['팀 방향', '경기 흐름 차트는 블루팀 기준으로 고정됩니다. 플레이 목록의 막대와 팀 이름은 어느 팀에 얼마나 유리했는지를 직접 보여 줍니다. 플레이 설명과 판정은 해설이 행동 주체로 짚은 팀 기준입니다.'],
       ],
-      chartTitle: '경기 흐름', chartSub: (h, team) => `선은 경기 상태, 막대는 플레이 뒤 ${h}초의 변화를 보여 줍니다. 위쪽이 ${team} 이득입니다.`,
-      laneWinProb: team => `${team} 승률`, laneWps: h => `${h}초 승률 변화 (pp)`,
+      chartTitle: '경기 흐름', chartSub: (h, blue, red) => `선은 블루팀 기준 경기 상태, 막대는 플레이 뒤 ${h}초 변화입니다. 위 ${blue} · 아래 ${red}.`,
+      laneWinProb: team => `${team} 승률`, laneWps: (h, blue, red) => `${h}초 승률 변화 · ↑${blue} / ↓${red}`,
       lgBlue: '블루 팀이 한 플레이', lgRed: '레드 팀이 한 플레이', lgUnres: '오차 범위 안', lgWin: '선택한 플레이의 구간', lgFlow: '이어지는 플레이 (90초 이내)', lgObj: '전령·바론·장로 획득과 이후 플레이',
-      laneFlow: '연결', laneObj: '오브젝트', laneGap: '두 팀 골드 차이', laneBars: h => `플레이 뒤 ${h}초 골드 변화`,
+      laneFlow: '연결', laneObj: '오브젝트', laneGap: (blue, red) => `${blue} − ${red} 골드`, laneBars: (h, blue, red) => `${h}초 골드 변화 · ↑${blue} / ↓${red}`,
       finding: (h, clk, title, team, e) => `${h}초 기준 가장 큰 변화: ${clk} ${title} (${team} ${e})`,
       findingCompact: (h, clk, team, e) => `↗ ${h}초 최대 변화 · ${clk} · ${team} ${e}`,
       noFinding: h => `${h}초 기준으로 이득·손해가 판정된 플레이가 없습니다.`,
       gameLine: (w, d) => `${w} 승리 · 경기 시간 ${d}`,
       gameNav: (n, w, d) => `${n}세트 · ${w} 승 · ${d}`,
       detailEmpty: '플레이를 고르면 여기에 자세히 나옵니다.', prevWord: '이전', nextWord: '다음', keyPrev: '이전 플레이 (키보드 ←)', keyNext: '다음 플레이 (키보드 →)',
-      colTime: '시간', colTeam: '팀', colPlay: '플레이', colType: '행동 유형', colGold: h => `${h}초 골드 변화`, colFrom: tm => ` (${tm} 입장)`,
+      colTime: '시간', colTeam: '팀', colPlay: '플레이', colType: '행동 유형', colGold: h => `${h}초 골드 변화`,
       hlOnly: '눈여겨볼 장면만', hlCriteriaTitle: h => `눈여겨볼 장면 · ${h}초 기준`,
       hlCriteria: h => `성공했는데 골드 손해, 실패·중단했는데 골드 이득, 또는 같은 시간대에서 ${h}초 골드 변화 폭이 상위 10%인 플레이입니다.`,
       hlCriteriaOpen: '기준 보기', hlCriteriaClose: '접기',
@@ -571,7 +571,7 @@
       listCoverage: (h, m, k) => `${h}초 골드 측정 <strong>${m}</strong> · 방향 판정 <strong>${k}</strong>`,
       listSortLabel: '정렬', sortTime: '시간순', sortWps: '승률 변화 큰 순', sortGold: '골드 변화 큰 순',
       fFamily: '모든 행동 유형', fTag: '모든 결과', fState: '모든 골드 변화', fPlayer: '모든 선수·챔피언', clearFilters: '필터 지우기',
-      playerNote: '그 선수가 행동했거나, 대상이 됐거나, 맞대응한 플레이입니다. 그 선수 팀 입장으로 바꿔 보여 줍니다. 해설이 이름을 말한 플레이만 나옵니다.',
+      playerNote: '그 선수가 행동했거나, 대상이 됐거나, 맞대응한 플레이입니다. 필터를 바꿔도 수치와 판정의 기준은 그대로이며, 해설이 이름을 말한 플레이만 나옵니다.',
       ctxEpPlayers: '이 장면에 관여한 선수',
       prev: '← 이전', next: '다음 →', vod: '영상 보기', vodNew: 'YouTube에서 열기 ↗',
       ytNote: '파일을 직접 열면 YouTube 재생이 막힐 수 있습니다. 위 링크로 해당 장면을 여세요.',
@@ -593,8 +593,6 @@
       dvText: (v, b, w) => `플레이 전후 ${w}초를 비교하면 분당 골드 차이가 ${v} 빨라짐 (오차 ±${b})`,
       dvTextNeg: (v, b, w) => `플레이 전후 ${w}초를 비교하면 분당 골드 차이가 ${v} 느려짐 (오차 ±${b})`,
       verification: '해설만 보고 정리했으며 영상으로 확인하지 않았습니다', retro: '지난 장면 회상',
-      flipNote: (team, actor) => `${team} 입장에서 보는 중입니다. 원래 ${actor}의 플레이이며, 집계에서는 ${actor} 기준으로 한 번만 셉니다.`,
-      oppPlay: '상대 팀 플레이',
       hzHead: '플레이 이후 변화', wpsBoundary: '플레이 전후 승률 변화',
       wpsMissing: '승률을 측정할 관측 구간이 부족합니다',
       wpsProb: (a, b) => `모델 승률 ${a} → ${b}`,
@@ -628,7 +626,7 @@
       methodology: 'Methodology', lang: '한국어', languagePicker: 'Choose language', themeDark: 'Dark mode', themeLight: 'Light mode',
       viewSet: 'By game', viewXtab: 'Totals by type', winner: 'Winner',
       cov: (n, m, k) => `<strong>${n}</strong> plays: gold change measured for <strong>${m}</strong>, of which <strong>${k}</strong> are a clear gain or loss`,
-      duration: 'Length', perspective: 'Seen from', horizon: 'Change over', sec: s => `${s}s`,
+      duration: 'Length', horizon: 'Change over', sec: s => `${s}s`,
       metric: 'Metric', metricWps: 'Win probability', metricGold: 'Gold', metricBoth: 'Both', beta: 'Beta',
       guideTitle: 'How to read the numbers',
       guide: [
@@ -637,19 +635,19 @@
         ['Not measured', 'The gold at the start or end could not be read, for example during a replay.'],
         ['Same phase', 'Every 30-second stretch in the same phase of this game (laning, mid, late) is pooled, and the play is placed within that spread. It shows position, not the size of an effect.'],
         ['Not a cause', 'Whatever else happened on the map at the same time is in the gold change too. A change does not mean the play caused it.'],
-        ['Seen from', 'The chart and the list read from the team you pick. A play by the other team has its sign flipped, and a gank shows as “responding to a gank”. Totals count each play once, for the side the casters named.'],
+        ['Team direction', 'The game-flow chart always uses the blue-team frame. In the play list, the bar and team name directly show which team benefited and by how much. Play descriptions and assessments stay with the acting team named by the casters.'],
       ],
-      chartTitle: 'Game flow', chartSub: (h, team) => `Lines show game state and bars show the change over ${h} s after each play. Up is a gain for ${team}.`,
-      laneWinProb: team => `${team} win probability`, laneWps: h => `${h}s win-probability change (pp)`,
+      chartTitle: 'Game flow', chartSub: (h, blue, red) => `Lines use the blue-team frame; bars show the ${h}s change. Up ${blue} · down ${red}.`,
+      laneWinProb: team => `${team} win probability`, laneWps: (h, blue, red) => `${h}s win-probability change · ↑${blue} / ↓${red}`,
       lgBlue: 'Play by the blue side', lgRed: 'Play by the red side', lgUnres: 'Inside the margin', lgWin: 'Window of the selected play', lgFlow: 'Linked plays (within 90 s)', lgObj: 'Herald, Baron and Elder taken, and the plays after',
-      laneFlow: 'Linked', laneObj: 'Objectives', laneGap: 'Gold gap', laneBars: h => `Gold change ${h} s after each play`,
+      laneFlow: 'Linked', laneObj: 'Objectives', laneGap: (blue, red) => `${blue} − ${red} gold`, laneBars: (h, blue, red) => `${h}s gold change · ↑${blue} / ↓${red}`,
       finding: (h, clk, title, team, e) => `Largest change over ${h} s: ${clk} ${title} (${team} ${e})`,
       findingCompact: (h, clk, team, e) => `↗ Largest ${h}s change · ${clk} · ${team} ${e}`,
       noFinding: h => `No play has a clear gain or loss over ${h} s.`,
       gameLine: (w, d) => `${w} won · ${d}`,
       gameNav: (n, w, d) => `Game ${n} · ${w} won · ${d}`,
       detailEmpty: 'Pick a play to see it here.', prevWord: 'Previous', nextWord: 'Next', keyPrev: 'Previous play (← key)', keyNext: 'Next play (→ key)',
-      colTime: 'Time', colTeam: 'Team', colPlay: 'Play', colType: 'Play type', colGold: h => `Gold change, ${h}s`, colFrom: tm => ` (${tm} view)`,
+      colTime: 'Time', colTeam: 'Team', colPlay: 'Play', colType: 'Play type', colGold: h => `Gold change, ${h}s`,
       hlOnly: 'Worth a look only', hlCriteriaTitle: h => `Worth a look · ${h}s window`,
       hlCriteria: h => `A success with a gold loss, a failure or called-off play with a gold gain, or a ${h}s gold swing in the largest 10% for that phase of the game.`,
       hlCriteriaOpen: 'View criteria', hlCriteriaClose: 'Close',
@@ -657,7 +655,7 @@
       listCoverage: (h, m, k) => `${h}s gold measured <strong>${m}</strong> · direction resolved <strong>${k}</strong>`,
       listSortLabel: 'Sort', sortTime: 'Time', sortWps: 'Largest win-probability swing', sortGold: 'Largest gold swing',
       fFamily: 'All play types', fTag: 'All results', fState: 'All gold changes', fPlayer: 'All players and champions', clearFilters: 'Clear filters',
-      playerNote: 'Plays the player made, was targeted by, or responded to, seen from their team. Only plays where the commentary names the player appear.',
+      playerNote: 'Plays the player made, was targeted by, or responded to. Filtering does not change how values or assessments are read. Only plays where the commentary names the player appear.',
       ctxEpPlayers: 'Players in this moment',
       prev: '← Previous', next: 'Next →', vod: 'Watch', vodNew: 'Open on YouTube ↗',
       ytNote: 'Opened as a local file, YouTube may refuse to play here. Use the link above.',
@@ -679,8 +677,6 @@
       dvText: (v, b, w) => `the gold gap per minute grew ${v} faster over ${w} s after than before (±${b})`,
       dvTextNeg: (v, b, w) => `the gold gap per minute grew ${v} slower over ${w} s after than before (±${b})`,
       verification: 'Written from commentary only; not checked against the video', retro: 'Recalled later',
-      flipNote: (team, actor) => `Seen from ${team}. This is ${actor}'s play and is counted once, for ${actor}, in all totals.`,
-      oppPlay: 'Opponent play',
       hzHead: 'Change after the play', wpsBoundary: 'Win-probability change across the play',
       wpsMissing: 'Not enough observed states to measure win probability',
       wpsProb: (a, b) => `Model probability ${a} → ${b}`,
@@ -715,19 +711,19 @@
     methodology: '研究方法', languagePicker: '选择语言', themeDark: '深色模式', themeLight: '浅色模式',
     viewSet: '按比赛查看', viewXtab: '按类型汇总', winner: '胜者',
     cov: (n, m, k) => `共 <strong>${n}</strong> 个操作：测得经济变化 <strong>${m}</strong> 个，其中 <strong>${k}</strong> 个可明确判为收益或损失`,
-    duration: '比赛时长', perspective: '观察视角', horizon: '变化区间', sec: s => `${s}秒`, metric:'显示指标', metricWps:'胜率', metricGold:'经济', metricBoth:'两者', beta:'测试版',
+    duration: '比赛时长', horizon: '变化区间', sec: s => `${s}秒`, metric:'显示指标', metricWps:'胜率', metricGold:'经济', metricBoth:'两者', beta:'测试版',
     guideTitle: '如何读懂数字',
-    guide: [['经济变化','从操作开始起15、30、60秒内，执行方与对手之间的经济差扩大或缩小了多少。数据来自转播画面的团队经济。'],['±200误差','转播画面将团队经济四舍五入至百位，因此每个变化都有误差。落在误差范围内时标为“无法判断”。'],['未测量','例如回放期间，无法读到开始或结束时的经济。'],['同一阶段比较','汇集本局同一阶段（对线、中期、后期）的所有30秒区间，并标出该操作的位置。这表示相对位置，不是效果大小。'],['不代表因果','同一时间地图其他位置发生的事情也包含在经济变化中。变化并不说明由该操作造成。'],['观察视角','图表和列表按所选队伍显示。对方操作会翻转正负号，Gank会显示为“应对Gank”。汇总仍按解说指出的一方每个操作只计一次。']],
-    chartTitle: '比赛走势', chartSub: (h, team) => `折线显示比赛状态，柱形显示每个操作后${h}秒的变化；向上表示${team}获益。`, laneWinProb:team=>`${team}胜率`, laneWps:h=>`${h}秒胜率变化（百分点）`,
+    guide: [['经济变化','从操作开始起15、30、60秒内，执行方与对手之间的经济差扩大或缩小了多少。数据来自转播画面的团队经济。'],['±200误差','转播画面将团队经济四舍五入至百位，因此每个变化都有误差。落在误差范围内时标为“无法判断”。'],['未测量','例如回放期间，无法读到开始或结束时的经济。'],['同一阶段比较','汇集本局同一阶段（对线、中期、后期）的所有30秒区间，并标出该操作的位置。这表示相对位置，不是效果大小。'],['不代表因果','同一时间地图其他位置发生的事情也包含在经济变化中。变化并不说明由该操作造成。'],['队伍方向','比赛走势图固定采用蓝色方视角。操作列表中的条形和队名直接显示哪支队伍获益以及幅度；说明与判定仍按解说指出的执行方。']],
+    chartTitle: '比赛走势', chartSub: (h, blue, red) => `折线固定采用蓝色方视角，柱形显示${h}秒变化。向上${blue} · 向下${red}。`, laneWinProb:team=>`${team}胜率`, laneWps:(h,blue,red)=>`${h}秒胜率变化 · ↑${blue} / ↓${red}`,
     lgBlue: '蓝色方操作', lgRed: '红色方操作', lgUnres: '误差范围内', lgWin: '所选操作区间', lgFlow: '关联操作（90秒内）', lgObj: '峡谷先锋、纳什男爵、远古巨龙及后续操作',
-    laneFlow: '关联', laneObj: '资源', laneGap: '两队经济差', laneBars: h => `每个操作后${h}秒经济变化`,
+    laneFlow: '关联', laneObj: '资源', laneGap: (blue,red) => `${blue} − ${red}经济`, laneBars: (h,blue,red) => `${h}秒经济变化 · ↑${blue} / ↓${red}`,
     finding: (h, clk, title, team, e) => `${h}秒内最大变化：${clk} ${title}（${team} ${e}）`, findingCompact: (h, clk, team, e) => `↗ ${h}秒最大变化 · ${clk} · ${team} ${e}`, noFinding: h => `${h}秒区间没有可明确判定收益或损失的操作。`,
     gameLine: (w, d) => `${w}获胜 · ${d}`, gameNav: (n, w, d) => `第${n}局 · ${w}获胜 · ${d}`,
     detailEmpty: '选择一个操作即可在此查看详情。', prevWord: '上一个', nextWord: '下一个', keyPrev: '上一个操作（←键）', keyNext: '下一个操作（→键）',
-    colTime: '时间', colTeam: '队伍', colPlay: '操作', colType: '操作类型', colGold: h => `${h}秒经济变化`, colFrom: tm => `（${tm}视角）`,
+    colTime: '时间', colTeam: '队伍', colPlay: '操作', colType: '操作类型', colGold: h => `${h}秒经济变化`,
     hlOnly: '只看值得关注', hlCriteriaTitle: h => `值得关注 · ${h}秒区间`, hlCriteria: h => `成功却损失经济、失败或取消却获得经济，或${h}秒经济波动位于该阶段最大10%的操作。`, hlCriteriaOpen: '查看标准', hlCriteriaClose: '收起',
     listTitle: '操作列表', listSub: (n, total) => n === total ? `${total}个` : `${n} / ${total}个`, listCoverage: (h, m, k) => `${h}秒经济已测 <strong>${m}</strong> · 方向明确 <strong>${k}</strong>`, listSortLabel:'排序', sortTime:'按时间', sortWps:'胜率变化从大到小', sortGold:'经济变化从大到小',
-    fFamily: '所有操作类型', fTag: '所有结果', fState: '所有经济变化', fPlayer: '所有选手与英雄', clearFilters: '清除筛选', playerNote: '显示该选手执行、成为目标或参与应对的操作，并从其队伍视角呈现。只包含解说提到姓名的操作。',
+    fFamily: '所有操作类型', fTag: '所有结果', fState: '所有经济变化', fPlayer: '所有选手与英雄', clearFilters: '清除筛选', playerNote: '显示该选手执行、成为目标或参与应对的操作。筛选不会改变数值或判定标准，只包含解说点名的操作。',
     ctxEpPlayers: '此场景涉及的选手', prev: '← 上一个', next: '下一个 →', vod: '观看视频', vodNew: '在YouTube打开 ↗', ytNote: '作为本地文件打开时，YouTube可能无法播放。请使用上方链接。',
     ctxSummary: '判定摘要', ctxMore: n => `更多背景 · ${n}项`, ctxOutcome: '操作结果', ctxKill: '击杀', ctxLead: '操作前', ctxBg: '与同阶段相比', ctxDv: '经济节奏变化（参考）', ctxOverlap: h => `${h}秒内的其他操作`, ctxOverlapNote: '这些操作的影响也混入了经济变化',
     mmHead: '地图位置', mmSrc: '转播小地图与画面 + Riot记录 · 图像来自Riot Data Dragon', mmPlay: '播放', mmPause: '暂停', mmAt: (d, c) => `开始${d >= 0 ? '+' : ''}${d}秒 · ${c}`, mmGuide: '如何读位置', mmUnavailable: '此操作没有可用的位置数据。',
@@ -735,7 +731,7 @@
     ctxNear: '开始时附近选手（小地图）', ctxNearNone: '无', ctxNearNote: n => `距此操作中被点名选手（${n}）约1,500单位内`, ctxElse: h => `${h}秒内其他位置事件`, ctxElseNone: 'Riot记录中无', ctxElseNote: 'Riot记录中没有此操作选手参与的击杀、史诗野怪或建筑事件；其经济也包含在上方变化中。',
     riotKind: { kill:'击杀', tower:'防御塔', inhibitor:'召唤水晶', plate:'镀层' }, riotMonster: { DRAGON:'元素亚龙', BARON_NASHOR:'纳什男爵', RIFTHERALD:'峡谷先锋', HORDE:'虚空巢虫', ATAKHAN:'厄塔汗', ELDER_DRAGON:'远古巨龙' },
     ctxEpisode: '同一场景', ctxRelated: '关联操作', ctxObj: '地图资源', leadText: (state,g) => `团队经济 ${g}（${state}）`, bgText: (pct,h) => pct >= 50 ? `本局同阶段${h}秒区间的前${Math.max(1,Math.round(100-pct))}%` : `本局同阶段${h}秒区间的后${Math.max(1,Math.round(pct))}%`, bgNote: '仅表示位置，不是效果大小',
-    dvText: (v,b,w) => `比较操作前后${w}秒，每分钟经济差加快${v}（±${b}）`, dvTextNeg: (v,b,w) => `比较操作前后${w}秒，每分钟经济差减慢${v}（±${b}）`, verification: '仅依据解说整理，未用视频核验', retro: '事后回顾', flipNote: (team,actor) => `当前从${team}视角查看。原为${actor}的操作，汇总中仅按${actor}计一次。`, oppPlay: '对方操作',
+    dvText: (v,b,w) => `比较操作前后${w}秒，每分钟经济差加快${v}（±${b}）`, dvTextNeg: (v,b,w) => `比较操作前后${w}秒，每分钟经济差减慢${v}（±${b}）`, verification: '仅依据解说整理，未用视频核验', retro: '事后回顾',
     hzHead:'操作后的变化', wpsBoundary:'操作前后胜率变化', wpsMissing:'观测区间不足，无法测量胜率', wpsProb:(a,b)=>`模型胜率 ${a} → ${b}`, wpsCausal:'这是观测到的模型状态变化，并非该操作单独造成的因果效果。', wpsCoverage:(m,n)=>`WPS已测 <strong>${m}</strong> / ${n}`, bothCoverage:(wm,n,gm,gr,h)=>`WPS已测 <strong>${wm}</strong> / ${n} · ${h}秒经济已测 <strong>${gm}</strong> · 方向明确 <strong>${gr}</strong>`, colWps:h=>`${h}秒WPS`, colBoth:h=>`${h}秒WPS · 经济`, wpsGuide:[['胜率与WPS','胜率是v312根据当时比赛状态预测最终胜方的概率；WPS是该概率在操作前后或15、30、60秒后的百分点变化。'],['测试版模型','Worlds使用冻结的v312，MSI使用其冻结的MSI分支v156；未用新比赛重新拟合模型或校准。'],['不代表因果','同一时间的全部状态变化都会进入WPS，因此并非该操作单独造成的效果。']], hzOk: b => `误差±${b}`, hzUnres: b => `在±${b}内，无法判断`,
     xtTitle: '按类型汇总', xtSub: '每个操作按执行方只计一次。点击数字可在下方查看对应操作。', scope: '范围', scopeGame: '所选比赛', scopeStage: '本系列赛', scopeAll: '整个赛事', rowsBy: '拆分方式', rFamily: '操作类型', rOutcome: '结果', rKill: '击杀', rFamOut: '类型 × 结果', rPlayer: '选手', rChamp: '英雄',
     xtPlayerNote: '按选手或英雄拆分时，计算其执行、成为目标或参与应对的操作，并从该选手队伍视角显示；对方操作会翻转经济变化正负号。多人参与的操作会对每位选手各计一次，只统计解说点名的情况。', sortBy: c => `按${c}排序`, rowLabel: '项目', xtGames: '比赛', xtPerGame: '每局', xtCum: '累计', total: '合计', usedBy: '使用者', played: '使用英雄', games: n => `${n}局`,
@@ -745,19 +741,19 @@
     tagline: 'チーム視点で見るプレーの価値', taglineSub: 'キルのないプレーや失敗した試みも含め、実況が注目したプレーを15・30・60秒後の両チームのゴールド差で見ます。',
     legal: 'PlayValueはRiot Gamesの承認を受けておらず、Riot GamesまたはRiot Gamesの資産の制作・管理に正式に関わる個人の見解を示すものではありません。Riot Gamesおよび関連資産はRiot Games, Inc.の商標または登録商標です。',
     methodology:'調査方法', languagePicker:'言語を選択', themeDark:'ダークモード', themeLight:'ライトモード', viewSet:'試合別', viewXtab:'タイプ別集計', winner:'勝者',
-    cov:(n,m,k)=>`全<strong>${n}</strong>プレー中、ゴールド変化を測定できたものは<strong>${m}</strong>件、そのうち利益・損失を判定できたものは<strong>${k}</strong>件`, duration:'試合時間', perspective:'視点', horizon:'変化区間', sec:s=>`${s}秒`, metric:'表示指標', metricWps:'勝率', metricGold:'ゴールド', metricBoth:'両方', beta:'ベータ',
-    guideTitle:'数字の読み方', guide:[['ゴールド変化','プレー開始から15・30・60秒の間に、実行したチームと相手のゴールド差がどれだけ広がったか、または縮まったかを示します。放送画面のチームゴールドから計算します。'],['誤差±200','画面のチームゴールドは100単位に丸められるため生じる範囲です。この範囲内の変化は「不明」と表示します。'],['未測定','リプレイなどで開始時点または終了時点のゴールドを読み取れなかった場合です。'],['同じ時間帯と比較','同じ試合・同じフェーズの全30秒区間を集め、その分布内での位置を示します。効果の大きさではありません。'],['因果ではありません','同時刻に別の場所で起きた出来事もゴールド変化に含まれます。変化がそのプレーによるとは限りません。'],['視点','選んだチームの視点で図と一覧を読みます。相手のプレーは符号が反転し、ギャンクは「ギャンク対応」として表示されます。集計では実況が示した側で一度だけ数えます。']],
-    chartTitle:'試合の流れ', chartSub:(h,team)=>`線は試合状態、棒は各プレー後${h}秒の変化です。上向きが${team}の利益です。`, laneWinProb:team=>`${team}勝率`, laneWps:h=>`${h}秒の勝率変化（pp）`,
-    lgBlue:'ブルー側のプレー', lgRed:'レッド側のプレー', lgUnres:'誤差範囲内', lgWin:'選択したプレーの区間', lgFlow:'関連プレー（90秒以内）', lgObj:'ヘラルド・バロン・エルダー獲得と後続プレー', laneFlow:'関連', laneObj:'オブジェクト', laneGap:'両チームのゴールド差', laneBars:h=>`各プレー後${h}秒のゴールド変化`,
+    cov:(n,m,k)=>`全<strong>${n}</strong>プレー中、ゴールド変化を測定できたものは<strong>${m}</strong>件、そのうち利益・損失を判定できたものは<strong>${k}</strong>件`, duration:'試合時間', horizon:'変化区間', sec:s=>`${s}秒`, metric:'表示指標', metricWps:'勝率', metricGold:'ゴールド', metricBoth:'両方', beta:'ベータ',
+    guideTitle:'数字の読み方', guide:[['ゴールド変化','プレー開始から15・30・60秒の間に、実行したチームと相手のゴールド差がどれだけ広がったか、または縮まったかを示します。放送画面のチームゴールドから計算します。'],['誤差±200','画面のチームゴールドは100単位に丸められるため生じる範囲です。この範囲内の変化は「不明」と表示します。'],['未測定','リプレイなどで開始時点または終了時点のゴールドを読み取れなかった場合です。'],['同じ時間帯と比較','同じ試合・同じフェーズの全30秒区間を集め、その分布内での位置を示します。効果の大きさではありません。'],['因果ではありません','同時刻に別の場所で起きた出来事もゴールド変化に含まれます。変化がそのプレーによるとは限りません。'],['チーム方向','試合の流れはブルー側基準で固定します。一覧のバーとチーム名が、どちらのチームにどれだけ有利だったかを直接示します。説明と判定は実況が示した実行チーム基準です。']],
+    chartTitle:'試合の流れ', chartSub:(h,blue,red)=>`線はブルー側基準、棒は${h}秒の変化です。上${blue} · 下${red}。`, laneWinProb:team=>`${team}勝率`, laneWps:(h,blue,red)=>`${h}秒の勝率変化 · ↑${blue} / ↓${red}`,
+    lgBlue:'ブルー側のプレー', lgRed:'レッド側のプレー', lgUnres:'誤差範囲内', lgWin:'選択したプレーの区間', lgFlow:'関連プレー（90秒以内）', lgObj:'ヘラルド・バロン・エルダー獲得と後続プレー', laneFlow:'関連', laneObj:'オブジェクト', laneGap:(blue,red)=>`${blue} − ${red} ゴールド`, laneBars:(h,blue,red)=>`${h}秒のゴールド変化 · ↑${blue} / ↓${red}`,
     finding:(h,clk,title,team,e)=>`${h}秒で最大の変化：${clk} ${title}（${team} ${e}）`, findingCompact:(h,clk,team,e)=>`↗ ${h}秒最大変化 · ${clk} · ${team} ${e}`, noFinding:h=>`${h}秒で利益・損失を判定できるプレーはありません。`, gameLine:(w,d)=>`${w}勝利 · ${d}`, gameNav:(n,w,d)=>`第${n}ゲーム · ${w}勝利 · ${d}`,
-    detailEmpty:'プレーを選ぶと詳細が表示されます。', prevWord:'前', nextWord:'次', keyPrev:'前のプレー（←キー）', keyNext:'次のプレー（→キー）', colTime:'時間', colTeam:'チーム', colPlay:'プレー', colType:'プレータイプ', colGold:h=>`${h}秒のゴールド変化`, colFrom:tm=>`（${tm}視点）`,
+    detailEmpty:'プレーを選ぶと詳細が表示されます。', prevWord:'前', nextWord:'次', keyPrev:'前のプレー（←キー）', keyNext:'次のプレー（→キー）', colTime:'時間', colTeam:'チーム', colPlay:'プレー', colType:'プレータイプ', colGold:h=>`${h}秒のゴールド変化`,
     hlOnly:'注目シーンのみ', hlCriteriaTitle:h=>`注目シーン · ${h}秒基準`, hlCriteria:h=>`成功したのにゴールド損、失敗・中止したのにゴールド益、または同フェーズで${h}秒の変動幅が上位10%のプレーです。`, hlCriteriaOpen:'基準を見る', hlCriteriaClose:'閉じる', listTitle:'プレー一覧', listSub:(n,total)=>n===total?`${total}件`:`${n} / ${total}件`, listCoverage:(h,m,k)=>`${h}秒ゴールド測定 <strong>${m}</strong> · 方向判定 <strong>${k}</strong>`, listSortLabel:'並べ替え', sortTime:'時間順', sortWps:'勝率変化の大きい順', sortGold:'ゴールド変化の大きい順',
-    fFamily:'すべてのプレータイプ', fTag:'すべての結果', fState:'すべてのゴールド変化', fPlayer:'すべての選手・チャンピオン', clearFilters:'フィルターを解除', playerNote:'その選手が実行・対象・対応として関わったプレーを、その選手のチーム視点で表示します。実況が名前を挙げたプレーのみです。', ctxEpPlayers:'この場面に関わった選手', prev:'← 前', next:'次 →', vod:'動画を見る', vodNew:'YouTubeで開く ↗', ytNote:'ローカルファイルとして開くとYouTubeが再生できない場合があります。上のリンクを使ってください。',
+    fFamily:'すべてのプレータイプ', fTag:'すべての結果', fState:'すべてのゴールド変化', fPlayer:'すべての選手・チャンピオン', clearFilters:'フィルターを解除', playerNote:'その選手が実行・対象・対応として関わったプレーです。フィルターを変えても数値と判定の基準は変わらず、実況が名前を挙げたものだけ表示します。', ctxEpPlayers:'この場面に関わった選手', prev:'← 前', next:'次 →', vod:'動画を見る', vodNew:'YouTubeで開く ↗', ytNote:'ローカルファイルとして開くとYouTubeが再生できない場合があります。上のリンクを使ってください。',
     ctxSummary:'判定サマリー', ctxMore:n=>`詳しい状況 · ${n}項目`, ctxOutcome:'プレー結果', ctxKill:'キル', ctxLead:'プレー直前', ctxBg:'同じフェーズとの比較', ctxDv:'ゴールドペースの変化（参考）', ctxOverlap:h=>`${h}秒以内に重なるプレー`, ctxOverlapNote:'これらの影響もゴールド変化に含まれます',
     mmHead:'マップ位置', mmSrc:'放送ミニマップ・画面 + Riot記録 · 画像 Riot Data Dragon', mmPlay:'再生', mmPause:'停止', mmAt:(d,c)=>`開始${d>=0?'+':''}${d}秒 · ${c}`, mmGuide:'位置の読み方', mmUnavailable:'このプレーには表示できる位置データがありません。', mmNote:'白い縁の大きなアイコンはこのプレーで名前が挙がった選手、線はその後の移動です。位置は放送ミニマップまたは選手名が映る画面から読み、1分ごとにRiotの正確な位置へ合わせます。薄い破線は既知位置間の補間、灰色の×はRiot記録上のデス、短く出る×印の円はキル地点です。読み取れない選手は表示しません。',
     ctxNear:'開始時に近くにいた選手（ミニマップ）', ctxNearNone:'なし', ctxNearNote:n=>`このプレーで名前が挙がった選手（${n}）から約1,500ユニット以内`, ctxElse:h=>`${h}秒以内に別の場所で起きたこと`, ctxElseNone:'Riot記録ではなし', ctxElseNote:'このプレーの選手が関与していないキル、エピックモンスター、建造物です。そのゴールドも上の変化に含まれます。',
     riotKind:{kill:'キル',tower:'タワー',inhibitor:'インヒビター',plate:'タワープレート'}, riotMonster:{DRAGON:'ドラゴン',BARON_NASHOR:'バロン',RIFTHERALD:'リフトヘラルド',HORDE:'ヴォイドグラブ',ATAKHAN:'アタカン',ELDER_DRAGON:'エルダードラゴン'}, ctxEpisode:'同じ場面', ctxRelated:'関連プレー', ctxObj:'オブジェクト', leadText:(state,g)=>`チームゴールド ${g}（${state}）`, bgText:(pct,h)=>pct>=50?`この試合同フェーズの${h}秒区間で上位${Math.max(1,Math.round(100-pct))}%`:`この試合同フェーズの${h}秒区間で下位${Math.max(1,Math.round(pct))}%`, bgNote:'位置を示すだけで効果の大きさではありません',
-    dvText:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}速く拡大（±${b}）`, dvTextNeg:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}遅く拡大（±${b}）`, verification:'実況のみから整理し、動画では確認していません', retro:'後から振り返った場面', flipNote:(team,actor)=>`${team}視点で表示中です。元は${actor}のプレーで、集計では${actor}として一度だけ数えます。`, oppPlay:'相手チームのプレー', hzHead:'プレー後の変化', wpsBoundary:'プレー前後の勝率変化', wpsMissing:'勝率を測る観測区間が不足しています', wpsProb:(a,b)=>`モデル勝率 ${a} → ${b}`, wpsCausal:'観測されたモデル状態の変化であり、このプレーだけの因果効果ではありません。', wpsCoverage:(m,n)=>`WPS測定 <strong>${m}</strong> / ${n}`, bothCoverage:(wm,n,gm,gr,h)=>`WPS測定 <strong>${wm}</strong> / ${n} · ${h}秒ゴールド測定 <strong>${gm}</strong> · 方向判定 <strong>${gr}</strong>`, colWps:h=>`${h}秒WPS`, colBoth:h=>`${h}秒WPS · ゴールド`, wpsGuide:[['勝率とWPS','勝率はv312がその時点の試合状態から最終勝者を予測した値です。WPSはプレー前後または15・30・60秒後のパーセントポイント変化です。'],['ベータモデル','Worldsは凍結v312、MSIは凍結MSI分岐v156を使用し、新しい試合で再学習・再校正していません。'],['因果ではありません','同時刻の全状態変化がWPSに入るため、このプレーだけの効果ではありません。']], hzOk:b=>`誤差±${b}`, hzUnres:b=>`±${b}以内のため不明`,
+    dvText:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}速く拡大（±${b}）`, dvTextNeg:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}遅く拡大（±${b}）`, verification:'実況のみから整理し、動画では確認していません', retro:'後から振り返った場面', hzHead:'プレー後の変化', wpsBoundary:'プレー前後の勝率変化', wpsMissing:'勝率を測る観測区間が不足しています', wpsProb:(a,b)=>`モデル勝率 ${a} → ${b}`, wpsCausal:'観測されたモデル状態の変化であり、このプレーだけの因果効果ではありません。', wpsCoverage:(m,n)=>`WPS測定 <strong>${m}</strong> / ${n}`, bothCoverage:(wm,n,gm,gr,h)=>`WPS測定 <strong>${wm}</strong> / ${n} · ${h}秒ゴールド測定 <strong>${gm}</strong> · 方向判定 <strong>${gr}</strong>`, colWps:h=>`${h}秒WPS`, colBoth:h=>`${h}秒WPS · ゴールド`, wpsGuide:[['勝率とWPS','勝率はv312がその時点の試合状態から最終勝者を予測した値です。WPSはプレー前後または15・30・60秒後のパーセントポイント変化です。'],['ベータモデル','Worldsは凍結v312、MSIは凍結MSI分岐v156を使用し、新しい試合で再学習・再校正していません。'],['因果ではありません','同時刻の全状態変化がWPSに入るため、このプレーだけの効果ではありません。']], hzOk:b=>`誤差±${b}`, hzUnres:b=>`±${b}以内のため不明`,
     xtTitle:'タイプ別集計', xtSub:'各プレーは実行したチーム基準で一度だけ数えます。数字を押すと該当プレーが下に表示されます。', scope:'範囲', scopeGame:'選択した試合', scopeStage:'このシリーズ', scopeAll:'大会全体', rowsBy:'分け方', rFamily:'プレータイプ', rOutcome:'結果', rKill:'キル', rFamOut:'タイプ × 結果', rPlayer:'選手', rChamp:'チャンピオン', xtPlayerNote:'選手・チャンピオン別では、実行・対象・対応として関わったプレーをその選手のチーム視点で数えます。相手のプレーはゴールド変化の符号を反転します。複数の選手が関わるプレーは選手ごとに一度入り、実況が名前を挙げたものだけを数えます。', sortBy:c=>`${c}で並べ替え`, rowLabel:'項目', xtGames:'試合', xtPerGame:'1試合当たり', xtCum:'累計', total:'合計', usedBy:'使用者', played:'使用チャンピオン', games:n=>`${n}試合`, xtNote:'4列の合計が総数です。利益と損失は誤差範囲を超えて方向が明確な場合だけ数えます。これは観測されたゴールド変化であり、プレーの因果効果ではありません。', xtPick:'数字を押すと該当プレーがここに表示されます。',
     skip:'本文へ移動', loading:'読み込み中…', loadError:'データを読み込めませんでした。再読み込みしてください。', plannedTitle:'準備中', plannedBody:'この大会ではまだ分析済みの試合がありません。', gameN:n=>`第${n}ゲーム`, gameAria:(n,w)=>`第${n}ゲーム、${w}の勝利`, serLabel:'シリーズ', serOlder:'前のシリーズ', serNewer:'次のシリーズ', serCount:(i,n)=>`${n}シリーズ中${i}番目`, phaseBracket:'ブラケットステージ', phasePlayIn:'プレイイン', sourceEnglish:'プレーのタイトルと説明は現在英語で表示されます',
   };
@@ -772,7 +768,6 @@
       reason: { no_common_valid_endpoint_source: '화면 골드를 읽지 못함', outside_comparison_grid: '골드 기록 구간 밖', actor_unspecified: '플레이한 팀을 알 수 없음', unconfirmed_retrospective_event_time: '회상 장면이라 시각을 모름' },
       hl: { success_loss: '성공했는데 골드 손해', failure_gain: '실패·중단했는데 골드 이득', bg_top: '같은 시간대 변화 폭 상위 10%', bg_bottom: '같은 시간대 변화 폭 상위 10%' },
       role: { acquire: '획득', use: '소환', buff_play: '버프 중 플레이' },
-      flipFamily: { gank: '상대 갱킹에 대응', defense: '갱킹 시도 (상대가 대응)' },
       inv: { actor: '행동', target: '대상', response: '맞대응', mentioned: '언급' },
     },
     en: {
@@ -785,14 +780,13 @@
       reason: { no_common_valid_endpoint_source: 'Gold could not be read on screen', outside_comparison_grid: 'Outside the recorded gold', actor_unspecified: 'Team that made the play is unknown', unconfirmed_retrospective_event_time: 'Recalled later, time unknown' },
       hl: { success_loss: 'Success, gold loss', failure_gain: 'Failure or called off, gold gain', bg_top: 'Largest 10% swing for the phase', bg_bottom: 'Largest 10% swing for the phase' },
       role: { acquire: 'Taken', use: 'Summoned', buff_play: 'Play under the buff' },
-      flipFamily: { gank: 'Responding to a gank', defense: 'Gank attempt (opponent responded)' },
       inv: { actor: 'Acted', target: 'Targeted', response: 'Responded', mentioned: 'Mentioned' },
     },
     zh: {
-      state:{positive:'收益',negative:'损失',unresolved:'无法判断',missing:'未测量'}, tag:{success_gain:'成功 · 经济收益',success_loss:'成功 · 经济损失',failure_gain:'失败 · 经济收益',failure_loss:'失败 · 经济损失',unresolved:'经济变化不明确'}, outcome:{success:'成功',mixed:'部分成功',failure:'失败',aborted:'取消',unknown:'未知'}, kill:{kill_mentioned:'有',explicit_no_kill:'无',not_established:'未确认'}, lead:{ahead:'领先',even:'接近',behind:'落后'}, phase:{lane:'对线期（14分钟前）',mid:'中期（14–25分钟）',late:'后期（25分钟后）'}, reason:{no_common_valid_endpoint_source:'无法从画面读取经济',outside_comparison_grid:'超出经济记录区间',actor_unspecified:'无法确定执行方',unconfirmed_retrospective_event_time:'事后回顾，时间未知'}, hl:{success_loss:'成功但经济损失',failure_gain:'失败或取消但经济收益',bg_top:'同阶段波动幅度前10%',bg_bottom:'同阶段波动幅度前10%'}, role:{acquire:'获取',use:'召唤',buff_play:'增益期间操作'}, flipFamily:{gank:'应对对方Gank',defense:'Gank尝试（对方应对）'}, inv:{actor:'执行',target:'目标',response:'应对',mentioned:'提及'},
+      state:{positive:'收益',negative:'损失',unresolved:'无法判断',missing:'未测量'}, tag:{success_gain:'成功 · 经济收益',success_loss:'成功 · 经济损失',failure_gain:'失败 · 经济收益',failure_loss:'失败 · 经济损失',unresolved:'经济变化不明确'}, outcome:{success:'成功',mixed:'部分成功',failure:'失败',aborted:'取消',unknown:'未知'}, kill:{kill_mentioned:'有',explicit_no_kill:'无',not_established:'未确认'}, lead:{ahead:'领先',even:'接近',behind:'落后'}, phase:{lane:'对线期（14分钟前）',mid:'中期（14–25分钟）',late:'后期（25分钟后）'}, reason:{no_common_valid_endpoint_source:'无法从画面读取经济',outside_comparison_grid:'超出经济记录区间',actor_unspecified:'无法确定执行方',unconfirmed_retrospective_event_time:'事后回顾，时间未知'}, hl:{success_loss:'成功但经济损失',failure_gain:'失败或取消但经济收益',bg_top:'同阶段波动幅度前10%',bg_bottom:'同阶段波动幅度前10%'}, role:{acquire:'获取',use:'召唤',buff_play:'增益期间操作'}, inv:{actor:'执行',target:'目标',response:'应对',mentioned:'提及'},
     },
     ja: {
-      state:{positive:'利益',negative:'損失',unresolved:'不明',missing:'未測定'}, tag:{success_gain:'成功 · ゴールド利益',success_loss:'成功 · ゴールド損失',failure_gain:'失敗 · ゴールド利益',failure_loss:'失敗 · ゴールド損失',unresolved:'ゴールド変化不明'}, outcome:{success:'成功',mixed:'一部成功',failure:'失敗',aborted:'中止',unknown:'不明'}, kill:{kill_mentioned:'あり',explicit_no_kill:'なし',not_established:'未確認'}, lead:{ahead:'リード',even:'互角',behind:'ビハインド'}, phase:{lane:'レーン戦（14分前）',mid:'中盤（14–25分）',late:'終盤（25分以降）'}, reason:{no_common_valid_endpoint_source:'画面のゴールドを読めない',outside_comparison_grid:'ゴールド記録区間外',actor_unspecified:'プレーしたチームが不明',unconfirmed_retrospective_event_time:'後からの回想で時刻不明'}, hl:{success_loss:'成功したがゴールド損失',failure_gain:'失敗・中止したがゴールド利益',bg_top:'同フェーズの変動幅上位10%',bg_bottom:'同フェーズの変動幅上位10%'}, role:{acquire:'獲得',use:'召喚',buff_play:'バフ中のプレー'}, flipFamily:{gank:'相手ギャンクへの対応',defense:'ギャンク試行（相手が対応）'}, inv:{actor:'実行',target:'対象',response:'対応',mentioned:'言及'},
+      state:{positive:'利益',negative:'損失',unresolved:'不明',missing:'未測定'}, tag:{success_gain:'成功 · ゴールド利益',success_loss:'成功 · ゴールド損失',failure_gain:'失敗 · ゴールド利益',failure_loss:'失敗 · ゴールド損失',unresolved:'ゴールド変化不明'}, outcome:{success:'成功',mixed:'一部成功',failure:'失敗',aborted:'中止',unknown:'不明'}, kill:{kill_mentioned:'あり',explicit_no_kill:'なし',not_established:'未確認'}, lead:{ahead:'リード',even:'互角',behind:'ビハインド'}, phase:{lane:'レーン戦（14分前）',mid:'中盤（14–25分）',late:'終盤（25分以降）'}, reason:{no_common_valid_endpoint_source:'画面のゴールドを読めない',outside_comparison_grid:'ゴールド記録区間外',actor_unspecified:'プレーしたチームが不明',unconfirmed_retrospective_event_time:'後からの回想で時刻不明'}, hl:{success_loss:'成功したがゴールド損失',failure_gain:'失敗・中止したがゴールド利益',bg_top:'同フェーズの変動幅上位10%',bg_bottom:'同フェーズの変動幅上位10%'}, role:{acquire:'獲得',use:'召喚',buff_play:'バフ中のプレー'}, inv:{actor:'実行',target:'対象',response:'対応',mentioned:'言及'},
     },
   };
   const STATES = ['positive', 'negative', 'unresolved', 'missing'];
@@ -815,7 +809,7 @@
   // ------------------------------------------------------------------ state
   const S = {
     lang: 'ko', theme: 'light', tourn: firstGame().tournament_id, view: 'set', stage: 'all', gameId: firstGame().id, playId: null,
-    persp: '', h: String(D.default_horizon_s), fFamily: '', fTag: '', fState: '', fPlayer: '', fHl: false, listSort: 'time',
+    h: String(D.default_horizon_s), fFamily: '', fTag: '', fState: '', fPlayer: '', fHl: false, listSort: 'time',
     xScope: 'all', xRows: 'family', xCell: null, xSort: { col: 'positive', rev: false }, guideOpen: false,
     metric: WPS_INDEX ? (WPS_INDEX.display?.default_metric || 'both') : 'gold',
   };
@@ -955,12 +949,10 @@
   // A loaded game's full plays, otherwise the light ones from the tournament list.
   const playsOf = g => (isFull(g) ? g.plays : LIGHT[g.id] || []);
   const wpsOf = p => (p?._game?._wpsPlays || {})[p.id] || null;
-  const wpsHorizon = (p, h, flipped = false) => {
+  const wpsHorizon = (p, h) => {
     const value = wpsOf(p)?.horizons?.[String(h)];
     if (!value || value.status !== 'valid' || value.observed_wps_pp == null) return null;
-    return { ...value, observed_wps_pp: (flipped ? -1 : 1) * value.observed_wps_pp,
-      p_actor_start: flipped ? 1 - value.p_actor_start : value.p_actor_start,
-      p_actor_end: flipped ? 1 - value.p_actor_end : value.p_actor_end };
+    return value;
   };
   const hlOf = id => (HL_BY_H[S.h] || {})[id];
   const famChip = (key, text, extra = '') => `<span class="chip fam ${extra}" style="--c:var(--f-${key || 'other'})">${esc(text)}</span>`;
@@ -998,28 +990,16 @@
     um(props => ({ ...props, url, title }));
   }
 
-  // ------------------------------------------------------------------ perspective
-  // Statistics always use the acting team. A team perspective only changes how a card reads:
-  // the opponent's play is shown with E negated, and gank/defense swap names with the outcome flipped.
-  const FLIP_OUTCOME = { success: 'failure', failure: 'success', mixed: 'mixed', aborted: 'aborted', unknown: 'unknown' };
+  // Player and champion totals can still read an opponent's play from the involved player's team.
+  // The game view itself is invariant: cards use the acting team and charts use the blue-team frame.
   const FLIP_STATE = { positive: 'negative', negative: 'positive', unresolved: 'unresolved', missing: 'missing' };
   function viewOf(p) {
-    const flipped = !!(S.persp && p.actor && p.actor !== S.persp);
-    const swap = flipped && (p.family === 'gank' || p.family === 'defense');
-    const hz = {};
-    for (const [k, v] of Object.entries(p.horizons)) {
-      hz[k] = !flipped || v.state === 'missing' ? v : { ...v, e: -v.e, state: FLIP_STATE[v.state] };
-    }
-    const outcome = swap ? FLIP_OUTCOME[p.outcome] : p.outcome;
-    let tag = null;
-    if (!flipped || swap) tag = tagFor(outcome, hz[S.h].state);
+    const hz = p.horizons;
     return {
-      flipped, swap, hz, outcome, tag,
-      familyText: swap ? L('flipFamily', p.family) : famLabel(p.family),
-      famKey: swap ? (p.family === 'gank' ? 'defense' : 'gank') : p.family,
-      lead: p.context.lead_at_anchor == null ? null : (flipped ? -p.context.lead_at_anchor : p.context.lead_at_anchor),
-      leadState: flipped ? ({ ahead: 'behind', behind: 'ahead', even: 'even' }[p.context.lead_state] || null) : p.context.lead_state,
-      bgPct: p.context.background_pct[S.h] == null ? null : (flipped ? 100 - p.context.background_pct[S.h] : p.context.background_pct[S.h]),
+      hz, outcome: p.outcome, tag: tagFor(p.outcome, hz[S.h].state),
+      familyText: famLabel(p.family), famKey: p.family,
+      lead: p.context.lead_at_anchor, leadState: p.context.lead_state,
+      bgPct: p.context.background_pct[S.h],
     };
   }
   function tagFor(outcome, state) {
@@ -1064,7 +1044,7 @@
     tt.querySelectorAll('button').forEach(b => b.onclick = () => {
       S.tourn = b.dataset.t;
       // Switching to a tournament with games opens its latest series; a planned one keeps the current game.
-      if (gamesIn(S.tourn).length && game().tournament_id !== S.tourn) { S.gameId = firstGame(S.tourn).id; S.playId = null; S.persp = ''; S.xCell = null; S.fPlayer = ''; }
+      if (gamesIn(S.tourn).length && game().tournament_id !== S.tourn) { S.gameId = firstGame(S.tourn).id; S.playId = null; S.xCell = null; S.fPlayer = ''; }
       render();
     });
 
@@ -1104,7 +1084,7 @@
       <div class="games">${gamesOf(cur).map(g => `<button class="gbtn ${g.id === S.gameId ? 'on' : ''}" data-g="${g.id}" title="${esc(t('gameAria')(g.game_num, g.winner))}" aria-label="${esc(t('gameAria')(g.game_num, g.winner))}">${g.game_num}<span class="win" style="background:var(${g.winner === g.blue_team ? '--blue-team' : '--red-team'})"></span></button>`).join('')}</div>
       <span class="ser-count">${t('serCount')(ci + 1, series.length)}</span>
       ${S.view === 'set' ? `<span class="game-summary"><span class="matchup"><span class="team-blue">${esc(selectedGame.blue_team)}</span><span class="muted"> vs </span><span class="team-red">${esc(selectedGame.red_team)}</span></span><span class="match-meta">${esc(t('gameNav')(selectedGame.game_num, selectedGame.winner, fmtClock(selectedGame.duration_gc)))}</span></span>` : ''}`;
-    const openGame = id => { S.gameId = id; S.playId = null; S.persp = ''; S.xCell = null; S.fPlayer = ''; render(); };
+    const openGame = id => { S.gameId = id; S.playId = null; S.xCell = null; S.fPlayer = ''; render(); };
     const openSeries = s => openGame(gamesOf(s)[0].id);
     se.querySelectorAll('.gbtn').forEach(b => b.onclick = () => openGame(b.dataset.g));
     // The bar is rebuilt on every render, so keep keyboard focus on the control that was used.
@@ -1116,6 +1096,13 @@
 
   // ------------------------------------------------------------------ set view
   // The game's largest clear change over the chosen window, from the acting team's side: the line under the title.
+  const opponentOf = (g, team) => team === g.blue_team ? g.red_team : team === g.red_team ? g.blue_team : null;
+  const beneficiaryOf = (g, p, value) => value > 0 ? p.actor : value < 0 ? opponentOf(g, p.actor) : null;
+  const benefitText = (g, p, value, kind) => {
+    const team = beneficiaryOf(g, p, value);
+    const amount = kind === 'wps' ? `${Math.abs(value).toFixed(1)}pp` : Math.abs(value).toLocaleString();
+    return team ? `${team} +${amount}` : `±${amount}`;
+  };
   function findingOf(g) {
     let best = null;
     for (const p of g.plays) {
@@ -1137,19 +1124,17 @@
     const plays = g.plays;
     if (!S.playId || !PLAY[S.playId] || PLAY[S.playId]._game !== g) S.playId = plays[0].id;
     const main = document.getElementById('main');
-    // The game is read from one of its two teams, blue by default. Who "made" a play is the casters' framing,
-    // so it is not offered as a view; totals still count each play once, for the team the casters named.
-    if (S.persp !== g.blue_team && S.persp !== g.red_team) S.persp = g.blue_team;
-    const persp = [[g.blue_team, g.blue_team], [g.red_team, g.red_team]];
+    // Curves have a stable blue-team frame. Play cards stay with the acting team named by the casters.
     const f = findingOf(g);
-    const findingValue = f && S.metric !== 'gold' && g._wps ? fmtPP(wpsHorizon(f, S.h).observed_wps_pp) : f ? fmtG(f.horizons[S.h].e) : '';
+    const findingRaw = f && S.metric !== 'gold' && g._wps ? wpsHorizon(f, S.h).observed_wps_pp : f ? f.horizons[S.h].e : null;
+    const findingTeam = f && findingRaw != null ? beneficiaryOf(g, f, findingRaw) || f.actor : '';
+    const findingValue = f && findingRaw != null ? (S.metric !== 'gold' && g._wps ? `+${Math.abs(findingRaw).toFixed(1)}pp` : `+${Math.abs(findingRaw).toLocaleString()}`) : '';
     main.innerHTML = `
       <div class="workspace">
         <section class="card list-panel" id="listCard"></section>
         <div class="workspace-stage" id="workspaceStage">
           <section class="card map-card" id="mapCard">
             <div class="stage-toolbar">
-              <div class="stage-control"><span class="nav-label">${t('perspective')}</span><div class="seg" id="perspSeg">${persp.map(([k, v]) => `<button data-p="${esc(k)}" class="${S.persp === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div></div>
               <div class="stage-control"><span class="nav-label">${t('horizon')}</span><div class="seg" id="hSeg">${D.horizons_s.map(h => `<button data-h="${h}" class="${S.h === String(h) ? 'on' : ''}">${t('sec')(h)}</button>`).join('')}</div></div>
               ${g._wps ? `<div class="stage-control"><span class="nav-label">${t('metric')} <span class="metric-beta">v312 ${t('beta')}</span></span><div class="seg" id="metricSeg">${[['wps', t('metricWps')], ['gold', t('metricGold')], ['both', t('metricBoth')]].map(([k, v]) => `<button data-m="${k}" class="${S.metric === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div></div>` : ''}
             </div>
@@ -1157,8 +1142,8 @@
           </section>
           <section class="card timeline-card">
             <div class="timeline-head">
-              <h3>${t('chartTitle')} <span class="sub">${esc(t('chartSub')(S.h, S.persp))}</span></h3>
-              ${f ? `<button class="timeline-finding" data-goto="${f.id}" title="${esc(t('finding')(S.h, clock(f), contentText(f, 'title'), f.actor, findingValue))}">${esc(t('findingCompact')(S.h, clock(f), f.actor, findingValue))}</button>` : ''}
+              <h3>${t('chartTitle')} <span class="sub">${esc(t('chartSub')(S.h, g.blue_team, g.red_team))}</span></h3>
+              ${f ? `<button class="timeline-finding" data-goto="${f.id}" title="${esc(t('finding')(S.h, clock(f), contentText(f, 'title'), findingTeam, findingValue))}">${esc(t('findingCompact')(S.h, clock(f), findingTeam, findingValue))}</button>` : ''}
             </div>
             <div class="chart-wrap"><svg id="chart" role="img" aria-label="${esc(t('chartTitle'))}"></svg><div class="tip" id="tip" aria-hidden="true"></div></div>
             <div class="legend">
@@ -1176,7 +1161,6 @@
         <aside class="card detail" id="playCard" aria-live="polite"></aside>
       </div>`;
     main.querySelector('#guide').ontoggle = e => { S.guideOpen = e.target.open; try { localStorage.setItem('lv_guide', S.guideOpen ? '1' : '0'); } catch (err) {} };
-    main.querySelectorAll('#perspSeg button').forEach(b => b.onclick = () => { S.persp = b.dataset.p; renderSet(); });
     main.querySelectorAll('#hSeg button').forEach(b => b.onclick = () => { S.h = b.dataset.h; renderSet(); });
     main.querySelectorAll('#metricSeg button').forEach(b => b.onclick = () => { S.metric = b.dataset.m; try { localStorage.setItem('lv_metric', S.metric); } catch (e) {} renderSet(); });
     main.querySelectorAll('.timeline-card [data-goto]').forEach(b => b.onclick = () => selectPlay(b.dataset.goto, true));
@@ -1238,24 +1222,27 @@
     const x0 = Math.min(...xValues), x1 = Math.max(...xValues);
     const X = gc => padL + (gc - x0) / (x1 - x0) * (W - padL - padR);
     const blue = css('--blue-team'), red = css('--red-team'), grid = css('--chart-grid'), axis = css('--chart-axis'), acc = css('--accent'), card = css('--bg-card');
-    const sign = S.persp === g.red_team ? -1 : 1;
-    const [upColor, downColor] = sign > 0 ? [blue, red] : [red, blue];
+    const [upColor, downColor] = [blue, red];
     const sideColor = p => (p.actor === g.blue_team ? blue : p.actor === g.red_team ? red : axis);
     const fmtK = v => (v === 0 ? '0' : (v > 0 ? '+' : '−') + (Math.abs(v) >= 1000 ? Math.abs(v / 1000) + 'k' : Math.abs(v)));
     let s = '';
-    const goldGap = d => sign * d;
+    const goldGap = d => d;
     const goldMaxRaw = Math.max(1000, ...tl.map(p => Math.abs(p.diff)));
     const goldStep = goldMaxRaw <= 4000 ? 1000 : goldMaxRaw <= 10000 ? 2500 : 5000;
     const goldMax = Math.ceil(goldMaxRaw / goldStep) * goldStep;
     const goldY = d => goldCurveTrack.top + goldCurveTrack.height / 2 - d / goldMax * (goldCurveTrack.height / 2);
     const goldHz = p => p.horizons[S.h];
-    const goldValue = p => (p.actor && p.actor !== S.persp ? -goldHz(p).e : goldHz(p).e);
+    const blueFrame = (p, value) => p.actor === g.red_team ? -value : value;
+    const goldValue = p => blueFrame(p, goldHz(p).e);
     const goldMeasured = g.plays.filter(p => p.gc != null && goldHz(p) && goldHz(p).state !== 'missing');
     const goldBarRaw = Math.max(1000, ...goldMeasured.map(p => Math.abs(goldValue(p))));
     const goldBarStep = goldBarRaw <= 2000 ? 1000 : goldBarRaw <= 5000 ? 2500 : 5000;
     const goldBarMax = Math.ceil(goldBarRaw / goldBarStep) * goldBarStep;
     const goldBarY = d => goldBarTrack.top + goldBarTrack.height / 2 - d / goldBarMax * (goldBarTrack.height / 2);
-    const wpsValue = p => wpsHorizon(p, S.h, !!(p.actor && p.actor !== S.persp))?.observed_wps_pp;
+    const wpsValue = p => {
+      const w = wpsHorizon(p, S.h);
+      return w ? blueFrame(p, w.observed_wps_pp) : null;
+    };
     const wpsMeasured = showWps ? g.plays.filter(p => p.gc != null && wpsValue(p) != null) : [];
     const wpsRaw = Math.max(5, ...wpsMeasured.map(p => Math.abs(wpsValue(p))));
     const wpsMax = wpsRaw <= 5 ? 5 : wpsRaw <= 10 ? 10 : wpsRaw <= 25 ? 25 : wpsRaw <= 50 ? 50 : Math.ceil(wpsRaw / 25) * 25;
@@ -1269,12 +1256,12 @@
       s += `<text x="${padL + 6}" y="${track.top + 13}" font-weight="600" style="fill:${css('--text-main')}">${esc(label)}</text>`;
     };
     if (showWps) {
-      axisTrack(wpsCurveTrack, [0, 50, 100], wpsCurveY, v => v + '%', t('laneWinProb')(S.persp));
-      axisTrack(wpsBarTrack, [-wpsMax, 0, wpsMax], wpsBarY, v => (v > 0 ? '+' : '') + v, t('laneWps')(S.h));
+      axisTrack(wpsCurveTrack, [0, 50, 100], wpsCurveY, v => v + '%', t('laneWinProb')(g.blue_team));
+      axisTrack(wpsBarTrack, [-wpsMax, 0, wpsMax], wpsBarY, v => (v > 0 ? '+' : '') + v, t('laneWps')(S.h, g.blue_team, g.red_team));
     }
     if (showGold) {
-      axisTrack(goldCurveTrack, [-goldMax, 0, goldMax], goldY, fmtK, t('laneGap'));
-      axisTrack(goldBarTrack, [-goldBarMax, 0, goldBarMax], goldBarY, fmtK, t('laneBars')(S.h));
+      axisTrack(goldCurveTrack, [-goldMax, 0, goldMax], goldY, fmtK, t('laneGap')(g.blue_team, g.red_team));
+      axisTrack(goldBarTrack, [-goldBarMax, 0, goldBarMax], goldBarY, fmtK, t('laneBars')(S.h, g.blue_team, g.red_team));
     }
     const xStep = narrow ? 600 : 300;
     for (let m = Math.ceil(x0 / xStep) * xStep; m <= x1; m += xStep) {
@@ -1291,7 +1278,7 @@
     if (showWps) {
       let path = '', prev = null;
       wpCurve.forEach(row => {
-        const gc = row[0], probability = 100 * (sign > 0 ? row[2] : 1 - row[2]);
+        const gc = row[0], probability = 100 * row[2];
         path += (prev === null || gc - prev > 5 ? 'M' : 'L') + X(gc).toFixed(1) + ' ' + wpsCurveY(probability).toFixed(1) + ' ';
         prev = gc;
       });
@@ -1326,7 +1313,7 @@
         if (wpCurve.length) {
           const point = nearest(wpCurve, p.gc, row => row[0]);
           if (Math.abs(point[0] - p.gc) <= 5) {
-            const probability = 100 * (sign > 0 ? point[2] : 1 - point[2]);
+            const probability = 100 * point[2];
             s += `<circle class="pin${on ? ' is-selected' : ''}" data-id="${p.id}" cx="${x}" cy="${wpsCurveY(probability)}" r="${on ? 5 : 3}" fill="${on ? c : card}" stroke="${c}" stroke-width="1.5" style="cursor:pointer"/>`;
           }
         }
@@ -1373,10 +1360,10 @@
     svg.querySelectorAll('.pin').forEach(el => {
       el.onclick = () => selectPlay(el.dataset.id, true);
       el.onmouseenter = () => {
-        const p = PLAY[el.dataset.id], v = viewOf(p), h = v.hz[S.h], w = wpsHorizon(p, S.h, v.flipped);
+        const p = PLAY[el.dataset.id], v = viewOf(p), h = v.hz[S.h], w = wpsHorizon(p, S.h);
         const values = [];
-        if (showWps) values.push(`WPS <b class="${w ? stateCls(w.observed_wps_pp > 0 ? 'positive' : w.observed_wps_pp < 0 ? 'negative' : 'unresolved') : 'neutral'}">${w ? fmtPP(w.observed_wps_pp) : '—'}</b>`);
-        if (showGold) values.push(`${t('metricGold')} <b class="${stateCls(h.state)}">${eText(h)}</b>`);
+        if (showWps) values.push(`WPS <b class="${w ? stateCls(w.observed_wps_pp > 0 ? 'positive' : w.observed_wps_pp < 0 ? 'negative' : 'unresolved') : 'neutral'}">${w ? esc(benefitText(g, p, w.observed_wps_pp, 'wps')) : '—'}</b>`);
+        if (showGold) values.push(`${t('metricGold')} <b class="${stateCls(h.state)}">${h.state === 'positive' || h.state === 'negative' ? esc(benefitText(g, p, h.e, 'gold')) : eText(h)}</b>`);
         tip.innerHTML = `<b>${clock(p)}</b> ${esc(p.actor || '?')} · ${esc(v.familyText)}<br>${esc(contentText(p, 'title'))}<br>${t('sec')(S.h)} · ${values.join(' · ')}`;
         tip.style.display = 'block';
       };
@@ -1564,7 +1551,7 @@
     const side = p.actor === g.blue_team ? 'blue' : p.actor === g.red_team ? 'red' : '';
     const hzHtml = D.horizons_s.map(hs => {
       const h = v.hz[hs];
-      const w = wpsHorizon(p, hs, v.flipped);
+      const w = wpsHorizon(p, hs);
       const goldNote = h.state === 'missing' ? L('reason', h.reason) : h.state === 'unresolved' ? t('hzUnres')(h.bound) : t('hzOk')(h.bound);
       const wpsClass = !w ? 'neutral' : stateCls(w.observed_wps_pp > 0 ? 'positive' : w.observed_wps_pp < 0 ? 'negative' : 'unresolved');
       let values;
@@ -1576,20 +1563,19 @@
     const wps = wpsOf(p);
     const boundary = wps?.boundary;
     const boundaryValid = boundary && wps.status === 'valid' && boundary.wps_pp != null;
-    const boundaryValue = boundaryValid ? (v.flipped ? -boundary.wps_pp : boundary.wps_pp) : null;
-    const boundaryBefore = boundaryValid ? (v.flipped ? 1 - boundary.p_actor_before : boundary.p_actor_before) : null;
-    const boundaryAfter = boundaryValid ? (v.flipped ? 1 - boundary.p_actor_after : boundary.p_actor_after) : null;
+    const boundaryValue = boundaryValid ? boundary.wps_pp : null;
+    const boundaryBefore = boundaryValid ? boundary.p_actor_before : null;
+    const boundaryAfter = boundaryValid ? boundary.p_actor_after : null;
     const boundaryClass = boundaryValue == null ? 'neutral' : stateCls(boundaryValue > 0 ? 'positive' : boundaryValue < 0 ? 'negative' : 'unresolved');
     const ctx = p.context;
     const dv = ctx.delta_v;
-    const sign = v.flipped ? -1 : 1;
     const ctxPrimaryRows = [];
     const ctxDetailRows = [];
-    ctxPrimaryRows.push([t('ctxOutcome'), `${esc(L('outcome', v.outcome))}${v.flipped && !v.swap ? ` <span class="muted">(${esc(p.actor)})</span>` : ''} · ${t('ctxKill')} ${esc(L('kill', p.kill_status))}`]);
+    ctxPrimaryRows.push([t('ctxOutcome'), `${esc(L('outcome', v.outcome))} · ${t('ctxKill')} ${esc(L('kill', p.kill_status))}`]);
     if (v.leadState) ctxPrimaryRows.push([t('ctxLead'), `${esc(t('leadText')(L('lead', v.leadState), fmtG(v.lead)))} · ${esc(L('phase', ctx.phase))}`]);
     if (v.bgPct != null) ctxPrimaryRows.push([t('ctxBg'), `${esc(t('bgText')(v.bgPct, S.h))} <span class="muted">(${t('bgNote')})</span>`]);
     if (dv) {
-      const x = sign * dv.dv;
+      const x = dv.dv;
       ctxDetailRows.push([t('ctxDv'), esc((x >= 0 ? t('dvText') : t('dvTextNeg'))(Math.round(Math.abs(x)).toLocaleString(), Math.round(dv.dv_bound).toLocaleString(), dv.window_s))]);
     }
     if (ctx.overlapping_play_ids[S.h].length) ctxDetailRows.push([t('ctxOverlap')(S.h), ctx.overlapping_play_ids[S.h].map(playLink).join('<br>') + `<br><span class="muted">${t('ctxOverlapNote')}</span>`]);
@@ -1631,9 +1617,8 @@
     tags.push(`<span class="time">${clock(p)}</span>`);
     tags.push(`<span class="chip ${side}">${esc(p.actor || '?')}</span>`);
     tags.push(famChip(v.famKey, v.familyText, 'dot'));
-    if (p.family_secondary && !v.flipped) tags.push(`<span class="chip">+ ${esc(famLabel(p.family_secondary))}</span>`);
+    if (p.family_secondary) tags.push(`<span class="chip">+ ${esc(famLabel(p.family_secondary))}</span>`);
     if (v.tag) tags.push(`<span class="chip ${tagCls(v.tag)}">${esc(L('tag', v.tag))}</span>`);
-    else if (v.flipped) tags.push(`<span class="chip">${t('oppPlay')}</span>`);
     if (p.speech_context === 'retrospective') tags.push(`<span class="chip">${t('retro')}</span>`);
     (hlOf(p.id) || []).forEach(r => tags.push(`<span class="chip highlight-reason">${SPARK_ICON}${esc(L('hl', r))}</span>`));
     const el = document.getElementById('playCard');
@@ -1643,7 +1628,6 @@
         <div class="navbtns"><button class="btn" id="prevP" title="${esc(t('keyPrev'))}" ${idx <= 0 ? 'disabled' : ''}><kbd>←</kbd>${t('prevWord')}</button><button class="btn" id="nextP" title="${esc(t('keyNext'))}" ${idx >= g.plays.length - 1 ? 'disabled' : ''}>${t('nextWord')}<kbd>→</kbd></button></div></div>
       <h2 class="play-title">${esc(contentText(p, 'title'))}</h2>
       ${S.lang === 'zh' || S.lang === 'ja' ? `<p class="muted" style="font-size:.74rem;margin-top:-2px">${esc(t('sourceEnglish'))}</p>` : ''}
-      ${v.flipped ? `<p class="flip-note">${esc(t('flipNote')(S.persp, p.actor))}</p>` : ''}
       ${S.metric !== 'gold' && g._wps ? `<div class="wps-hero"><div class="top"><span><strong>${t('wpsBoundary')}</strong> <span class="metric-beta">${esc(g._wps.model_version)} ${t('beta')}</span></span><span class="value ${boundaryClass}">${boundaryValue == null ? '—' : fmtPP(boundaryValue)}</span></div><div class="prob">${boundaryValid ? esc(t('wpsProb')(fmtProb(boundaryBefore), fmtProb(boundaryAfter))) : t('wpsMissing')}</div><div class="model-note">${t('wpsCausal')}</div></div>` : ''}
       <div class="horizons" aria-label="${esc(t('hzHead'))}">${hzHtml}</div>
       ${involvedOf(p).length ? `<p class="players">${INV_ROLES.map(r => [r, involvedOf(p).filter(x => x.role === r)]).filter(([, xs]) => xs.length)
@@ -1696,13 +1680,11 @@
     const scaled = amount / 1000;
     return `${scaled % 1 ? scaled.toFixed(1) : scaled.toFixed(0)}k`;
   };
-  function listMetric(g, label, value, scale, kind, directional = true) {
+  function listMetric(g, actor, label, value, scale, kind, directional = true) {
     if (value == null) return `<span class="metric-block"><span class="sr-only">${esc(label)}: —</span><span class="metric-meter" aria-hidden="true"><i class="axis"></i></span><span class="metric-caption" aria-hidden="true"><small>${esc(label)}</small><span class="metric-benefit neutral">—</span></span></span>`;
     const amount = Math.abs(value);
     const isZero = kind === 'wps' ? Math.round(amount * 10) === 0 : amount === 0;
-    const perspective = S.persp || g.blue_team;
-    const opponent = perspective === g.blue_team ? g.red_team : g.blue_team;
-    const beneficiary = directional && !isZero ? (value > 0 ? perspective : opponent) : null;
+    const beneficiary = directional && !isZero && actor ? beneficiaryOf(g, { actor }, value) : null;
     const side = beneficiary === g.blue_team ? 'blue' : beneficiary === g.red_team ? 'red' : '';
     const formatted = kind === 'wps' ? `${amount.toFixed(1)}pp` : compactGold(amount);
     const shown = beneficiary ? `${beneficiary} +${formatted}` : `±${formatted}`;
@@ -1714,12 +1696,12 @@
   function rowHtml(p, selected) {
     const v = viewOf(p);
     const h = v.hz[S.h];
-    const w = wpsHorizon(p, S.h, v.flipped);
+    const w = wpsHorizon(p, S.h);
     const g = p._game;
     const side = p.actor === g.blue_team ? 'blue' : p.actor === g.red_team ? 'red' : '';
     const hl = hlOf(p.id);
-    const wpsMetric = listMetric(g, 'WPS', w?.observed_wps_pp ?? null, LIST_WPS_SCALE, 'wps');
-    const goldMetric = listMetric(g, t('metricGold'), h.state === 'missing' ? null : h.e, LIST_GOLD_SCALE, 'gold', ['positive', 'negative'].includes(h.state));
+    const wpsMetric = listMetric(g, p.actor, 'WPS', w?.observed_wps_pp ?? null, LIST_WPS_SCALE, 'wps');
+    const goldMetric = listMetric(g, p.actor, t('metricGold'), h.state === 'missing' ? null : h.e, LIST_GOLD_SCALE, 'gold', ['positive', 'negative'].includes(h.state));
     return `<button type="button" class="row side-${side || 'none'} ${selected ? 'on' : ''} ${hl ? 'star' : ''}" data-id="${p.id}" ${selected ? 'aria-current="true"' : ''} ${hl ? `title="${esc(hl.map(r => L('hl', r)).join(' · '))}"` : ''}>
       <span class="t">${clock(p)}</span><span class="chip ${side}">${esc(p.actor || '?')}</span>
       <span class="title"><span class="ttl">${hl ? `<span class="sr-only">${esc(t('hlOnly'))}</span>` : ''}${S.fPlayer && invOf(p, S.fPlayer) ? `<span class="chip">${esc(L('inv', invOf(p, S.fPlayer).role))}</span> ` : ''}${esc(contentText(p, 'title'))}${p.objective_links.length ? ' <span class="chip fam">' + p.objective_links.map(o => esc(objLabel(o.objective))).join('·') + '</span>' : ''}</span>${whoLine(p)}</span>
@@ -1727,10 +1709,9 @@
       <span class="e metric-cell">${S.metric === 'wps' ? wpsMetric : S.metric === 'both' ? wpsMetric + goldMetric : goldMetric}</span></button>`;
   }
 
-  // Picking a player filters the list and turns the view to that player's team.
+  // Picking a player filters the list without changing how any play is read.
   function pickPlayer(g, name) {
     S.fPlayer = name;
-    if (name && ROSTER[g.id][name]) S.persp = ROSTER[g.id][name].team;
     renderSet();
     document.getElementById('listCard').scrollIntoView({ block: 'start' });
   }
@@ -1752,7 +1733,7 @@
     const magnitude = p => {
       const v = viewOf(p);
       if (S.listSort === 'wps') {
-        const w = wpsHorizon(p, S.h, v.flipped);
+        const w = wpsHorizon(p, S.h);
         return w ? Math.abs(w.observed_wps_pp) : null;
       }
       const h = v.hz[S.h];
@@ -1945,8 +1926,7 @@
           ${(() => { const hz = p.horizons[h], f = r.flipOf(p), stt = f ? FLIP_STATE[hz.state] : hz.state; return `<span class="e ${stateCls(stt)}">${hz.state === 'missing' ? '—' : fmtG(f ? -hz.e : hz.e)}</span>`; })()}</button>`).join('')}</div>`;
       box.querySelectorAll('.row').forEach(row => row.onclick = () => {
         const p = PLAY[row.dataset.id];
-        // Opened from a player or champion row, the play is shown from that player's team, as it was counted.
-        S.view = 'set'; S.gameId = p._game.id; S.playId = p.id; S.persp = r.flipOf(p) ? r.teamOf(p) : p.actor || '';
+        S.view = 'set'; S.gameId = p._game.id; S.playId = p.id;
         render(); window.scrollTo({ top: 0 });
       });
     }
