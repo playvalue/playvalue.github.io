@@ -449,7 +449,17 @@
     .stats-head .xt-title { margin-bottom: 2px; }
     .stats-sub { max-width: 820px; color: var(--text-muted); font-size: .82rem; }
     .stats-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 14px; }
-    .stats-team-picks { display: flex; flex-wrap: wrap; gap: 8px; }
+    .stats-team-picks, .stats-compare-picks { display: flex; flex-wrap: wrap; gap: 8px; }
+    .stats-pick { display: grid; gap: 4px; min-width: 180px; }
+    .stats-pick span { color: var(--text-muted); font-size: .68rem; font-weight: 700; }
+    .stats-pick.a span { color: var(--blue-team); }
+    .stats-pick.b span { color: var(--red-team); }
+    .stats-pick select { width: 100%; }
+    .stats-pick.a select { border-color: color-mix(in srgb, var(--blue-team) 55%, var(--border-color)); }
+    .stats-pick.b select { border-color: color-mix(in srgb, var(--red-team) 55%, var(--border-color)); }
+    .stats-compare-bar { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .stats-role-pick { min-width: 150px; }
+    .stats-basis-note { margin-top: 8px; color: var(--text-muted); font-size: .75rem; }
     .stats-team-layout { display: grid; grid-template-columns: minmax(380px, 1.05fr) minmax(320px, .95fr); gap: 16px; }
     .stats-radar-wrap { min-width: 0; }
     .stats-radar { display: block; width: min(100%, 620px); height: auto; margin: 0 auto; }
@@ -474,6 +484,13 @@
     .stats-roster button { cursor: pointer; }
     .stats-roster button:hover { color: var(--text-main); background: var(--bg-card-hover); }
     .stats-entity-layout { display: grid; grid-template-columns: minmax(280px, .72fr) minmax(500px, 1.28fr); gap: 16px; align-items: start; }
+    .stats-compare-layout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+    .stats-compare-card { min-width: 0; border-top: 3px solid transparent; }
+    .stats-compare-card.side-a { border-top-color: var(--blue-team); }
+    .stats-compare-card.side-b { border-top-color: var(--red-team); }
+    .stats-compare-card .stats-mini-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stats-compare-card .stats-detail-grid { grid-template-columns: 1fr; }
+    .stats-compare-card .stats-dotplot { min-height: 210px; }
     .stats-entity-list { padding: 14px; max-height: calc(100vh - 170px); overflow-y: auto; position: sticky; top: 12px; }
     .stats-entity-list h3 { margin-bottom: 8px; }
     .stats-entity-row { width: 100%; display: grid; grid-template-columns: minmax(86px, .8fr) 42px minmax(110px, 1.2fr) 54px; align-items: center; gap: 8px; padding: 8px 5px; border: 0; border-bottom: 1px solid var(--border-color); background: transparent; text-align: left; cursor: pointer; font-size: .78rem; }
@@ -507,6 +524,7 @@
     .stats-scenes .scene:hover { background: var(--bg-card-hover); }
     .stats-scenes .scene .v { font-weight: 700; font-variant-numeric: tabular-nums; }
     .team-link { border: 0; background: transparent; color: inherit; font: inherit; font-weight: inherit; cursor: pointer; padding: 0; }
+    @media (max-width: 760px) { .stats-compare-layout { grid-template-columns: 1fr; } }
     @media (max-width: 900px) { .stats-team-layout, .stats-entity-layout { grid-template-columns: 1fr; } .stats-entity-list { position: static; max-height: none; } }
     @media (max-width: 620px) { .stats-mini-grid { grid-template-columns: 1fr; } .stats-detail-grid { grid-template-columns: 1fr; } .stats-state-grid { grid-template-columns: repeat(2, 1fr); } .stats-entity-row { grid-template-columns: minmax(82px, 1fr) 34px minmax(90px, 1fr) 50px; } }
     .planned { text-align: center; padding: 48px 20px; }
@@ -682,9 +700,12 @@
       statsRadarTitle: '중요 장면 관여 프로필', statsRadarSub: (h, m) => `${h}초 ${m}의 경기당 순변화 · 가운데 링은 0`,
       statsGames: '경기', statsScenes: '측정 장면', statsToward: '팀 방향', statsMedian: '중앙 변화폭', statsPerGame: '경기당 순변화',
       statsComparePlayer: '선수 비교', statsCompareChamp: '챔피언 비교', statsFingerprint: '플레이 지문', statsGood: '팀에 유리', statsBad: '팀에 불리',
-      statsRoles: '관여 역할', statsTypes: '주요 행동 유형', statsGoldBreak: '골드 방향 집계', statsTopScenes: '변화폭이 큰 장면',
+      statsRoles: '관여 역할', statsTypes: '주요 행동 유형', statsGoldBreak: '변화 방향 집계', statsTopScenes: '변화폭이 큰 장면',
       statsCaveat: '한 플레이에 여러 선수가 관여하면 각 선수에게 한 번씩 들어갑니다. 겹치는 시간창과 동시 사건도 포함되므로 개인 기여도로 읽지 않습니다.',
-      statsNoData: '선택한 범위에서 측정 가능한 장면이 없습니다.', statsPickTeamA: '첫 번째 팀', statsPickTeamB: '비교 팀', statsOpenPlay: '플레이 열기',
+      statsBasis: '비교 기준', statsBasisSeries: '현재 시리즈', statsBasisH2h: '두 대상의 맞대결', statsBasisAll: '대회 전체',
+      statsPickTeamA: '팀 A', statsPickTeamB: '팀 B', statsPickPlayerA: '선수 A', statsPickPlayerB: '선수 B', statsPosition: '포지션', statsAllPositions: '전체 포지션',
+      statsCompareHint: '팀과 선수는 대회 전체에서 고를 수 있습니다. 각 값은 선택한 기준 안에서 해당 팀·선수가 실제로 뛴 경기 수로 나눕니다.',
+      statsNoData: '선택한 비교 기준에서 측정 가능한 장면이 없습니다.', statsOpenPlay: '플레이 열기',
       skip: '본문으로 건너뛰기', loading: '불러오는 중…', loadError: '데이터를 불러오지 못했습니다. 새로고침해 주세요.',
       plannedTitle: '준비 중', plannedBody: '이 대회는 아직 분석한 경기가 없습니다.',
       gameN: n => `${n}세트`, gameAria: (n, w) => `${n}세트, ${w} 승리`,
@@ -774,9 +795,12 @@
       statsRadarTitle: 'High-salience involvement profile', statsRadarSub: (h, m) => `Net ${h}s ${m} per game · the middle ring is zero`,
       statsGames: 'Games', statsScenes: 'Measured moments', statsToward: 'Toward team', statsMedian: 'Median swing', statsPerGame: 'Net change per game',
       statsComparePlayer: 'Compare players', statsCompareChamp: 'Compare champions', statsFingerprint: 'Play fingerprint', statsGood: 'Toward the team', statsBad: 'Against the team',
-      statsRoles: 'Involvement roles', statsTypes: 'Main play types', statsGoldBreak: 'Gold-direction totals', statsTopScenes: 'Largest-swing moments',
+      statsRoles: 'Involvement roles', statsTypes: 'Main play types', statsGoldBreak: 'Change-direction counts', statsTopScenes: 'Largest-swing moments',
       statsCaveat: 'A play appears once for every involved player. Overlapping windows and simultaneous events remain in the values, so this is not individual contribution.',
-      statsNoData: 'No measurable moments in this scope.', statsPickTeamA: 'First team', statsPickTeamB: 'Comparison team', statsOpenPlay: 'Open play',
+      statsBasis: 'Comparison basis', statsBasisSeries: 'Current series', statsBasisH2h: 'Head-to-head', statsBasisAll: 'Whole event',
+      statsPickTeamA: 'Team A', statsPickTeamB: 'Team B', statsPickPlayerA: 'Player A', statsPickPlayerB: 'Player B', statsPosition: 'Position', statsAllPositions: 'All positions',
+      statsCompareHint: 'Choose any team or player in the event. Each value is divided by the games that team or player actually played within the selected basis.',
+      statsNoData: 'No measurable moments for this comparison.', statsOpenPlay: 'Open play',
       skip: 'Skip to content', loading: 'Loading…', loadError: 'Could not load the data. Please reload.',
       plannedTitle: 'Coming soon', plannedBody: 'No games from this event have been analysed yet.',
       gameN: n => `Game ${n}`, gameAria: (n, w) => `Game ${n}, won by ${w}`,
@@ -816,7 +840,7 @@
     xtTitle: '按类型汇总', xtSub: '每个操作按执行方只计一次。点击数字可在下方查看对应操作。', scope: '范围', scopeGame: '所选比赛', scopeStage: '本系列赛', scopeAll: '整个赛事', rowsBy: '拆分方式', rFamily: '操作类型', rOutcome: '结果', rKill: '击杀', rFamOut: '类型 × 结果', rPlayer: '选手', rChamp: '英雄',
     xtPlayerNote: '按选手或英雄拆分时，计算其执行、成为目标或参与应对的操作，并从该选手队伍视角显示；对方操作会翻转经济变化正负号。多人参与的操作会对每位选手各计一次，只统计解说点名的情况。', sortBy: c => `按${c}排序`, rowLabel: '项目', xtGames: '比赛', xtPerGame: '每局', xtCum: '累计', total: '合计', usedBy: '使用者', played: '使用英雄', games: n => `${n}局`,
     xtNote: '四栏之和为总数。收益与损失只统计超出误差范围、方向明确的变化。这些是观测到的经济变化，并非操作造成的因果效果。', xtPick: '点击数字后，对应操作会显示在这里。',
-    statsTitle:'队伍与选手数据',statsSub:'展示解说点名的重要场景中队伍、选手和英雄的参与方式，并非贡献度或因果效果评分。',statsTeam:'队伍',statsPlayer:'选手',statsChamp:'英雄',statsMetric:'指标',statsWps:'胜率变化',statsGold:'经济变化',statsRadarTitle:'重要场景参与画像',statsRadarSub:(h,m)=>`每局${h}秒${m}净变化 · 中间环为0`,statsGames:'比赛',statsScenes:'已测场景',statsToward:'有利于本队',statsMedian:'中位变化',statsPerGame:'每局净变化',statsComparePlayer:'选手比较',statsCompareChamp:'英雄比较',statsFingerprint:'操作指纹',statsGood:'有利于本队',statsBad:'不利于本队',statsRoles:'参与角色',statsTypes:'主要操作类型',statsGoldBreak:'经济方向汇总',statsTopScenes:'变化最大的场景',statsCaveat:'同一操作会对每位参与选手各计一次；重叠时间窗与同时发生的事件仍包含在数值中，因此不能解读为个人贡献。',statsNoData:'所选范围内没有可测场景。',statsPickTeamA:'第一支队伍',statsPickTeamB:'比较队伍',statsOpenPlay:'打开操作',
+    statsTitle:'队伍与选手数据',statsSub:'展示解说点名的重要场景中队伍、选手和英雄的参与方式，并非贡献度或因果效果评分。',statsTeam:'队伍',statsPlayer:'选手',statsChamp:'英雄',statsMetric:'指标',statsWps:'胜率变化',statsGold:'经济变化',statsRadarTitle:'重要场景参与画像',statsRadarSub:(h,m)=>`每局${h}秒${m}净变化 · 中间环为0`,statsGames:'比赛',statsScenes:'已测场景',statsToward:'有利于本队',statsMedian:'中位变化',statsPerGame:'每局净变化',statsComparePlayer:'选手比较',statsCompareChamp:'英雄比较',statsFingerprint:'操作指纹',statsGood:'有利于本队',statsBad:'不利于本队',statsRoles:'参与角色',statsTypes:'主要操作类型',statsGoldBreak:'变化方向统计',statsTopScenes:'变化最大的场景',statsCaveat:'同一操作会对每位参与选手各计一次；重叠时间窗与同时发生的事件仍包含在数值中，因此不能解读为个人贡献。',statsBasis:'比较范围',statsBasisSeries:'当前系列赛',statsBasisH2h:'双方交手',statsBasisAll:'整个赛事',statsPickTeamA:'队伍A',statsPickTeamB:'队伍B',statsPickPlayerA:'选手A',statsPickPlayerB:'选手B',statsPosition:'位置',statsAllPositions:'全部位置',statsCompareHint:'可从整个赛事中选择队伍或选手；各数值按所选范围内其实际出场数计算。',statsNoData:'当前比较没有可测场景。',statsOpenPlay:'打开操作',
     skip: '跳到正文', loading: '加载中…', loadError: '无法加载数据，请刷新页面。', plannedTitle: '即将推出', plannedBody: '此赛事尚无已分析比赛。', gameN: n => `第${n}局`, gameAria: (n,w) => `第${n}局，${w}获胜`, serLabel: '系列赛', serOlder: '上一系列赛', serNewer: '下一系列赛', serCount: (i,n) => `第${i}/${n}个系列赛`, phaseBracket: '淘汰赛阶段', phasePlayIn: '入围赛', sourceEnglish: '操作标题与说明暂以英文显示',
   };
   T.ja = { ...T.en,
@@ -837,7 +861,7 @@
     riotKind:{kill:'キル',tower:'タワー',inhibitor:'インヒビター',plate:'タワープレート'}, riotMonster:{DRAGON:'ドラゴン',BARON_NASHOR:'バロン',RIFTHERALD:'リフトヘラルド',HORDE:'ヴォイドグラブ',ATAKHAN:'アタカン',ELDER_DRAGON:'エルダードラゴン'}, ctxEpisode:'同じ場面', ctxRelated:'関連プレー', ctxObj:'オブジェクト', leadText:(state,g)=>`チームゴールド ${g}（${state}）`, bgText:(pct,h)=>pct>=50?`この試合同フェーズの${h}秒区間で上位${Math.max(1,Math.round(100-pct))}%`:`この試合同フェーズの${h}秒区間で下位${Math.max(1,Math.round(pct))}%`, bgNote:'位置を示すだけで効果の大きさではありません',
     dvText:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}速く拡大（±${b}）`, dvTextNeg:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}遅く拡大（±${b}）`, verification:'実況のみから整理し、動画では確認していません', retro:'後から振り返った場面', hzHead:'プレー後の変化', wpsBoundary:'プレー前後の勝率変化', wpsMissing:'勝率を測る観測区間が不足しています', wpsProb:(a,b)=>`モデル勝率 ${a} → ${b}`, wpsCausal:'観測されたモデル状態の変化であり、このプレーだけの因果効果ではありません。', wpsCoverage:(m,n)=>`WPS測定 <strong>${m}</strong> / ${n}`, bothCoverage:(wm,n,gm,gr,h)=>`WPS測定 <strong>${wm}</strong> / ${n} · ${h}秒ゴールド測定 <strong>${gm}</strong> · 方向判定 <strong>${gr}</strong>`, colWps:h=>`${h}秒WPS`, colBoth:h=>`${h}秒WPS · ゴールド`, wpsGuide:[['勝率とWPS','勝率はv312がその時点の試合状態から最終勝者を予測した値です。WPSはプレー前後または15・30・60秒後のパーセントポイント変化です。'],['ベータモデル','Worldsは凍結v312、MSIは凍結MSI分岐v156を使用し、新しい試合で再学習・再校正していません。'],['因果ではありません','同時刻の全状態変化がWPSに入るため、このプレーだけの効果ではありません。']], hzOk:b=>`誤差±${b}`, hzUnres:b=>`±${b}以内のため不明`,
     xtTitle:'タイプ別集計', xtSub:'各プレーは実行したチーム基準で一度だけ数えます。数字を押すと該当プレーが下に表示されます。', scope:'範囲', scopeGame:'選択した試合', scopeStage:'このシリーズ', scopeAll:'大会全体', rowsBy:'分け方', rFamily:'プレータイプ', rOutcome:'結果', rKill:'キル', rFamOut:'タイプ × 結果', rPlayer:'選手', rChamp:'チャンピオン', xtPlayerNote:'選手・チャンピオン別では、実行・対象・対応として関わったプレーをその選手のチーム視点で数えます。相手のプレーはゴールド変化の符号を反転します。複数の選手が関わるプレーは選手ごとに一度入り、実況が名前を挙げたものだけを数えます。', sortBy:c=>`${c}で並べ替え`, rowLabel:'項目', xtGames:'試合', xtPerGame:'1試合当たり', xtCum:'累計', total:'合計', usedBy:'使用者', played:'使用チャンピオン', games:n=>`${n}試合`, xtNote:'4列の合計が総数です。利益と損失は誤差範囲を超えて方向が明確な場合だけ数えます。これは観測されたゴールド変化であり、プレーの因果効果ではありません。', xtPick:'数字を押すと該当プレーがここに表示されます。',
-    statsTitle:'チーム・選手統計',statsSub:'実況が名前を挙げた重要場面でのチーム、選手、チャンピオンの関わり方を示します。貢献度や因果効果のスコアではありません。',statsTeam:'チーム',statsPlayer:'選手',statsChamp:'チャンピオン',statsMetric:'指標',statsWps:'勝率変化',statsGold:'ゴールド変化',statsRadarTitle:'重要場面への関与プロフィール',statsRadarSub:(h,m)=>`1試合当たりの${h}秒${m}純変化 · 中央のリングは0`,statsGames:'試合',statsScenes:'測定場面',statsToward:'自チーム方向',statsMedian:'変化幅中央値',statsPerGame:'1試合当たり純変化',statsComparePlayer:'選手比較',statsCompareChamp:'チャンピオン比較',statsFingerprint:'プレー分布',statsGood:'自チームに有利',statsBad:'自チームに不利',statsRoles:'関与役割',statsTypes:'主なプレータイプ',statsGoldBreak:'ゴールド方向集計',statsTopScenes:'変化幅の大きい場面',statsCaveat:'一つのプレーは関与した各選手に一度ずつ入ります。重なる時間窓や同時イベントも含むため、個人貢献とは解釈しません。',statsNoData:'選択範囲に測定可能な場面がありません。',statsPickTeamA:'1つ目のチーム',statsPickTeamB:'比較チーム',statsOpenPlay:'プレーを開く',
+    statsTitle:'チーム・選手統計',statsSub:'実況が名前を挙げた重要場面でのチーム、選手、チャンピオンの関わり方を示します。貢献度や因果効果のスコアではありません。',statsTeam:'チーム',statsPlayer:'選手',statsChamp:'チャンピオン',statsMetric:'指標',statsWps:'勝率変化',statsGold:'ゴールド変化',statsRadarTitle:'重要場面への関与プロフィール',statsRadarSub:(h,m)=>`1試合当たりの${h}秒${m}純変化 · 中央のリングは0`,statsGames:'試合',statsScenes:'測定場面',statsToward:'自チーム方向',statsMedian:'変化幅中央値',statsPerGame:'1試合当たり純変化',statsComparePlayer:'選手比較',statsCompareChamp:'チャンピオン比較',statsFingerprint:'プレー分布',statsGood:'自チームに有利',statsBad:'自チームに不利',statsRoles:'関与役割',statsTypes:'主なプレータイプ',statsGoldBreak:'変化方向の集計',statsTopScenes:'変化幅の大きい場面',statsCaveat:'一つのプレーは関与した各選手に一度ずつ入ります。重なる時間窓や同時イベントも含むため、個人貢献とは解釈しません。',statsBasis:'比較基準',statsBasisSeries:'現在のシリーズ',statsBasisH2h:'直接対戦',statsBasisAll:'大会全体',statsPickTeamA:'チームA',statsPickTeamB:'チームB',statsPickPlayerA:'選手A',statsPickPlayerB:'選手B',statsPosition:'ポジション',statsAllPositions:'全ポジション',statsCompareHint:'大会全体からチーム・選手を選べます。各値は選択範囲内で実際に出場した試合数で割ります。',statsNoData:'この比較で測定可能な場面はありません。',statsOpenPlay:'プレーを開く',
     skip:'本文へ移動', loading:'読み込み中…', loadError:'データを読み込めませんでした。再読み込みしてください。', plannedTitle:'準備中', plannedBody:'この大会ではまだ分析済みの試合がありません。', gameN:n=>`第${n}ゲーム`, gameAria:(n,w)=>`第${n}ゲーム、${w}の勝利`, serLabel:'シリーズ', serOlder:'前のシリーズ', serNewer:'次のシリーズ', serCount:(i,n)=>`${n}シリーズ中${i}番目`, phaseBracket:'ブラケットステージ', phasePlayIn:'プレイイン', sourceEnglish:'プレーのタイトルと説明は現在英語で表示されます',
   };
   const LBL = {
@@ -894,7 +918,7 @@
     lang: 'ko', theme: 'light', tourn: firstGame().tournament_id, view: 'set', stage: 'all', gameId: firstGame().id, playId: null,
     h: String(D.default_horizon_s), fFamily: '', fTag: '', fState: '', fPlayer: '', fHl: false, listSort: 'time',
     xScope: 'all', xRows: 'family', xCell: null, xSort: { col: 'positive', rev: false }, guideOpen: false,
-    statsScope: 'stage', statsTab: 'team', statsMetric: 'wps', statsPick: '', statsTeamA: '', statsTeamB: '',
+    statsScope: 'stage', statsTab: 'team', statsMetric: 'wps', statsPick: '', statsCompare: '', statsRole: 'all', statsTeamA: '', statsTeamB: '',
     metric: WPS_INDEX ? (WPS_INDEX.display?.default_metric || 'both') : 'gold',
   };
   try {
@@ -1050,10 +1074,12 @@
     if (['15', '30', '60'].includes(q.get('h'))) S.h = q.get('h');
     if (WPS_INDEX && ['wps', 'gold', 'both'].includes(q.get('metric'))) S.metric = q.get('metric');
     if (['time', 'gold'].includes(q.get('sort')) || (WPS_INDEX && q.get('sort') === 'wps')) S.listSort = q.get('sort');
-    if (['game', 'stage', 'all'].includes(q.get('scope'))) S.statsScope = q.get('scope');
+    if (['stage', 'h2h', 'all'].includes(q.get('scope'))) S.statsScope = q.get('scope');
     if (['team', 'player', 'champ'].includes(q.get('tab'))) S.statsTab = q.get('tab');
     if (['wps', 'gold'].includes(q.get('stat'))) S.statsMetric = q.get('stat');
     if (q.get('entity')) S.statsPick = q.get('entity');
+    if (q.get('compare')) S.statsCompare = q.get('compare');
+    if (['all', 'top', 'jungle', 'mid', 'bot', 'support'].includes(q.get('role'))) S.statsRole = q.get('role');
     if (q.get('teamA')) S.statsTeamA = q.get('teamA');
     if (q.get('teamB')) S.statsTeamB = q.get('teamB');
   }
@@ -1063,6 +1089,8 @@
     if (S.view === 'stats') {
       q.set('scope', S.statsScope); q.set('tab', S.statsTab); q.set('stat', S.statsMetric);
       if (S.statsPick) q.set('entity', S.statsPick);
+      if (S.statsCompare) q.set('compare', S.statsCompare);
+      if (S.statsRole !== 'all') q.set('role', S.statsRole);
       if (S.statsTeamA) q.set('teamA', S.statsTeamA);
       if (S.statsTeamB) q.set('teamB', S.statsTeamB);
     }
@@ -1140,7 +1168,7 @@
     tt.querySelectorAll('button').forEach(b => b.onclick = () => {
       S.tourn = b.dataset.t;
       // Switching to a tournament with games opens its latest series; a planned one keeps the current game.
-      if (gamesIn(S.tourn).length && game().tournament_id !== S.tourn) { S.gameId = firstGame(S.tourn).id; S.playId = null; S.xCell = null; S.fPlayer = ''; S.statsPick = S.statsTeamA = S.statsTeamB = ''; }
+      if (gamesIn(S.tourn).length && game().tournament_id !== S.tourn) { S.gameId = firstGame(S.tourn).id; S.playId = null; S.xCell = null; S.fPlayer = ''; S.statsPick = S.statsCompare = S.statsTeamA = S.statsTeamB = ''; S.statsRole = 'all'; }
       render();
     });
 
@@ -1177,10 +1205,13 @@
         <select class="ser-select" id="serSel">${options}</select>
         <button type="button" class="ser-step" id="serNewer" aria-label="${esc(t('serNewer'))}" title="${esc(t('serNewer'))}" ${ci <= 0 ? 'disabled' : ''}>›</button>
       </div>
-      <div class="games">${gamesOf(cur).map(g => `<button class="gbtn ${g.id === S.gameId ? 'on' : ''}" data-g="${g.id}" title="${esc(t('gameAria')(g.game_num, g.winner))}" aria-label="${esc(t('gameAria')(g.game_num, g.winner))}">${g.game_num}<span class="win" style="background:var(${g.winner === g.blue_team ? '--blue-team' : '--red-team'})"></span></button>`).join('')}</div>
-      <span class="ser-count">${t('serCount')(ci + 1, series.length)}</span>
+      ${S.view === 'stats' ? `<span class="ser-count">${esc(t('statsBasisSeries'))} · ${esc(selectedGame.blue_team)} vs ${esc(selectedGame.red_team)}</span>` : `<div class="games">${gamesOf(cur).map(g => `<button class="gbtn ${g.id === S.gameId ? 'on' : ''}" data-g="${g.id}" title="${esc(t('gameAria')(g.game_num, g.winner))}" aria-label="${esc(t('gameAria')(g.game_num, g.winner))}">${g.game_num}<span class="win" style="background:var(${g.winner === g.blue_team ? '--blue-team' : '--red-team'})"></span></button>`).join('')}</div><span class="ser-count">${t('serCount')(ci + 1, series.length)}</span>`}
       ${S.view === 'set' ? `<span class="game-summary"><span class="matchup"><button type="button" class="team-link team-blue" data-stats-team="${esc(selectedGame.blue_team)}" data-other-team="${esc(selectedGame.red_team)}">${esc(selectedGame.blue_team)}</button><span class="muted"> vs </span><button type="button" class="team-link team-red" data-stats-team="${esc(selectedGame.red_team)}" data-other-team="${esc(selectedGame.blue_team)}">${esc(selectedGame.red_team)}</button></span><span class="match-meta">${esc(t('gameNav')(selectedGame.game_num, selectedGame.winner, fmtClock(selectedGame.duration_gc)))}</span></span>` : ''}`;
-    const openGame = id => { S.gameId = id; S.playId = null; S.xCell = null; S.fPlayer = ''; S.statsPick = S.statsTeamA = S.statsTeamB = ''; render(); };
+    const openGame = id => {
+      S.gameId = id; S.playId = null; S.xCell = null; S.fPlayer = '';
+      if (S.view !== 'stats' || S.statsScope === 'stage') { S.statsPick = S.statsCompare = S.statsTeamA = S.statsTeamB = ''; S.statsRole = 'all'; }
+      render();
+    };
     const openSeries = s => openGame(gamesOf(s)[0].id);
     se.querySelectorAll('.gbtn').forEach(b => b.onclick = () => openGame(b.dataset.g));
     se.querySelectorAll('[data-stats-team]').forEach(b => b.onclick = () => openStatsEntity('team', b.dataset.statsTeam, b.dataset.otherTeam));
@@ -2040,11 +2071,65 @@
     const xs = [...values].sort((a, b) => a - b), m = Math.floor(xs.length / 2);
     return xs.length % 2 ? xs[m] : (xs[m - 1] + xs[m]) / 2;
   };
+  const statsEventGames = () => gamesIn(S.tourn);
+  const statsSeriesGames = () => statsEventGames().filter(x => seriesOf(x) === seriesOf(game()));
+  const statsEventTeams = () => [...new Set(statsEventGames().flatMap(g => [g.blue_team, g.red_team]))].sort();
+  function entityTeams(kind, key, gs = statsEventGames()) {
+    const teams = new Set();
+    gs.forEach(g => Object.values(ROSTER[g.id] || {}).forEach(r => {
+      if ((kind === 'player' ? r.player : r.champion) === key) teams.add(r.team);
+    }));
+    return teams;
+  }
+  function playerChoices(role = S.statsRole) {
+    const rows = new Map();
+    statsEventGames().forEach(g => Object.values(ROSTER[g.id] || {}).forEach(r => {
+      if (!r.player || (role !== 'all' && r.position !== role)) return;
+      if (!rows.has(r.player)) rows.set(r.player, { key: r.player, teams: new Set(), positions: new Set() });
+      rows.get(r.player).teams.add(r.team); rows.get(r.player).positions.add(r.position);
+    }));
+    return [...rows.values()].sort((a, b) => [...a.teams].join('/').localeCompare([...b.teams].join('/')) || STAT_POSITIONS.indexOf([...a.positions][0]) - STAT_POSITIONS.indexOf([...b.positions][0]) || a.key.localeCompare(b.key));
+  }
+  function playerChoiceLabel(row) {
+    return `${row.key} — ${[...row.teams].join('/')} · ${[...row.positions].map(posLabel).join('/')}`;
+  }
+  function defaultPlayerPair(role = S.statsRole) {
+    const roster = Object.values(ROSTER[game().id] || {}), wanted = role === 'all' ? null : role;
+    const a = roster.find(r => r.team === game().blue_team && (!wanted || r.position === wanted));
+    const position = wanted || a?.position;
+    const b = roster.find(r => r.team === game().red_team && (!position || r.position === position));
+    return [a?.player || '', b?.player || ''];
+  }
+  function normalizeTeamSelections() {
+    const teams = statsEventTeams(), current = game();
+    if (!teams.includes(S.statsTeamA)) S.statsTeamA = teams.includes(current.blue_team) ? current.blue_team : teams[0] || '';
+    if (!teams.includes(S.statsTeamB) || S.statsTeamB === S.statsTeamA) S.statsTeamB = teams.includes(current.red_team) && current.red_team !== S.statsTeamA ? current.red_team : teams.find(x => x !== S.statsTeamA) || S.statsTeamA;
+  }
+  function normalizePlayerSelections() {
+    const choices = playerChoices(), keys = choices.map(x => x.key), [fallbackA, fallbackB] = defaultPlayerPair();
+    if (!keys.includes(S.statsPick)) S.statsPick = keys.includes(fallbackA) ? fallbackA : keys[0] || '';
+    if (!keys.includes(S.statsCompare) || S.statsCompare === S.statsPick) S.statsCompare = keys.includes(fallbackB) && fallbackB !== S.statsPick ? fallbackB : keys.find(x => x !== S.statsPick) || S.statsPick;
+  }
+  function normalizeStatsSelections() {
+    if (S.statsTab === 'team') normalizeTeamSelections();
+    if (S.statsTab === 'player') normalizePlayerSelections();
+    if (S.statsTab === 'champ' && S.statsScope === 'h2h') S.statsScope = 'all';
+    if (S.statsScope === 'stage') {
+      const series = statsSeriesGames();
+      if (S.statsTab === 'team' && (!series.some(g => [g.blue_team, g.red_team].includes(S.statsTeamA)) || !series.some(g => [g.blue_team, g.red_team].includes(S.statsTeamB)))) S.statsScope = 'all';
+      if (S.statsTab === 'player' && (!entityTeams('player', S.statsPick, series).size || !entityTeams('player', S.statsCompare, series).size)) S.statsScope = 'all';
+    }
+  }
   function statsGames() {
-    const g = game();
-    if (S.statsScope === 'game') return [g];
-    if (S.statsScope === 'stage') return gamesIn(g.tournament_id).filter(x => seriesOf(x) === seriesOf(g));
-    return gamesIn(g.tournament_id);
+    const all = statsEventGames();
+    if (S.statsScope === 'stage') return statsSeriesGames();
+    if (S.statsTab === 'champ') return all;
+    if (S.statsScope === 'all' && S.statsTab === 'team') return all.filter(g => [g.blue_team, g.red_team].includes(S.statsTeamA) || [g.blue_team, g.red_team].includes(S.statsTeamB));
+    if (S.statsScope === 'all' && S.statsTab === 'player') return all.filter(g => Object.values(ROSTER[g.id] || {}).some(r => r.player === S.statsPick || r.player === S.statsCompare));
+    let teamsA = new Set(), teamsB = new Set();
+    if (S.statsTab === 'team') { teamsA.add(S.statsTeamA); teamsB.add(S.statsTeamB); }
+    if (S.statsTab === 'player') { teamsA = entityTeams('player', S.statsPick, all); teamsB = entityTeams('player', S.statsCompare, all); }
+    return all.filter(g => (teamsA.has(g.blue_team) && teamsB.has(g.red_team)) || (teamsA.has(g.red_team) && teamsB.has(g.blue_team)));
   }
   function statValue(p, team) {
     if (!p.actor || !team) return null;
@@ -2062,30 +2147,25 @@
     render(); window.scrollTo({ top: 0, behavior: SMOOTH });
   }
   function openStatsEntity(kind, key, other = '') {
-    S.view = 'stats'; S.statsTab = kind; S.statsScope = 'stage'; S.statsPick = kind === 'team' ? '' : key;
+    S.view = 'stats'; S.statsTab = kind; S.statsScope = 'stage'; S.statsPick = kind === 'team' ? '' : key; S.statsCompare = ''; S.statsRole = 'all';
     if (kind === 'team') { S.statsTeamA = key; S.statsTeamB = other || opponentOf(game(), key) || ''; }
     render(); window.scrollTo({ top: 0, behavior: SMOOTH });
   }
   function statsControls() {
-    const g = game();
-    const scopeName = {
-      game: `${t('scopeGame')} (${t('gameN')(g.game_num)})`,
-      stage: `${t('scopeStage')} (${g.blue_team} vs ${g.red_team})`,
-      all: t('scopeAll'),
-    };
+    const basis = S.statsTab === 'champ' ? [['stage', t('statsBasisSeries')], ['all', t('statsBasisAll')]] : [['stage', t('statsBasisSeries')], ['h2h', t('statsBasisH2h')], ['all', t('statsBasisAll')]];
     return `<div class="stats-controls">
       <div class="seg" id="statsTab">${[['team', t('statsTeam')], ['player', t('statsPlayer')], ['champ', t('statsChamp')]].map(([k, v]) => `<button data-tab="${k}" class="${S.statsTab === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
-      <span class="nav-label">${t('scope')}</span><div class="seg" id="statsScope">${['game', 'stage', 'all'].map(k => `<button data-scope="${k}" class="${S.statsScope === k ? 'on' : ''}">${esc(scopeName[k])}</button>`).join('')}</div>
+      <span class="nav-label">${t('statsBasis')}</span><div class="seg" id="statsScope">${basis.map(([k, v]) => `<button data-scope="${k}" class="${S.statsScope === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
       <span class="nav-label">${t('horizon')}</span><div class="seg" id="statsH">${D.horizons_s.map(h => `<button data-h="${h}" class="${S.h === String(h) ? 'on' : ''}">${t('sec')(h)}</button>`).join('')}</div>
       <span class="nav-label">${t('statsMetric')}</span><div class="seg" id="statsMetric">${(WPS_INDEX ? [['wps', t('statsWps')], ['gold', t('statsGold')]] : [['gold', t('statsGold')]]).map(([k, v]) => `<button data-stat="${k}" class="${S.statsMetric === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
-    </div>`;
+    </div><p class="stats-basis-note">${esc(t('statsCompareHint'))}</p>`;
   }
   function wireStatsControls() {
     const main = document.getElementById('main');
-    main.querySelectorAll('#statsTab button').forEach(b => b.onclick = () => { S.statsTab = b.dataset.tab; S.statsPick = ''; renderStats(); });
-    main.querySelectorAll('#statsScope button').forEach(b => b.onclick = () => { S.statsScope = b.dataset.scope; S.statsPick = S.statsTeamA = S.statsTeamB = ''; render(); });
-    main.querySelectorAll('#statsH button').forEach(b => b.onclick = () => { S.h = b.dataset.h; S.statsPick = ''; render(); });
-    main.querySelectorAll('#statsMetric button').forEach(b => b.onclick = () => { S.statsMetric = b.dataset.stat; S.statsPick = ''; render(); });
+    main.querySelectorAll('#statsTab button').forEach(b => b.onclick = () => { S.statsTab = b.dataset.tab; S.statsPick = ''; S.statsCompare = ''; if (S.statsTab === 'champ' && S.statsScope === 'h2h') S.statsScope = 'all'; render(); });
+    main.querySelectorAll('#statsScope button').forEach(b => b.onclick = () => { S.statsScope = b.dataset.scope; render(); });
+    main.querySelectorAll('#statsH button').forEach(b => b.onclick = () => { S.h = b.dataset.h; render(); });
+    main.querySelectorAll('#statsMetric button').forEach(b => b.onclick = () => { S.statsMetric = b.dataset.stat; render(); });
   }
   function teamProfile(team, gs) {
     const teamGames = gs.filter(g => g.blue_team === team || g.red_team === team);
@@ -2161,16 +2241,14 @@
     </article>`;
   }
   function renderTeamStats(gs, teams) {
-    const current = game(), fallbackA = teams.includes(current.blue_team) ? current.blue_team : teams[0];
-    if (!teams.includes(S.statsTeamA)) S.statsTeamA = fallbackA;
-    if (!teams.includes(S.statsTeamB) || S.statsTeamB === S.statsTeamA) S.statsTeamB = teams.find(x => x !== S.statsTeamA) || S.statsTeamA;
     const a = teamProfile(S.statsTeamA, gs), b = teamProfile(S.statsTeamB, gs);
     const options = selected => teams.map(team => `<option value="${esc(team)}" ${team === selected ? 'selected' : ''}>${esc(team)}</option>`).join('');
     return `<section class="card">
       <div class="stats-head"><div><h2>${t('statsRadarTitle')}</h2><p class="stats-sub">${esc(t('statsRadarSub')(S.h, S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')))}</p></div>
-        <div class="stats-team-picks"><label><span class="sr-only">${t('statsPickTeamA')}</span><select id="statsTeamA">${options(S.statsTeamA)}</select></label><label><span class="sr-only">${t('statsPickTeamB')}</span><select id="statsTeamB">${options(S.statsTeamB)}</select></label></div></div>
-      <div class="stats-team-layout"><div class="stats-radar-wrap">${radarSvg(a, b)}<div class="stats-legend"><span><i class="a"></i>${esc(a.team)}</span><span><i class="b"></i>${esc(b.team)}</span></div></div>
+        <div class="stats-team-picks"><label class="stats-pick a"><span>${t('statsPickTeamA')}</span><select id="statsTeamA">${options(S.statsTeamA)}</select></label><label class="stats-pick b"><span>${t('statsPickTeamB')}</span><select id="statsTeamB">${options(S.statsTeamB)}</select></label></div></div>
+      ${gs.length ? `<div class="stats-team-layout"><div class="stats-radar-wrap">${radarSvg(a, b)}<div class="stats-legend"><span><i class="a"></i>${esc(a.team)}</span><span><i class="b"></i>${esc(b.team)}</span></div></div>
         <div class="stats-team-cards">${teamCard(a, 'blue')}${teamCard(b, 'red')}</div></div>
+      ` : `<p class="empty">${t('statsNoData')}</p>`}
       <p class="note-box">${t('statsCaveat')}</p>
     </section>`;
   }
@@ -2234,14 +2312,14 @@
       ${obs.map(shape).join('')}
     </svg>`;
   }
-  function entityDetail(row, kind) {
+  function entityDetail(row, kind, side = '', showCaveat = true) {
     if (!row) return `<section class="card"><p class="empty">${t('statsNoData')}</p></section>`;
     const roles = Object.fromEntries(INV_ROLES.map(role => [role, row.obs.filter(x => x.role === role).length]));
     const states = Object.fromEntries(STATES.map(state => [state, row.obs.filter(x => x.goldState === state).length]));
     const types = [...row.obs.reduce((m, x) => m.set(x.p.family, (m.get(x.p.family) || 0) + 1), new Map()).entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
     const scenes = [...row.summary.valid].sort((a, b) => Math.abs(b.value) - Math.abs(a.value)).slice(0, 6);
-    return `<section class="card">
-      <div class="stats-detail-head"><div><h2>${esc(row.label)}</h2><p>${esc(entitySubtitle(row, kind))}</p></div><div class="stats-mini-grid">
+    return `<section class="card ${side ? `stats-compare-card side-${side}` : ''}">
+      <div class="stats-detail-head"><div><h2 class="${side === 'a' ? 'team-blue' : side === 'b' ? 'team-red' : ''}">${esc(row.label)}</h2><p>${esc(entitySubtitle(row, kind))}</p></div><div class="stats-mini-grid">
         <div class="stats-mini"><small>${t('statsGames')}</small><strong>${row.games.size}</strong></div>
         <div class="stats-mini"><small>${t('statsScenes')}</small><strong>${row.summary.valid.length}</strong></div>
         <div class="stats-mini"><small>${t('statsToward')}</small><strong>${pct0(row.summary.pos.length, row.summary.valid.length)}</strong></div>
@@ -2255,8 +2333,18 @@
         <h3>${t('statsGoldBreak')}</h3><div class="stats-state-grid">${STATES.map(state => `<div><span>${esc(L('state', state))}</span><strong>${states[state]}</strong></div>`).join('')}</div>
         <h3 style="margin-top:14px">${t('statsTypes')}</h3><div class="stats-type-list">${types.map(([family, n]) => `${famChip(family, famLabel(family))}<span class="chip">${n}</span>`).join('')}</div>
       </div><div class="stats-scenes"><h3>${t('statsTopScenes')}</h3>${scenes.map(o => `<button type="button" class="scene" data-play="${esc(o.p.id)}"><span>${clock(o.p)}</span><span>${esc(contentText(o.p, 'title'))}</span><span class="v ${o.value >= 0 ? 'gain' : 'loss'}">${esc(fmtStat(o.value))}</span></button>`).join('') || `<p class="empty">${t('statsNoData')}</p>`}</div></div>
-      <p class="note-box">${t('statsCaveat')}</p>
+      ${showCaveat ? `<p class="note-box">${t('statsCaveat')}</p>` : ''}
     </section>`;
+  }
+  function renderPlayerStats(gs) {
+    const rows = buildEntities('player', gs), byKey = new Map(rows.map(row => [row.key, row])), choices = playerChoices();
+    const options = selected => choices.map(row => `<option value="${esc(row.key)}" ${row.key === selected ? 'selected' : ''}>${esc(playerChoiceLabel(row))}</option>`).join('');
+    const roles = [['all', t('statsAllPositions')], ...STAT_POSITIONS.map(pos => [pos, posLabel(pos)])];
+    return `<section class="card"><div class="stats-compare-bar">
+      <div class="stats-compare-picks"><label class="stats-pick a"><span>${t('statsPickPlayerA')}</span><select id="statsPlayerA">${options(S.statsPick)}</select></label><label class="stats-pick b"><span>${t('statsPickPlayerB')}</span><select id="statsPlayerB">${options(S.statsCompare)}</select></label></div>
+      <label class="stats-pick stats-role-pick"><span>${t('statsPosition')}</span><select id="statsRole">${roles.map(([key, label]) => `<option value="${key}" ${key === S.statsRole ? 'selected' : ''}>${esc(label)}</option>`).join('')}</select></label>
+    </div></section>
+    ${gs.length ? `<div><div class="stats-compare-layout">${entityDetail(byKey.get(S.statsPick), 'player', 'a', false)}${entityDetail(byKey.get(S.statsCompare), 'player', 'b', false)}</div><p class="note-box">${t('statsCaveat')}</p></div>` : `<section class="card"><p class="empty">${t('statsNoData')}</p></section>`}`;
   }
   function renderEntityStats(gs, kind) {
     const rows = buildEntities(kind, gs);
@@ -2270,14 +2358,19 @@
   }
   function renderStats() {
     if (!WPS_INDEX && S.statsMetric === 'wps') S.statsMetric = 'gold';
-    const gs = statsGames(), teams = [...new Set(gs.flatMap(g => [g.blue_team, g.red_team]))].sort();
+    normalizeStatsSelections();
+    const gs = statsGames(), teams = statsEventTeams();
     const main = document.getElementById('main');
     main.innerHTML = `<section class="card"><div class="stats-head"><div><h1 class="xt-title">${t('statsTitle')}</h1><p class="stats-sub">${t('statsSub')}</p></div></div>${statsControls()}</section>
-      ${S.statsTab === 'team' ? renderTeamStats(gs, teams) : renderEntityStats(gs, S.statsTab)}`;
+      ${S.statsTab === 'team' ? renderTeamStats(gs, teams) : S.statsTab === 'player' ? renderPlayerStats(gs) : renderEntityStats(gs, S.statsTab)}`;
     wireStatsControls();
     const a = main.querySelector('#statsTeamA'), b = main.querySelector('#statsTeamB');
-    if (a) a.onchange = () => { S.statsTeamA = a.value; if (S.statsTeamB === a.value) S.statsTeamB = teams.find(x => x !== a.value) || a.value; renderStats(); };
-    if (b) b.onchange = () => { S.statsTeamB = b.value; if (S.statsTeamA === b.value) S.statsTeamA = teams.find(x => x !== b.value) || b.value; renderStats(); };
+    if (a) a.onchange = () => { S.statsTeamA = a.value; if (S.statsTeamB === a.value) S.statsTeamB = teams.find(x => x !== a.value) || a.value; render(); };
+    if (b) b.onchange = () => { S.statsTeamB = b.value; if (S.statsTeamA === b.value) S.statsTeamA = teams.find(x => x !== b.value) || b.value; render(); };
+    const playerA = main.querySelector('#statsPlayerA'), playerB = main.querySelector('#statsPlayerB'), role = main.querySelector('#statsRole');
+    if (playerA) playerA.onchange = () => { S.statsPick = playerA.value; if (S.statsCompare === S.statsPick) S.statsCompare = playerChoices().find(x => x.key !== S.statsPick)?.key || S.statsPick; render(); };
+    if (playerB) playerB.onchange = () => { S.statsCompare = playerB.value; if (S.statsPick === S.statsCompare) S.statsPick = playerChoices().find(x => x.key !== S.statsCompare)?.key || S.statsCompare; render(); };
+    if (role) role.onchange = () => { S.statsRole = role.value; S.statsPick = ''; S.statsCompare = ''; render(); };
     main.querySelectorAll('[data-stats-player]').forEach(el => el.onclick = () => openStatsEntity('player', el.dataset.statsPlayer));
     main.querySelectorAll('[data-entity]').forEach(el => el.onclick = () => { S.statsPick = el.dataset.entity; renderStats(); });
     main.querySelectorAll('[data-play]').forEach(el => {
@@ -2306,6 +2399,7 @@
       } else if (S.view === 'stats') {
         if (!tour._plays) main.innerHTML = wait;
         await ensurePlays(S.tourn);
+        normalizeStatsSelections();
         const ids = statsGames().map(g => g.id);
         if (S.statsMetric === 'wps' && WPS_INDEX) await Promise.all(ids.map(ensureWps));
         if (S.view === 'stats') renderStats();
