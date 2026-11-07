@@ -675,7 +675,8 @@
       hlCriteriaOpen: '기준 보기', hlCriteriaClose: '접기',
       listTitle: '플레이 목록', listSub: (n, total) => n === total ? `${total}건` : `${n} / ${total}건`,
       listCoverage: (h, m, k) => `${h}초 골드 측정 <strong>${m}</strong> · 방향 판정 <strong>${k}</strong>`,
-      listSortLabel: '정렬', sortTime: '시간순', sortWps: '승률 변화 큰 순', sortGold: '골드 변화 큰 순',
+      listSortLabel: '정렬', sortTime: '시간순', sortWpsInstant: '즉시 승률 변화 큰 순', sortWpsTotal: h => `${h}초 전체 승률 변화 큰 순`, sortGold: '골드 변화 큰 순',
+      listInstant: '즉시', listTotal: h => `${h}초 전체`,
       fFamily: '모든 행동 유형', fTag: '모든 결과', fState: '모든 골드 변화', fPlayer: '모든 선수·챔피언', clearFilters: '필터 지우기',
       playerNote: '그 선수가 행동했거나, 타깃이 됐거나, 대응한 플레이입니다. 필터를 바꿔도 수치와 판정의 기준은 그대로이며, 해설이 이름을 말한 플레이만 나옵니다.',
       ctxEpPlayers: '이 장면에 관여한 선수',
@@ -705,8 +706,8 @@
       wpsMissing: '승률을 측정할 관측 구간이 부족합니다',
       wpsProb: (a, b) => `모델 승률 ${a} → ${b}`,
       wpsCausal: '관측된 모델 상태 변화이며, 이 플레이만의 인과효과는 아닙니다.',
-      wpsCoverage: (m, n) => `WPS 측정 <strong>${m}</strong> / ${n}`, bothCoverage: (wm, n, gm, gr, h) => `WPS 측정 <strong>${wm}</strong> / ${n} · ${h}초 골드 측정 <strong>${gm}</strong> · 방향 판정 <strong>${gr}</strong>`,
-      colWps: h => `${h}초 WPS`, colBoth: h => `${h}초 WPS · 골드`,
+      wpsCoverage: (im, total, n, h) => `즉시 WPS <strong>${im}</strong> · ${h}초 전체 <strong>${total}</strong> / ${n}`, bothCoverage: (im, total, n, gm, gr, h) => `즉시 WPS <strong>${im}</strong> · ${h}초 전체 <strong>${total}</strong> / ${n} · 골드 <strong>${gm}</strong> · 방향 판정 <strong>${gr}</strong>`,
+      colWps: h => `즉시 · ${h}초 전체 WPS`, colBoth: h => `즉시 · ${h}초 전체 · 골드`,
       wpsGuide: [
         ['즉시 변화와 전체 변화', '즉시 WPS는 플레이 시작 전 5초와 종료 후 5초의 중앙값을 비교합니다. 15·30·60초 전체 WPS는 시작점에서 각 시점까지의 후속 사건을 포함한 승률 변화입니다.'],
         ['베타 모델', '월즈는 동결된 v312, MSI는 v312의 동결된 MSI 분기(v156)를 씁니다. 새 경기 결과로 모델이나 calibration을 다시 맞추지 않았습니다.'],
@@ -774,7 +775,8 @@
       hlCriteriaOpen: 'View criteria', hlCriteriaClose: 'Close',
       listTitle: 'Plays', listSub: (n, total) => n === total ? `${total}` : `${n} of ${total}`,
       listCoverage: (h, m, k) => `${h}s gold measured <strong>${m}</strong> · direction resolved <strong>${k}</strong>`,
-      listSortLabel: 'Sort', sortTime: 'Time', sortWps: 'Largest win-probability swing', sortGold: 'Largest gold swing',
+      listSortLabel: 'Sort', sortTime: 'Time', sortWpsInstant: 'Largest immediate win-probability swing', sortWpsTotal: h => `Largest total win-probability swing over ${h}s`, sortGold: 'Largest gold swing',
+      listInstant: 'Immediate', listTotal: h => `${h}s total`,
       fFamily: 'All play types', fTag: 'All results', fState: 'All gold changes', fPlayer: 'All players and champions', clearFilters: 'Clear filters',
       playerNote: 'Plays the player made, was targeted by, or responded to. Filtering does not change how values or assessments are read. Only plays where the commentary names the player appear.',
       ctxEpPlayers: 'Players in this moment',
@@ -804,8 +806,8 @@
       wpsMissing: 'Not enough observed states to measure win probability',
       wpsProb: (a, b) => `Model probability ${a} → ${b}`,
       wpsCausal: 'Observed modeled state change, not the causal effect of this play alone.',
-      wpsCoverage: (m, n) => `WPS measured <strong>${m}</strong> of ${n}`, bothCoverage: (wm, n, gm, gr, h) => `WPS measured <strong>${wm}</strong> of ${n} · ${h}s gold measured <strong>${gm}</strong> · direction resolved <strong>${gr}</strong>`,
-      colWps: h => `WPS, ${h}s`, colBoth: h => `${h}s WPS · gold`,
+      wpsCoverage: (im, total, n, h) => `Immediate WPS <strong>${im}</strong> · ${h}s total <strong>${total}</strong> of ${n}`, bothCoverage: (im, total, n, gm, gr, h) => `Immediate WPS <strong>${im}</strong> · ${h}s total <strong>${total}</strong> of ${n} · gold <strong>${gm}</strong> · direction resolved <strong>${gr}</strong>`,
+      colWps: h => `Immediate · ${h}s total WPS`, colBoth: h => `Immediate · ${h}s total · gold`,
       wpsGuide: [
         ['Immediate and total change', 'Immediate WPS compares the median probability in the 5s before the play starts with the median in the 5s after it ends. Total WPS includes all subsequent events from the start to the 15, 30 or 60s endpoint.'],
         ['Beta model', 'Worlds uses frozen v312; MSI uses its frozen MSI branch (v156). Neither the model nor calibration was refit to the new games.'],
@@ -857,7 +859,7 @@
     detailEmpty: '选择一个操作即可在此查看详情。', prevWord: '上一个', nextWord: '下一个', keyPrev: '上一个操作（←键）', keyNext: '下一个操作（→键）',
     colTime: '时间', colTeam: '队伍', colPlay: '操作', colType: '操作类型', colGold: h => `${h}秒经济变化`,
     hlOnly: '只看值得关注', hlCriteriaTitle: h => `值得关注 · ${h}秒区间`, hlCriteria: h => `成功却损失经济、失败或取消却获得经济、${h}秒经济波动位于该阶段最大10%，或${h}秒WPS波动位于同场比赛同阶段解说操作最大10%的操作。`, hlCriteriaOpen: '查看标准', hlCriteriaClose: '收起',
-    listTitle: '操作列表', listSub: (n, total) => n === total ? `${total}个` : `${n} / ${total}个`, listCoverage: (h, m, k) => `${h}秒经济已测 <strong>${m}</strong> · 方向明确 <strong>${k}</strong>`, listSortLabel:'排序', sortTime:'按时间', sortWps:'胜率变化从大到小', sortGold:'经济变化从大到小',
+    listTitle: '操作列表', listSub: (n, total) => n === total ? `${total}个` : `${n} / ${total}个`, listCoverage: (h, m, k) => `${h}秒经济已测 <strong>${m}</strong> · 方向明确 <strong>${k}</strong>`, listSortLabel:'排序', sortTime:'按时间', sortWpsInstant:'即时胜率变化从大到小', sortWpsTotal:h=>`${h}秒整体胜率变化从大到小`, sortGold:'经济变化从大到小', listInstant:'即时', listTotal:h=>`${h}秒整体`,
     fFamily: '所有操作类型', fTag: '所有结果', fState: '所有经济变化', fPlayer: '所有选手与英雄', clearFilters: '清除筛选', playerNote: '显示该选手执行、成为目标或参与应对的操作。筛选不会改变数值或判定标准，只包含解说点名的操作。',
     ctxEpPlayers: '此场景涉及的选手', prev: '← 上一个', next: '下一个 →', vod: '观看视频', vodNew: '在YouTube打开 ↗', ytNote: '作为本地文件打开时，YouTube可能无法播放。请使用上方链接。',
     ctxSummary: '判定摘要', ctxMore: n => `更多背景 · ${n}项`, ctxOutcome: '操作结果', ctxKill: '击杀', ctxLead: '操作前', ctxBg: '与同阶段相比', ctxDv: '经济节奏变化（参考）', ctxOverlap: h => `${h}秒内的其他操作`, ctxOverlapNote: '这些操作的影响也混入了经济变化',
@@ -867,7 +869,7 @@
     riotKind: { kill:'击杀', tower:'防御塔', inhibitor:'召唤水晶', plate:'镀层' }, riotMonster: { DRAGON:'元素亚龙', BARON_NASHOR:'纳什男爵', RIFTHERALD:'峡谷先锋', HORDE:'虚空巢虫', ATAKHAN:'厄塔汗', ELDER_DRAGON:'远古巨龙' },
     ctxEpisode: '同一场景', ctxRelated: '关联操作', ctxObj: '地图资源', leadText: (state,g) => `团队经济 ${g}（${state}）`, bgText: (pct,h) => pct >= 50 ? `本局同阶段${h}秒区间的前${Math.max(1,Math.round(100-pct))}%` : `本局同阶段${h}秒区间的后${Math.max(1,Math.round(pct))}%`, bgNote: '仅表示位置，不是效果大小',
     dvText: (v,b,w) => `比较操作前后${w}秒，每分钟经济差加快${v}（±${b}）`, dvTextNeg: (v,b,w) => `比较操作前后${w}秒，每分钟经济差减慢${v}（±${b}）`, verification: '仅依据解说整理，未用视频核验', retro: '事后回顾',
-    hzHead:'15·30·60秒整体变化', wpsBoundary:'即时胜率变化', wpsBoundaryWindow:(pre,post)=>`开始前5秒窗口${pre}个观测的中位数 → 结束后5秒窗口${post}个观测的中位数`, wpsTotalNote:'包含从操作开始到各终点之间的所有后续事件。', wpsMissing:'观测区间不足，无法测量胜率', wpsProb:(a,b)=>`模型胜率 ${a} → ${b}`, wpsCausal:'这是观测到的模型状态变化，并非该操作单独造成的因果效果。', wpsCoverage:(m,n)=>`WPS已测 <strong>${m}</strong> / ${n}`, bothCoverage:(wm,n,gm,gr,h)=>`WPS已测 <strong>${wm}</strong> / ${n} · ${h}秒经济已测 <strong>${gm}</strong> · 方向明确 <strong>${gr}</strong>`, colWps:h=>`${h}秒WPS`, colBoth:h=>`${h}秒WPS · 经济`, wpsGuide:[['即时与整体变化','即时WPS比较操作开始前5秒与结束后5秒的中位胜率；整体WPS包含从开始到15、30或60秒终点的全部后续事件。'],['测试版模型','Worlds使用冻结的v312，MSI使用其冻结的MSI分支v156；未用新比赛重新拟合模型或校准。'],['不代表因果','同一时间的全部状态变化都会进入WPS，因此并非该操作单独造成的效果。']], hzOk: b => `误差±${b}`, hzUnres: b => `在±${b}内，无法判断`,
+    hzHead:'15·30·60秒整体变化', wpsBoundary:'即时胜率变化', wpsBoundaryWindow:(pre,post)=>`开始前5秒窗口${pre}个观测的中位数 → 结束后5秒窗口${post}个观测的中位数`, wpsTotalNote:'包含从操作开始到各终点之间的所有后续事件。', wpsMissing:'观测区间不足，无法测量胜率', wpsProb:(a,b)=>`模型胜率 ${a} → ${b}`, wpsCausal:'这是观测到的模型状态变化，并非该操作单独造成的因果效果。', wpsCoverage:(im,total,n,h)=>`即时WPS <strong>${im}</strong> · ${h}秒整体 <strong>${total}</strong> / ${n}`, bothCoverage:(im,total,n,gm,gr,h)=>`即时WPS <strong>${im}</strong> · ${h}秒整体 <strong>${total}</strong> / ${n} · 经济 <strong>${gm}</strong> · 方向明确 <strong>${gr}</strong>`, colWps:h=>`即时 · ${h}秒整体WPS`, colBoth:h=>`即时 · ${h}秒整体 · 经济`, wpsGuide:[['即时与整体变化','即时WPS比较操作开始前5秒与结束后5秒的中位胜率；整体WPS包含从开始到15、30或60秒终点的全部后续事件。'],['测试版模型','Worlds使用冻结的v312，MSI使用其冻结的MSI分支v156；未用新比赛重新拟合模型或校准。'],['不代表因果','同一时间的全部状态变化都会进入WPS，因此并非该操作单独造成的效果。']], hzOk: b => `误差±${b}`, hzUnres: b => `在±${b}内，无法判断`,
     xtTitle: '按类型汇总', xtSub: '每个操作按执行方只计一次。点击数字可在下方查看对应操作。', scope: '范围', scopeGame: '所选比赛', scopeStage: '本系列赛', scopeAll: '整个赛事', rowsBy: '拆分方式', rFamily: '操作类型', rOutcome: '结果', rKill: '击杀', rFamOut: '类型 × 结果', rPlayer: '选手', rChamp: '英雄',
     xtPlayerNote: '按选手或英雄拆分时，计算其执行、成为目标或参与应对的操作，并从该选手队伍视角显示；对方操作会翻转经济变化正负号。多人参与的操作会对每位选手各计一次，只统计解说点名的情况。', sortBy: c => `按${c}排序`, rowLabel: '项目', xtGames: '比赛', xtPerGame: '每局', xtCum: '累计', total: '合计', usedBy: '使用者', played: '使用英雄', games: n => `${n}局`,
     xtNote: '四栏之和为总数。收益与损失只统计超出误差范围、方向明确的变化。这些是观测到的经济变化，并非操作造成的因果效果。', xtPick: '点击数字后，对应操作会显示在这里。',
@@ -884,13 +886,13 @@
     lgBlue:'ブルー側のプレー', lgRed:'レッド側のプレー', lgUnres:'誤差範囲内', lgWin:'選択したプレーの区間', lgFlow:'関連プレー（90秒以内）', lgObj:'ヘラルド・バロン・エルダー獲得と後続プレー', laneFlow:'関連', laneObj:'オブジェクト', laneGap:(blue,red)=>`${blue} − ${red} ゴールド`, laneBars:(h,blue,red)=>`${h}秒のゴールド変化 · ↑${blue} / ↓${red}`,
     finding:(h,clk,title,team,e)=>`${h}秒で最大の変化：${clk} ${title}（${team} ${e}）`, findingCompact:(h,clk,team,e)=>`↗ ${h}秒最大変化 · ${clk} · ${team} ${e}`, noFinding:h=>`${h}秒で利益・損失を判定できるプレーはありません。`, gameLine:(w,d)=>`${w}勝利 · ${d}`, gameNav:(n,w,d)=>`第${n}ゲーム · ${w}勝利 · ${d}`,
     detailEmpty:'プレーを選ぶと詳細が表示されます。', prevWord:'前', nextWord:'次', keyPrev:'前のプレー（←キー）', keyNext:'次のプレー（→キー）', colTime:'時間', colTeam:'チーム', colPlay:'プレー', colType:'プレータイプ', colGold:h=>`${h}秒のゴールド変化`,
-    hlOnly:'注目シーンのみ', hlCriteriaTitle:h=>`注目シーン · ${h}秒基準`, hlCriteria:h=>`成功したのにゴールド損、失敗・中止したのにゴールド益、同フェーズで${h}秒のゴールド変動幅が上位10%、または同じ試合・フェーズの実況プレーで${h}秒WPS変動幅が上位10%のプレーです。`, hlCriteriaOpen:'基準を見る', hlCriteriaClose:'閉じる', listTitle:'プレー一覧', listSub:(n,total)=>n===total?`${total}件`:`${n} / ${total}件`, listCoverage:(h,m,k)=>`${h}秒ゴールド測定 <strong>${m}</strong> · 方向判定 <strong>${k}</strong>`, listSortLabel:'並べ替え', sortTime:'時間順', sortWps:'勝率変化の大きい順', sortGold:'ゴールド変化の大きい順',
+    hlOnly:'注目シーンのみ', hlCriteriaTitle:h=>`注目シーン · ${h}秒基準`, hlCriteria:h=>`成功したのにゴールド損、失敗・中止したのにゴールド益、同フェーズで${h}秒のゴールド変動幅が上位10%、または同じ試合・フェーズの実況プレーで${h}秒WPS変動幅が上位10%のプレーです。`, hlCriteriaOpen:'基準を見る', hlCriteriaClose:'閉じる', listTitle:'プレー一覧', listSub:(n,total)=>n===total?`${total}件`:`${n} / ${total}件`, listCoverage:(h,m,k)=>`${h}秒ゴールド測定 <strong>${m}</strong> · 方向判定 <strong>${k}</strong>`, listSortLabel:'並べ替え', sortTime:'時間順', sortWpsInstant:'即時勝率変化の大きい順', sortWpsTotal:h=>`${h}秒全体勝率変化の大きい順`, sortGold:'ゴールド変化の大きい順', listInstant:'即時', listTotal:h=>`${h}秒全体`,
     fFamily:'すべてのプレータイプ', fTag:'すべての結果', fState:'すべてのゴールド変化', fPlayer:'すべての選手・チャンピオン', clearFilters:'フィルターを解除', playerNote:'その選手が実行・対象・対応として関わったプレーです。フィルターを変えても数値と判定の基準は変わらず、実況が名前を挙げたものだけ表示します。', ctxEpPlayers:'この場面に関わった選手', prev:'← 前', next:'次 →', vod:'動画を見る', vodNew:'YouTubeで開く ↗', ytNote:'ローカルファイルとして開くとYouTubeが再生できない場合があります。上のリンクを使ってください。',
     ctxSummary:'判定サマリー', ctxMore:n=>`詳しい状況 · ${n}項目`, ctxOutcome:'プレー結果', ctxKill:'キル', ctxLead:'プレー直前', ctxBg:'同じフェーズとの比較', ctxDv:'ゴールドペースの変化（参考）', ctxOverlap:h=>`${h}秒以内に重なるプレー`, ctxOverlapNote:'これらの影響もゴールド変化に含まれます',
     mmHead:'マップ位置', mmSrc:'放送ミニマップ・画面 + Riot記録 · 画像 Riot Data Dragon', mmPlay:'再生', mmPause:'停止', mmAt:(d,c)=>`開始${d>=0?'+':''}${d}秒 · ${c}`, mmGuide:'位置の読み方', mmUnavailable:'このプレーには表示できる位置データがありません。', mmNote:'白い縁の大きなアイコンはこのプレーで名前が挙がった選手、線はその後の移動です。位置は放送ミニマップまたは選手名が映る画面から読み、1分ごとにRiotの正確な位置へ合わせます。薄い破線は既知位置間の補間、灰色の×はRiot記録上のデス、短く出る×印の円はキル地点です。読み取れない選手は表示しません。',
     ctxNear:'開始時に近くにいた選手（ミニマップ）', ctxNearNone:'なし', ctxNearNote:n=>`このプレーで名前が挙がった選手（${n}）から約1,500ユニット以内`, ctxElse:h=>`${h}秒以内に別の場所で起きたこと`, ctxElseNone:'Riot記録ではなし', ctxElseNote:'このプレーの選手が関与していないキル、エピックモンスター、建造物です。そのゴールドも上の変化に含まれます。',
     riotKind:{kill:'キル',tower:'タワー',inhibitor:'インヒビター',plate:'タワープレート'}, riotMonster:{DRAGON:'ドラゴン',BARON_NASHOR:'バロン',RIFTHERALD:'リフトヘラルド',HORDE:'ヴォイドグラブ',ATAKHAN:'アタカン',ELDER_DRAGON:'エルダードラゴン'}, ctxEpisode:'同じ場面', ctxRelated:'関連プレー', ctxObj:'オブジェクト', leadText:(state,g)=>`チームゴールド ${g}（${state}）`, bgText:(pct,h)=>pct>=50?`この試合同フェーズの${h}秒区間で上位${Math.max(1,Math.round(100-pct))}%`:`この試合同フェーズの${h}秒区間で下位${Math.max(1,Math.round(pct))}%`, bgNote:'位置を示すだけで効果の大きさではありません',
-    dvText:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}速く拡大（±${b}）`, dvTextNeg:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}遅く拡大（±${b}）`, verification:'実況のみから整理し、動画では確認していません', retro:'後から振り返った場面', hzHead:'15・30・60秒の全体変化', wpsBoundary:'即時勝率変化', wpsBoundaryWindow:(pre,post)=>`開始前5秒窓の${pre}観測の中央値 → 終了後5秒窓の${post}観測の中央値`, wpsTotalNote:'プレー開始から各終点までの後続イベントをすべて含みます。', wpsMissing:'勝率を測る観測区間が不足しています', wpsProb:(a,b)=>`モデル勝率 ${a} → ${b}`, wpsCausal:'観測されたモデル状態の変化であり、このプレーだけの因果効果ではありません。', wpsCoverage:(m,n)=>`WPS測定 <strong>${m}</strong> / ${n}`, bothCoverage:(wm,n,gm,gr,h)=>`WPS測定 <strong>${wm}</strong> / ${n} · ${h}秒ゴールド測定 <strong>${gm}</strong> · 方向判定 <strong>${gr}</strong>`, colWps:h=>`${h}秒WPS`, colBoth:h=>`${h}秒WPS · ゴールド`, wpsGuide:[['即時変化と全体変化','即時WPSは開始前5秒と終了後5秒の勝率中央値を比較します。全体WPSは開始から15・30・60秒の終点までの後続イベントを含みます。'],['ベータモデル','Worldsは凍結v312、MSIは凍結MSI分岐v156を使用し、新しい試合で再学習・再校正していません。'],['因果ではありません','同時刻の全状態変化がWPSに入るため、このプレーだけの効果ではありません。']], hzOk:b=>`誤差±${b}`, hzUnres:b=>`±${b}以内のため不明`,
+    dvText:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}速く拡大（±${b}）`, dvTextNeg:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}遅く拡大（±${b}）`, verification:'実況のみから整理し、動画では確認していません', retro:'後から振り返った場面', hzHead:'15・30・60秒の全体変化', wpsBoundary:'即時勝率変化', wpsBoundaryWindow:(pre,post)=>`開始前5秒窓の${pre}観測の中央値 → 終了後5秒窓の${post}観測の中央値`, wpsTotalNote:'プレー開始から各終点までの後続イベントをすべて含みます。', wpsMissing:'勝率を測る観測区間が不足しています', wpsProb:(a,b)=>`モデル勝率 ${a} → ${b}`, wpsCausal:'観測されたモデル状態の変化であり、このプレーだけの因果効果ではありません。', wpsCoverage:(im,total,n,h)=>`即時WPS <strong>${im}</strong> · ${h}秒全体 <strong>${total}</strong> / ${n}`, bothCoverage:(im,total,n,gm,gr,h)=>`即時WPS <strong>${im}</strong> · ${h}秒全体 <strong>${total}</strong> / ${n} · ゴールド <strong>${gm}</strong> · 方向判定 <strong>${gr}</strong>`, colWps:h=>`即時 · ${h}秒全体WPS`, colBoth:h=>`即時 · ${h}秒全体 · ゴールド`, wpsGuide:[['即時変化と全体変化','即時WPSは開始前5秒と終了後5秒の勝率中央値を比較します。全体WPSは開始から15・30・60秒の終点までの後続イベントを含みます。'],['ベータモデル','Worldsは凍結v312、MSIは凍結MSI分岐v156を使用し、新しい試合で再学習・再校正していません。'],['因果ではありません','同時刻の全状態変化がWPSに入るため、このプレーだけの効果ではありません。']], hzOk:b=>`誤差±${b}`, hzUnres:b=>`±${b}以内のため不明`,
     xtTitle:'タイプ別集計', xtSub:'各プレーは実行したチーム基準で一度だけ数えます。数字を押すと該当プレーが下に表示されます。', scope:'範囲', scopeGame:'選択した試合', scopeStage:'このシリーズ', scopeAll:'大会全体', rowsBy:'分け方', rFamily:'プレータイプ', rOutcome:'結果', rKill:'キル', rFamOut:'タイプ × 結果', rPlayer:'選手', rChamp:'チャンピオン', xtPlayerNote:'選手・チャンピオン別では、実行・対象・対応として関わったプレーをその選手のチーム視点で数えます。相手のプレーはゴールド変化の符号を反転します。複数の選手が関わるプレーは選手ごとに一度入り、実況が名前を挙げたものだけを数えます。', sortBy:c=>`${c}で並べ替え`, rowLabel:'項目', xtGames:'試合', xtPerGame:'1試合当たり', xtCum:'累計', total:'合計', usedBy:'使用者', played:'使用チャンピオン', games:n=>`${n}試合`, xtNote:'4列の合計が総数です。利益と損失は誤差範囲を超えて方向が明確な場合だけ数えます。これは観測されたゴールド変化であり、プレーの因果効果ではありません。', xtPick:'数字を押すと該当プレーがここに表示されます。',
     statsTitle:'このシリーズのチーム・選手',statsSub:'現在のシリーズで実況が名前を挙げた重要場面を示します。他のチーム・選手との比較は別の比較画面で行います。',compareTitle:'チーム・選手比較',compareSub:'シリーズ選択とは独立して、大会全体または直接対戦で比較します。',statsOpenCompare:'大会全体で比較 →',statsPlayerList:'このシリーズの選手',statsTeam:'チーム',statsPlayer:'選手',statsChamp:'チャンピオン',statsMetric:'指標',statsWps:'勝率変化',statsGold:'ゴールド変化',statsRadarTitle:'重要場面への関与プロフィール',statsRadarSub:(h,m)=>`1試合当たりの${h}秒${m}純変化 · 中央のリングは0`,statsGames:'試合',statsScenes:'測定場面',statsToward:'自チーム方向',statsMedian:'変化幅中央値',statsPerGame:'1試合当たり純変化',statsComparePlayer:'選手比較',statsCompareChamp:'チャンピオン比較',statsFingerprint:'プレー分布',statsGood:'自チームに有利',statsBad:'自チームに不利',statsRoles:'関与役割',statsTypes:'主なプレータイプ',statsGoldBreak:'変化方向の集計',statsTopScenes:'変化幅の大きい場面',statsCaveat:'一つのプレーは関与した各選手に一度ずつ入ります。重なる時間窓や同時イベントも含むため、個人貢献とは解釈しません。',statsBasis:'比較基準',statsBasisSeries:'現在のシリーズ',statsBasisH2h:'直接対戦',statsBasisAll:'大会全体',statsH2hUnavailable:'選択した2者の直接対戦はありません。',statsPickTeamA:'チームA',statsPickTeamB:'チームB',statsPickPlayerA:'選手A',statsPickPlayerB:'選手B',statsPosition:'ポジション',statsAllPositions:'全ポジション',statsCompareHint:'各値は選択範囲内で実際に出場した試合数で割ります。',statsNoData:'この比較で測定可能な場面はありません。',statsOpenPlay:'プレーを開く',
     skip:'本文へ移動', loading:'読み込み中…', loadError:'データを読み込めませんでした。再読み込みしてください。', plannedTitle:'準備中', plannedBody:'この大会ではまだ分析済みの試合がありません。', gameN:n=>`第${n}ゲーム`, gameAria:(n,w)=>`第${n}ゲーム、${w}の勝利`, serLabel:'シリーズ', serCount:(i,n)=>`${n}シリーズ中${i}番目`, phaseBracket:'ブラケットステージ', phasePlayIn:'プレイイン', sourceEnglish:'プレーのタイトルと説明は現在英語で表示されます',
@@ -959,7 +961,7 @@
     const storedMetric = localStorage.getItem('lv_metric');
     if (WPS_INDEX && ['wps', 'gold', 'both'].includes(storedMetric)) S.metric = storedMetric;
     const storedListSort = localStorage.getItem('lv_list_sort');
-    if (['time', 'gold'].includes(storedListSort) || (WPS_INDEX && storedListSort === 'wps')) S.listSort = storedListSort;
+    if (['time', 'gold'].includes(storedListSort) || (WPS_INDEX && ['instant', 'wps'].includes(storedListSort))) S.listSort = storedListSort;
     // The guide starts open on a first visit and then remembers whether the viewer closed it.
     S.guideOpen = localStorage.getItem('lv_guide') === '1';
   } catch (e) { /* storage unavailable */ }
@@ -1093,6 +1095,11 @@
     if (!value || value.status !== 'valid' || value.observed_wps_pp == null) return null;
     return value;
   };
+  const wpsBoundaryOf = p => {
+    const value = wpsOf(p);
+    if (!value || value.status !== 'valid' || value.boundary?.wps_pp == null) return null;
+    return value.boundary;
+  };
   function wpsHighlightIds(g, h) {
     if (!g?._wpsPlays || !g.plays) return new Set();
     g._wpsHighlights = g._wpsHighlights || {};
@@ -1134,7 +1141,7 @@
     if (q.get('view') === 'stats') S.view = ['h2h', 'all'].includes(q.get('scope')) ? 'compare' : 'stats';
     if (['15', '30', '60'].includes(q.get('h'))) S.h = q.get('h');
     if (WPS_INDEX && ['wps', 'gold', 'both'].includes(q.get('metric'))) S.metric = q.get('metric');
-    if (['time', 'gold'].includes(q.get('sort')) || (WPS_INDEX && q.get('sort') === 'wps')) S.listSort = q.get('sort');
+    if (['time', 'gold'].includes(q.get('sort')) || (WPS_INDEX && ['instant', 'wps'].includes(q.get('sort')))) S.listSort = q.get('sort');
     if (['stage', 'h2h', 'all'].includes(q.get('scope'))) S.statsScope = q.get('scope');
     if (['team', 'player', 'champ'].includes(q.get('tab'))) S.statsTab = q.get('tab');
     if (['wps', 'gold'].includes(q.get('stat'))) S.statsMetric = q.get('stat');
@@ -1905,17 +1912,19 @@
   function rowHtml(p, selected) {
     const v = viewOf(p);
     const h = v.hz[S.h];
+    const instant = wpsBoundaryOf(p);
     const w = wpsHorizon(p, S.h);
     const g = p._game;
     const side = p.actor === g.blue_team ? 'blue' : p.actor === g.red_team ? 'red' : '';
     const hl = hlOf(p.id);
-    const wpsMetric = listMetric(g, p.actor, 'WPS', w?.observed_wps_pp ?? null, LIST_WPS_SCALE, 'wps');
+    const instantMetric = listMetric(g, p.actor, t('listInstant'), instant?.wps_pp ?? null, LIST_WPS_SCALE, 'wps');
+    const totalMetric = listMetric(g, p.actor, t('listTotal')(S.h), w?.observed_wps_pp ?? null, LIST_WPS_SCALE, 'wps');
     const goldMetric = listMetric(g, p.actor, t('metricGold'), h.state === 'missing' ? null : h.e, LIST_GOLD_SCALE, 'gold', ['positive', 'negative'].includes(h.state));
     return `<button type="button" class="row side-${side || 'none'} ${selected ? 'on' : ''} ${hl ? 'star' : ''}" data-id="${p.id}" ${selected ? 'aria-current="true"' : ''} ${hl ? `title="${esc(hl.map(r => L('hl', r)).join(' · '))}"` : ''}>
       <span class="t">${clock(p)}</span><span class="chip ${side}">${esc(p.actor || '?')}</span>
       <span class="title"><span class="ttl">${hl ? `<span class="sr-only">${esc(t('hlOnly'))}</span>` : ''}${S.fPlayer && invOf(p, S.fPlayer) ? `<span class="chip">${esc(L('inv', invOf(p, S.fPlayer).role))}</span> ` : ''}${esc(contentText(p, 'title'))}${p.objective_links.length ? ' <span class="chip fam">' + p.objective_links.map(o => esc(objLabel(o.objective))).join('·') + '</span>' : ''}</span>${whoLine(p)}</span>
       <span class="famcell">${famChip(v.famKey, v.familyText, 'dot')}</span>
-      <span class="e metric-cell">${S.metric === 'wps' ? wpsMetric : S.metric === 'both' ? wpsMetric + goldMetric : goldMetric}</span></button>`;
+      <span class="e metric-cell">${S.metric === 'wps' ? instantMetric + totalMetric : S.metric === 'both' ? instantMetric + totalMetric + goldMetric : goldMetric}</span></button>`;
   }
 
   // Picking a player filters the list without changing how any play is read.
@@ -1928,7 +1937,7 @@
   function renderList(g, previousRows = null) {
     const el = document.getElementById('listCard');
     const tagKeys = [...Object.keys(D.tags)];
-    if (S.listSort === 'wps' && !g._wps) S.listSort = 'time';
+    if (['instant', 'wps'].includes(S.listSort) && !g._wps) S.listSort = 'time';
     const list = g.plays.filter(p => {
       const v = viewOf(p);
       if (S.fFamily && p.family !== S.fFamily) return false;
@@ -1941,6 +1950,10 @@
     const chronologicalIndex = new Map(g.plays.map((p, i) => [p.id, i]));
     const magnitude = p => {
       const v = viewOf(p);
+      if (S.listSort === 'instant') {
+        const instant = wpsBoundaryOf(p);
+        return instant ? Math.abs(instant.wps_pp) : null;
+      }
       if (S.listSort === 'wps') {
         const w = wpsHorizon(p, S.h);
         return w ? Math.abs(w.observed_wps_pp) : null;
@@ -1957,13 +1970,14 @@
     });
     const measured = g.plays.filter(p => p.horizons[S.h].state !== 'missing').length;
     const resolved = g.plays.filter(p => ['positive', 'negative'].includes(p.horizons[S.h].state)).length;
+    const instantMeasured = g.plays.filter(p => !!wpsBoundaryOf(p)).length;
     const wpsMeasured = g.plays.filter(p => !!wpsHorizon(p, S.h)).length;
-    const coverage = S.metric === 'wps' ? t('wpsCoverage')(wpsMeasured, g.plays.length)
-      : S.metric === 'both' ? t('bothCoverage')(wpsMeasured, g.plays.length, measured, resolved, S.h)
+    const coverage = S.metric === 'wps' ? t('wpsCoverage')(instantMeasured, wpsMeasured, g.plays.length, S.h)
+      : S.metric === 'both' ? t('bothCoverage')(instantMeasured, wpsMeasured, g.plays.length, measured, resolved, S.h)
       : t('listCoverage')(S.h, measured, resolved);
     const valueHead = S.metric === 'wps' ? t('colWps')(S.h) : S.metric === 'both' ? t('colBoth')(S.h) : t('colGold')(S.h);
-    const compactValueHead = S.metric === 'both' ? t('sec')(S.h) : valueHead;
-    const sortOptions = [['time', t('sortTime')], ...(g._wps ? [['wps', t('sortWps')]] : []), ['gold', t('sortGold')]];
+    const compactValueHead = valueHead;
+    const sortOptions = [['time', t('sortTime')], ...(g._wps ? [['instant', t('sortWpsInstant')], ['wps', t('sortWpsTotal')(S.h)]] : []), ['gold', t('sortGold')]];
     el.innerHTML = `<h3>${t('listTitle')} <span class="sub">${t('listSub')(list.length, g.plays.length)}</span></h3>
       <p class="list-coverage">${coverage}</p>
       <div class="list-sort"><label for="listSort">${t('listSortLabel')}</label><select id="listSort" aria-label="${esc(t('listSortLabel'))}">${sortOptions.map(([key, label]) => `<option value="${key}" ${S.listSort === key ? 'selected' : ''}>${esc(label)}</option>`).join('')}</select></div>
