@@ -379,7 +379,17 @@
     .metric-caption small { color: var(--text-muted); font-size: .58rem; font-weight: 800; text-transform: uppercase; }
     .metric-benefit { overflow: hidden; text-overflow: ellipsis; font-size: .68rem; font-weight: 800; font-variant-numeric: tabular-nums; }
     .metric-benefit.side-blue { color: var(--blue-team); } .metric-benefit.side-red { color: var(--red-team); } .metric-benefit.neutral { color: var(--neutral); }
-    .value-head { display: grid; gap: 2px; width: 100%; min-width: 0; line-height: 1.15; }
+    .value-head { position: relative; display: grid; gap: 2px; width: 100%; min-width: 0; line-height: 1.15; }
+    .value-head-label { display: flex; align-items: center; justify-content: flex-end; gap: 4px; min-width: 0; }
+    .value-head-label > span:first-child { min-width: 0; }
+    .metric-head-help { position: relative; display: inline-flex; flex: none; }
+    .metric-head-help button { display: inline-grid; place-items: center; width: 17px; height: 17px; padding: 0; border: 1px solid var(--border-color); border-radius: 50%; background: var(--bg-card); color: var(--text-muted); font: 800 .65rem/1 var(--font); cursor: help; }
+    .metric-head-help button:hover, .metric-head-help button:focus-visible { border-color: var(--border-focus); color: var(--text-main); outline: none; }
+    .metric-head-tooltip { display: none; position: absolute; z-index: 40; top: calc(100% + 7px); right: 0; width: min(320px, calc(100vw - 40px)); padding: 10px 11px; border: 1px solid var(--border-color); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text-main); box-shadow: 0 8px 24px rgba(21, 25, 34, .16); text-align: left; font-size: .7rem; font-weight: 500; line-height: 1.45; }
+    .metric-head-help:hover .metric-head-tooltip, .metric-head-help:focus-within .metric-head-tooltip { display: block; }
+    .metric-head-tooltip dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 9px; margin: 0; }
+    .metric-head-tooltip dt { color: var(--text-main); font-weight: 800; white-space: nowrap; }
+    .metric-head-tooltip dd { margin: 0; color: var(--text-muted); }
     .meter-legend { display: grid; grid-template-columns: 1fr 1px 1fr; align-items: center; gap: 4px; font-size: .6rem; font-weight: 800; }
     .meter-legend .blue { color: var(--blue-team); text-align: left; } .meter-legend .red { color: var(--red-team); text-align: right; }
     .meter-legend .axis { width: 1px; height: 8px; background: var(--chart-axis); }
@@ -688,6 +698,13 @@
       gameNav: (n, w, d) => `${n}세트 · ${w} 승 · ${d}`,
       detailEmpty: '플레이를 고르면 여기에 자세히 나옵니다.', prevWord: '이전', nextWord: '다음', keyPrev: '이전 플레이 (키보드 ←)', keyNext: '다음 플레이 (키보드 →)',
       colTime: '시간', colTeam: '팀', colPlay: '플레이', colType: '행동 유형', colGold: h => `${h}초 골드 변화`,
+      colMetricHelpLabel: '플레이 목록 지표 설명',
+      colMetricHelp: (h, blue, red) => ({
+        instant: ['즉시 WPS', '플레이 시작 전 5초와 종료 후 5초의 모델 승률 중앙값 차이입니다. 밝고 얇은 막대로 표시합니다.'],
+        total: [`${h}초 전체 WPS`, `플레이 시작부터 ${h}초 뒤까지의 승률 변화입니다. 후속 대응·교전·오브젝트를 포함하며, 옅고 넓은 막대로 표시합니다.`],
+        gold: [`${h}초 골드`, `같은 ${h}초 동안 두 팀 골드 차이가 얼마나 변했는지 보여 줍니다.`],
+        team: ['팀 방향', `가운데 선을 기준으로 왼쪽은 ${blue}, 오른쪽은 ${red}에 유리한 변화입니다.`],
+      }),
       hlOnly: '눈여겨볼 장면만', hlCriteriaTitle: h => `눈여겨볼 장면 · ${h}초 기준`,
       hlCriteria: h => `성공했는데 골드 손해, 실패·중단했는데 골드 이득, 같은 시간대에서 ${h}초 골드 변화 폭이 상위 10%이거나 같은 경기·페이즈의 해설 플레이 중 ${h}초 WPS 변화 폭이 상위 10%인 플레이입니다.`,
       hlCriteriaOpen: '기준 보기', hlCriteriaClose: '접기',
@@ -743,7 +760,7 @@
       statsTitle: '이 시리즈 팀·선수', statsSub: '현재 시리즈에서 해설에 이름이 나온 중요 장면의 관여 양상입니다. 다른 팀·선수와의 비교는 별도 비교 화면에서 볼 수 있습니다.',
       compareTitle: '팀·선수 비교', compareSub: '시리즈 선택과 독립적으로, 대회 전체 또는 두 대상의 맞대결에서 팀과 선수를 비교합니다.', statsOpenCompare: '대회 전체에서 비교 →', statsPlayerList: '이 시리즈 선수',
       statsTeam: '팀', statsPlayer: '선수', statsChamp: '챔피언', statsMetric: '지표', statsWps: '승률 변화', statsGold: '골드 변화',
-      statsRadarTitle: '중요 장면 관여 프로필', statsRadarSub: (h, m) => `${h}초 ${m}의 경기당 순변화 · 가운데 링은 0`,
+      statsRadarTitle: '중요 장면 관여 프로필', statsRadarSub: (windowLabel, m) => `${windowLabel} ${m}의 경기당 순변화 · 가운데 링은 0`,
       statsGames: '경기', statsScenes: '측정 장면', statsToward: '팀 방향', statsMedian: '중앙 변화폭', statsPerGame: '경기당 순변화',
       statsComparePlayer: '선수 비교', statsCompareChamp: '챔피언 비교', statsFingerprint: '플레이 지문', statsGood: '팀에 유리', statsBad: '팀에 불리',
       statsRoles: '관여 역할', statsTypes: '주요 행동 유형', statsGoldBreak: '변화 방향 집계', statsTopScenes: '변화폭이 큰 장면',
@@ -789,6 +806,13 @@
       gameNav: (n, w, d) => `Game ${n} · ${w} won · ${d}`,
       detailEmpty: 'Pick a play to see it here.', prevWord: 'Previous', nextWord: 'Next', keyPrev: 'Previous play (← key)', keyNext: 'Next play (→ key)',
       colTime: 'Time', colTeam: 'Team', colPlay: 'Play', colType: 'Play type', colGold: h => `Gold change, ${h}s`,
+      colMetricHelpLabel: 'Explain the play-list metrics',
+      colMetricHelp: (h, blue, red) => ({
+        instant: ['Immediate WPS', 'The difference between the median model probability in the 5s before the play starts and the 5s after it ends. Shown as the bright, thin bar.'],
+        total: [`${h}s total WPS`, `The probability change from the play start to ${h}s later, including follow-up responses, fights and objectives. Shown as the muted, wide bar.`],
+        gold: [`${h}s gold`, `How much the gold gap between the teams changed over the same ${h}s.`],
+        team: ['Team direction', `From the centre line, left favours ${blue} and right favours ${red}.`],
+      }),
       hlOnly: 'Worth a look only', hlCriteriaTitle: h => `Worth a look · ${h}s window`,
       hlCriteria: h => `A success with a gold loss, a failure or called-off play with a gold gain, a ${h}s gold swing in the largest 10% for that phase, or a ${h}s WPS swing in the largest 10% among commentary plays in the same game and phase.`,
       hlCriteriaOpen: 'View criteria', hlCriteriaClose: 'Close',
@@ -844,7 +868,7 @@
       statsTitle: 'Teams & players in this series', statsSub: 'How the current series’ teams and named players appear in commentary-selected high-salience moments. Compare them with others on the separate comparison screen.',
       compareTitle: 'Team & player comparison', compareSub: 'Compare teams and players over the whole event or their head-to-head games, independently of any selected series.', statsOpenCompare: 'Compare across the event →', statsPlayerList: 'Players in this series',
       statsTeam: 'Team', statsPlayer: 'Player', statsChamp: 'Champion', statsMetric: 'Metric', statsWps: 'Win-probability change', statsGold: 'Gold change',
-      statsRadarTitle: 'High-salience involvement profile', statsRadarSub: (h, m) => `Net ${h}s ${m} per game · the middle ring is zero`,
+      statsRadarTitle: 'High-salience involvement profile', statsRadarSub: (windowLabel, m) => `Net ${windowLabel} ${m} per game · the middle ring is zero`,
       statsGames: 'Games', statsScenes: 'Measured moments', statsToward: 'Toward team', statsMedian: 'Median swing', statsPerGame: 'Net change per game',
       statsComparePlayer: 'Compare players', statsCompareChamp: 'Compare champions', statsFingerprint: 'Play fingerprint', statsGood: 'Toward the team', statsBad: 'Against the team',
       statsRoles: 'Involvement roles', statsTypes: 'Main play types', statsGoldBreak: 'Change-direction counts', statsTopScenes: 'Largest-swing moments',
@@ -877,6 +901,7 @@
     gameLine: (w, d) => `${w}获胜 · ${d}`, gameNav: (n, w, d) => `第${n}局 · ${w}获胜 · ${d}`,
     detailEmpty: '选择一个操作即可在此查看详情。', prevWord: '上一个', nextWord: '下一个', keyPrev: '上一个操作（←键）', keyNext: '下一个操作（→键）',
     colTime: '时间', colTeam: '队伍', colPlay: '操作', colType: '操作类型', colGold: h => `${h}秒经济变化`,
+    colMetricHelpLabel:'操作列表指标说明',colMetricHelp:(h,blue,red)=>({instant:['即时WPS','比较操作开始前5秒与结束后5秒的模型胜率中位数；以明亮的细条显示。'],total:[`${h}秒整体WPS`,`从操作开始到${h}秒后的胜率变化，包含后续应对、交战与资源；以较淡的宽条显示。`],gold:[`${h}秒经济`,`同一${h}秒内两队经济差的变化。`],team:['队伍方向',`以中线为界，左侧表示有利于${blue}，右侧表示有利于${red}。`]}),
     hlOnly: '只看值得关注', hlCriteriaTitle: h => `值得关注 · ${h}秒区间`, hlCriteria: h => `成功却损失经济、失败或取消却获得经济、${h}秒经济波动位于该阶段最大10%，或${h}秒WPS波动位于同场比赛同阶段解说操作最大10%的操作。`, hlCriteriaOpen: '查看标准', hlCriteriaClose: '收起',
     listTitle: '操作列表', listSub: (n, total) => n === total ? `${total}个` : `${n} / ${total}个`, listCoverage: (h, m, k) => `${h}秒经济已测 <strong>${m}</strong> · 方向明确 <strong>${k}</strong>`, listSortLabel:'排序', sortTime:'按时间', sortWpsInstant:'即时胜率变化从大到小', sortWpsTotal:h=>`${h}秒整体胜率变化从大到小`, sortGold:'经济变化从大到小', listInstant:'即时', listTotal:h=>`${h}秒整体`,
     fFamily: '所有操作类型', fTag: '所有结果', fState: '所有经济变化', fPlayer: '所有选手与英雄', clearFilters: '清除筛选', playerNote: '显示该选手执行、成为目标或参与应对的操作。筛选不会改变数值或判定标准，只包含解说点名的操作。',
@@ -892,7 +917,7 @@
     xtTitle: '按类型汇总', xtSub: '每个操作按执行方只计一次。点击数字可在下方查看对应操作。', scope: '范围', scopeGame: '所选比赛', scopeStage: '本系列赛', scopeAll: '整个赛事', rowsBy: '拆分方式', rFamily: '操作类型', rOutcome: '结果', rKill: '击杀', rFamOut: '类型 × 结果', rPlayer: '选手', rChamp: '英雄',
     xtPlayerNote: '按选手或英雄拆分时，计算其执行、成为目标或参与应对的操作，并从该选手队伍视角显示；对方操作会翻转经济变化正负号。多人参与的操作会对每位选手各计一次，只统计解说点名的情况。', sortBy: c => `按${c}排序`, rowLabel: '项目', xtGames: '比赛', xtPerGame: '每局', xtCum: '累计', total: '合计', usedBy: '使用者', played: '使用英雄', games: n => `${n}局`,
     xtNote: '四栏之和为总数。收益与损失只统计超出误差范围、方向明确的变化。这些是观测到的经济变化，并非操作造成的因果效果。', xtPick: '点击数字后，对应操作会显示在这里。',
-    statsTitle:'本系列赛队伍与选手',statsSub:'展示当前系列赛中解说点名的重要场景；与其他队伍、选手的比较请前往独立比较页面。',compareTitle:'队伍与选手比较',compareSub:'不受系列赛选择影响，按整个赛事或双方交手比较队伍与选手。',statsOpenCompare:'在整个赛事中比较 →',statsPlayerList:'本系列赛选手',statsTeam:'队伍',statsPlayer:'选手',statsChamp:'英雄',statsMetric:'指标',statsWps:'胜率变化',statsGold:'经济变化',statsRadarTitle:'重要场景参与画像',statsRadarSub:(h,m)=>`每局${h}秒${m}净变化 · 中间环为0`,statsGames:'比赛',statsScenes:'已测场景',statsToward:'有利于本队',statsMedian:'中位变化',statsPerGame:'每局净变化',statsComparePlayer:'选手比较',statsCompareChamp:'英雄比较',statsFingerprint:'操作指纹',statsGood:'有利于本队',statsBad:'不利于本队',statsRoles:'参与角色',statsTypes:'主要操作类型',statsGoldBreak:'变化方向统计',statsTopScenes:'变化最大的场景',statsCaveat:'同一操作会对每位参与选手各计一次；重叠时间窗与同时发生的事件仍包含在数值中，因此不能解读为个人贡献。',statsBasis:'比较范围',statsBasisSeries:'当前系列赛',statsBasisH2h:'双方交手',statsBasisAll:'整个赛事',statsH2hUnavailable:'所选双方没有交手比赛。',statsPickTeamA:'队伍A',statsPickTeamB:'队伍B',statsPickPlayerA:'选手A',statsPickPlayerB:'选手B',statsPosition:'位置',statsAllPositions:'全部位置',statsCompareHint:'各数值按所选范围内其实际出场数计算。',statsNoData:'当前比较没有可测场景。',statsOpenPlay:'打开操作',
+    statsTitle:'本系列赛队伍与选手',statsSub:'展示当前系列赛中解说点名的重要场景；与其他队伍、选手的比较请前往独立比较页面。',compareTitle:'队伍与选手比较',compareSub:'不受系列赛选择影响，按整个赛事或双方交手比较队伍与选手。',statsOpenCompare:'在整个赛事中比较 →',statsPlayerList:'本系列赛选手',statsTeam:'队伍',statsPlayer:'选手',statsChamp:'英雄',statsMetric:'指标',statsWps:'胜率变化',statsGold:'经济变化',statsRadarTitle:'重要场景参与画像',statsRadarSub:(windowLabel,m)=>`每局${windowLabel}${m}净变化 · 中间环为0`,statsGames:'比赛',statsScenes:'已测场景',statsToward:'有利于本队',statsMedian:'中位变化',statsPerGame:'每局净变化',statsComparePlayer:'选手比较',statsCompareChamp:'英雄比较',statsFingerprint:'操作指纹',statsGood:'有利于本队',statsBad:'不利于本队',statsRoles:'参与角色',statsTypes:'主要操作类型',statsGoldBreak:'变化方向统计',statsTopScenes:'变化最大的场景',statsCaveat:'同一操作会对每位参与选手各计一次；重叠时间窗与同时发生的事件仍包含在数值中，因此不能解读为个人贡献。',statsBasis:'比较范围',statsBasisSeries:'当前系列赛',statsBasisH2h:'双方交手',statsBasisAll:'整个赛事',statsH2hUnavailable:'所选双方没有交手比赛。',statsPickTeamA:'队伍A',statsPickTeamB:'队伍B',statsPickPlayerA:'选手A',statsPickPlayerB:'选手B',statsPosition:'位置',statsAllPositions:'全部位置',statsCompareHint:'各数值按所选范围内其实际出场数计算。',statsNoData:'当前比较没有可测场景。',statsOpenPlay:'打开操作',
     skip: '跳到正文', loading: '加载中…', loadError: '无法加载数据，请刷新页面。', plannedTitle: '即将推出', plannedBody: '此赛事尚无已分析比赛。', gameN: n => `第${n}局`, gameAria: (n,w) => `第${n}局，${w}获胜`, serLabel: '系列赛', serCount: (i,n) => `第${i}/${n}个系列赛`, phaseBracket: '淘汰赛阶段', phasePlayIn: '入围赛', sourceEnglish: '操作标题与说明暂以英文显示',
   };
   T.ja = { ...T.en,
@@ -905,6 +930,7 @@
     lgBlue:'ブルー側のプレー', lgRed:'レッド側のプレー', lgUnres:'誤差範囲内', lgWin:'選択したプレーの区間', lgFlow:'関連プレー（90秒以内）', lgObj:'ヘラルド・バロン・エルダー獲得と後続プレー', laneFlow:'関連', laneObj:'オブジェクト', laneGap:(blue,red)=>`${blue} − ${red} ゴールド`, laneBars:(h,blue,red)=>`${h}秒のゴールド変化 · ↑${blue} / ↓${red}`,
     finding:(h,clk,title,team,e)=>`${h}秒で最大の変化：${clk} ${title}（${team} ${e}）`, findingCompact:(h,clk,team,e)=>`↗ ${h}秒最大変化 · ${clk} · ${team} ${e}`, noFinding:h=>`${h}秒で利益・損失を判定できるプレーはありません。`, gameLine:(w,d)=>`${w}勝利 · ${d}`, gameNav:(n,w,d)=>`第${n}ゲーム · ${w}勝利 · ${d}`,
     detailEmpty:'プレーを選ぶと詳細が表示されます。', prevWord:'前', nextWord:'次', keyPrev:'前のプレー（←キー）', keyNext:'次のプレー（→キー）', colTime:'時間', colTeam:'チーム', colPlay:'プレー', colType:'プレータイプ', colGold:h=>`${h}秒のゴールド変化`,
+    colMetricHelpLabel:'プレー一覧の指標説明',colMetricHelp:(h,blue,red)=>({instant:['即時WPS','プレー開始前5秒と終了後5秒のモデル勝率中央値の差です。明るく細いバーで示します。'],total:[`${h}秒全体WPS`,`開始から${h}秒後までの勝率変化で、後続対応・交戦・オブジェクトを含みます。薄く太いバーで示します。`],gold:[`${h}秒ゴールド`,`同じ${h}秒間に両チームのゴールド差がどれだけ変わったかを示します。`],team:['チーム方向',`中央線から左は${blue}、右は${red}に有利な変化です。`]}),
     hlOnly:'注目シーンのみ', hlCriteriaTitle:h=>`注目シーン · ${h}秒基準`, hlCriteria:h=>`成功したのにゴールド損、失敗・中止したのにゴールド益、同フェーズで${h}秒のゴールド変動幅が上位10%、または同じ試合・フェーズの実況プレーで${h}秒WPS変動幅が上位10%のプレーです。`, hlCriteriaOpen:'基準を見る', hlCriteriaClose:'閉じる', listTitle:'プレー一覧', listSub:(n,total)=>n===total?`${total}件`:`${n} / ${total}件`, listCoverage:(h,m,k)=>`${h}秒ゴールド測定 <strong>${m}</strong> · 方向判定 <strong>${k}</strong>`, listSortLabel:'並べ替え', sortTime:'時間順', sortWpsInstant:'即時勝率変化の大きい順', sortWpsTotal:h=>`${h}秒全体勝率変化の大きい順`, sortGold:'ゴールド変化の大きい順', listInstant:'即時', listTotal:h=>`${h}秒全体`,
     fFamily:'すべてのプレータイプ', fTag:'すべての結果', fState:'すべてのゴールド変化', fPlayer:'すべての選手・チャンピオン', clearFilters:'フィルターを解除', playerNote:'その選手が実行・対象・対応として関わったプレーです。フィルターを変えても数値と判定の基準は変わらず、実況が名前を挙げたものだけ表示します。', ctxEpPlayers:'この場面に関わった選手', prev:'← 前', next:'次 →', vod:'動画を見る', vodNew:'YouTubeで開く ↗', ytNote:'ローカルファイルとして開くとYouTubeが再生できない場合があります。上のリンクを使ってください。',
     ctxSummary:'判定サマリー', ctxMore:n=>`詳しい状況 · ${n}項目`, ctxOutcome:'プレー結果', ctxKill:'キル', ctxLead:'プレー直前', ctxBg:'同じフェーズとの比較', ctxDv:'ゴールドペースの変化（参考）', ctxOverlap:h=>`${h}秒以内に重なるプレー`, ctxOverlapNote:'これらの影響もゴールド変化に含まれます',
@@ -913,7 +939,7 @@
     riotKind:{kill:'キル',tower:'タワー',inhibitor:'インヒビター',plate:'タワープレート'}, riotMonster:{DRAGON:'ドラゴン',BARON_NASHOR:'バロン',RIFTHERALD:'リフトヘラルド',HORDE:'ヴォイドグラブ',ATAKHAN:'アタカン',ELDER_DRAGON:'エルダードラゴン'}, ctxEpisode:'同じ場面', ctxRelated:'関連プレー', ctxObj:'オブジェクト', leadText:(state,g)=>`チームゴールド ${g}（${state}）`, bgText:(pct,h)=>pct>=50?`この試合同フェーズの${h}秒区間で上位${Math.max(1,Math.round(100-pct))}%`:`この試合同フェーズの${h}秒区間で下位${Math.max(1,Math.round(pct))}%`, bgNote:'位置を示すだけで効果の大きさではありません',
     dvText:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}速く拡大（±${b}）`, dvTextNeg:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}遅く拡大（±${b}）`, verification:'実況のみから整理し、動画では確認していません', retro:'後から振り返った場面', hzHead:'15・30・60秒の全体変化', wpsBoundary:'即時勝率変化', wpsBoundaryWindow:(pre,post)=>`開始前5秒窓の${pre}観測の中央値 → 終了後5秒窓の${post}観測の中央値`, wpsTotalNote:'プレー開始から各終点までの後続イベントをすべて含みます。', wpsMissing:'勝率を測る観測区間が不足しています', wpsProb:(a,b)=>`モデル勝率 ${a} → ${b}`, wpsCausal:'観測されたモデル状態の変化であり、このプレーだけの因果効果ではありません。', wpsCoverage:(im,total,n,h)=>`即時WPS <strong>${im}</strong> · ${h}秒全体 <strong>${total}</strong> / ${n}`, bothCoverage:(im,total,n,gm,gr,h)=>`即時WPS <strong>${im}</strong> · ${h}秒全体 <strong>${total}</strong> / ${n} · ゴールド <strong>${gm}</strong> · 方向判定 <strong>${gr}</strong>`, colWps:h=>`即時 · ${h}秒全体WPS`, colBoth:h=>`即時 · ${h}秒全体 · ゴールド`, wpsGuide:[['即時変化と全体変化','即時WPSは開始前5秒と終了後5秒の勝率中央値を比較します。全体WPSは開始から15・30・60秒の終点までの後続イベントを含みます。'],['ベータモデル','Worldsは凍結v312、MSIは凍結MSI分岐v156を使用し、新しい試合で再学習・再校正していません。'],['因果ではありません','同時刻の全状態変化がWPSに入るため、このプレーだけの効果ではありません。']], hzOk:b=>`誤差±${b}`, hzUnres:b=>`±${b}以内のため不明`,
     xtTitle:'タイプ別集計', xtSub:'各プレーは実行したチーム基準で一度だけ数えます。数字を押すと該当プレーが下に表示されます。', scope:'範囲', scopeGame:'選択した試合', scopeStage:'このシリーズ', scopeAll:'大会全体', rowsBy:'分け方', rFamily:'プレータイプ', rOutcome:'結果', rKill:'キル', rFamOut:'タイプ × 結果', rPlayer:'選手', rChamp:'チャンピオン', xtPlayerNote:'選手・チャンピオン別では、実行・対象・対応として関わったプレーをその選手のチーム視点で数えます。相手のプレーはゴールド変化の符号を反転します。複数の選手が関わるプレーは選手ごとに一度入り、実況が名前を挙げたものだけを数えます。', sortBy:c=>`${c}で並べ替え`, rowLabel:'項目', xtGames:'試合', xtPerGame:'1試合当たり', xtCum:'累計', total:'合計', usedBy:'使用者', played:'使用チャンピオン', games:n=>`${n}試合`, xtNote:'4列の合計が総数です。利益と損失は誤差範囲を超えて方向が明確な場合だけ数えます。これは観測されたゴールド変化であり、プレーの因果効果ではありません。', xtPick:'数字を押すと該当プレーがここに表示されます。',
-    statsTitle:'このシリーズのチーム・選手',statsSub:'現在のシリーズで実況が名前を挙げた重要場面を示します。他のチーム・選手との比較は別の比較画面で行います。',compareTitle:'チーム・選手比較',compareSub:'シリーズ選択とは独立して、大会全体または直接対戦で比較します。',statsOpenCompare:'大会全体で比較 →',statsPlayerList:'このシリーズの選手',statsTeam:'チーム',statsPlayer:'選手',statsChamp:'チャンピオン',statsMetric:'指標',statsWps:'勝率変化',statsGold:'ゴールド変化',statsRadarTitle:'重要場面への関与プロフィール',statsRadarSub:(h,m)=>`1試合当たりの${h}秒${m}純変化 · 中央のリングは0`,statsGames:'試合',statsScenes:'測定場面',statsToward:'自チーム方向',statsMedian:'変化幅中央値',statsPerGame:'1試合当たり純変化',statsComparePlayer:'選手比較',statsCompareChamp:'チャンピオン比較',statsFingerprint:'プレー分布',statsGood:'自チームに有利',statsBad:'自チームに不利',statsRoles:'関与役割',statsTypes:'主なプレータイプ',statsGoldBreak:'変化方向の集計',statsTopScenes:'変化幅の大きい場面',statsCaveat:'一つのプレーは関与した各選手に一度ずつ入ります。重なる時間窓や同時イベントも含むため、個人貢献とは解釈しません。',statsBasis:'比較基準',statsBasisSeries:'現在のシリーズ',statsBasisH2h:'直接対戦',statsBasisAll:'大会全体',statsH2hUnavailable:'選択した2者の直接対戦はありません。',statsPickTeamA:'チームA',statsPickTeamB:'チームB',statsPickPlayerA:'選手A',statsPickPlayerB:'選手B',statsPosition:'ポジション',statsAllPositions:'全ポジション',statsCompareHint:'各値は選択範囲内で実際に出場した試合数で割ります。',statsNoData:'この比較で測定可能な場面はありません。',statsOpenPlay:'プレーを開く',
+    statsTitle:'このシリーズのチーム・選手',statsSub:'現在のシリーズで実況が名前を挙げた重要場面を示します。他のチーム・選手との比較は別の比較画面で行います。',compareTitle:'チーム・選手比較',compareSub:'シリーズ選択とは独立して、大会全体または直接対戦で比較します。',statsOpenCompare:'大会全体で比較 →',statsPlayerList:'このシリーズの選手',statsTeam:'チーム',statsPlayer:'選手',statsChamp:'チャンピオン',statsMetric:'指標',statsWps:'勝率変化',statsGold:'ゴールド変化',statsRadarTitle:'重要場面への関与プロフィール',statsRadarSub:(windowLabel,m)=>`1試合当たりの${windowLabel}${m}純変化 · 中央のリングは0`,statsGames:'試合',statsScenes:'測定場面',statsToward:'自チーム方向',statsMedian:'変化幅中央値',statsPerGame:'1試合当たり純変化',statsComparePlayer:'選手比較',statsCompareChamp:'チャンピオン比較',statsFingerprint:'プレー分布',statsGood:'自チームに有利',statsBad:'自チームに不利',statsRoles:'関与役割',statsTypes:'主なプレータイプ',statsGoldBreak:'変化方向の集計',statsTopScenes:'変化幅の大きい場面',statsCaveat:'一つのプレーは関与した各選手に一度ずつ入ります。重なる時間窓や同時イベントも含むため、個人貢献とは解釈しません。',statsBasis:'比較基準',statsBasisSeries:'現在のシリーズ',statsBasisH2h:'直接対戦',statsBasisAll:'大会全体',statsH2hUnavailable:'選択した2者の直接対戦はありません。',statsPickTeamA:'チームA',statsPickTeamB:'チームB',statsPickPlayerA:'選手A',statsPickPlayerB:'選手B',statsPosition:'ポジション',statsAllPositions:'全ポジション',statsCompareHint:'各値は選択範囲内で実際に出場した試合数で割ります。',statsNoData:'この比較で測定可能な場面はありません。',statsOpenPlay:'プレーを開く',
     skip:'本文へ移動', loading:'読み込み中…', loadError:'データを読み込めませんでした。再読み込みしてください。', plannedTitle:'準備中', plannedBody:'この大会ではまだ分析済みの試合がありません。', gameN:n=>`第${n}ゲーム`, gameAria:(n,w)=>`第${n}ゲーム、${w}の勝利`, serLabel:'シリーズ', serCount:(i,n)=>`${n}シリーズ中${i}番目`, phaseBracket:'ブラケットステージ', phasePlayIn:'プレイイン', sourceEnglish:'プレーのタイトルと説明は現在英語で表示されます',
   };
   const LBL = {
@@ -970,7 +996,7 @@
     lang: 'ko', theme: 'light', tourn: firstGame().tournament_id, view: 'set', stage: 'all', gameId: firstGame().id, playId: null,
     h: String(D.default_horizon_s), fFamily: '', fTag: '', fState: '', fPlayer: '', fHl: false, listSort: 'time',
     xScope: 'all', xRows: 'family', xCell: null, xSort: { col: 'positive', rev: false }, guideOpen: false,
-    statsScope: 'stage', statsTab: 'team', statsMetric: 'wps', statsPick: '', statsCompare: '', statsRole: 'all', statsTeamA: '', statsTeamB: '',
+    statsScope: 'stage', statsTab: 'team', statsMetric: 'wps', statsH: String(D.default_horizon_s), statsPick: '', statsCompare: '', statsRole: 'all', statsTeamA: '', statsTeamB: '',
     metric: WPS_INDEX ? (WPS_INDEX.display?.default_metric || 'both') : 'gold',
   };
   try {
@@ -1164,6 +1190,8 @@
     if (['stage', 'h2h', 'all'].includes(q.get('scope'))) S.statsScope = q.get('scope');
     if (['team', 'player', 'champ'].includes(q.get('tab'))) S.statsTab = q.get('tab');
     if (['wps', 'gold'].includes(q.get('stat'))) S.statsMetric = q.get('stat');
+    if (['instant', '15', '30', '60'].includes(q.get('sh'))) S.statsH = q.get('sh');
+    else if (['stats', 'compare'].includes(S.view) && ['15', '30', '60'].includes(q.get('h'))) S.statsH = q.get('h');
     if (q.get('entity')) S.statsPick = q.get('entity');
     if (q.get('compare')) S.statsCompare = q.get('compare');
     if (['all', 'top', 'jungle', 'mid', 'bot', 'support'].includes(q.get('role'))) S.statsRole = q.get('role');
@@ -1177,6 +1205,7 @@
     if (S.playId && S.view === 'set') q.set('play', S.playId);
     if (S.view === 'compare') {
       q.set('scope', S.statsScope); q.set('tab', S.statsTab); q.set('stat', S.statsMetric);
+      q.set('sh', S.statsH);
       if (S.statsPick) q.set('entity', S.statsPick);
       if (S.statsCompare) q.set('compare', S.statsCompare);
       if (S.statsRole !== 'all') q.set('role', S.statsRole);
@@ -1184,6 +1213,7 @@
       if (S.statsTeamB) q.set('teamB', S.statsTeamB);
     } else if (S.view === 'stats') {
       q.set('scope', 'stage'); q.set('tab', S.statsTab); q.set('stat', S.statsMetric);
+      q.set('sh', S.statsH);
       if (S.statsPick) q.set('entity', S.statsPick);
     }
     history.replaceState(null, '', '#' + q.toString());
@@ -1941,6 +1971,14 @@
     return `<span class="metric-block wps-overlay"><span class="sr-only">${esc(t('listInstant'))}: ${esc(instant.shown)} · ${esc(t('listTotal')(h))}: ${esc(total.shown)}</span><span class="metric-meter wps-overlay-meter" aria-hidden="true"><i class="axis"></i>${fill(total, 'total')}${fill(instant, 'instant')}</span><span class="wps-overlay-caption" aria-hidden="true">${caption(instant, t('listInstant'), 'instant')}${caption(total, t('listTotal')(h), 'total')}</span></span>`;
   }
 
+  function valueHeadHelp(g) {
+    const all = t('colMetricHelp')(S.h, g.blue_team, g.red_team);
+    const keys = S.metric === 'wps' ? ['instant', 'total', 'team'] : S.metric === 'both' ? ['instant', 'total', 'gold', 'team'] : ['gold', 'team'];
+    const content = keys.map(key => `<dt>${esc(all[key][0])}</dt><dd>${esc(all[key][1])}</dd>`).join('');
+    const label = t('colMetricHelpLabel');
+    return `<span class="metric-head-help"><button type="button" aria-label="${esc(label)}" aria-describedby="metricHeadTooltip">?</button><span class="metric-head-tooltip" id="metricHeadTooltip" role="tooltip"><dl>${content}</dl></span></span>`;
+  }
+
   function rowHtml(p, selected) {
     const v = viewOf(p);
     const h = v.hz[S.h];
@@ -2022,7 +2060,7 @@
       </div>
       <details class="highlight-criteria"><summary><span class="criteria-title">${SPARK_ICON}<span>${t('hlCriteriaTitle')(S.h)}</span></span><span class="criteria-action"><span class="criteria-open">${t('hlCriteriaOpen')}</span><span class="criteria-close">${t('hlCriteriaClose')}</span></span></summary><p>${t('hlCriteria')(S.h)}</p></details>
       ${S.fPlayer ? `<p class="note-box" style="margin:-4px 0 8px">${t('playerNote')}</p>` : ''}
-      <div class="rows"><div class="row head" aria-hidden="true"><span>${t('colTime')}</span><span>${t('colTeam')}</span><span>${t('colPlay')}</span><span class="famcell">${t('colType')}</span><span class="e value-head"><span>${compactValueHead}</span><span class="meter-legend"><i class="blue">${esc(g.blue_team)}</i><i class="axis"></i><i class="red">${esc(g.red_team)}</i></span></span></div>${list.map(p => rowHtml(p, p.id === S.playId)).join('')}</div>`;
+      <div class="rows"><div class="row head"><span>${t('colTime')}</span><span>${t('colTeam')}</span><span>${t('colPlay')}</span><span class="famcell">${t('colType')}</span><span class="e value-head"><span class="value-head-label"><span>${esc(compactValueHead)}</span>${valueHeadHelp(g)}</span><span class="meter-legend"><i class="blue">${esc(g.blue_team)}</i><i class="axis"></i><i class="red">${esc(g.red_team)}</i></span></span></div>${list.map(p => rowHtml(p, p.id === S.playId)).join('')}</div>`;
     el.querySelector('#listSort').onchange = e => {
       const before = rowPositions(el);
       S.listSort = e.target.value;
@@ -2240,6 +2278,7 @@
     });
   }
   function normalizeStatsSelections() {
+    if (S.statsMetric === 'gold' && S.statsH === 'instant') S.statsH = String(D.default_horizon_s);
     if (S.view === 'stats') {
       S.statsScope = 'stage';
       if (!['team', 'player'].includes(S.statsTab)) S.statsTab = 'team';
@@ -2264,10 +2303,18 @@
   }
   function statValue(p, team) {
     if (!p.actor || !team) return null;
-    const raw = S.statsMetric === 'wps' ? wpsHorizon(p, S.h)?.observed_wps_pp : p.horizons?.[S.h]?.e;
-    if (raw == null || (S.statsMetric === 'gold' && p.horizons[S.h].state === 'missing')) return null;
+    const wps = S.statsH === 'instant' ? wpsBoundaryOf(p) : wpsHorizon(p, S.statsH);
+    const raw = S.statsMetric === 'wps' ? (S.statsH === 'instant' ? wps?.wps_pp : wps?.observed_wps_pp) : p.horizons?.[S.statsH]?.e;
+    if (raw == null || (S.statsMetric === 'gold' && p.horizons[S.statsH].state === 'missing')) return null;
     return team === p.actor ? raw : -raw;
   }
+  function statState(p, team, value) {
+    if (value == null) return 'missing';
+    if (S.statsMetric === 'wps') return value > 0 ? 'positive' : value < 0 ? 'negative' : 'unresolved';
+    const hz = p.horizons?.[S.statsH];
+    return !hz ? 'missing' : team === p.actor ? hz.state : FLIP_STATE[hz.state];
+  }
+  const statsWindowLabel = () => S.statsH === 'instant' ? t('listInstant') : t('sec')(S.statsH);
   const fmtStat = value => value == null ? '—' : S.statsMetric === 'wps' ? fmtPP(value) : fmtG(Math.round(value));
   const fmtStatAbs = value => value == null ? '—' : S.statsMetric === 'wps' ? `${Math.abs(value).toFixed(1)}pp` : Math.round(Math.abs(value)).toLocaleString();
   const pct0 = (n, d) => d ? `${Math.round(100 * n / d)}%` : '—';
@@ -2294,10 +2341,11 @@
   function statsControls() {
     const contextual = S.view === 'stats', h2hAvailable = contextual || statsH2hGames().length > 0;
     const basis = [['h2h', t('statsBasisH2h'), !h2hAvailable], ['all', t('statsBasisAll'), false]];
+    const windows = [...(S.statsMetric === 'wps' && WPS_INDEX ? [['instant', t('listInstant')]] : []), ...D.horizons_s.map(h => [String(h), t('sec')(h)])];
     return `<div class="stats-controls">
       <div class="seg" id="statsTab">${[['team', t('statsTeam')], ['player', t('statsPlayer')]].map(([k, v]) => `<button data-tab="${k}" class="${S.statsTab === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
       ${contextual ? '' : `<span class="nav-label">${t('statsBasis')}</span><div class="seg" id="statsScope">${basis.map(([k, v, disabled]) => `<button data-scope="${k}" class="${S.statsScope === k ? 'on' : ''}" ${disabled ? `disabled title="${esc(t('statsH2hUnavailable'))}"` : ''}>${esc(v)}</button>`).join('')}</div>`}
-      <span class="nav-label">${t('horizon')}</span><div class="seg" id="statsH">${D.horizons_s.map(h => `<button data-h="${h}" class="${S.h === String(h) ? 'on' : ''}">${t('sec')(h)}</button>`).join('')}</div>
+      <span class="nav-label">${t('horizon')}</span><div class="seg" id="statsH">${windows.map(([h, label]) => `<button data-h="${h}" class="${S.statsH === h ? 'on' : ''}">${esc(label)}</button>`).join('')}</div>
       <span class="nav-label">${t('statsMetric')}</span><div class="seg" id="statsMetric">${(WPS_INDEX ? [['wps', t('statsWps')], ['gold', t('statsGold')]] : [['gold', t('statsGold')]]).map(([k, v]) => `<button data-stat="${k}" class="${S.statsMetric === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
     </div>${contextual ? '' : `<p class="stats-basis-note">${esc(t('statsCompareHint'))}</p>`}`;
   }
@@ -2305,8 +2353,8 @@
     const main = document.getElementById('main');
     main.querySelectorAll('#statsTab button').forEach(b => b.onclick = () => { S.statsTab = b.dataset.tab; S.statsPick = ''; S.statsCompare = ''; render(); });
     main.querySelectorAll('#statsScope button').forEach(b => b.onclick = () => { if (!b.disabled) { S.statsScope = b.dataset.scope; render(); } });
-    main.querySelectorAll('#statsH button').forEach(b => b.onclick = () => { S.h = b.dataset.h; render(); });
-    main.querySelectorAll('#statsMetric button').forEach(b => b.onclick = () => { S.statsMetric = b.dataset.stat; render(); });
+    main.querySelectorAll('#statsH button').forEach(b => b.onclick = () => { S.statsH = b.dataset.h; render(); });
+    main.querySelectorAll('#statsMetric button').forEach(b => b.onclick = () => { S.statsMetric = b.dataset.stat; if (S.statsMetric === 'gold' && S.statsH === 'instant') S.statsH = String(D.default_horizon_s); render(); });
   }
   function teamProfile(team, gs) {
     const teamGames = gs.filter(g => g.blue_team === team || g.red_team === team);
@@ -2387,7 +2435,7 @@
     const a = teamProfile(S.statsTeamA, gs), b = teamProfile(S.statsTeamB, gs);
     const options = selected => teams.map(team => `<option value="${esc(team)}" ${team === selected ? 'selected' : ''}>${esc(team)}</option>`).join('');
     return `<section class="card">
-      <div class="stats-head"><div><h2>${t('statsRadarTitle')}</h2><p class="stats-sub">${esc(t('statsRadarSub')(S.h, S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')))}</p></div>
+      <div class="stats-head"><div><h2>${t('statsRadarTitle')}</h2><p class="stats-sub">${esc(t('statsRadarSub')(statsWindowLabel(), S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')))}</p></div>
         ${selectable ? `<div class="stats-team-picks"><label class="stats-pick a"><span>${t('statsPickTeamA')}</span><select id="statsTeamA">${options(S.statsTeamA)}</select></label><label class="stats-pick b"><span>${t('statsPickTeamB')}</span><select id="statsTeamB">${options(S.statsTeamB)}</select></label></div>` : ''}</div>
       ${gs.length ? `<div class="stats-team-layout"><div class="stats-radar-wrap">${radarSvg(a, b)}<div class="stats-legend"><span><i class="a"></i>${esc(a.team)}</span><span><i class="b"></i>${esc(b.team)}</span></div></div>
         <div class="stats-team-cards">${teamCard(a, 'blue')}${teamCard(b, 'red')}</div></div>
@@ -2413,8 +2461,8 @@
       if (!r) return;
       const key = kind === 'player' ? x.player : r.champion, row = rows.get(key);
       if (!row) return;
-      const hz = p.horizons?.[S.h], goldState = !hz ? 'missing' : x.team === p.actor ? hz.state : FLIP_STATE[hz.state];
-      row.obs.push({ p, game: g, team: x.team, role: x.role, player: x.player, roster: r, value: statValue(p, x.team), goldState });
+      const value = statValue(p, x.team), goldState = statState(p, x.team, value);
+      row.obs.push({ p, game: g, team: x.team, role: x.role, player: x.player, roster: r, value, goldState });
     })));
     const summary = row => {
       const valid = row.obs.filter(x => x.value != null), pos = valid.filter(x => x.value > 0), neg = valid.filter(x => x.value < 0);
@@ -2469,7 +2517,7 @@
         <div class="stats-mini"><small>${t('statsMedian')}</small><strong>${fmtStatAbs(row.summary.median)}</strong></div>
         <div class="stats-mini"><small>${t('statsPerGame')}</small><strong class="${row.summary.netPerGame > 0 ? 'gain' : row.summary.netPerGame < 0 ? 'loss' : 'neutral'}">${fmtStat(row.summary.netPerGame)}</strong></div>
       </div></div>
-      <h3 style="margin-top:16px">${t('statsFingerprint')} <span class="sub">${t('sec')(S.h)} · ${S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')}</span></h3>
+      <h3 style="margin-top:16px">${t('statsFingerprint')} <span class="sub">${esc(statsWindowLabel())} · ${S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')}</span></h3>
       ${row.summary.valid.length ? dotplotSvg(row) : `<p class="empty">${t('statsNoData')}</p>`}
       <div class="stats-role-key">${INV_ROLES.map(role => `<span><i class="${role}"></i>${esc(L('inv', role))} ${roles[role]}</span>`).join('')}</div>
       <div class="stats-detail-grid"><div class="stats-breakdown">

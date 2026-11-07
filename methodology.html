@@ -335,6 +335,14 @@ h = 15, 30, 60초</pre>
       <p class="measure-demo-copy" data-demo-copy data-copy-15="짧은 창은 플레이 직후의 반응을 좁게 봅니다." data-copy-30="기본 창은 즉각적 보상과 이어진 교환을 함께 봅니다." data-copy-60="긴 창은 늦게 전환된 보상도 담지만 다른 사건이 섞일 가능성이 커집니다."></p>
     </div>
     <p><b>WPS(Win Probability Swing)</b>는 동결 모델 승률이 움직인 퍼센트포인트입니다. 화면은 두 층위를 나눠 보여 줍니다. <b>즉시 변화</b>는 플레이 시작 전 5초와 종료 후 5초에서 관측된 승률의 중앙값을 비교하고, <b>15·30·60초 전체 변화</b>는 플레이 시작점에서 각 시점까지의 후속 사건을 모두 포함합니다. 전자는 플레이 실행에 더 가까운 신호, 후자는 양 팀의 후속 대응과 전환을 포함한 신호로 읽을 수 있지만, 둘 다 개인 퍼포먼스와 팀 follow-up의 인과 기여분을 분리한 값은 아닙니다. 월즈에는 v312를, MSI에는 v312 명세가 그대로 유지하는 동결 MSI 분기 v156을 씁니다. 브라우저에서 모델을 돌리지 않고, 검증된 방송 OCR 골드와 해당 시점까지의 Riot 이벤트에 미리 점수를 매긴 정적 결과만 제공합니다.</p>
+    <h3>왜 즉시 변화와 전체 변화를 나누나</h3>
+    <p>전체 변화만 보면 플레이가 끝난 직후 생긴 상태 변화와 그 뒤 양 팀의 대응이 한 숫자에 섞입니다. 반대로 즉시 변화만 보면 시야 장악, 상대의 후퇴, 라인 포기처럼 시간이 지나며 전환되는 결과를 놓칠 수 있습니다. 그래서 둘을 나란히 두어 <b>플레이 직후 바뀐 상태</b>와 <b>그 상태가 선택한 시간창 안에서 어떻게 이어졌는지</b>를 구분합니다.</p>
+    <div class="tbl wps-meaning"><table>
+      <tr><th>표시</th><th>가장 가까운 의미</th><th>함께 들어가는 것</th></tr>
+      <tr><td>즉시 WPS</td><td>플레이 실행과 가까운 초기 상태 변화</td><td>플레이가 진행되는 동안의 사건과 같은 시각의 다른 상태 변화</td></tr>
+      <tr><td>15·30·60초 전체 WPS</td><td>초기 변화가 유지·상쇄·전환된 뒤의 팀 단위 흐름</td><td>즉시 변화와 이후 양 팀의 대응, 교전, 오브젝트, 다른 라인의 사건</td></tr>
+    </table></div>
+    <p class="note"><b>함께 읽는 법:</b> 둘이 같은 방향이면 초기 변화가 시간창 끝까지 이어진 경우에 가깝습니다. 즉시는 큰데 전체가 작거나 반대면 초기 이득이 줄거나 뒤집힌 흐름이고, 즉시는 작지만 전체가 크면 후속 대응이나 늦은 전환이 더해진 흐름입니다. 이는 관측된 경기 전개를 묘사하는 패턴이지, 즉시 WPS를 선수 개인 몫으로, 나머지를 팀의 몫으로 나눈 인과 분해가 아닙니다.</p>
     <p>v312는 2026년 10월 24일까지의 학습 자료 뒤에 열린 월즈 15경기에서 log loss 0.3668, Brier score 0.1176을 기록했습니다. 같은 상태에서 경기 시간과 골드 차이만 쓴 비교 모델은 0.4694와 0.1567이었습니다. 다만 15경기는 작고, 경기 단위 bootstrap 구간은 비교 차이의 0을 아주 조금 포함합니다. 따라서 WPS는 기존 골드와 나란히 제공하는 <b>베타</b>이며 골드를 대체하는 확정 지표가 아닙니다.</p>
     <p>승률이 움직였다고 해서 그 플레이가 그 변화를 만들었다는 뜻은 아닙니다. 같은 시간의 다른 라인, 상대의 대응, 이어진 교전과 오브젝트가 모두 상태에 들어갑니다. WPS는 <b>관측된 모델 상태 변화</b>이며, 반사실적 인과효과나 선수 개인의 기여분이 아닙니다. WPS 계산은 1초 단위 연구 곡선을 사용합니다. 웹 선 그래프만 2초 간격을 기본으로 하되 시작·끝, 플레이 시점과 1퍼센트포인트 이상 급변의 전후를 보존하며 smoothing하지 않습니다. 화면에서는 과도한 정밀도를 피하려고 승률과 WPS를 소수점 한 자리까지만 표시합니다.</p>
     <h3>중요 장면을 잡는지: 독립 리뷰 영상 비교</h3>
@@ -503,6 +511,14 @@ h = 15, 30, 60 seconds</pre>
       <p class="measure-demo-copy" data-demo-copy data-copy-15="The short window isolates the immediate response." data-copy-30="The default window covers immediate rewards and the exchange that follows." data-copy-60="The long window can capture delayed rewards, but is more likely to include other events."></p>
     </div>
     <p><b>WPS (win-probability swing)</b> is the percentage-point movement in that frozen forecast. The interface separates two levels. <b>Immediate change</b> compares the median observed probability in the five seconds before the play starts with the median in the five seconds after it ends. <b>Total change over 15, 30 and 60 seconds</b> runs from the play start to each endpoint and therefore includes every subsequent event in that interval. The former is closer to execution and the latter includes both teams' follow-up and conversion, but neither decomposes causal credit into individual performance and team follow-up. Worlds uses v312; MSI uses the frozen MSI branch that the v312 specification preserves unchanged (v156). The browser does not run the model. It receives static scores precomputed from the same validated broadcast-OCR gold seconds and Riot events available up to each moment.</p>
+    <h3>Why separate immediate and total change?</h3>
+    <p>Total change alone mixes the state shift at the end of a play with everything both teams do next. Immediate change alone can miss value that converts later through vision, forced retreat or abandoned lanes. Showing both distinguishes <b>what changed around the play itself</b> from <b>how that state developed within the selected window</b>.</p>
+    <div class="tbl wps-meaning"><table>
+      <tr><th>Display</th><th>Closest interpretation</th><th>What remains mixed in</th></tr>
+      <tr><td>Immediate WPS</td><td>The initial state change closest to execution</td><td>Events during the play and other state changes at the same time</td></tr>
+      <tr><td>15/30/60s total WPS</td><td>The team-level trajectory after the initial move is sustained, offset or converted</td><td>Immediate change plus both teams' responses, fights, objectives and events in other lanes</td></tr>
+    </table></div>
+    <p class="note"><b>Reading them together:</b> matching directions suggest that the initial shift persisted to the endpoint. A large immediate move followed by a smaller or opposite total suggests that the early advantage faded or reversed; a small immediate move followed by a large total suggests delayed conversion or follow-up. These are descriptions of the observed game trajectory, not a causal split that assigns immediate WPS to a player and the remainder to the team.</p>
     <p>On 15 Worlds games after the 24 October 2026 fitting cutoff, v312 recorded log loss 0.3668 and Brier score 0.1176. A comparator using only game time and the gold gap recorded 0.4694 and 0.1567 on the same states. Fifteen games are still a small holdout, and game-bootstrap intervals narrowly include zero for the paired comparison. WPS is therefore published beside gold as a <b>beta</b>, not as a definitive replacement.</p>
     <p>A probability move does not mean that the selected play caused it. Other lanes, the opponent's response, the rest of a fight and any ensuing objective all enter the state. WPS is an <b>observed modeled state change</b>, not a counterfactual causal effect or an allocation of credit to one player. WPS is calculated from the one-second research curve. Only the browser line uses a two-second display grid, while retaining endpoints, play anchors and both sides of moves of at least one percentage point; no smoothing is applied. The interface rounds probabilities and WPS to one decimal place to avoid false precision.</p>
     <h3>Does it find important moments? Independent review-video comparison</h3>
@@ -542,6 +558,10 @@ h = 15, 30, 60 seconds</pre>
   <section id="zh-next">
     <h2>公开测试：胜率与WPS</h2>
     <p>WPS是冻结模型胜率的百分点变化。界面将其分为两层：<b>即时变化</b>比较操作开始前5秒与结束后5秒的观测胜率中位数；<b>15、30、60秒整体变化</b>从操作开始到各终点，包含区间内的所有后续事件。Worlds使用v312，MSI使用其冻结分支v156；模型不会在浏览器中运行。15场拟合截止日后的Worlds比赛中，v312的log loss为0.3668、Brier score为0.1176；仅使用时间和经济差的模型为0.4694和0.1567。由于样本仍小，WPS与经济并列作为测试指标。它是观测到的模型状态变化，不是单个操作的因果效果。WPS仍按每秒研究曲线计算；网页折线使用两秒显示网格，并保留端点、操作锚点及明显跳变前后，不进行平滑处理。</p>
+    <h3>为何区分即时变化与整体变化</h3>
+    <p>只看整体变化，会把操作结束时的状态变化和两队之后的应对混在一起；只看即时变化，又可能漏掉通过视野、逼退或放弃兵线而稍后兑现的价值。因此两者并列，用来区分<b>操作附近发生的变化</b>与<b>该状态在所选时间窗内如何发展</b>。</p>
+    <div class="tbl wps-meaning"><table><tr><th>显示</th><th>最接近的含义</th><th>仍混合在其中的事件</th></tr><tr><td>即时WPS</td><td>最接近操作执行的初始状态变化</td><td>操作进行中的事件及同时发生的其他状态变化</td></tr><tr><td>15/30/60秒整体WPS</td><td>初始变化被维持、抵消或转化后的团队走势</td><td>即时变化，以及双方后续应对、交战、资源和其他线路事件</td></tr></table></div>
+    <p class="note"><b>结合阅读：</b>两者方向一致，说明初始变化更可能持续到终点；即时值大而整体值较小或反向，说明早期优势减弱或翻转；即时值小而整体值大，则说明后续应对或延迟转化更明显。这些只是对已观察比赛走势的描述，并不是把即时WPS归给个人、其余归给团队的因果分解。</p>
     <div class="measure-demo" data-measure-demo>
       <div class="measure-demo-head"><strong>操作后的测量窗口</strong><div class="measure-demo-buttons" role="group" aria-label="选择测量窗口"><button type="button" data-window="15">15秒</button><button type="button" data-window="30">30秒</button><button type="button" data-window="60">60秒</button></div></div>
       <div class="measure-track" aria-hidden="true"><span class="measure-axis"></span><span class="measure-window"></span><i class="measure-dot start"></i><i class="measure-dot end"></i><span class="measure-label start">操作开始</span><span class="measure-label end" data-end-label>+30秒</span></div>
@@ -578,6 +598,10 @@ h = 15, 30, 60 seconds</pre>
   <section id="ja-next">
     <h2>公開ベータ：勝率とWPS</h2>
     <p>WPSは凍結モデル勝率のパーセントポイント変化です。画面では二層に分けます。<b>即時変化</b>はプレー開始前5秒と終了後5秒の観測勝率中央値を比較し、<b>15・30・60秒の全体変化</b>は開始から各終点までの後続イベントをすべて含みます。Worldsはv312、MSIは凍結分岐v156を使用し、ブラウザではモデルを実行しません。学習期限後のWorlds 15試合でv312はlog loss 0.3668、Brier score 0.1176、時間とゴールド差だけのモデルは0.4694と0.1567でした。標本はまだ小さいため、WPSはゴールドと並ぶベータ指標です。これは観測されたモデル状態の変化で、ひとつのプレーの因果効果ではありません。WPSの計算には1秒単位の研究曲線を使い、Webの線グラフだけを2秒間隔にしつつ、端点・プレー時点・大きな変化の前後を保持し、平滑化は行いません。</p>
+    <h3>なぜ即時変化と全体変化を分けるのか</h3>
+    <p>全体変化だけでは、プレー終了時の状態変化と、その後の両チームの対応が一つの数字に混ざります。即時変化だけでは、視界、撤退の強制、レーン放棄など、後から転換される価値を見落とします。両方を並べることで、<b>プレーの周辺で変わったこと</b>と<b>その状態が選択窓の中でどう展開したか</b>を分けて読みます。</p>
+    <div class="tbl wps-meaning"><table><tr><th>表示</th><th>最も近い意味</th><th>混在するもの</th></tr><tr><td>即時WPS</td><td>実行に最も近い初期状態の変化</td><td>プレー中の出来事と同時刻の別の状態変化</td></tr><tr><td>15/30/60秒全体WPS</td><td>初期変化が維持・相殺・転換された後のチーム単位の流れ</td><td>即時変化に加え、両チームの対応、交戦、オブジェクト、別レーンの出来事</td></tr></table></div>
+    <p class="note"><b>合わせた読み方：</b>同じ方向なら初期変化が終点まで続いた場合に近く、即時が大きく全体が小さいか逆向きなら初期の優位が薄れたか反転した流れです。即時が小さく全体が大きければ、遅い転換やフォローアップが加わった流れです。これは観測された試合展開の記述であり、即時WPSを個人、残りをチームへ割り当てる因果分解ではありません。</p>
     <div class="measure-demo" data-measure-demo>
       <div class="measure-demo-head"><strong>プレー後の測定窓</strong><div class="measure-demo-buttons" role="group" aria-label="測定窓を選択"><button type="button" data-window="15">15秒</button><button type="button" data-window="30">30秒</button><button type="button" data-window="60">60秒</button></div></div>
       <div class="measure-track" aria-hidden="true"><span class="measure-axis"></span><span class="measure-window"></span><i class="measure-dot start"></i><i class="measure-dot end"></i><span class="measure-label start">プレー開始</span><span class="measure-label end" data-end-label>+30秒</span></div>
