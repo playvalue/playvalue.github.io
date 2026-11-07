@@ -358,6 +358,23 @@
     .metric-meter.side-red .fill { left: 50%; background: var(--red-team); border-radius: 0 999px 999px 0; }
     .metric-meter.clipped::after { content: ""; position: absolute; z-index: 3; top: 0; width: 2px; height: 100%; background: var(--text-main); }
     .metric-meter.clipped.side-blue::after { left: 0; } .metric-meter.clipped.side-red::after { right: 0; }
+    .wps-overlay-meter { height: 8px; }
+    .wps-overlay-meter .wps-fill { position: absolute; width: var(--meter-width); border-radius: 999px; }
+    .wps-overlay-meter .wps-fill.side-blue { right: 50%; }
+    .wps-overlay-meter .wps-fill.side-red { left: 50%; }
+    .wps-overlay-meter .wps-fill.total { z-index: 1; top: 0; height: 100%; opacity: .34; }
+    .wps-overlay-meter .wps-fill.instant { z-index: 2; top: 2px; height: 4px; filter: brightness(1.18); }
+    .wps-overlay-meter .wps-fill.side-blue { background: var(--blue-team); }
+    .wps-overlay-meter .wps-fill.side-red { background: var(--red-team); }
+    .wps-overlay-meter .wps-fill.clipped.side-blue { box-shadow: -2px 0 0 var(--text-main); }
+    .wps-overlay-meter .wps-fill.clipped.side-red { box-shadow: 2px 0 0 var(--text-main); }
+    .wps-overlay-caption { display: grid; gap: 1px; min-width: 0; }
+    .wps-overlay-caption > span { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; min-width: 0; white-space: nowrap; }
+    .wps-overlay-caption small { color: var(--text-muted); font-size: .58rem; font-weight: 800; text-transform: uppercase; }
+    .wps-overlay-caption .instant small { color: var(--text-main); }
+    .wps-overlay-caption .total { opacity: .72; }
+    .wps-overlay-caption b { overflow: hidden; text-overflow: ellipsis; font-size: .68rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .wps-overlay-caption b.side-blue { color: var(--blue-team); } .wps-overlay-caption b.side-red { color: var(--red-team); } .wps-overlay-caption b.neutral { color: var(--neutral); }
     .metric-caption { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; min-width: 0; white-space: nowrap; }
     .metric-caption small { color: var(--text-muted); font-size: .58rem; font-weight: 800; text-transform: uppercase; }
     .metric-benefit { overflow: hidden; text-overflow: ellipsis; font-size: .68rem; font-weight: 800; font-variant-numeric: tabular-nums; }
@@ -653,6 +670,7 @@
       guideTitle: '숫자 읽는 법',
       guide: [
         ['골드 변화', '플레이가 시작된 순간부터 15·30·60초 동안 플레이한 팀과 상대 팀의 골드 차이가 얼마나 벌어지거나 좁혀졌는지입니다. 방송 화면의 팀 골드를 읽어 계산합니다.'],
+        ['겹친 WPS 막대', '밝은 앞 막대는 즉시 WPS, 흐린 뒤 막대는 선택한 15·30·60초 전체 WPS입니다. 방향이 반대면 가운데 축 양쪽으로 갈라집니다.'],
         ['오차 ±200', '화면의 팀 골드가 100 단위로 반올림돼 있어 생기는 범위입니다. 변화가 이 범위 안이면 이득인지 손해인지 가릴 수 없어 “불확실”로 표시합니다.'],
         ['측정 없음', '리플레이 화면 등으로 앞이나 뒤 시점의 골드를 읽지 못한 경우입니다.'],
         ['같은 시간대와 비교', '이 경기의 같은 시간대(라인전·중반·후반)에서 모든 30초 구간의 골드 변화를 모아, 이 플레이의 변화가 어느 쪽 끝에 있는지 보여 줍니다. 위치만 알려 줄 뿐 효과의 크기는 아닙니다.'],
@@ -753,6 +771,7 @@
       guideTitle: 'How to read the numbers',
       guide: [
         ['Gold change', 'How much the gold gap between the team that made the play and its opponent widened or narrowed in the 15, 30 and 60 seconds after the play began. Read from the team gold shown on the broadcast.'],
+        ['Overlaid WPS bars', 'The bright foreground is immediate WPS; the muted background is total WPS over the selected 15, 30 or 60 seconds. Opposite directions split across the centre axis.'],
         ['±200 margin', 'The broadcast rounds team gold to the nearest 100, so every change carries this margin. A change inside it cannot be called a gain or a loss and is shown as “unclear”.'],
         ['Not measured', 'The gold at the start or end could not be read, for example during a replay.'],
         ['Same phase', 'Every 30-second stretch in the same phase of this game (laning, mid, late) is pooled, and the play is placed within that spread. It shows position, not the size of an effect.'],
@@ -850,7 +869,7 @@
     cov: (n, m, k) => `共 <strong>${n}</strong> 个操作：测得经济变化 <strong>${m}</strong> 个，其中 <strong>${k}</strong> 个可明确判为收益或损失`,
     duration: '比赛时长', horizon: '变化区间', sec: s => `${s}秒`, metric:'显示指标', metricWps:'胜率', metricGold:'经济', metricBoth:'两者', beta:'测试版',
     guideTitle: '如何读懂数字',
-    guide: [['经济变化','从操作开始起15、30、60秒内，执行方与对手之间的经济差扩大或缩小了多少。数据来自转播画面的团队经济。'],['±200误差','转播画面将团队经济四舍五入至百位，因此每个变化都有误差。落在误差范围内时标为“无法判断”。'],['未测量','例如回放期间，无法读到开始或结束时的经济。'],['同一阶段比较','汇集本局同一阶段（对线、中期、后期）的所有30秒区间，并标出该操作的位置。这表示相对位置，不是效果大小。'],['不代表因果','同一时间地图其他位置发生的事情也包含在经济变化中。变化并不说明由该操作造成。'],['队伍方向','比赛走势图固定采用蓝色方视角。操作列表中的条形和队名直接显示哪支队伍获益以及幅度；说明与判定仍按解说指出的执行方。']],
+    guide: [['经济变化','从操作开始起15、30、60秒内，执行方与对手之间的经济差扩大或缩小了多少。数据来自转播画面的团队经济。'],['叠加WPS条','明亮的前景条表示即时WPS，较淡的背景条表示所选15、30或60秒的整体WPS；方向相反时会分列中轴两侧。'],['±200误差','转播画面将团队经济四舍五入至百位，因此每个变化都有误差。落在误差范围内时标为“无法判断”。'],['未测量','例如回放期间，无法读到开始或结束时的经济。'],['同一阶段比较','汇集本局同一阶段（对线、中期、后期）的所有30秒区间，并标出该操作的位置。这表示相对位置，不是效果大小。'],['不代表因果','同一时间地图其他位置发生的事情也包含在经济变化中。变化并不说明由该操作造成。'],['队伍方向','比赛走势图固定采用蓝色方视角。操作列表中的条形和队名直接显示哪支队伍获益以及幅度；说明与判定仍按解说指出的执行方。']],
     chartTitle: '比赛走势', chartSub: (h, blue, red) => `折线固定采用蓝色方视角，柱形显示${h}秒变化。向上${blue} · 向下${red}。`, laneWinProb:team=>`${team}胜率`, laneWps:(h,blue,red)=>`${h}秒胜率变化 · ↑${blue} / ↓${red}`,
     lgBlue: '蓝色方操作', lgRed: '红色方操作', lgUnres: '误差范围内', lgWin: '所选操作区间', lgFlow: '关联操作（90秒内）', lgObj: '峡谷先锋、纳什男爵、远古巨龙及后续操作',
     laneFlow: '关联', laneObj: '资源', laneGap: (blue,red) => `${blue} − ${red}经济`, laneBars: (h,blue,red) => `${h}秒经济变化 · ↑${blue} / ↓${red}`,
@@ -881,7 +900,7 @@
     legal: 'PlayValueはRiot Gamesの承認を受けておらず、Riot GamesまたはRiot Gamesの資産の制作・管理に正式に関わる個人の見解を示すものではありません。Riot Gamesおよび関連資産はRiot Games, Inc.の商標または登録商標です。',
     methodology:'調査方法', languagePicker:'言語を選択', themeDark:'ダークモード', themeLight:'ライトモード', viewSet:'試合別', viewXtab:'タイプ別集計', viewCompare:'比較', winner:'勝者', contextOpenStats:'シリーズのチーム・選手を見る →', contextBackGame:'← 選択した試合に戻る',
     cov:(n,m,k)=>`全<strong>${n}</strong>プレー中、ゴールド変化を測定できたものは<strong>${m}</strong>件、そのうち利益・損失を判定できたものは<strong>${k}</strong>件`, duration:'試合時間', horizon:'変化区間', sec:s=>`${s}秒`, metric:'表示指標', metricWps:'勝率', metricGold:'ゴールド', metricBoth:'両方', beta:'ベータ',
-    guideTitle:'数字の読み方', guide:[['ゴールド変化','プレー開始から15・30・60秒の間に、実行したチームと相手のゴールド差がどれだけ広がったか、または縮まったかを示します。放送画面のチームゴールドから計算します。'],['誤差±200','画面のチームゴールドは100単位に丸められるため生じる範囲です。この範囲内の変化は「不明」と表示します。'],['未測定','リプレイなどで開始時点または終了時点のゴールドを読み取れなかった場合です。'],['同じ時間帯と比較','同じ試合・同じフェーズの全30秒区間を集め、その分布内での位置を示します。効果の大きさではありません。'],['因果ではありません','同時刻に別の場所で起きた出来事もゴールド変化に含まれます。変化がそのプレーによるとは限りません。'],['チーム方向','試合の流れはブルー側基準で固定します。一覧のバーとチーム名が、どちらのチームにどれだけ有利だったかを直接示します。説明と判定は実況が示した実行チーム基準です。']],
+    guideTitle:'数字の読み方', guide:[['ゴールド変化','プレー開始から15・30・60秒の間に、実行したチームと相手のゴールド差がどれだけ広がったか、または縮んだかを示します。放送画面のチームゴールドから計算します。'],['重ねたWPSバー','明るい前面バーは即時WPS、薄い背面バーは選択した15・30・60秒の全体WPSです。方向が逆なら中央軸の両側に分かれます。'],['誤差±200','画面のチームゴールドは100単位に丸められるため生じる範囲です。この範囲内の変化は「不明」と表示します。'],['未測定','リプレイなどで開始時点または終了時点のゴールドを読み取れなかった場合です。'],['同じ時間帯と比較','同じ試合・同じフェーズの全30秒区間を集め、その分布内での位置を示します。効果の大きさではありません。'],['因果ではありません','同時刻に別の場所で起きた出来事もゴールド変化に含まれます。変化がそのプレーによるとは限りません。'],['チーム方向','試合の流れはブルー側基準で固定します。一覧のバーとチーム名が、どちらのチームにどれだけ有利だったかを直接示します。説明と判定は実況が示した実行チーム基準です。']],
     chartTitle:'試合の流れ', chartSub:(h,blue,red)=>`線はブルー側基準、棒は${h}秒の変化です。上${blue} · 下${red}。`, laneWinProb:team=>`${team}勝率`, laneWps:(h,blue,red)=>`${h}秒の勝率変化 · ↑${blue} / ↓${red}`,
     lgBlue:'ブルー側のプレー', lgRed:'レッド側のプレー', lgUnres:'誤差範囲内', lgWin:'選択したプレーの区間', lgFlow:'関連プレー（90秒以内）', lgObj:'ヘラルド・バロン・エルダー獲得と後続プレー', laneFlow:'関連', laneObj:'オブジェクト', laneGap:(blue,red)=>`${blue} − ${red} ゴールド`, laneBars:(h,blue,red)=>`${h}秒のゴールド変化 · ↑${blue} / ↓${red}`,
     finding:(h,clk,title,team,e)=>`${h}秒で最大の変化：${clk} ${title}（${team} ${e}）`, findingCompact:(h,clk,team,e)=>`↗ ${h}秒最大変化 · ${clk} · ${team} ${e}`, noFinding:h=>`${h}秒で利益・損失を判定できるプレーはありません。`, gameLine:(w,d)=>`${w}勝利 · ${d}`, gameNav:(n,w,d)=>`第${n}ゲーム · ${w}勝利 · ${d}`,
@@ -1896,17 +1915,30 @@
     const scaled = amount / 1000;
     return `${scaled % 1 ? scaled.toFixed(1) : scaled.toFixed(0)}k`;
   };
-  function listMetric(g, actor, label, value, scale, kind, directional = true) {
-    if (value == null) return `<span class="metric-block"><span class="sr-only">${esc(label)}: —</span><span class="metric-meter" aria-hidden="true"><i class="axis"></i></span><span class="metric-caption" aria-hidden="true"><small>${esc(label)}</small><span class="metric-benefit neutral">—</span></span></span>`;
+  function listMetricDatum(g, actor, value, scale, kind, directional = true) {
+    if (value == null) return { shown: '—', side: '', width: '0', clipped: false };
     const amount = Math.abs(value);
     const isZero = kind === 'wps' ? Math.round(amount * 10) === 0 : amount === 0;
     const beneficiary = directional && !isZero && actor ? beneficiaryOf(g, { actor }, value) : null;
     const side = beneficiary === g.blue_team ? 'blue' : beneficiary === g.red_team ? 'red' : '';
     const formatted = kind === 'wps' ? `${amount.toFixed(1)}pp` : compactGold(amount);
-    const shown = beneficiary ? `${beneficiary} +${formatted}` : `±${formatted}`;
-    const width = Math.min(50, amount / scale * 50).toFixed(2);
-    const clipped = amount > scale ? ' clipped' : '';
-    return `<span class="metric-block"><span class="sr-only">${esc(label)}: ${esc(shown)}</span><span class="metric-meter ${side ? `side-${side}` : ''}${clipped}" style="--meter-width:${width}%" aria-hidden="true"><i class="axis"></i>${side ? '<i class="fill"></i>' : ''}</span><span class="metric-caption" aria-hidden="true"><small>${esc(label)}</small><span class="metric-benefit ${side ? `side-${side}` : 'neutral'}">${esc(shown)}</span></span></span>`;
+    return {
+      shown: beneficiary ? `${beneficiary} +${formatted}` : `±${formatted}`,
+      side,
+      width: Math.min(50, amount / scale * 50).toFixed(2),
+      clipped: amount > scale,
+    };
+  }
+  function listMetric(g, actor, label, value, scale, kind, directional = true) {
+    const datum = listMetricDatum(g, actor, value, scale, kind, directional);
+    return `<span class="metric-block"><span class="sr-only">${esc(label)}: ${esc(datum.shown)}</span><span class="metric-meter ${datum.side ? `side-${datum.side}` : ''}${datum.clipped ? ' clipped' : ''}" style="--meter-width:${datum.width}%" aria-hidden="true"><i class="axis"></i>${datum.side ? '<i class="fill"></i>' : ''}</span><span class="metric-caption" aria-hidden="true"><small>${esc(label)}</small><span class="metric-benefit ${datum.side ? `side-${datum.side}` : 'neutral'}">${esc(datum.shown)}</span></span></span>`;
+  }
+  function listWpsOverlay(g, actor, instantValue, totalValue, h) {
+    const instant = listMetricDatum(g, actor, instantValue, LIST_WPS_SCALE, 'wps');
+    const total = listMetricDatum(g, actor, totalValue, LIST_WPS_SCALE, 'wps');
+    const fill = (datum, layer) => datum.side ? `<i class="wps-fill ${layer} side-${datum.side}${datum.clipped ? ' clipped' : ''}" style="--meter-width:${datum.width}%"></i>` : '';
+    const caption = (datum, label, layer) => `<span class="${layer}"><small>${esc(label)}</small><b class="${datum.side ? `side-${datum.side}` : 'neutral'}">${esc(datum.shown)}</b></span>`;
+    return `<span class="metric-block wps-overlay"><span class="sr-only">${esc(t('listInstant'))}: ${esc(instant.shown)} · ${esc(t('listTotal')(h))}: ${esc(total.shown)}</span><span class="metric-meter wps-overlay-meter" aria-hidden="true"><i class="axis"></i>${fill(total, 'total')}${fill(instant, 'instant')}</span><span class="wps-overlay-caption" aria-hidden="true">${caption(instant, t('listInstant'), 'instant')}${caption(total, t('listTotal')(h), 'total')}</span></span>`;
   }
 
   function rowHtml(p, selected) {
@@ -1917,14 +1949,13 @@
     const g = p._game;
     const side = p.actor === g.blue_team ? 'blue' : p.actor === g.red_team ? 'red' : '';
     const hl = hlOf(p.id);
-    const instantMetric = listMetric(g, p.actor, t('listInstant'), instant?.wps_pp ?? null, LIST_WPS_SCALE, 'wps');
-    const totalMetric = listMetric(g, p.actor, t('listTotal')(S.h), w?.observed_wps_pp ?? null, LIST_WPS_SCALE, 'wps');
+    const wpsMetric = listWpsOverlay(g, p.actor, instant?.wps_pp ?? null, w?.observed_wps_pp ?? null, S.h);
     const goldMetric = listMetric(g, p.actor, t('metricGold'), h.state === 'missing' ? null : h.e, LIST_GOLD_SCALE, 'gold', ['positive', 'negative'].includes(h.state));
     return `<button type="button" class="row side-${side || 'none'} ${selected ? 'on' : ''} ${hl ? 'star' : ''}" data-id="${p.id}" ${selected ? 'aria-current="true"' : ''} ${hl ? `title="${esc(hl.map(r => L('hl', r)).join(' · '))}"` : ''}>
       <span class="t">${clock(p)}</span><span class="chip ${side}">${esc(p.actor || '?')}</span>
       <span class="title"><span class="ttl">${hl ? `<span class="sr-only">${esc(t('hlOnly'))}</span>` : ''}${S.fPlayer && invOf(p, S.fPlayer) ? `<span class="chip">${esc(L('inv', invOf(p, S.fPlayer).role))}</span> ` : ''}${esc(contentText(p, 'title'))}${p.objective_links.length ? ' <span class="chip fam">' + p.objective_links.map(o => esc(objLabel(o.objective))).join('·') + '</span>' : ''}</span>${whoLine(p)}</span>
       <span class="famcell">${famChip(v.famKey, v.familyText, 'dot')}</span>
-      <span class="e metric-cell">${S.metric === 'wps' ? instantMetric + totalMetric : S.metric === 'both' ? instantMetric + totalMetric + goldMetric : goldMetric}</span></button>`;
+      <span class="e metric-cell">${S.metric === 'wps' ? wpsMetric : S.metric === 'both' ? wpsMetric + goldMetric : goldMetric}</span></button>`;
   }
 
   // Picking a player filters the list without changing how any play is read.
