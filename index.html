@@ -164,7 +164,7 @@
     .navbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 28px; padding: 14px 0; }
     .nav { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
     .view-nav { display: inline-flex; align-items: stretch; gap: 10px; }
-    .view-compare-slot { display: inline-flex; align-items: stretch; border-left: 1px solid var(--border-color); padding-left: 10px; }
+    .view-compare-slot { display: inline-flex; align-items: stretch; gap: 8px; border-left: 1px solid var(--border-color); padding-left: 10px; }
     .view-compare { border: 1px solid var(--compare-border); background: var(--compare-bg); padding: 5px 12px; border-radius: var(--radius-control); font-size: .82rem; font-weight: 700; cursor: pointer; color: var(--compare-text); }
     .view-compare:hover { border-color: var(--compare-active); background: color-mix(in srgb, var(--compare-active) 16%, var(--compare-bg)); }
     .view-compare.on { background: var(--compare-active); border-color: var(--compare-active); color: var(--compare-active-text); box-shadow: 0 1px 3px color-mix(in srgb, var(--compare-active) 28%, transparent); }
@@ -759,7 +759,7 @@
         <div class="seg" id="tournTabs"></div>
         <div class="view-nav" id="viewNav">
           <div class="seg" id="viewTabs"></div>
-          <div class="view-compare-slot"><button type="button" class="view-compare" id="compareTab"></button></div>
+          <div class="view-compare-slot"><button type="button" class="view-compare" id="swingsTab"></button><button type="button" class="view-compare" id="compareTab"></button></div>
         </div>
       </div>
       <div class="series" id="series"></div>
@@ -1672,11 +1672,18 @@
     se.style.display = planned || ['compare', 'swings'].includes(S.view) ? 'none' : '';
     if (planned) return;
     const primaryView = S.view === 'stats' ? 'set' : S.view;
-    vt.innerHTML = [['set', t('viewSet')], ['xtab', t('viewXtab')], ...(hasFlow(S.tourn) ? [['swings', t('viewSwings')]] : [])].map(([k, v]) => `<button data-v="${k}" class="${primaryView === k ? 'on' : ''}">${v}</button>`).join('');
+    vt.innerHTML = [['set', t('viewSet')], ['xtab', t('viewXtab')]].map(([k, v]) => `<button data-v="${k}" class="${primaryView === k ? 'on' : ''}">${v}</button>`).join('');
     vt.querySelectorAll('button').forEach(b => b.onclick = () => {
       S.view = b.dataset.v;
       render();
     });
+    // Swings and Compare stand apart from the two game views: neither belongs to a selected game or series.
+    const vs = document.getElementById('swingsTab');
+    vs.hidden = !hasFlow(S.tourn);
+    vs.textContent = t('viewSwings');
+    vs.classList.toggle('on', primaryView === 'swings');
+    vs.setAttribute('aria-pressed', String(primaryView === 'swings'));
+    vs.onclick = () => { S.view = 'swings'; render(); };
     vc.textContent = t('viewCompare');
     vc.classList.toggle('on', primaryView === 'compare');
     vc.setAttribute('aria-pressed', String(primaryView === 'compare'));
