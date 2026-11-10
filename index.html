@@ -678,6 +678,12 @@
     .stats-situ th:first-child, .stats-situ td:first-child { text-align: left; }
     .stats-situ td:last-child { color: var(--text-muted); }
     .stats-situ p { margin-top: 6px; font-size: .68rem; color: var(--text-muted); }
+    /* A team's own numbers in plain words; the method notes both teams share sit once, below the cards. */
+    .stats-team-card p.stats-read { margin-top: 8px; font-size: .78rem; line-height: 1.55; color: var(--text-main); }
+    .stats-how { margin-top: 14px; font-size: .74rem; color: var(--text-muted); }
+    .stats-how summary { cursor: pointer; font-weight: 700; color: var(--text-main); }
+    .stats-how p { margin-top: 6px; line-height: 1.55; }
+    .stats-how b { color: var(--text-main); }
     .stats-snow td:first-child { white-space: normal; }
     .stats-snow td small, .stats-snow th small { display: block; color: var(--text-muted); font-size: .64rem; font-weight: 500; white-space: nowrap; }
     .stats-snow td:last-child { white-space: nowrap; color: inherit; }
@@ -826,6 +832,21 @@
       snowTitle: '리드 굴리기와 막기', snowSub: '방송 골드 차이 기준', snowGames: n => `${n}경기`,
       snowLed: (a, b) => `${a} 리드를 먼저 잡은 경기 중 ${b}까지 굴림`, snowTrailed: a => `${a} 먼저 뒤진 경기 중 동점으로 되돌림`,
       snowAhead: h => `앞설 때 ${h}분 리드 증가 (기대 대비)`, snowBehind: h => `뒤질 때 상대의 ${h}분 리드 증가 (기대 대비)`,
+      statsHow: '수치 읽는 법', readSep: ' ', readList: ', ',
+      tlBins: ['0–10분에', '10–20분에', '20–30분에', '30분 이후에'],
+      tlGain: (bin, pos, v) => `${bin} ${pos} 관여 장면에서 가장 많이 벌었습니다 (경기당 ${v}).`,
+      tlLoss: (bin, pos, v) => `${bin} ${pos} 관여 장면에서 가장 많이 잃었습니다 (경기당 ${v}).`,
+      tlUnsure: { both: '둘 다 경기마다 편차가 커서 확실하지 않습니다.', gain: '번 쪽은 경기마다 편차가 커서 확실하지 않습니다.', loss: '잃은 쪽은 경기마다 편차가 커서 확실하지 않습니다.' },
+      tlFlat: '뚜렷하게 벌거나 잃은 시간대·포지션이 없습니다.',
+      situNames: { behind: '뒤지고 있을 때', even: '팽팽할 때', ahead: '앞서고 있을 때' },
+      situRead: (name, n, share, mean, ref, higher) => `${name} 시작한 장면은 다른 팀보다 결과가 ${higher ? '좋았습니다' : '나빴습니다'}. ${n}장면 중 ${share}가 유리하게 끝났고 장면당 평균 ${mean}입니다 (다른 팀 ${ref}).`,
+      situSparse: '상황별로 나누기에는 장면이 부족합니다.',
+      snowReadLed: (n, k, enter, extend) => `먼저 ${enter} 골드 앞선 ${n}경기 중 ${k}경기에서 리드를 ${extend}까지 벌렸습니다.`,
+      snowReadTrailed: (n, k, enter) => `먼저 ${enter} 골드 뒤진 ${n}경기 중 ${k}경기에서 동점까지 따라잡았습니다.`,
+      snowReadAhead: (h, v, more, tail) => `앞서고 있을 때는 리드를 보통보다 ${more ? '빨리' : '천천히'} 벌렸습니다 (같은 크기의 리드보다 ${h}분에 ${v}골드 ${more ? '더' : '덜'}, ${tail}).`,
+      snowReadBehind: (h, v, less, tail) => `뒤지고 있을 때는 격차가 보통보다 ${less ? '천천히' : '빨리'} 벌어졌습니다 (같은 크기의 격차보다 ${h}분에 ${v}골드 ${less ? '덜' : '더'}, ${tail}).`,
+      snowSure: n => `${n}경기에서 대체로 같은 방향`, snowUnsure: n => `${n}경기에서 엇갈려 확실하지 않음`, snowOne: '1경기뿐이라 판단하기 어려움',
+      snowAdjAhead: (v, more) => `앞설 때 ${v}골드 ${more ? '더' : '덜'}`, snowAdjBehind: (v, less) => `뒤질 때 ${v}골드 ${less ? '덜' : '더'}`, snowReadAdj: parts => `만난 상대를 감안해 다시 계산하면 ${parts}입니다.`,
       snowScope: '선택 범위', snowAdj: '상대 보정', snowAdjSub: '대회 전체',
       snowNote: g => `리드는 클수록 저절로 더 빨리 커지므로, 같은 크기의 리드와 같은 시간대에서 이 대회 전체가 보인 평균 증가분을 뺀 값입니다. 팀 값은 분 수로 가중한 평균이어서 대회 평균이 0입니다. 앞설 때는 양수일수록 더 굴린 것이고, 뒤질 때는 음수일수록 상대를 더 막은 것입니다. 상대 보정은 대회 전체에서 모든 팀의 굴리기와 막기를 함께 추정해, 만난 상대의 영향을 덜어 낸 값입니다. 아래 줄은 경기를 다시 뽑아 구한 95% 구간이며 0을 포함하면 방향이 불확실합니다. 이 대회에서 팀 효과는 다른 경기의 예측을 ${g}밖에 개선하지 못해, 팀 간 차이의 대부분은 경기마다의 변동입니다.`,
       statsSitu: '시작 시점 승률별 장면', statsSituSub: '장면이 시작될 때 이 팀의 모델 승률',
@@ -996,6 +1017,21 @@
       snowTitle: 'Rolling and stopping a lead', snowSub: 'from the broadcast gold difference', snowGames: n => `${n} game${n === 1 ? '' : 's'}`,
       snowLed: (a, b) => `First to a ${a} lead, then rolled it to ${b}`, snowTrailed: a => `First to trail by ${a}, then pulled it back to level`,
       snowAhead: h => `Lead growth over ${h} min when ahead (vs expected)`, snowBehind: h => `Opponent’s lead growth over ${h} min when behind (vs expected)`,
+      statsHow: 'How to read these figures', readSep: ' ', readList: ', ',
+      tlBins: ['In minutes 0–10', 'In minutes 10–20', 'In minutes 20–30', 'After minute 30'],
+      tlGain: (bin, pos, v) => `${bin}, ${pos}-involved moments gained the most (${v} per game).`,
+      tlLoss: (bin, pos, v) => `${bin}, ${pos}-involved moments lost the most (${v} per game).`,
+      tlUnsure: { both: 'Both vary a lot between games, so neither is certain.', gain: 'The gain varies a lot between games, so it is not certain.', loss: 'The loss varies a lot between games, so it is not certain.' },
+      tlFlat: 'No time band and position stands out as a gain or a loss.',
+      situNames: { behind: 'while behind', even: 'while the game was close', ahead: 'while ahead' },
+      situRead: (name, n, share, mean, ref, higher) => `Moments that began ${name} went ${higher ? 'better' : 'worse'} than for other teams: ${share} of ${n} ended in the team’s favour, a mean of ${mean} per moment (other teams ${ref}).`,
+      situSparse: 'Too few moments to split by situation.',
+      snowReadLed: (n, k, enter, extend) => `Was first to a ${enter}-gold lead in ${n} game${n === 1 ? '' : 's'} and stretched it to ${extend} in ${k}.`,
+      snowReadTrailed: (n, k, enter) => `Was first to fall ${enter} gold behind in ${n} game${n === 1 ? '' : 's'} and drew level in ${k}.`,
+      snowReadAhead: (h, v, more, tail) => `When ahead, it stretched the lead ${more ? 'faster' : 'more slowly'} than usual (${v} gold ${more ? 'more' : 'less'} per ${h} minutes than a lead of that size; ${tail}).`,
+      snowReadBehind: (h, v, less, tail) => `When behind, the gap grew ${less ? 'more slowly' : 'faster'} than usual (${v} gold ${less ? 'less' : 'more'} per ${h} minutes than a gap of that size; ${tail}).`,
+      snowSure: n => `mostly the same direction over ${n} games`, snowUnsure: n => `mixed over ${n} games, so not certain`, snowOne: 'one game only, too little to judge',
+      snowAdjAhead: (v, more) => `${v} gold ${more ? 'more' : 'less'} when ahead`, snowAdjBehind: (v, less) => `${v} gold ${less ? 'less' : 'more'} when behind`, snowReadAdj: parts => `Recomputed with the opponents met taken into account: ${parts}.`,
       snowScope: 'Selected scope', snowAdj: 'Opponent-adjusted', snowAdjSub: 'whole event',
       snowNote: g => `A lead grows faster the larger it already is, so each figure subtracts the mean growth of all this event’s minutes with the same lead size and game phase. A team’s figure is weighted by minutes, so the event average is zero. When ahead, positive means the lead was rolled faster; when behind, negative means the leader was held back. The opponent-adjusted figure fits every team’s rolling and stopping together over the whole event, which takes out the opponents a team happened to meet. The second line is a 95% interval from resampling games; an interval crossing zero has an uncertain direction. In this event team effects improve the prediction of other games by only ${g}, so most of the difference between teams is game-to-game variation.`,
       statsSitu: 'Moments by win probability at the start', statsSituSub: 'the team’s modeled win probability when the moment began',
@@ -1167,6 +1203,21 @@
     snowTitle: '滚雪球与止损', snowSub: '基于转播经济差', snowGames: n => `${n}局`,
     snowLed: (a, b) => `率先领先${a}后扩大到${b}`, snowTrailed: a => `率先落后${a}后追平`,
     snowAhead: h => `领先时${h}分钟领先增幅（相对预期）`, snowBehind: h => `落后时对手${h}分钟领先增幅（相对预期）`,
+    statsHow: '数值解读方法', readSep: '', readList: '，',
+    tlBins: ['0–10分钟', '10–20分钟', '20–30分钟', '30分钟之后'],
+    tlGain: (bin, pos, v) => `${bin}，${pos}参与的场景收益最多（每局${v}）。`,
+    tlLoss: (bin, pos, v) => `${bin}，${pos}参与的场景损失最多（每局${v}）。`,
+    tlUnsure: { both: '两者各局差异都很大，并不确定。', gain: '收益一侧各局差异大，并不确定。', loss: '损失一侧各局差异大，并不确定。' },
+    tlFlat: '没有明显获益或受损的时段与位置。',
+    situNames: { behind: '落后时', even: '势均力敌时', ahead: '领先时' },
+    situRead: (name, n, share, mean, ref, higher) => `${name}开始的场景，结果比其他队伍${higher ? '好' : '差'}：${n}个场景中${share}以有利告终，每场景平均${mean}（其他队伍${ref}）。`,
+    situSparse: '场景太少，无法按局面划分。',
+    snowReadLed: (n, k, enter, extend) => `率先领先${enter}经济的${n}局中，有${k}局把领先扩大到${extend}。`,
+    snowReadTrailed: (n, k, enter) => `率先落后${enter}经济的${n}局中，有${k}局追平。`,
+    snowReadAhead: (h, v, more, tail) => `领先时，扩大领先的速度比通常${more ? '快' : '慢'}（与同等领先相比每${h}分钟${more ? '多' : '少'}${v}经济，${tail}）。`,
+    snowReadBehind: (h, v, less, tail) => `落后时，差距拉开的速度比通常${less ? '慢' : '快'}（与同等差距相比每${h}分钟${less ? '少' : '多'}${v}经济，${tail}）。`,
+    snowSure: n => `${n}局中方向大体一致`, snowUnsure: n => `${n}局中方向不一，并不确定`, snowOne: '仅1局，难以判断',
+    snowAdjAhead: (v, more) => `领先时${more ? '多' : '少'}${v}经济`, snowAdjBehind: (v, less) => `落后时${less ? '少' : '多'}${v}经济`, snowReadAdj: parts => `考虑所遇对手后重新计算：${parts}。`,
     snowScope: '所选范围', snowAdj: '对手校正', snowAdjSub: '整个赛事',
     snowNote: g => `领先越大本身增长越快，因此每个数值都减去了本赛事中相同领先幅度和时段的全部分钟的平均增幅。队伍数值按分钟加权，因此赛事平均为0。领先时正值表示滚得更快；落后时负值表示更好地遏制了对手。对手校正是在整个赛事中同时估计所有队伍的滚雪球与止损，从而去除所遇对手的影响。第二行为重抽比赛得到的95%区间，跨过0时方向不确定。在本赛事中，队伍效应只让其他比赛的预测改善${g}，队伍间差异大多是各局之间的波动。`,
     statsSitu: '按开始时胜率划分的场景', statsSituSub: '场景开始时该队的模型胜率',
@@ -1238,6 +1289,21 @@
     snowTitle: 'リードを広げる・止める', snowSub: '配信のゴールド差に基づく', snowGames: n => `${n}試合`,
     snowLed: (a, b) => `先に${a}リードし、${b}まで広げた`, snowTrailed: a => `先に${a}リードされ、同点に戻した`,
     snowAhead: h => `リード時の${h}分間のリード増加（期待比）`, snowBehind: h => `ビハインド時の相手の${h}分間のリード増加（期待比）`,
+    statsHow: '数値の読み方', readSep: '', readList: '、',
+    tlBins: ['0〜10分', '10〜20分', '20〜30分', '30分以降'],
+    tlGain: (bin, pos, v) => `${bin}、${pos}関与場面で最も多く得ました（1試合あたり${v}）。`,
+    tlLoss: (bin, pos, v) => `${bin}、${pos}関与場面で最も多く失いました（1試合あたり${v}）。`,
+    tlUnsure: { both: 'どちらも試合ごとのばらつきが大きく、確実ではありません。', gain: '得た側は試合ごとのばらつきが大きく、確実ではありません。', loss: '失った側は試合ごとのばらつきが大きく、確実ではありません。' },
+    tlFlat: 'はっきり得た・失った時間帯やポジションはありません。',
+    situNames: { behind: 'リードされているとき', even: '拮抗しているとき', ahead: 'リードしているとき' },
+    situRead: (name, n, share, mean, ref, higher) => `${name}に始まった場面は、他チームより結果が${higher ? '良く' : '悪く'}なりました。${n}場面のうち${share}が有利に終わり、1場面あたり平均${mean}です（他チーム${ref}）。`,
+    situSparse: '状況別に分けるには場面が足りません。',
+    snowReadLed: (n, k, enter, extend) => `先に${enter}ゴールドリードした${n}試合のうち${k}試合で${extend}まで広げました。`,
+    snowReadTrailed: (n, k, enter) => `先に${enter}ゴールドリードされた${n}試合のうち${k}試合で同点に戻しました。`,
+    snowReadAhead: (h, v, more, tail) => `リード時は、通常より${more ? '速く' : 'ゆっくり'}リードを広げました（同じ大きさのリードと比べて${h}分間で${v}ゴールド${more ? '多く' : '少なく'}、${tail}）。`,
+    snowReadBehind: (h, v, less, tail) => `ビハインド時は、差の広がりが通常より${less ? 'ゆっくりに' : '速く'}なりました（同じ大きさの差と比べて${h}分間で${v}ゴールド${less ? '少なく' : '多く'}、${tail}）。`,
+    snowSure: n => `${n}試合でおおむね同じ方向`, snowUnsure: n => `${n}試合で方向が分かれ、確実ではありません`, snowOne: '1試合のみで判断は難しい',
+    snowAdjAhead: (v, more) => `リード時は${v}ゴールド${more ? '多い' : '少ない'}`, snowAdjBehind: (v, less) => `ビハインド時は${v}ゴールド${less ? '少ない' : '多い'}`, snowReadAdj: parts => `対戦相手を考慮して計算し直すと、${parts}という結果です。`,
     snowScope: '選択範囲', snowAdj: '相手補正', snowAdjSub: '大会全体',
     snowNote: g => `リードは大きいほど自然に速く広がるため、各数値からこの大会で同じリード幅・同じ時間帯だった全ての分の平均増加を引いています。チームの値は分数で重み付けした平均なので、大会平均は0です。リード時は正の値ほど速く広げ、ビハインド時は負の値ほど相手を抑えています。相手補正は大会全体で全チームの広げる力と止める力を同時に推定し、対戦した相手の影響を除いた値です。2行目は試合を再抽出して求めた95%区間で、0をまたぐ場合は方向が不確実です。この大会ではチーム効果による他の試合の予測改善は${g}にとどまり、チーム間の差の大半は試合ごとの変動です。`,
     statsSitu: '開始時の勝率別の場面', statsSituSub: '場面開始時のこのチームのモデル勝率',
@@ -3304,10 +3370,18 @@
       }).join('');
       return `${bands}<path d="${path}" fill="none" stroke="${color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>${marks}`;
     }).join('');
+    // In words: where this team gained and lost most, and whether games agree on the direction.
+    const points = bins.flatMap(bin => bin.positions.filter(point => point.valid && point.games >= 2).map(point => ({ ...point, bin: t('tlBins')[bin.index] })));
+    const clear = point => point.low > 0 || point.high < 0;
+    const best = points.reduce((a, b) => (!a || b.mean > a.mean ? b : a), null), worst = points.reduce((a, b) => (!a || b.mean < a.mean ? b : a), null);
+    const gain = best && best.mean > 0 ? best : null, loss = worst && worst.mean < 0 ? worst : null;
+    const shakyGain = gain && !clear(gain), shakyLoss = loss && !clear(loss);
+    const reading = [gain ? t('tlGain')(gain.bin, posLabel(gain.pos), fmtStat(gain.mean)) : '', loss ? t('tlLoss')(loss.bin, posLabel(loss.pos), fmtStat(loss.mean)) : '',
+      shakyGain && shakyLoss ? t('tlUnsure').both : shakyGain ? t('tlUnsure').gain : shakyLoss ? t('tlUnsure').loss : ''].filter(Boolean).join(t('readSep')) || t('tlFlat');
     const xLabels = bins.map(bin => `<text x="${xOf(bin.index)}" y="258" text-anchor="middle"><tspan x="${xOf(bin.index)}">${esc(bin.label)}</tspan><tspan class="bin-games" x="${xOf(bin.index)}" dy="12">${esc(t('statsTimelineGames')(bin.games))}</tspan></text>`).join('');
     return `<div class="stats-timeline"><div class="stats-timeline-head"><strong>${esc(t('statsTimelineTitle'))}</strong><span>${esc(t('statsTimelineSub')(statsWindowLabel(), S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')))}</span></div>
       <svg class="stats-timeline-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t('statsTimelineTitle'))}"><rect x="${left}" y="${top}" width="${right - left}" height="${yOf(0) - top}" fill="var(--gain)" opacity=".035"/><rect x="${left}" y="${yOf(0)}" width="${right - left}" height="${bottom - yOf(0)}" fill="var(--loss)" opacity=".035"/>${grid}${series}${xLabels}</svg>
-      <div class="stats-timeline-legend">${STAT_POSITIONS.map(pos => `<span><i style="background:${POSITION_COLORS[pos]}"></i>${esc(posLabel(pos))}</span>`).join('')}</div><p class="stats-timeline-note">${esc(t('statsTimelineNote'))}</p></div>`;
+      <div class="stats-timeline-legend">${STAT_POSITIONS.map(pos => `<span><i style="background:${POSITION_COLORS[pos]}"></i>${esc(posLabel(pos))}</span>`).join('')}</div><p class="stats-read">${esc(reading)}</p></div>`;
   }
   // Zone shares from the minimap. A player's own games are summed; the reference is every player of the same
   // position over the whole event, because the shares depend on the position far more than on the player.
@@ -3334,10 +3408,15 @@
     const ref = bucket(teamReferenceObs(gs, profile.team).map(o => ({ value: statValue(o.p, o.team), situ: situationOf(statStartProb(o.p, o.team)) })));
     const mean = xs => (xs.length >= SITUATION_MIN ? xs.reduce((sum, x) => sum + x.value, 0) / xs.length : null);
     const cell = value => (value == null ? '—' : fmtStat(value));
+    // In words: the situation where this team did best and worst against the other teams in the same spot.
+    const gaps = SITUATIONS.map(k => ({ k, n: mine[k].length, mean: mean(mine[k]), ref: mean(ref[k]) })).filter(x => x.mean != null && x.ref != null)
+      .map(x => ({ ...x, gap: x.mean - x.ref })).sort((a, b) => b.gap - a.gap);
+    const picks = [gaps[0]?.gap > 0 ? gaps[0] : null, gaps.length > 1 && gaps[gaps.length - 1].gap < 0 ? gaps[gaps.length - 1] : gaps.length === 1 && gaps[0].gap < 0 ? gaps[0] : null].filter(Boolean);
+    const reading = picks.map(x => t('situRead')(t('situNames')[x.k], x.n, pct0(mine[x.k].filter(y => y.value > 0).length, x.n), fmtStat(x.mean), fmtStat(x.ref), x.gap > 0)).join(t('readSep')) || t('situSparse');
     return `<div class="stats-situ"><h4>${esc(t('statsSitu'))} <span class="sub">${esc(t('statsSituSub'))}</span></h4>
       <table><thead><tr><th></th><th>${esc(t('statsSituN'))}</th><th>${esc(t('statsGood'))}</th><th>${esc(t('statsSituMean'))}</th><th>${esc(t('statsSituRef'))}</th></tr></thead>
       <tbody>${SITUATIONS.map(k => `<tr><td>${esc(t('statsSituRows')[k])}</td><td>${mine[k].length}</td><td>${pct0(mine[k].filter(x => x.value > 0).length, mine[k].length)}</td><td><b>${esc(cell(mean(mine[k])))}</b></td><td>${esc(cell(mean(ref[k])))}</td></tr>`).join('')}</tbody></table>
-      <p>${esc(t('statsSituNote'))}</p></div>`;
+      <p class="stats-read">${esc(reading)}</p></div>`;
   }
   // Rolling and stopping a gold lead: how often the first lead was extended or pulled back, and the lead's growth
   // against the event's expectation, for the games in scope and adjusted for opponents over the whole event.
@@ -3377,6 +3456,18 @@
     const cell = x => (x ? `<b>${esc(fmtG(Math.round(x.mean)))}</b>${x.low != null ? `<small>${esc(fmtG(Math.round(x.low)))} ~ ${esc(fmtG(Math.round(x.high)))}</small>` : ''}<small>${esc(t('snowGames')(x.games))}</small>` : '—');
     const growthRow = (label, key) => `<tr><td>${esc(label)}</td><td>${cell(growth(key))}</td><td>${cell(adjusted(key))}</td></tr>`;
     const enter = rule.enter_gold.toLocaleString(), extend = rule.extend_gold.toLocaleString();
+    // In words: the counts as sentences, the growth as "more or less than usual", and how far games agree.
+    const tail = x => (x.games < 2 ? t('snowOne') : x.low > 0 || x.high < 0 ? t('snowSure')(x.games) : t('snowUnsure')(x.games));
+    const gold = value => Math.abs(Math.round(value)).toLocaleString();
+    const ahead = growth('ahead'), behind = growth('behind'), adjAhead = adjusted('ahead'), adjBehind = adjusted('behind');
+    const adjParts = [adjAhead ? t('snowAdjAhead')(gold(adjAhead.mean), adjAhead.mean >= 0) : '', adjBehind ? t('snowAdjBehind')(gold(adjBehind.mean), adjBehind.mean <= 0) : ''].filter(Boolean);
+    const reading = [
+      led.length ? t('snowReadLed')(led.length, led.filter(c => c.outcome === 'rolled').length, enter, extend) : '',
+      trailed.length ? t('snowReadTrailed')(trailed.length, trailed.filter(c => c.outcome === 'stopped').length, enter) : '',
+      ahead ? t('snowReadAhead')(rule.horizon_min, gold(ahead.mean), ahead.mean >= 0, tail(ahead)) : '',
+      behind ? t('snowReadBehind')(rule.horizon_min, gold(behind.mean), behind.mean <= 0, tail(behind)) : '',
+      adjParts.length ? t('snowReadAdj')(adjParts.join(t('readList'))) : '',
+    ].filter(Boolean).join(t('readSep'));
     return `<div class="stats-situ stats-snow"><h4>${esc(t('snowTitle'))} <span class="sub">${esc(t('snowSub'))}</span></h4>
       <table><thead><tr><th></th><th>${esc(t('snowScope'))}</th><th>${esc(t('snowAdj'))}<small>${esc(t('snowAdjSub'))}</small></th></tr></thead><tbody>
         <tr><td>${esc(t('snowLed')(enter, extend))}</td><td><b>${share(led.filter(c => c.outcome === 'rolled').length, led.length)}</b></td><td></td></tr>
@@ -3384,7 +3475,7 @@
         ${growthRow(t('snowAhead')(rule.horizon_min), 'ahead')}
         ${growthRow(t('snowBehind')(rule.horizon_min), 'behind')}
       </tbody></table>
-      <p>${esc(t('snowNote')(rating ? `${(100 * Math.max(0, rating.held_out_gain)).toFixed(1)}%` : '—'))}</p></div>`;
+      <p class="stats-read">${esc(reading)}</p></div>`;
   }
   function teamCard(profile, side, gs) {
     const roster = [...profile.roster].sort((a, b) => STAT_POSITIONS.indexOf(a.position) - STAT_POSITIONS.indexOf(b.position) || a.player.localeCompare(b.player));
@@ -3413,6 +3504,11 @@
       ${gs.length ? `${comparisonNarrative(a, b, true)}
         <div class="stats-team-overview">${comparisonDifference(a, b, true)}<div class="stats-radar-wrap">${radarSvg(a, b)}<div class="stats-legend"><span><i class="a"></i>${esc(a.team)}</span><span><i class="b"></i>${esc(b.team)}</span></div></div></div>
         <div class="stats-team-cards">${teamCard(a, 'blue', gs)}${teamCard(b, 'red', gs)}</div>
+        <details class="stats-how"><summary>${esc(t('statsHow'))}</summary>
+          <p><b>${esc(t('statsTimelineTitle'))}</b> ${esc(t('statsTimelineNote'))}</p>
+          ${S.statsMetric === 'wps' ? `<p><b>${esc(t('statsSitu'))}</b> ${esc(t('statsSituNote'))}</p>` : ''}
+          ${D.snowball ? `<p><b>${esc(t('snowTitle'))}</b> ${esc(t('snowNote')(DATA.snowball_ratings?.[S.tourn] ? `${(100 * Math.max(0, DATA.snowball_ratings[S.tourn].held_out_gain)).toFixed(1)}%` : '—'))}</p>` : ''}
+        </details>
       ` : `<p class="empty">${t('statsNoData')}</p>`}
       <p class="note-box">${t('statsCaveat')}</p>
     </section>`;
