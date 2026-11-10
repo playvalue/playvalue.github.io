@@ -20,7 +20,7 @@ This repository is the published site shell. It is built from a separate researc
 
 | Path | What it is |
 |---|---|
-| `index.html` | The dashboard: per-game view, totals by play type, game and moment rankings, and team and player comparison |
+| `index.html` | The dashboard: per-game view, totals by play type, game and moment swings, and team and player comparison |
 | `methodology.html` | How plays are picked, measured and coded (Korean and English) |
 | `assets/ddragon/` | Map and champion images from Riot's Data Dragon |
 

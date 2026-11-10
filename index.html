@@ -495,7 +495,7 @@
     .sbar .unresolved { background: var(--neutral); opacity: .45; } .sbar .missing { background: transparent; }
     .xt .rsub { font-size: .72rem; color: var(--text-muted); white-space: normal; max-width: 420px; }
     .scroll-x { overflow-x: auto; }
-    /* Game rankings: the table reuses .xt; a row opens its game. */
+    /* Swings view: the tables reuse .xt; a row opens its game or play. */
     .xt.gf tbody tr { cursor: pointer; }
     .xt.gf tbody tr:hover { background: var(--bg-card-hover); }
     .xt.gf tbody tr.cur td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
@@ -838,15 +838,15 @@
       statsActing: '행동으로 나선 장면의 결과', statsScenesPerGame: v => `경기당 ${v}`,
       statsActingNote: '행동 역할로 이름이 나온 장면만 셉니다. 성공과 실패는 해설 내용을 코딩한 결과이고, 결과가 드러나지 않은 장면은 분모에서 뺍니다. 해설이 짚은 시도만 들어 있어 전체 성공률이 아닙니다.',
       incomeHead: h => `${h}초 동안 번 골드`, incomeNote: '방송 화면에서 읽은 팀 골드의 증가분(100 단위)입니다. 두 값의 차이가 위의 골드 변화입니다.',
-      viewGames: '순위', rkTabs: '순위 종류', rkGames: '경기', rkMoments: '장면',
-      prTitle: '장면 순위', prSub: '해설이 짚은 플레이 가운데 모델 승률이 가장 크게 움직인 장면입니다. 장면을 누르면 그 플레이가 열립니다.',
+      viewGames: '접전·역전', rkTabs: '보기 종류', rkGames: '경기', rkMoments: '장면',
+      prTitle: '승률이 크게 움직인 장면', prSub: '해설이 짚은 플레이 가운데 모델 승률이 가장 크게 움직인 장면입니다. 장면을 누르면 그 플레이가 열립니다.',
       prPhase: '시간대', prAll: '전체', prPhases: { lane: '초반', mid: '중반', late: '후반' }, prRank: '순위', prMoment: '장면', prSwing: '승률 변화',
       prEmpty: '이 조건에 해당하는 장면이 없습니다.',
       prNote: (lane, mid, gap) => `한 경기에서 서로 겹치는 플레이는 변화가 가장 큰 하나만 남겼습니다. 같은 장면으로 묶인 플레이이거나 시작 시각이 ${gap}초 안에 있는 플레이가 그렇습니다. 시간대는 경기 시계 기준으로 ${lane}분까지 초반, ${mid}분까지 중반, 그 뒤가 후반입니다. 승률 변화는 유리해진 팀 기준으로 적었습니다.`,
-      gfTitle: '경기 순위', gfSub: '모델 승률 곡선으로 본 경기 흐름입니다. 열 제목을 누르면 정렬되고, 경기를 누르면 그 경기가 열립니다.',
+      gfTitle: '접전·역전 경기', gfSub: '모델 승률 곡선으로 본 경기 흐름입니다. 열 제목을 누르면 정렬되고, 경기를 누르면 그 경기가 열립니다.',
       gfGame: '경기', gfLength: '경기 시간', gfLow: '승자 최저 승률', gfGold: '승자 최대 골드 열세', gfSwing: '접전 지수', gfLead: '우세 교체', gfDecided: '결정 시점',
       gfNever: '줄곧 우세', gfWon: (w, date) => `${w} 승${date ? ` · ${date}` : ''}`, gfOpen: title => `${title} 열기`,
-      gfHead: (w, low, at, swing) => `${w} 최저 승률 ${low} (${at}) · 접전 지수 ${swing}`, gfHeadTitle: (lowRank, swingRank, n) => `이 대회 ${n}경기 중 역전 폭 ${lowRank}위 · 접전 지수 ${swingRank}위. 누르면 경기 순위가 열립니다.`,
+      gfHead: (w, low, at, swing) => `${w} 최저 승률 ${low} (${at}) · 접전 지수 ${swing}`, gfHeadTitle: (lowRank, swingRank, n) => `이 대회 ${n}경기 중 역전 폭 ${lowRank}위 · 접전 지수 ${swingRank}위. 누르면 접전·역전 경기 목록이 열립니다.`,
       gfNote: '모델 승률 곡선(v312 베타)을 1초 단위로 읽어 경기가 끝난 뒤 요약한 값입니다. 승자 최저 승률, 결정 시점, 우세 교체는 앞뒤 2초 중앙값으로 잔떨림을 걸러 계산합니다. 접전 지수는 30초 구간 중앙값이 움직인 폭을 모두 더한 값(pp)이며, 클수록 승률이 많이 오르내린 경기입니다. 우세 교체는 승률 55% 이상인 팀이 바뀐 횟수, 결정 시점은 승자가 마지막으로 50% 아래에 있던 직후입니다. 방송에서 골드를 읽지 못한 구간은 빠져 있습니다.',
       contextOpenStats: '시리즈 팀·선수 보기 →', contextBackGame: '← 선택 경기로 돌아가기',
       cov: (n, m, k) => `플레이 <strong>${n}</strong>건 중 골드 변화를 잰 것 <strong>${m}</strong>건, 그중 이득·손해가 판정된 것 <strong>${k}</strong>건`,
@@ -1008,15 +1008,15 @@
       statsActing: 'Outcomes when acting', statsScenesPerGame: v => `${v} per game`,
       statsActingNote: 'Counts only moments where the player is named as acting. Success and failure are coded from the commentary, and moments whose result is not stated are left out of the denominator. Only attempts the casters called out are here, so this is not an overall success rate.',
       incomeHead: h => `Gold earned over ${h}s`, incomeNote: 'Each team’s increase in broadcast team gold, read to the nearest 100. Their difference is the gold change above.',
-      viewGames: 'Rankings', rkTabs: 'Ranking type', rkGames: 'Games', rkMoments: 'Moments',
-      prTitle: 'Moment rankings', prSub: 'The commentary-selected plays around which the model win probability moved the most. Click a moment to open that play.',
+      viewGames: 'Swings', rkTabs: 'View', rkGames: 'Games', rkMoments: 'Moments',
+      prTitle: 'Largest win-probability swings', prSub: 'The commentary-selected plays around which the model win probability moved the most. Click a moment to open that play.',
       prPhase: 'Game phase', prAll: 'All', prPhases: { lane: 'Early', mid: 'Mid', late: 'Late' }, prRank: 'Rank', prMoment: 'Moment', prSwing: 'Win-probability change',
       prEmpty: 'No moments match this selection.',
       prNote: (lane, mid, gap) => `Plays of one game that overlap are listed once, by the largest change: plays coded into the same moment, or plays that start within ${gap} seconds of each other. Phases follow the game clock: early to ${lane}:00, mid to ${mid}:00, late after that. The change is written for the team it favoured.`,
-      gfTitle: 'Game rankings', gfSub: 'How each game went on the model win-probability curve. Click a column heading to sort, or a game to open it.',
+      gfTitle: 'Game swings', gfSub: 'How each game went on the model win-probability curve. Click a column heading to sort, or a game to open it.',
       gfGame: 'Game', gfLength: 'Length', gfLow: 'Winner’s lowest win probability', gfGold: 'Winner’s largest gold deficit', gfSwing: 'Swing index', gfLead: 'Lead changes', gfDecided: 'Decided at',
       gfNever: 'Never behind', gfWon: (w, date) => `${w} won${date ? ` · ${date}` : ''}`, gfOpen: title => `Open ${title}`,
-      gfHead: (w, low, at, swing) => `${w} low ${low} (${at}) · swing index ${swing}`, gfHeadTitle: (lowRank, swingRank, n) => `Of this event’s ${n} games: comeback rank ${lowRank}, swing index rank ${swingRank}. Click for the game rankings.`,
+      gfHead: (w, low, at, swing) => `${w} low ${low} (${at}) · swing index ${swing}`, gfHeadTitle: (lowRank, swingRank, n) => `Of this event’s ${n} games: comeback rank ${lowRank}, swing index rank ${swingRank}. Click for the game swings.`,
       gfNote: 'Read from the one-second model win-probability curve (v312 beta) after the game ended. The winner’s low, the decision time and lead changes use a median over ±2 s to filter jitter. The swing index adds up how far the 30-second bin medians moved, in percentage points: the larger it is, the more the probability went back and forth. Lead changes count switches of the team at 55% or above; the decision time is just after the winner was last below 50%. Seconds where gold could not be read off the broadcast are left out.',
       contextOpenStats: 'View series teams & players →', contextBackGame: '← Back to selected game',
       cov: (n, m, k) => `<strong>${n}</strong> plays: gold change measured for <strong>${m}</strong>, of which <strong>${k}</strong> are a clear gain or loss`,
@@ -1179,15 +1179,15 @@
     statsActing: '作为执行方时的结果', statsScenesPerGame: v => `每局${v}`,
     statsActingNote: '只统计该选手被点名为执行方的场景。成功与失败来自对解说内容的编码，结果未说明的场景不计入分母。这里只有解说提到的尝试，并非整体成功率。',
     incomeHead: h => `${h}秒内获得的经济`, incomeNote: '从转播画面读取的队伍经济增量（以100为单位）。两者之差即上方的经济变化。',
-    viewGames: '排行', rkTabs: '排行类型', rkGames: '比赛', rkMoments: '场景',
-    prTitle: '场景排行', prSub: '解说提到的操作中，模型胜率变动最大的场景。点击场景可打开该操作。',
+    viewGames: '胶着与逆转', rkTabs: '查看类型', rkGames: '比赛', rkMoments: '场景',
+    prTitle: '胜率变动最大的场景', prSub: '解说提到的操作中，模型胜率变动最大的场景。点击场景可打开该操作。',
     prPhase: '时段', prAll: '全部', prPhases: { lane: '前期', mid: '中期', late: '后期' }, prRank: '排名', prMoment: '场景', prSwing: '胜率变化',
     prEmpty: '没有符合条件的场景。',
     prNote: (lane, mid, gap) => `同一局中相互重叠的操作只保留变化最大的一个：被归为同一场景的操作，或开始时间相差不到${gap}秒的操作。时段按比赛时钟划分：${lane}分钟前为前期，${mid}分钟前为中期，之后为后期。胜率变化按受益一方书写。`,
-    gfTitle: '比赛排行', gfSub: '用模型胜率曲线观察每局比赛的走势。点击列标题排序，点击比赛打开该局。',
+    gfTitle: '胶着与逆转的比赛', gfSub: '用模型胜率曲线观察每局比赛的走势。点击列标题排序，点击比赛打开该局。',
     gfGame: '比赛', gfLength: '时长', gfLow: '胜方最低胜率', gfGold: '胜方最大经济落后', gfSwing: '胶着指数', gfLead: '优势易手', gfDecided: '定局时间',
     gfNever: '从未落后', gfWon: (w, date) => `${w}获胜${date ? ` · ${date}` : ''}`, gfOpen: title => `打开 ${title}`,
-    gfHead: (w, low, at, swing) => `${w}最低胜率 ${low}（${at}）· 胶着指数 ${swing}`, gfHeadTitle: (lowRank, swingRank, n) => `本赛事${n}局中，逆转幅度第${lowRank}，胶着指数第${swingRank}。点击查看比赛排行。`,
+    gfHead: (w, low, at, swing) => `${w}最低胜率 ${low}（${at}）· 胶着指数 ${swing}`, gfHeadTitle: (lowRank, swingRank, n) => `本赛事${n}局中，逆转幅度第${lowRank}，胶着指数第${swingRank}。点击查看胶着与逆转的比赛。`,
     gfNote: '这些数值在比赛结束后根据逐秒的模型胜率曲线（v312 测试版）汇总。胜方最低胜率、定局时间和优势易手使用前后2秒的中位数来过滤抖动。胶着指数是30秒区间中位数变动幅度的总和（百分点），数值越大表示胜率起伏越多。优势易手是胜率达到55%以上的一方发生更换的次数；定局时间是胜方最后一次低于50%之后的时刻。无法从转播读取经济的时段不计入。',
     cov: (n, m, k) => `共 <strong>${n}</strong> 个操作：测得经济变化 <strong>${m}</strong> 个，其中 <strong>${k}</strong> 个可明确判为收益或损失`,
     duration: '比赛时长', horizon: '变化区间', sec: s => `${s}秒`, metric:'显示指标', metricWps:'胜率', metricGold:'经济', metricBoth:'两者', beta:'测试版',
@@ -1250,15 +1250,15 @@
     statsActing: '行動側だった場面の結果', statsScenesPerGame: v => `1試合あたり${v}`,
     statsActingNote: '行動側として名前が挙がった場面だけを数えます。成功・失敗は実況内容をコーディングした結果で、結果が示されない場面は分母から除きます。実況が取り上げた試みだけなので、全体の成功率ではありません。',
     incomeHead: h => `${h}秒間の獲得ゴールド`, incomeNote: '配信画面から読んだチームゴールドの増加分（100単位）です。両者の差が上のゴールド変化です。',
-    viewGames: 'ランキング', rkTabs: 'ランキングの種類', rkGames: '試合', rkMoments: '場面',
-    prTitle: '場面ランキング', prSub: '実況が注目したプレーのうち、モデル勝率が最も大きく動いた場面です。場面を押すとそのプレーが開きます。',
+    viewGames: '接戦・逆転', rkTabs: '表示の種類', rkGames: '試合', rkMoments: '場面',
+    prTitle: '勝率が大きく動いた場面', prSub: '実況が注目したプレーのうち、モデル勝率が最も大きく動いた場面です。場面を押すとそのプレーが開きます。',
     prPhase: '時間帯', prAll: 'すべて', prPhases: { lane: '序盤', mid: '中盤', late: '終盤' }, prRank: '順位', prMoment: '場面', prSwing: '勝率変化',
     prEmpty: '条件に合う場面がありません。',
     prNote: (lane, mid, gap) => `同じ試合で重なり合うプレーは、変化が最も大きい一つだけを残しました。同じ場面にまとめられたプレー、または開始時刻の差が${gap}秒未満のプレーです。時間帯は試合時計で${lane}分までが序盤、${mid}分までが中盤、それ以降が終盤です。勝率変化は有利になったチームの側で示します。`,
-    gfTitle: '試合ランキング', gfSub: 'モデル勝率曲線で見た各試合の流れです。列見出しを押すと並べ替え、試合を押すとその試合が開きます。',
+    gfTitle: '接戦・逆転の試合', gfSub: 'モデル勝率曲線で見た各試合の流れです。列見出しを押すと並べ替え、試合を押すとその試合が開きます。',
     gfGame: '試合', gfLength: '試合時間', gfLow: '勝者の最低勝率', gfGold: '勝者の最大ゴールド劣勢', gfSwing: '接戦指数', gfLead: 'リード交代', gfDecided: '決着時点',
     gfNever: '常に優勢', gfWon: (w, date) => `${w}勝利${date ? ` · ${date}` : ''}`, gfOpen: title => `${title}を開く`,
-    gfHead: (w, low, at, swing) => `${w}の最低勝率 ${low}（${at}）· 接戦指数 ${swing}`, gfHeadTitle: (lowRank, swingRank, n) => `この大会${n}試合のうち、逆転幅${lowRank}位・接戦指数${swingRank}位。押すと試合ランキングが開きます。`,
+    gfHead: (w, low, at, swing) => `${w}の最低勝率 ${low}（${at}）· 接戦指数 ${swing}`, gfHeadTitle: (lowRank, swingRank, n) => `この大会${n}試合のうち、逆転幅${lowRank}位・接戦指数${swingRank}位。押すと接戦・逆転の試合が開きます。`,
     gfNote: '試合終了後に、1秒単位のモデル勝率曲線（v312ベータ）から要約した値です。勝者の最低勝率、決着時点、リード交代は前後2秒の中央値で細かな揺れを除いて計算します。接戦指数は30秒区間の中央値が動いた幅の合計（pp）で、大きいほど勝率が大きく上下した試合です。リード交代は勝率55%以上のチームが入れ替わった回数、決着時点は勝者が最後に50%を下回った直後です。配信からゴールドを読めなかった区間は含みません。',
     cov:(n,m,k)=>`全<strong>${n}</strong>プレー中、ゴールド変化を測定できたものは<strong>${m}</strong>件、そのうち利益・損失を判定できたものは<strong>${k}</strong>件`, duration:'試合時間', horizon:'変化区間', sec:s=>`${s}秒`, metric:'表示指標', metricWps:'勝率', metricGold:'ゴールド', metricBoth:'両方', beta:'ベータ',
     guideTitle:'数字の読み方', guide:[['ゴールド変化','プレー開始から15・30・60秒の間に、実行したチームと相手のゴールド差がどれだけ広がったか、または縮んだかを示します。放送画面のチームゴールドから計算します。'],['重ねたWPSバー','明るい前面バーは即時WPS、薄い背面バーは選択した15・30・60秒の全体WPSです。方向が逆なら中央軸の両側に分かれます。'],['誤差±200','画面のチームゴールドは100単位に丸められるため生じる範囲です。この範囲内の変化は「不明」と表示します。'],['未測定','リプレイなどで開始時点または終了時点のゴールドを読み取れなかった場合です。'],['同じ時間帯と比較','同じ試合・同じフェーズの全30秒区間を集め、その分布内での位置を示します。効果の大きさではありません。'],['因果ではありません','同時刻に別の場所で起きた出来事もゴールド変化に含まれます。変化がそのプレーによるとは限りません。'],['チーム方向','試合の流れはブルー側基準で固定します。一覧のバーとチーム名が、どちらのチームにどれだけ有利だったかを直接示します。説明と判定は実況が示した実行チーム基準です。']],
@@ -1586,7 +1586,7 @@
     const url = S.view === 'xtab' ? `/totals/${S.tourn}` : S.view === 'games' ? `/${S.rankTab === 'moments' ? 'moments' : 'games'}/${S.tourn}` : S.view === 'compare' ? `/compare/${S.tourn}` : S.view === 'stats' ? (S.statsScope === 'game' ? `/game-stats/${S.gameId}` : `/series-stats/${seriesOf(game())}`) : `/game/${S.gameId}`;
     if (url === lastView) return;
     lastView = url;
-    const title = S.view === 'xtab' ? `Totals · ${S.tourn}` : S.view === 'games' ? `${S.rankTab === 'moments' ? 'Moment' : 'Game'} rankings · ${S.tourn}` : S.view === 'compare' ? `Compare · ${S.tourn}` : S.view === 'stats' ? (S.statsScope === 'game' ? `Game teams & players · ${S.gameId}` : `Series teams & players · ${seriesOf(game())}`) : `${game().title_en} · ${game().tournament_id}`;
+    const title = S.view === 'xtab' ? `Totals · ${S.tourn}` : S.view === 'games' ? `${S.rankTab === 'moments' ? 'Moment' : 'Game'} swings · ${S.tourn}` : S.view === 'compare' ? `Compare · ${S.tourn}` : S.view === 'stats' ? (S.statsScope === 'game' ? `Game teams & players · ${S.gameId}` : `Series teams & players · ${seriesOf(game())}`) : `${game().title_en} · ${game().tournament_id}`;
     um(props => ({ ...props, url, title }));
   }
 
@@ -2618,7 +2618,7 @@
     syncPressed();
   }
 
-  // ------------------------------------------------------------------ game rankings
+  // ------------------------------------------------------------------ swings: games and moments
   // One row per game of the tournament. Every column's first click puts the most eventful game on top:
   // the lowest low, the largest deficit, the most movement, the latest decision.
   const rankSwitch = () => (hasMoments(S.tourn)

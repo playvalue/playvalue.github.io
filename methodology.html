@@ -359,8 +359,8 @@ h = 15, 30, 60초</pre>
     </table></div>
     <p>10초 창의 평균 백분위에서는 WPS와 골드가 사실상 같았지만, 두 소스 모두에서 WPS가 가장 큰 리뷰 장면을 Top-3와 Top-10으로 더 자주 잡았습니다. 미리 정한 5초·15초 창에서는 평균 백분위도 WPS가 더 높았고, 세 창 모두 WPS의 Top-3 일치율이 골드보다 높았습니다. 두 리뷰가 ±20초 안에 함께 고른 장면은 10쌍이었고, 그중 9쌍은 정확히 같은 초, 9쌍은 유리해진 팀까지 같았습니다.</p>
     <p class="note">이 비교는 보조적인 수렴 타당도 확인입니다. 리뷰는 경기 결과를 안 뒤 만든 사후 자료이고, 말하지 않은 장면은 부정 사례가 아닙니다. P.S는 6경기 중 3경기에서만 조건에 맞는 구체적 인게임 장면을 다뤘고, 한 명의 실명 리뷰어가 아니라 편집 채널입니다. 따라서 이 결과는 모델 학습·선택·보정에 쓰지 않았고, 예측 정확도나 플레이의 인과효과를 대신 검증하지 않습니다.</p>
-    <h3>경기 단위 요약: 경기 순위</h3>
-    <p>“순위” 화면의 경기 순위와 경기 화면 위쪽의 한 줄 요약은 플레이 하나가 아니라 한 경기 전체의 승률 곡선을 요약합니다. 값은 1초 단위 연구 곡선에서 계산하고, 화면에 그리는 2초 간격 곡선은 쓰지 않습니다. 방송에서 골드를 읽지 못한 초는 빠져 있습니다.</p>
+    <h3>경기 단위 요약: 접전·역전 경기</h3>
+    <p>“접전·역전” 화면의 경기 목록과 경기 화면 위쪽의 한 줄 요약은 플레이 하나가 아니라 한 경기 전체의 승률 곡선을 요약합니다. 값은 1초 단위 연구 곡선에서 계산하고, 화면에 그리는 2초 간격 곡선은 쓰지 않습니다. 방송에서 골드를 읽지 못한 초는 빠져 있습니다.</p>
     <div class="tbl game-flow"><table>
       <tr><th>지표</th><th>정의</th></tr>
       <tr><td>승자 최저 승률</td><td>최종 승자의 승률이 가장 낮았던 값과 그 시각입니다. 각 초의 값으로는 앞뒤 2초 안에 관측된 초들의 중앙값을 써서 한두 초짜리 잔떨림을 거릅니다.</td></tr>
@@ -370,9 +370,9 @@ h = 15, 30, 60초</pre>
       <tr><td>결정 시점</td><td>승자의 승률이 마지막으로 50% 아래였던 초 바로 다음에 관측된 초입니다. 한 번도 50% 아래로 내려가지 않았으면 “줄곧 우세”로 표시합니다.</td></tr>
     </table></div>
     <p class="note"><b>읽는 법과 한계:</b> 이 값들은 최종 결과를 안 뒤에 붙인 사후 요약입니다. 그 경기의 결과는 여기에만 쓰이고, 그 경기의 승률 계산에는 들어가지 않습니다. 접전 지수는 구간이 짧을수록 커지므로 30초로 고정한 값끼리만 비교할 수 있고, 경기가 길수록 커지기 쉽습니다. 결정 시점은 모델 승률이 마지막으로 50%를 넘어선 시각일 뿐, 그때 승부가 실제로 정해졌다는 뜻이 아닙니다. 모델이 끝까지 승자를 열세로 본 경기에서는 결정 시점이 경기 종료와 같습니다. 모델은 베타이고, 승률 자체에도 오차가 있습니다.</p>
-    <h3 class="moment-rank">장면 순위</h3>
-    <p>같은 화면의 “장면” 순위는 대회 전체에서 해설이 짚은 플레이를 승률 변화 폭이 큰 순서로 보여 줍니다. 값은 플레이 카드에 나오는 즉시 변화 또는 15·30·60초 전체 변화 그대로이고, 다시 계산하지 않습니다. 경기 막바지 장면이 상위를 차지하기 쉬워 초반(14분까지)·중반(25분까지)·후반으로 나눠 볼 수 있습니다. 한 경기에서 서로 겹치는 플레이는 변화가 가장 큰 하나만 남깁니다. 같은 장면(에피소드)으로 묶인 플레이이거나, 시작 시각의 차이가 측정 창 길이(즉시 변화는 15초)보다 짧은 플레이가 그렇습니다. 조건마다 상위 20개를 싣습니다.</p>
-    <p class="note"><b>읽는 법:</b> 이 순위는 승률이 크게 움직인 순간을 찾는 용도입니다. 변화에는 같은 시간에 일어난 다른 사건이 모두 들어 있어, 순위가 높다고 그 플레이가 더 잘한 플레이라는 뜻은 아닙니다.</p>
+    <h3 class="moment-rank">승률이 크게 움직인 장면</h3>
+    <p>같은 화면의 “장면” 목록은 대회 전체에서 해설이 짚은 플레이를 승률 변화 폭이 큰 순서로 보여 줍니다. 값은 플레이 카드에 나오는 즉시 변화 또는 15·30·60초 전체 변화 그대로이고, 다시 계산하지 않습니다. 경기 막바지 장면이 상위를 차지하기 쉬워 초반(14분까지)·중반(25분까지)·후반으로 나눠 볼 수 있습니다. 한 경기에서 서로 겹치는 플레이는 변화가 가장 큰 하나만 남깁니다. 같은 장면(에피소드)으로 묶인 플레이이거나, 시작 시각의 차이가 측정 창 길이(즉시 변화는 15초)보다 짧은 플레이가 그렇습니다. 조건마다 상위 20개를 싣습니다.</p>
+    <p class="note"><b>읽는 법:</b> 이 목록은 승률이 크게 움직인 순간을 찾는 용도입니다. 변화에는 같은 시간에 일어난 다른 사건이 모두 들어 있어, 위에 있다고 그 플레이가 더 잘한 플레이라는 뜻은 아닙니다.</p>
   </section>
 
   <section id="ko-contact">
@@ -554,8 +554,8 @@ h = 15, 30, 60 seconds</pre>
     </table></div>
     <p>At the 10-second window, mean percentile is effectively tied with gold, but WPS recovers the most extreme reviewed moments more often in both sources at Top-3 and Top-10. In the predeclared 5- and 15-second windows, WPS also has the higher mean percentile; its Top-3 rate is above gold in all three windows. The two sources select ten pairs within ±20 seconds: nine share the exact second, and nine name the same beneficiary.</p>
     <p class="note">This is an auxiliary convergent-salience check. Reviews are post-hoc and outcome-aware, and omitted moments are not negative labels. P.S contains qualifying localized in-game analysis for only three of the six games and represents an editorial channel, not one named individual reviewer. These results were not used to fit, select or calibrate the model, and they do not replace predictive evaluation or identify a play's causal effect.</p>
-    <h3>Game-level summaries: game rankings</h3>
-    <p>The game rankings on the Rankings screen and the one-line summary above a game describe the win-probability curve of a whole game, not a single play. The values are computed from the one-second research curve, not from the two-second curve drawn on screen. Seconds where gold could not be read off the broadcast are left out.</p>
+    <h3>Game-level summaries: game swings</h3>
+    <p>The game list on the Swings screen and the one-line summary above a game describe the win-probability curve of a whole game, not a single play. The values are computed from the one-second research curve, not from the two-second curve drawn on screen. Seconds where gold could not be read off the broadcast are left out.</p>
     <div class="tbl game-flow"><table>
       <tr><th>Measure</th><th>Definition</th></tr>
       <tr><td>Winner’s lowest win probability</td><td>The lowest win probability of the eventual winner, and when it occurred. Each second takes the median of the observed seconds within two seconds either side, which filters one- or two-second jitter.</td></tr>
@@ -565,9 +565,9 @@ h = 15, 30, 60 seconds</pre>
       <tr><td>Decided at</td><td>The first observed second after the winner’s probability was last below 50%. A winner that never fell below 50% is shown as “Never behind”.</td></tr>
     </table></div>
     <p class="note"><b>Reading them, and their limits:</b> these are post-hoc summaries written after the result was known. A game’s result is used only here and does not enter that game’s win-probability computation. The swing index grows as the bin gets shorter, so only values at the fixed 30 seconds are comparable, and longer games tend to score higher. The decision time is only when the modeled probability last crossed 50%; it does not mean the game was in fact settled then. Where the model had the winner behind until the end, the decision time equals the end of the game. The model is a beta and its probabilities carry error of their own.</p>
-    <h3 class="moment-rank">Moment rankings</h3>
-    <p>On the same screen, the Moments ranking lists a tournament’s commentary-selected plays by the size of their win-probability change. The values are the immediate change or the 15-, 30- and 60-second totals shown on the play card; nothing is recomputed. Because moments late in a game tend to fill the top, the list can be split into early (to 14:00), mid (to 25:00) and late game. Plays of one game that overlap are listed once, by the largest change: plays coded into the same moment (episode), or plays whose starts are closer together than the measurement window (15 seconds for the immediate change). Each selection shows its top 20.</p>
-    <p class="note"><b>Reading it:</b> the ranking is for finding where the probability moved sharply. Every change includes whatever else happened in the same seconds, so a higher rank does not mean a better play.</p>
+    <h3 class="moment-rank">Largest win-probability swings</h3>
+    <p>On the same screen, the Moments list orders a tournament’s commentary-selected plays by the size of their win-probability change. The values are the immediate change or the 15-, 30- and 60-second totals shown on the play card; nothing is recomputed. Because moments late in a game tend to fill the top, the list can be split into early (to 14:00), mid (to 25:00) and late game. Plays of one game that overlap are listed once, by the largest change: plays coded into the same moment (episode), or plays whose starts are closer together than the measurement window (15 seconds for the immediate change). Each selection shows its top 20.</p>
+    <p class="note"><b>Reading it:</b> the list is for finding where the probability moved sharply. Every change includes whatever else happened in the same seconds, so a place near the top does not mean a better play.</p>
   </section>
 
   <section id="en-contact">
@@ -614,8 +614,8 @@ h = 15, 30, 60 seconds</pre>
     </table></div>
     <p>在10秒窗口中，WPS与经济的平均百分位几乎相同，但两个来源中WPS都更常命中Top-3和Top-10的极端场景。预先规定的5秒与15秒窗口中，WPS的平均百分位也更高；三个窗口的WPS Top-3均高于经济。两个来源在±20秒内共同选出10对场景，其中9对是完全相同的一秒，9对判断了相同的受益方。</p>
     <p class="note">这是辅助性的收敛效度检查。复盘是在知道结果后制作的，未提到的场景不是负例。P.S只有3场比赛含符合条件的具体局内分析，且代表编辑频道而非一名具名分析者。结果没有用于训练、选择或校准模型，也不能替代预测评估或识别单个操作的因果效果。</p>
-    <h3>整局摘要：比赛排行</h3>
-    <p>“排行”页面的比赛排行和比赛页面上方的一行摘要描述的是整局比赛的胜率曲线，而不是单个操作。这些数值根据逐秒的研究曲线计算，不使用页面上绘制的2秒间隔曲线。无法从转播读取经济的秒数不计入。</p>
+    <h3>整局摘要：胶着与逆转的比赛</h3>
+    <p>“胶着与逆转”页面的比赛列表和比赛页面上方的一行摘要描述的是整局比赛的胜率曲线，而不是单个操作。这些数值根据逐秒的研究曲线计算，不使用页面上绘制的2秒间隔曲线。无法从转播读取经济的秒数不计入。</p>
     <div class="tbl game-flow"><table>
       <tr><th>指标</th><th>定义</th></tr>
       <tr><td>胜方最低胜率</td><td>最终胜方胜率的最低值及其出现时间。每一秒取前后2秒内已观测秒数的中位数，以过滤一两秒的抖动。</td></tr>
@@ -625,9 +625,9 @@ h = 15, 30, 60 seconds</pre>
       <tr><td>定局时间</td><td>胜方胜率最后一次低于50%之后第一个被观测到的秒。若胜率从未低于50%，则显示为“从未落后”。</td></tr>
     </table></div>
     <p class="note"><b>如何解读及局限：</b>这些数值是在知道最终结果后作出的事后摘要。一局比赛的结果只用于此处，不进入该局的胜率计算。胶着指数会随区间变短而变大，因此只有固定为30秒的数值之间才可比较，而且比赛越长数值往往越大。定局时间只是模型胜率最后一次越过50%的时刻，并不表示胜负在那时已经确定。如果模型直到最后都认为胜方处于劣势，定局时间就等于比赛结束时间。模型仍为测试版，胜率本身也有误差。</p>
-    <h3 class="moment-rank">场景排行</h3>
-    <p>同一页面的“场景”排行按胜率变化幅度列出整个赛事中解说提到的操作。数值就是操作卡片上的即时变化或15、30、60秒总变化，不重新计算。由于比赛末段的场景容易占据前列，可以分为前期（14分钟前）、中期（25分钟前）和后期查看。同一局中相互重叠的操作只保留变化最大的一个：被归为同一场景（片段）的操作，或开始时间之差小于测量窗口长度（即时变化为15秒）的操作。每种条件显示前20个。</p>
-    <p class="note"><b>如何解读：</b>这份排行用于寻找胜率大幅变动的时刻。每个变化都包含同一时间发生的其他事件，排名更高并不表示该操作更出色。</p>
+    <h3 class="moment-rank">胜率变动最大的场景</h3>
+    <p>同一页面的“场景”列表按胜率变化幅度列出整个赛事中解说提到的操作。数值就是操作卡片上的即时变化或15、30、60秒总变化，不重新计算。由于比赛末段的场景容易占据前列，可以分为前期（14分钟前）、中期（25分钟前）和后期查看。同一局中相互重叠的操作只保留变化最大的一个：被归为同一场景（片段）的操作，或开始时间之差小于测量窗口长度（即时变化为15秒）的操作。每种条件显示前20个。</p>
+    <p class="note"><b>如何解读：</b>这份列表用于寻找胜率大幅变动的时刻。每个变化都包含同一时间发生的其他事件，排名更高并不表示该操作更出色。</p>
   </section>
   <section id="zh-contact"><h2>研究数据合作</h2><p>如果您能为研究分享更细粒度的每秒事件或选手位置数据，或希望开展合作，欢迎联系。</p><p><a class="gh-link" href="https://github.com/playvalue/playvalue.github.io" data-umami-event="github">GitHub · playvalue/playvalue.github.io</a></p></section>
 </article>
@@ -668,8 +668,8 @@ h = 15, 30, 60 seconds</pre>
     </table></div>
     <p>10秒窓では平均パーセンタイルがゴールドとほぼ同じでしたが、両レビュー元でWPSの方がTop-3とTop-10の大きな場面を多く捉えました。事前に定めた5秒・15秒窓では平均パーセンタイルもWPSが高く、3つの窓すべてでWPSのTop-3がゴールドを上回りました。両者が±20秒以内で共通に選んだ場面は10組で、9組は同じ秒、9組は有利になったチームも一致しました。</p>
     <p class="note">これは補助的な収束妥当性の確認です。レビューは結果を知った後の資料で、言及されない場面は負例ではありません。P.Sで条件を満たす具体的な試合内分析があったのは6試合中3試合だけで、個人ではなく編集チャンネルです。結果はモデルの学習・選択・較正には使っておらず、予測精度や個々のプレーの因果効果を検証するものではありません。</p>
-    <h3>試合単位の要約：試合ランキング</h3>
-    <p>「ランキング」画面の試合ランキングと試合画面上部の一行要約は、個々のプレーではなく試合全体の勝率曲線を要約したものです。値は1秒単位の研究用曲線から計算し、画面に描く2秒間隔の曲線は使いません。配信からゴールドを読めなかった秒は含みません。</p>
+    <h3>試合単位の要約：接戦・逆転の試合</h3>
+    <p>「接戦・逆転」画面の試合一覧と試合画面上部の一行要約は、個々のプレーではなく試合全体の勝率曲線を要約したものです。値は1秒単位の研究用曲線から計算し、画面に描く2秒間隔の曲線は使いません。配信からゴールドを読めなかった秒は含みません。</p>
     <div class="tbl game-flow"><table>
       <tr><th>指標</th><th>定義</th></tr>
       <tr><td>勝者の最低勝率</td><td>最終的な勝者の勝率が最も低かった値とその時刻です。各秒の値には前後2秒以内に観測された秒の中央値を使い、1〜2秒の細かな揺れを除きます。</td></tr>
@@ -679,9 +679,9 @@ h = 15, 30, 60 seconds</pre>
       <tr><td>決着時点</td><td>勝者の勝率が最後に50%を下回った秒の、次に観測された秒です。一度も50%を下回らなかった場合は「常に優勢」と表示します。</td></tr>
     </table></div>
     <p class="note"><b>読み方と限界：</b>これらは最終結果を知った後に付けた事後の要約です。その試合の結果はここでのみ使い、その試合の勝率計算には入りません。接戦指数は区間が短いほど大きくなるため、30秒に固定した値どうしでのみ比較でき、試合が長いほど大きくなりやすい値です。決着時点はモデル勝率が最後に50%を越えた時刻にすぎず、その時点で勝敗が実際に決まったという意味ではありません。モデルが最後まで勝者を劣勢と見ていた試合では、決着時点は試合終了と同じになります。モデルはベータ版で、勝率そのものにも誤差があります。</p>
-    <h3 class="moment-rank">場面ランキング</h3>
-    <p>同じ画面の「場面」ランキングは、大会全体で実況が注目したプレーを勝率変化の大きい順に並べます。値はプレーカードに表示される即時変化または15・30・60秒の全体変化そのままで、再計算しません。試合終盤の場面が上位を占めやすいため、序盤（14分まで）・中盤（25分まで）・終盤に分けて見られます。同じ試合で重なり合うプレーは、変化が最も大きい一つだけを残します。同じ場面（エピソード）にまとめられたプレー、または開始時刻の差が測定窓の長さ（即時変化は15秒）より短いプレーです。条件ごとに上位20件を表示します。</p>
-    <p class="note"><b>読み方：</b>このランキングは勝率が大きく動いた瞬間を探すためのものです。変化には同じ時間帯の他の出来事もすべて含まれるため、順位が高いことはそのプレーが優れていることを意味しません。</p>
+    <h3 class="moment-rank">勝率が大きく動いた場面</h3>
+    <p>同じ画面の「場面」一覧は、大会全体で実況が注目したプレーを勝率変化の大きい順に並べます。値はプレーカードに表示される即時変化または15・30・60秒の全体変化そのままで、再計算しません。試合終盤の場面が上位を占めやすいため、序盤（14分まで）・中盤（25分まで）・終盤に分けて見られます。同じ試合で重なり合うプレーは、変化が最も大きい一つだけを残します。同じ場面（エピソード）にまとめられたプレー、または開始時刻の差が測定窓の長さ（即時変化は15秒）より短いプレーです。条件ごとに上位20件を表示します。</p>
+    <p class="note"><b>読み方：</b>この一覧は勝率が大きく動いた瞬間を探すためのものです。変化には同じ時間帯の他の出来事もすべて含まれるため、順位が高いことはそのプレーが優れていることを意味しません。</p>
   </section>
   <section id="ja-contact"><h2>研究データの連携</h2><p>秒単位イベントや選手位置など、より細かな研究データを共有できる方、共同研究を希望する方はご連絡ください。</p><p><a class="gh-link" href="https://github.com/playvalue/playvalue.github.io" data-umami-event="github">GitHub · playvalue/playvalue.github.io</a></p></section>
 </article>
