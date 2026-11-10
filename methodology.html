@@ -16,27 +16,27 @@
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <script defer src="https://cloud.umami.is/script.js" data-website-id="3119b06f-5313-434d-90e9-6eff291dd9d7" data-domains="playvalue.github.io"></script>
-  <link rel="icon" type="image/svg+xml" href="./assets/logo-icon.svg?v=2">
+  <link rel="icon" type="image/svg+xml" href="./assets/logo-icon.svg?v=3">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <style>
     :root {
-      --bg-main: #f4f5f7; --bg-header: #f7f3ec; --header-control: #fffdf9; --header-border: #e4d7c5;
+      --bg-main: #f4f5f7; --bg-header: #f6f5fb; --header-control: #ffffff; --header-border: #dcd9ec;
       --bg-card: #ffffff; --bg-pill: #eceef1; --text-main: #111214; --text-muted: #5d6168;
       --border-color: #e4e6ea; --border-focus: #111214; --blue-team: #1d63b8; --red-team: #c4243f;
-      --gain: #247b50; --loss: #b53d0c; --neutral: #62666d; --brand-gold: #B9731A; --code-bg: #eceef1;
+      --gain: #247b50; --loss: #b53d0c; --neutral: #62666d; --brand: #6941e0; --code-bg: #eceef1;
       --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Segoe UI', sans-serif;
       --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
       --motion-medium: 280ms; --ease-out: cubic-bezier(.2, .8, .2, 1);
       color-scheme: light;
     }
     [data-theme="dark"] {
-      --bg-main: #0d0d0e; --bg-header: #171512; --header-control: #211e1a; --header-border: #3a3024;
+      --bg-main: #0d0d0e; --bg-header: #15141b; --header-control: #1e1d27; --header-border: #302d42;
       --bg-card: #161618; --bg-pill: #242427; --text-main: #f3f3f4; --text-muted: #a9abb0;
       --border-color: #2a2a2e; --border-focus: #f3f3f4; --blue-team: #5ea3ff; --red-team: #ff6d83;
-      --gain: #3fc07a; --loss: #ff8a52; --neutral: #a0a2a8; --brand-gold: #E9A23B; --code-bg: #242427;
+      --gain: #3fc07a; --loss: #ff8a52; --neutral: #a0a2a8; --brand: #b29cff; --code-bg: #242427;
       color-scheme: dark;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,7 +53,7 @@
     .header-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: nowrap; }
     .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; font-weight: 900; font-size: 1.4rem; letter-spacing: -0.03em; }
     .brand img { width: 34px; height: 34px; }
-    .brand .v { color: var(--brand-gold); }
+    .brand .v { color: var(--brand); }
     .actions { display: flex; gap: 8px; flex: none; flex-wrap: nowrap; align-items: center; }
     .btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); font: inherit; font-size: .82rem; font-weight: 600; padding: 6px 12px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
     header .btn { background: var(--header-control); }
@@ -66,7 +66,7 @@
     .lang-menu[hidden] { display: none; }
     .lang-option { width: 100%; display: grid; grid-template-columns: 24px 1fr 14px; align-items: center; gap: 8px; border: 0; border-radius: 7px; padding: 8px 9px; background: transparent; color: var(--text-main); cursor: pointer; text-align: left; font-size: .84rem; }
     .lang-option:hover, .lang-option:focus-visible { background: var(--bg-pill); }
-    .lang-option .check { opacity: 0; color: var(--brand-gold); font-weight: 800; }
+    .lang-option .check { opacity: 0; color: var(--brand); font-weight: 800; }
     .lang-option.on .check { opacity: 1; }
     #btnTheme .theme-sun { display: none; }
     [data-theme="dark"] #btnTheme .theme-moon { display: none; }
@@ -102,8 +102,8 @@
     .measure-demo-buttons button[aria-pressed="true"] { background: var(--bg-card); color: var(--text-main); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
     .measure-track { position: relative; height: 64px; margin-top: 8px; }
     .measure-axis { position: absolute; left: 12%; right: 6%; top: 29px; height: 2px; background: var(--border-color); }
-    .measure-window { position: absolute; left: 12%; top: 25px; width: calc(var(--window-end) - 12%); height: 10px; border-radius: 999px; background: color-mix(in srgb, var(--brand-gold) 28%, transparent); transition: width var(--motion-medium) var(--ease-out); }
-    .measure-dot { position: absolute; top: 22px; width: 16px; height: 16px; border: 3px solid var(--bg-main); border-radius: 50%; background: var(--brand-gold); box-shadow: 0 0 0 1px var(--brand-gold); transform: translateX(-50%); }
+    .measure-window { position: absolute; left: 12%; top: 25px; width: calc(var(--window-end) - 12%); height: 10px; border-radius: 999px; background: color-mix(in srgb, var(--brand) 28%, transparent); transition: width var(--motion-medium) var(--ease-out); }
+    .measure-dot { position: absolute; top: 22px; width: 16px; height: 16px; border: 3px solid var(--bg-main); border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 1px var(--brand); transform: translateX(-50%); }
     .measure-dot.start { left: 12%; }
     .measure-dot.end { left: var(--window-end); transition: left var(--motion-medium) var(--ease-out); }
     .measure-label { position: absolute; top: 43px; color: var(--text-muted); font-size: .72rem; font-weight: 700; transform: translateX(-50%); white-space: nowrap; }
@@ -128,7 +128,7 @@
     ul, ol { padding-left: 22px; margin: 6px 0; }
     li { margin: 3px 0; }
     .muted { color: var(--text-muted); }
-    .quote { border-left: 3px solid var(--brand-gold); padding: 6px 14px; background: var(--bg-card); border-radius: 0 8px 8px 0; margin: 10px 0; }
+    .quote { border-left: 3px solid var(--brand); padding: 6px 14px; background: var(--bg-card); border-radius: 0 8px 8px 0; margin: 10px 0; }
     code, .mono { font-family: var(--mono); font-size: .86em; }
     pre { background: var(--code-bg); border-radius: 8px; padding: 12px 14px; font-family: var(--mono); font-size: .84rem; overflow-x: auto; margin: 10px 0; line-height: 1.6; }
     .tbl { overflow-x: auto; margin: 10px 0; }
@@ -160,7 +160,7 @@
 <a class="skip" href="#content" id="skipLink">본문으로 건너뛰기</a>
 <header>
   <div class="wrap header-row">
-    <a class="brand" href="./index.html"><img src="./assets/logo-icon.svg?v=2" alt="" width="30" height="30"><span translate="no">Play<span class="v">Value</span></span></a>
+    <a class="brand" href="./index.html"><img src="./assets/logo-icon.svg?v=3" alt="" width="30" height="30"><span translate="no">Play<span class="v">Value</span></span></a>
     <div class="actions">
       <a class="btn icon-only" href="./index.html" id="backBtn" aria-label="대시보드" title="대시보드">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -278,6 +278,10 @@ h = 15, 30, 60초</pre>
       <li><b>한 번만 세기:</b> 기본 집계에서 플레이는 플레이한 팀 기준으로 한 번만 셉니다.</li>
       <li><b>고정된 팀 방향:</b> 경기 흐름 차트는 블루팀 승률과 블루팀−레드팀 골드 차이를 위쪽으로 고정합니다. 플레이 목록의 막대와 팀 이름은 실제로 어느 팀에 유리한 변화였는지 직접 표시하고, 플레이 설명·유형·성공 여부는 해설이 지목한 행동 팀 기준을 유지합니다.</li>
       <li><b>팀·선수 화면:</b> 경기별 보기의 “이 시리즈 팀·선수”는 위에서 고른 시리즈의 두 팀과 출전 선수만 보여 줍니다. 별도 “비교” 화면은 시리즈 선택과 독립적으로 대회 전체 또는 선택한 두 대상의 맞대결에서 임의의 두 팀·선수를 비교합니다. 각 값은 해당 범위에서 실제로 뛴 경기 수로 나눕니다. 팀 레이더의 가운데 링은 0이고 바깥쪽은 유리한 순변화, 안쪽은 불리한 순변화입니다. 선수 막대는 경기당 유리·불리 변화량을 따로, 오른쪽 숫자는 둘을 상쇄한 경기당 순변화를 보여 줍니다. 여러 선수가 관여한 플레이는 선수마다 한 번씩 들어가므로 개인 기여도 순위가 아닙니다. 챔피언별 집계는 유형별 집계에 남겨 둡니다.</li>
+      <li class="detail-rule"><b>팀·선수 세부 수치:</b> “직접 차이”는 경기당 순변화의 B−A이며, 왼쪽이 A, 오른쪽이 B이고 옆의 수치는 앞선 쪽과 그 차이입니다. “행동으로 나선 장면의 결과”는 선수가 행동 역할로 이름이 나온 장면을 유형별로 세고, 해설 코딩의 성공·일부 성공·실패·중단으로 나눠 보여 줍니다. 결과가 드러나지 않은 장면은 분모에서 빼며, 해설이 짚은 시도만 들어 있어 전체 성공률이 아닙니다. “자주 맞선 상대”는 같은 장면에 상대 팀으로 이름이 나온 선수를 많은 순으로 보여 줍니다. 여러 선수가 나온 장면은 상대 선수마다 한 번씩 세고, 두 선수만 나온 장면은 1대1로 따로 적습니다. 수치는 그 장면들에서 이 선수 팀 쪽으로 움직인 변화의 합이며 두 선수의 우열이 아닙니다. “시작 시점 승률별 장면”은 장면이 시작될 때 그 팀의 모델 승률로 열세(40% 미만)·접전(40–60%)·우세(60% 초과)를 나눕니다. 뒤진 팀은 승률이 오를 여지가 더 크므로 같은 상황에 놓인 다른 팀의 평균을 나란히 두고, 5장면 미만이면 평균을 적지 않습니다.</li>
+      <li class="detail-rule"><b>양 팀 수입:</b> 플레이 카드의 “번 골드”는 선택한 구간 동안 방송 화면에서 읽은 두 팀의 골드 증가분(100 단위)입니다. 둘의 차이가 그 구간의 골드 변화입니다.</li>
+      <li class="detail-rule"><b>동선 수치:</b> 선수 화면의 “상대 진영 체류”와 “원딜과 떨어진 시간”은 미니맵에서 위치를 읽은 시간 가운데 비율입니다. 상대 진영은 강을 따라 나눈 맵의 상대편 절반이고, 떨어진 시간은 서포터가 원딜과 약 2,200 유닛 넘게 벌어진 시간입니다. 죽어 있거나 위치를 읽지 못한 시간은 뺍니다. 옆의 평균은 그 대회에서 같은 포지션으로 뛴 선수 전체의 값입니다. 이동거리는 쓰지 않습니다. 미니맵 1픽셀이 약 55 유닛이라 좌표 떨림만으로 분당 수천 유닛이 더해지기 때문입니다. 앞서는 팀일수록 상대 진영에 오래 머무르므로 선수 성향만을 뜻하지 않습니다.</li>
+      <li class="detail-rule"><b>리드 굴리기와 막기:</b> 팀 카드의 이 표는 방송 골드 차이를 분 단위 중앙값으로 읽어 만듭니다. 전환율은 한 경기에서 먼저 2,000 골드 리드를 잡은 팀이 5,000까지 넓혔는지(굴림), 동점 이하로 되돌려졌는지(막힘)를 셉니다. 리드 증가는 3분 이후 리드가 1,000 이상인 매 분마다 그 뒤 3분간의 리드 변화를 구하고, 같은 대회에서 리드 크기와 시간대가 같았던 분들의 평균을 뺀 값입니다. 리드는 클수록 저절로 더 빨리 커지기 때문입니다. 같은 값을 리드한 팀에게는 “앞설 때”, 뒤진 팀에게는 “뒤질 때”로 적습니다. 팀 값은 경기별 평균을 분 수로 가중한 것이어서 잠깐 잡은 리드가 길게 잡은 리드와 같은 비중을 갖지 않고, 대회 평균이 0이 됩니다. 한 경기의 분들은 서로 겹쳐 독립이 아니므로 구간은 분이 아니라 경기를 다시 뽑아 계산합니다. “상대 보정”은 대회 전체에서 각 경기의 리드 증가를 리드한 팀의 굴리기에서 뒤진 팀의 막기를 뺀 값으로 놓고 모든 팀을 함께 추정한 것입니다. 관측이 적어 값을 0 쪽으로 당기며(ridge), 당기는 세기는 한 경기씩 빼고 예측했을 때 오차가 가장 작은 것을 고릅니다. 이는 대진이 팀들을 이어 주는 만큼만 상대를 반영할 뿐, 상대에 관한 모든 것을 통제하지는 않습니다. 2026년 두 대회에서 팀 효과를 넣어 얻는 예측 개선은 1~2%에 그쳤습니다. 팀 간 차이의 대부분은 경기마다의 변동이므로, 이 표를 팀 순위로 읽어서는 안 됩니다. 승률이 아니라 골드를 쓰는 이유는 승률이 100% 근처에서 포화해, 잘 굴릴수록 변화율이 작아지기 때문입니다.</li>
       <li><b>같은 장면:</b> 추출 단계에서 한 사건으로 묶인 플레이들(에피소드)은 함께 보여 주되, 골드 변화를 더하지 않습니다. 같은 30초 구간 안에 시작한 다른 플레이가 있으면 카드에 표시합니다.</li>
       <li><b>눈여겨볼 장면:</b> 화면에서 고른 구간(15·30·60초)의 골드 변화 방향이 확정된 플레이 중 “성공했는데 손해” 또는 “실패·중단했는데 이득”인 것, 같은 시간대 배경 대비 골드 변화의 폭이 상위 <span data-v="tail2"></span>%인 것, 또는 같은 경기·페이즈의 해설 플레이 중 WPS 변화 폭이 상위 10%인 것입니다. 배경 골드는 양 팀 입장을 모두 담아 0을 중심으로 대칭이므로, 상위 <span data-v="tail"></span>%와 하위 <span data-v="tail"></span>%를 합치면 방향과 관계없이 변화 폭 상위 <span data-v="tail2"></span>%가 됩니다. 구간을 바꾸면 그 구간 기준으로 다시 뽑힙니다. 플레이 목록에서는 행 왼쪽의 둥근 금색 선으로, 필터와 선정 사유에서는 스파클 아이콘으로 표시하며 순위가 아닙니다.</li>
     </ul>
@@ -298,6 +302,7 @@ h = 15, 30, 60초</pre>
     <p id="ko-check-gold"></p>
     <h3>미니맵 위치</h3>
     <p id="ko-check-mm"></p>
+    <p class="mm-clean"><b>왕복 좌표 제거:</b> 맵에 표시하는 위치에서는 멀리 갔다가 한두 초 만에 돌아오는 좌표를 지웁니다. 귀환·텔레포트·부활처럼 한 번 멀리 이동하는 것은 가능해도, 갔다가 곧 돌아오는 것은 불가능하기 때문입니다. 달리기로 닿을 수 없는 이동마다 비용을 매겨 한 선수가 실제로 낼 수 있는 좌표열만 남기며, 떨어진 곳에 5초 이상 머문 경우는 그대로 둡니다. Riot의 1분 단위 위치 가운데 짝수 분을 기준점으로 쓰고 홀수 분으로 채점하면, 전체 좌표의 1.9%가 지워지고 Riot 위치에서 600 유닛 안에 드는 좌표가 96.2%에서 97.1%로 늘어납니다. 지워진 좌표 열 개 중 넷은 실제로는 맞는 좌표였습니다. 오인식이 진짜 위치보다 길게 이어지면 이동만으로는 구분할 수 없습니다. 위의 정확도 수치는 이 보정을 거치기 전의 추적 결과를 채점한 것입니다.</p>
     <h3>킬 여부</h3>
     <p id="ko-check-kill"></p>
     <div class="tbl" id="ko-check-table"></div>
@@ -354,6 +359,20 @@ h = 15, 30, 60초</pre>
     </table></div>
     <p>10초 창의 평균 백분위에서는 WPS와 골드가 사실상 같았지만, 두 소스 모두에서 WPS가 가장 큰 리뷰 장면을 Top-3와 Top-10으로 더 자주 잡았습니다. 미리 정한 5초·15초 창에서는 평균 백분위도 WPS가 더 높았고, 세 창 모두 WPS의 Top-3 일치율이 골드보다 높았습니다. 두 리뷰가 ±20초 안에 함께 고른 장면은 10쌍이었고, 그중 9쌍은 정확히 같은 초, 9쌍은 유리해진 팀까지 같았습니다.</p>
     <p class="note">이 비교는 보조적인 수렴 타당도 확인입니다. 리뷰는 경기 결과를 안 뒤 만든 사후 자료이고, 말하지 않은 장면은 부정 사례가 아닙니다. P.S는 6경기 중 3경기에서만 조건에 맞는 구체적 인게임 장면을 다뤘고, 한 명의 실명 리뷰어가 아니라 편집 채널입니다. 따라서 이 결과는 모델 학습·선택·보정에 쓰지 않았고, 예측 정확도나 플레이의 인과효과를 대신 검증하지 않습니다.</p>
+    <h3>경기 단위 요약: 경기 순위</h3>
+    <p>“순위” 화면의 경기 순위와 경기 화면 위쪽의 한 줄 요약은 플레이 하나가 아니라 한 경기 전체의 승률 곡선을 요약합니다. 값은 1초 단위 연구 곡선에서 계산하고, 화면에 그리는 2초 간격 곡선은 쓰지 않습니다. 방송에서 골드를 읽지 못한 초는 빠져 있습니다.</p>
+    <div class="tbl game-flow"><table>
+      <tr><th>지표</th><th>정의</th></tr>
+      <tr><td>승자 최저 승률</td><td>최종 승자의 승률이 가장 낮았던 값과 그 시각입니다. 각 초의 값으로는 앞뒤 2초 안에 관측된 초들의 중앙값을 써서 한두 초짜리 잔떨림을 거릅니다.</td></tr>
+      <tr><td>승자 최대 골드 열세</td><td>방송 골드 기준으로 승자가 가장 크게 뒤졌던 폭과 그 시각입니다. 한 번도 뒤지지 않았으면 표시하지 않습니다.</td></tr>
+      <tr><td>접전 지수</td><td>경기 시계를 30초 구간으로 나눠 구간마다 승률 중앙값을 구한 뒤, 이웃한 구간 사이의 변화 폭을 모두 더한 값(퍼센트포인트)입니다. 관측이 없는 구간은 건너뜁니다.</td></tr>
+      <tr><td>우세 교체</td><td>승률 55% 이상인 상태와 45% 이하인 상태 사이를 오간 횟수입니다. 45~55% 안에서만 움직인 것은 세지 않습니다.</td></tr>
+      <tr><td>결정 시점</td><td>승자의 승률이 마지막으로 50% 아래였던 초 바로 다음에 관측된 초입니다. 한 번도 50% 아래로 내려가지 않았으면 “줄곧 우세”로 표시합니다.</td></tr>
+    </table></div>
+    <p class="note"><b>읽는 법과 한계:</b> 이 값들은 최종 결과를 안 뒤에 붙인 사후 요약입니다. 그 경기의 결과는 여기에만 쓰이고, 그 경기의 승률 계산에는 들어가지 않습니다. 접전 지수는 구간이 짧을수록 커지므로 30초로 고정한 값끼리만 비교할 수 있고, 경기가 길수록 커지기 쉽습니다. 결정 시점은 모델 승률이 마지막으로 50%를 넘어선 시각일 뿐, 그때 승부가 실제로 정해졌다는 뜻이 아닙니다. 모델이 끝까지 승자를 열세로 본 경기에서는 결정 시점이 경기 종료와 같습니다. 모델은 베타이고, 승률 자체에도 오차가 있습니다.</p>
+    <h3 class="moment-rank">장면 순위</h3>
+    <p>같은 화면의 “장면” 순위는 대회 전체에서 해설이 짚은 플레이를 승률 변화 폭이 큰 순서로 보여 줍니다. 값은 플레이 카드에 나오는 즉시 변화 또는 15·30·60초 전체 변화 그대로이고, 다시 계산하지 않습니다. 경기 막바지 장면이 상위를 차지하기 쉬워 초반(14분까지)·중반(25분까지)·후반으로 나눠 볼 수 있습니다. 한 경기에서 서로 겹치는 플레이는 변화가 가장 큰 하나만 남깁니다. 같은 장면(에피소드)으로 묶인 플레이이거나, 시작 시각의 차이가 측정 창 길이(즉시 변화는 15초)보다 짧은 플레이가 그렇습니다. 조건마다 상위 20개를 싣습니다.</p>
+    <p class="note"><b>읽는 법:</b> 이 순위는 승률이 크게 움직인 순간을 찾는 용도입니다. 변화에는 같은 시간에 일어난 다른 사건이 모두 들어 있어, 순위가 높다고 그 플레이가 더 잘한 플레이라는 뜻은 아닙니다.</p>
   </section>
 
   <section id="ko-contact">
@@ -454,6 +473,10 @@ h = 15, 30, 60 seconds</pre>
       <li><b>Counted once:</b> in the main totals, each play counts once, for the team that made it.</li>
       <li><b>Fixed team direction:</b> the game-flow chart keeps blue-team win probability and blue-minus-red gold above zero. In the play list, the bar and team name directly identify the side that benefited, while descriptions, types and outcomes stay with the acting team named by the casters.</li>
       <li><b>Teams &amp; players:</b> “Teams &amp; players in this series” under By game contains only the two teams and players in the series selected above. The separate Compare screen ignores the series selector and compares any two teams or players over the whole event or their head-to-head games. Each value is divided by the games actually played within that basis. The team radar’s middle ring is zero; outward is favourable and inward unfavourable. Player bars keep favourable and unfavourable change per game separate, while the number at right is their net per game. A play with several players appears once per player, so this is not a ranking of individual contribution. Champion breakdowns remain under Totals by type.</li>
+      <li class="detail-rule"><b>Team and player detail:</b> “Direct difference” is B−A in net change per game, with A on the left and B on the right; the figure beside each row names whichever is ahead and by how much. “Outcomes when acting” counts the moments where a player is named as acting, by play type, split into the coded success, partial, failure and called-off. Moments whose result is not stated are left out of the denominator, and only attempts the casters called out are included, so it is not an overall success rate. “Most-faced opponents” lists the opposing players named in the same moments, most often first. A moment with several players counts once for each opponent, and moments naming only the two players are given separately as one-on-one. The value is the summed change toward the player’s team over those moments, not a verdict on the two players. “Moments by win probability at the start” splits a team’s moments by its modeled win probability when each began: behind (under 40%), close (40–60%) and ahead (over 60%). A team that is behind has more room to rise, so each mean sits beside the mean of the other teams in the same situation, and means are left out below five moments.</li>
+      <li class="detail-rule"><b>Both teams’ income:</b> “Gold earned” on the play card is each team’s increase in broadcast team gold over the selected window, read to the nearest 100. Their difference is the gold change for that window.</li>
+      <li class="detail-rule"><b>Movement figures:</b> “Time in enemy half” and “Time apart from the bot laner” on the player screen are shares of the time the minimap gave a position. The enemy half is the far side of the map split along the river; apart means a support more than about 2,200 units from the bot laner. Time spent dead or unseen is left out. The average beside each figure is every player of that position in the event. Distance travelled is not used: one minimap pixel is about 55 units, so jitter alone adds thousands of units a minute. A team that is ahead spends longer in the enemy half, so these are not the player’s tendency alone.</li>
+      <li class="detail-rule"><b>Rolling and stopping a lead:</b> this table on the team card reads the broadcast gold difference as a median per minute. The conversion counts, for the first team to get 2,000 gold ahead in a game, whether it extended the lead to 5,000 (rolled) or was pulled back to level or behind (stopped). Lead growth takes every minute from 3:00 with a lead of at least 1,000, measures the change in that lead over the next three minutes, and subtracts the mean of the same event’s minutes with the same lead size and game phase, because a lead grows faster the larger it already is. The same figure is read as “when ahead” for the leader and “when behind” for the trailing team. A team’s figure weights each game’s mean by its minutes, so a lead held briefly does not count like one held for long and the event average is zero. Minutes of one game overlap and are not independent, so the interval resamples games, not minutes. “Opponent-adjusted” models each game’s lead growth over the whole event as the leader’s rolling minus the trailing team’s stopping and fits all teams together. With few observations the values are shrunk toward zero (ridge), with the strength that predicts held-out games best. This reflects opponents only as far as the schedule links teams; it does not control everything about an opponent. On the two 2026 events, adding team effects improved held-out prediction by only one or two percent. Most of the difference between teams is game-to-game variation, so the table should not be read as a ranking. Gold is used rather than win probability because probability saturates near 100%, so the better a lead is rolled the smaller its rate of change.</li>
       <li><b>Same moment:</b> plays grouped as one event at extraction (an episode) are shown together but their gold changes are not added. Other plays starting inside the same 30-second window are flagged on the card.</li>
       <li><b>Worth a look:</b> plays with a clear direction over the window chosen on screen (15, 30 or 60 s) that succeeded with a loss or failed or were called off with a gain, and plays whose gold swing is in the largest <span data-v="tail2"></span>% for their game and phase. The background holds both teams' view and is symmetric around zero, so its top and bottom <span data-v="tail"></span>% together are simply the largest <span data-v="tail2"></span>% of swings in either direction, and the same plays are picked whichever team you view from. Commentary-picked plays lean towards gains for the team that made them, so most of these are large gains from that side. Changing the window picks them again for that window. In the play list they use a rounded gold rail at the left of the row; the filter and reason chips use a sparkle icon. They are not ranked.</li>
     </ul>
@@ -474,6 +497,7 @@ h = 15, 30, 60 seconds</pre>
     <p id="en-check-gold"></p>
     <h3>Minimap positions</h3>
     <p id="en-check-mm"></p>
+    <p class="mm-clean"><b>Round trips removed:</b> the positions drawn on the map drop readings that go far away and come back a second or two later. A champion can relocate once in an instant (recall, teleport, respawn) but cannot go and return that fast. Every move faster than running is charged a cost and only a sequence one champion could have produced is kept; a stay of five seconds or more somewhere else is left alone. With Riot’s even-minute positions as anchors and the odd minutes held out for scoring, 1.9% of the readings are dropped and the readings within 600 units of Riot’s position rise from 96.2% to 97.1%. Four in ten dropped readings were in fact right: where a false run lasts longer than the true one beside it, movement alone cannot tell them apart. The accuracy figures above score the track before this cleaning.</p>
     <h3>Kills</h3>
     <p id="en-check-kill"></p>
     <div class="tbl" id="en-check-table"></div>
@@ -530,6 +554,20 @@ h = 15, 30, 60 seconds</pre>
     </table></div>
     <p>At the 10-second window, mean percentile is effectively tied with gold, but WPS recovers the most extreme reviewed moments more often in both sources at Top-3 and Top-10. In the predeclared 5- and 15-second windows, WPS also has the higher mean percentile; its Top-3 rate is above gold in all three windows. The two sources select ten pairs within ±20 seconds: nine share the exact second, and nine name the same beneficiary.</p>
     <p class="note">This is an auxiliary convergent-salience check. Reviews are post-hoc and outcome-aware, and omitted moments are not negative labels. P.S contains qualifying localized in-game analysis for only three of the six games and represents an editorial channel, not one named individual reviewer. These results were not used to fit, select or calibrate the model, and they do not replace predictive evaluation or identify a play's causal effect.</p>
+    <h3>Game-level summaries: game rankings</h3>
+    <p>The game rankings on the Rankings screen and the one-line summary above a game describe the win-probability curve of a whole game, not a single play. The values are computed from the one-second research curve, not from the two-second curve drawn on screen. Seconds where gold could not be read off the broadcast are left out.</p>
+    <div class="tbl game-flow"><table>
+      <tr><th>Measure</th><th>Definition</th></tr>
+      <tr><td>Winner’s lowest win probability</td><td>The lowest win probability of the eventual winner, and when it occurred. Each second takes the median of the observed seconds within two seconds either side, which filters one- or two-second jitter.</td></tr>
+      <tr><td>Winner’s largest gold deficit</td><td>The largest broadcast gold deficit of the eventual winner, and when it occurred. Nothing is shown when the winner never trailed in gold.</td></tr>
+      <tr><td>Swing index</td><td>The game clock is cut into 30-second bins, the median win probability is taken in each, and the absolute changes between neighbouring bins are added up, in percentage points. Bins with no observed second are skipped.</td></tr>
+      <tr><td>Lead changes</td><td>The number of switches between a probability of 55% or above and one of 45% or below. Movement that stays inside 45–55% is not counted.</td></tr>
+      <tr><td>Decided at</td><td>The first observed second after the winner’s probability was last below 50%. A winner that never fell below 50% is shown as “Never behind”.</td></tr>
+    </table></div>
+    <p class="note"><b>Reading them, and their limits:</b> these are post-hoc summaries written after the result was known. A game’s result is used only here and does not enter that game’s win-probability computation. The swing index grows as the bin gets shorter, so only values at the fixed 30 seconds are comparable, and longer games tend to score higher. The decision time is only when the modeled probability last crossed 50%; it does not mean the game was in fact settled then. Where the model had the winner behind until the end, the decision time equals the end of the game. The model is a beta and its probabilities carry error of their own.</p>
+    <h3 class="moment-rank">Moment rankings</h3>
+    <p>On the same screen, the Moments ranking lists a tournament’s commentary-selected plays by the size of their win-probability change. The values are the immediate change or the 15-, 30- and 60-second totals shown on the play card; nothing is recomputed. Because moments late in a game tend to fill the top, the list can be split into early (to 14:00), mid (to 25:00) and late game. Plays of one game that overlap are listed once, by the largest change: plays coded into the same moment (episode), or plays whose starts are closer together than the measurement window (15 seconds for the immediate change). Each selection shows its top 20.</p>
+    <p class="note"><b>Reading it:</b> the ranking is for finding where the probability moved sharply. Every change includes whatever else happened in the same seconds, so a higher rank does not mean a better play.</p>
   </section>
 
   <section id="en-contact">
@@ -550,9 +588,9 @@ h = 15, 30, 60 seconds</pre>
   <section id="zh-steps"><h2>处理流程</h2><ol class="steps"><li><b>从解说提取操作（遮蔽经济信息）。</b>读取整场英文自动字幕，收集失败、无击杀和普通兵线管理在内的具体行动。预先遮蔽经济相关词语及相邻字幕。每局独立提取、复读检查，并用SHA-256固定结果。</li><li><b>从转播画面读取经济。</b>OCR每秒读取比赛时间和两队经济，排除回放与暂停；每个比赛区间都经画面核对。</li><li><b>合并经济。</b>在固定操作的起点计算15、30、60秒后的变化。看到经济后不增删操作，无法读取的保留为“未测量”。</li><li><b>只依据解说编码。</b>操作类型、资源关联和涉及选手不使用经济。Claude、Gemma、Qwen三个模型系列独立编码，多数决定；代码本在正式编码前固定。</li><li><b>规则版本化。</b>时间窗、阶段和阈值集中在一个设置文件中，其哈希写入数据。</li></ol></section>
   <section id="zh-metric"><h2>经济变化（主要指标）</h2><pre>经济变化(h秒) = [执行方经济 − 对手经济](起点 + h) − [执行方经济 − 对手经济](起点)&#10;h = 15、30、60秒</pre><p>正值表示执行方的经济差扩大，负值表示缩小。三种时间窗全部展示，默认30秒。</p><h3>四种状态</h3><div class="tbl"><table><tr><th>状态</th><th>条件</th></tr><tr><td class="gain">收益</td><td>正向变化超出误差范围</td></tr><tr><td class="loss">损失</td><td>负向变化超出误差范围</td></tr><tr><td>无法判断</td><td>变化落在误差范围内</td></tr><tr><td>未测量</td><td>无法读取开始或结束时的经济</td></tr></table></div><p><b>误差±200：</b>一次变化使用四个画面读数，每个读数的四舍五入误差不超过±50。因此仅在|变化| ≥ 200时判为收益或损失。</p><h3>背景信息</h3><ul><li><b>操作前：</b>各阶段阈值为对线期±<span data-v="lead_lane"></span>、中期±<span data-v="lead_mid"></span>、后期±<span data-v="lead_late"></span>。</li><li><b>阶段：</b>对线期为14分钟前，中期14–25分钟，后期25分钟以后。</li><li><b>同阶段比较：</b>用同局同阶段的每个可测秒建立分布，只表示相对位置，不是效果量。</li><li><b>经济节奏变化：</b>比较操作前后等长时间窗（15分钟前<span data-v="dv_early"></span>秒，之后<span data-v="dv_late"></span>秒）的每分钟经济差，仅作参考。</li></ul></section>
   <section id="zh-coding"><h2>解说编码</h2><p>三类编码只使用操作摘要、原文引用、执行方与比赛阵容，不包含经济或结果。三个不同模型系列独立作答，以多数决定；只修复格式上的缺失ID，不修改答案内容。</p><div class="tbl" id="zh-coding-table"></div><h3>操作类型</h3><p>按执行方尝试做什么分为九类，成功与否和是否产生击杀不决定类型。围绕史诗资源的交战归为资源对抗；没有实际攻击的对峙不算交战。</p><ol><li>执行方受到攻击 → 遭受进攻</li><li>仅同线对手参与 → 对线</li><li>只有执行方增加线外人员或攻击落单对手 → Gank/越塔/抓单</li><li>双方都增加线外人员 → 交战/团战</li></ol><div class="tbl" id="zh-family-table"></div><h3>资源关联</h3><p>将获得峡谷先锋、纳什男爵或远古巨龙的操作与后续使用或增益期间的操作关联。关联只用于展示，不把数值相加。</p><h3>涉及选手</h3><p>记录解说以姓名或英雄指出的双方选手，并标为执行、目标或应对。</p></section>
-  <section id="zh-views"><h2>显示规则</h2><ul><li><b>只计一次：</b>每个操作按执行方计一次。</li><li><b>固定队伍方向：</b>比赛走势图固定为蓝色方胜率与蓝色方减红色方经济差向上。列表中的条形和队名直接标出获益方，操作说明、类型与结果仍按解说指出的执行方。</li><li><b>队伍与选手：</b>比赛页面中的“本系列赛队伍与选手”只显示上方所选系列赛的两队与选手。独立“比较”页面不受系列赛选择影响，可按整个赛事或双方交手比较任意两队或两名选手；数值按其实际出场数计算。队伍雷达中间环为0，向外表示有利，向内表示不利。选手条形分别显示每局有利与不利变化，右侧为相抵后的每局净变化。同一操作可计入多名选手，因此不是个人贡献排名。英雄汇总保留在按类型汇总中。</li><li><b>同一场景：</b>属于同一事件的操作一起显示，但不相加。</li><li><b>值得关注：</b>方向明确且“成功但损失”“失败/取消但收益”，或同阶段波动幅度位于前<span data-v="tail2"></span>%的操作。列表左侧用圆角金色竖线标记，筛选和理由使用闪光图标；这不是排名。</li></ul></section>
+  <section id="zh-views"><h2>显示规则</h2><ul><li><b>只计一次：</b>每个操作按执行方计一次。</li><li><b>固定队伍方向：</b>比赛走势图固定为蓝色方胜率与蓝色方减红色方经济差向上。列表中的条形和队名直接标出获益方，操作说明、类型与结果仍按解说指出的执行方。</li><li><b>队伍与选手：</b>比赛页面中的“本系列赛队伍与选手”只显示上方所选系列赛的两队与选手。独立“比较”页面不受系列赛选择影响，可按整个赛事或双方交手比较任意两队或两名选手；数值按其实际出场数计算。队伍雷达中间环为0，向外表示有利，向内表示不利。选手条形分别显示每局有利与不利变化，右侧为相抵后的每局净变化。同一操作可计入多名选手，因此不是个人贡献排名。英雄汇总保留在按类型汇总中。</li><li class="detail-rule"><b>队伍与选手细项：</b>“直接差异”是每局净变化的B−A，左侧为A、右侧为B，旁边的数值写出领先一方及差距。“作为执行方时的结果”按类型统计选手被点名为执行方的场景，并按编码结果分为成功、部分成功、失败和中止；结果未说明的场景不计入分母，且只包含解说提到的尝试，因此不是整体成功率。“最常交手的对手”按次数列出在同一场景中被点名的对方选手。涉及多名选手的场景对每名对方选手各计一次，只点名两人的场景另记为1对1。数值是这些场景中朝该选手所在队伍方向的变化之和，并不表示两名选手的高下。“按开始时胜率划分的场景”按场景开始时该队的模型胜率分为劣势（低于40%）、胶着（40–60%）和优势（高于60%）。落后的一方胜率上升空间更大，因此并列显示处于相同局面的其他队伍的平均值；少于5个场景时不显示平均值。</li><li class="detail-rule"><b>两队收入：</b>操作卡片上的“获得的经济”是所选窗口内从转播画面读取的两队经济增量（以100为单位）。两者之差即该窗口的经济变化。</li><li class="detail-rule"><b>动线数值：</b>选手页面的“在对方半区的时间”和“与下路射手分开的时间”，以小地图读到位置的时间为分母。对方半区指沿河道划分后地图的对方一半；分开指辅助与下路射手相距约2,200单位以上。阵亡或未读到位置的时间不计入。旁边的平均值是本赛事同位置的全部选手。不使用移动距离：小地图1像素约为55单位，仅坐标抖动每分钟就会增加数千单位。领先的队伍在对方半区停留更久，因此这并不只反映选手倾向。</li><li class="detail-rule"><b>滚雪球与止损：</b>队伍卡片上的这张表把转播经济差按每分钟中位数读取。转化率统计一局中率先领先2,000经济的队伍是把领先扩大到5,000（滚起来），还是被追平或反超（被止住）。领先增幅取3分钟之后领先不低于1,000的每一分钟，计算其后3分钟的领先变化，再减去同一赛事中领先幅度和时段相同的分钟的平均值，因为领先越大本身增长越快。同一个数值对领先方记为“领先时”，对落后方记为“落后时”。队伍数值按分钟数对各局平均值加权，因此短暂的领先不会与长时间的领先同等计入，赛事平均为0。同一局的各分钟相互重叠、并不独立，所以区间通过重抽比赛而非分钟得到。“对手校正”在整个赛事中把每局的领先增幅表示为领先方的滚雪球减去落后方的止损，并同时估计所有队伍。由于观测较少，数值会向0收缩（ridge），收缩强度取留一局预测误差最小者。这只在赛程把队伍联系起来的范围内反映对手，并未控制对手的全部因素。在2026年的两项赛事中，加入队伍效应只让留出比赛的预测改善1%至2%。队伍间差异大多是各局之间的波动，因此不应把这张表当作队伍排名。使用经济而非胜率，是因为胜率在接近100%时饱和，滚得越好变化率反而越小。</li><li><b>同一场景：</b>属于同一事件的操作一起显示，但不相加。</li><li><b>值得关注：</b>方向明确且“成功但损失”“失败/取消但收益”，或同阶段波动幅度位于前<span data-v="tail2"></span>%的操作。列表左侧用圆角金色竖线标记，筛选和理由使用闪光图标；这不是排名。</li></ul></section>
   <section id="zh-numbers"><h2>当前数据</h2><p id="zh-summary"></p><div class="tbl" id="zh-stage-table"></div><div class="tbl" id="zh-horizon-table"></div><p id="zh-small"></p></section>
-  <section id="zh-check"><h2>使用Riot比赛数据验证</h2><p>Riot比赛记录包含每分钟选手累计经济和精确事件。其粒度不足以直接测量15或30秒变化，因此只在提取和编码完成后用于核验，不进入操作选择。</p><h3>经济读取</h3><p id="zh-check-gold"></p><h3>小地图位置</h3><p id="zh-check-mm"></p><h3>击杀</h3><p id="zh-check-kill"></p><div class="tbl" id="zh-check-table"></div></section>
+  <section id="zh-check"><h2>使用Riot比赛数据验证</h2><p>Riot比赛记录包含每分钟选手累计经济和精确事件。其粒度不足以直接测量15或30秒变化，因此只在提取和编码完成后用于核验，不进入操作选择。</p><h3>经济读取</h3><p id="zh-check-gold"></p><h3>小地图位置</h3><p id="zh-check-mm"></p><p class="mm-clean"><b>去除往返坐标：</b>地图上显示的位置会去掉远离后一两秒内又返回的读数。英雄可以瞬间转移一次（回城、传送、复活），但不可能这么快往返。每次快于跑动的移动都计入代价，只保留一名英雄实际可能产生的坐标序列；在别处停留5秒以上的情况保持不变。以Riot偶数分钟的位置为锚点、奇数分钟用于评分时，1.9%的读数被去除，距Riot位置600单位以内的读数从96.2%升至97.1%。被去除的读数中约四成其实是正确的：当误识别比旁边的真实位置持续更久时，仅凭移动无法区分。上面的准确率数字是清理之前的追踪结果。</p><h3>击杀</h3><p id="zh-check-kill"></p><div class="tbl" id="zh-check-table"></div></section>
   <section id="zh-limits"><h2>局限</h2><ul><li><b>解说选择的样本：</b>可能偏向成功或已产生收益的场景，不代表比赛中所有行动。</li><li><b>未用视频逐项核验：</b>字幕可能含识别错误、回放回顾和解说延迟。</li><li><b>四舍五入与缺口：</b>±200内方向不明，长回放可能没有可测终点。</li><li><b>重叠：</b>时间窗内包含其他操作和线路事件。<span id="zh-else"></span></li><li><b>只含被点名选手：</b>按团队描述的参与不会归到个人。</li><li><b>窗口内未转化为经济：</b>数据不能判断效果是更晚出现、太小，还是没有转化。</li><li><b>经济无法体现的收益：</b>长期增益、视野和站位需要未来的胜率模型。</li><li><b>模型编码误差：</b>已用独立人工标注样本检查，但仍有误差。</li><li><b>操作粒度：</b>书面规则采用后的比赛划分更细。<span id="zh-gran"></span></li><li><b>样本构成：</b><span id="zh-sample"></span> 比较时应考虑比赛数。</li><li><b>翻译：</b>中文界面与方法说明为机器辅助翻译；第一阶段中操作标题和说明暂以英文显示。</li></ul></section>
   <section id="zh-version"><h2>版本与来源</h2><p id="zh-version-text"></p><p class="note">来源：官方转播VOD、英文自动字幕、Oracle's Elixir阵容、Leaguepedia发布的Riot match-v5记录，以及Riot Data Dragon图像。访问量由Umami无Cookie统计。</p></section>
   <section id="zh-next">
@@ -576,6 +614,20 @@ h = 15, 30, 60 seconds</pre>
     </table></div>
     <p>在10秒窗口中，WPS与经济的平均百分位几乎相同，但两个来源中WPS都更常命中Top-3和Top-10的极端场景。预先规定的5秒与15秒窗口中，WPS的平均百分位也更高；三个窗口的WPS Top-3均高于经济。两个来源在±20秒内共同选出10对场景，其中9对是完全相同的一秒，9对判断了相同的受益方。</p>
     <p class="note">这是辅助性的收敛效度检查。复盘是在知道结果后制作的，未提到的场景不是负例。P.S只有3场比赛含符合条件的具体局内分析，且代表编辑频道而非一名具名分析者。结果没有用于训练、选择或校准模型，也不能替代预测评估或识别单个操作的因果效果。</p>
+    <h3>整局摘要：比赛排行</h3>
+    <p>“排行”页面的比赛排行和比赛页面上方的一行摘要描述的是整局比赛的胜率曲线，而不是单个操作。这些数值根据逐秒的研究曲线计算，不使用页面上绘制的2秒间隔曲线。无法从转播读取经济的秒数不计入。</p>
+    <div class="tbl game-flow"><table>
+      <tr><th>指标</th><th>定义</th></tr>
+      <tr><td>胜方最低胜率</td><td>最终胜方胜率的最低值及其出现时间。每一秒取前后2秒内已观测秒数的中位数，以过滤一两秒的抖动。</td></tr>
+      <tr><td>胜方最大经济落后</td><td>按转播经济计算，胜方落后最多时的差距及其时间。若胜方从未落后则不显示。</td></tr>
+      <tr><td>胶着指数</td><td>把比赛时钟分成30秒区间，取每个区间的胜率中位数，再把相邻区间之间的变动幅度全部相加（百分点）。没有观测的区间会被跳过。</td></tr>
+      <tr><td>优势易手</td><td>胜率在55%以上与45%以下两种状态之间切换的次数。只在45%–55%之内的波动不计。</td></tr>
+      <tr><td>定局时间</td><td>胜方胜率最后一次低于50%之后第一个被观测到的秒。若胜率从未低于50%，则显示为“从未落后”。</td></tr>
+    </table></div>
+    <p class="note"><b>如何解读及局限：</b>这些数值是在知道最终结果后作出的事后摘要。一局比赛的结果只用于此处，不进入该局的胜率计算。胶着指数会随区间变短而变大，因此只有固定为30秒的数值之间才可比较，而且比赛越长数值往往越大。定局时间只是模型胜率最后一次越过50%的时刻，并不表示胜负在那时已经确定。如果模型直到最后都认为胜方处于劣势，定局时间就等于比赛结束时间。模型仍为测试版，胜率本身也有误差。</p>
+    <h3 class="moment-rank">场景排行</h3>
+    <p>同一页面的“场景”排行按胜率变化幅度列出整个赛事中解说提到的操作。数值就是操作卡片上的即时变化或15、30、60秒总变化，不重新计算。由于比赛末段的场景容易占据前列，可以分为前期（14分钟前）、中期（25分钟前）和后期查看。同一局中相互重叠的操作只保留变化最大的一个：被归为同一场景（片段）的操作，或开始时间之差小于测量窗口长度（即时变化为15秒）的操作。每种条件显示前20个。</p>
+    <p class="note"><b>如何解读：</b>这份排行用于寻找胜率大幅变动的时刻。每个变化都包含同一时间发生的其他事件，排名更高并不表示该操作更出色。</p>
   </section>
   <section id="zh-contact"><h2>研究数据合作</h2><p>如果您能为研究分享更细粒度的每秒事件或选手位置数据，或希望开展合作，欢迎联系。</p><p><a class="gh-link" href="https://github.com/playvalue/playvalue.github.io" data-umami-event="github">GitHub · playvalue/playvalue.github.io</a></p></section>
 </article>
@@ -590,9 +642,9 @@ h = 15, 30, 60 seconds</pre>
   <section id="ja-steps"><h2>処理手順</h2><ol class="steps"><li><b>実況から抽出（ゴールドをマスク）。</b>英語字幕全体から失敗、キルなし、通常のレーン管理を含む具体的な行動を抽出します。ゴールド関連語を隠し、試合ごとに漏れと重複を確認してSHA-256で固定します。</li><li><b>放送画面から読む。</b>OCRで毎秒の時間と両チームのゴールドを読み、リプレイと停止を除外します。</li><li><b>ゴールドを結合。</b>固定済みプレーの開始点から15・30・60秒後を計算し、結果を見た後で増減しません。</li><li><b>実況だけでコーディング。</b>タイプ、オブジェクトリンク、関与選手を3モデル系列が独立に回答し、多数決で決めます。</li><li><b>ルールを版管理。</b>区間、フェーズ、しきい値の設定ファイルのハッシュを記録します。</li></ol></section>
   <section id="ja-metric"><h2>ゴールド変化（主指標）</h2><pre>ゴールド変化(h秒) = [実行チーム − 相手チーム](開始点 + h) − [実行チーム − 相手チーム](開始点)&#10;h = 15、30、60秒</pre><p>実行チームから見て差が広がった分をプラス、縮んだ分をマイナスで示します。既定は30秒です。</p><h3>4つの状態</h3><div class="tbl"><table><tr><th>状態</th><th>条件</th></tr><tr><td class="gain">利益</td><td>プラス方向で誤差範囲外</td></tr><tr><td class="loss">損失</td><td>マイナス方向で誤差範囲外</td></tr><tr><td>不明</td><td>誤差範囲内</td></tr><tr><td>未測定</td><td>開始または終了時点を読めない</td></tr></table></div><p><b>誤差±200：</b>4つの画面値を使い、各値の丸め誤差は±50以内です。|変化| ≥ 200の場合だけ利益・損失と判定します。</p><h3>参考情報</h3><ul><li><b>プレー直前：</b>しきい値はレーン戦±<span data-v="lead_lane"></span>、中盤±<span data-v="lead_mid"></span>、終盤±<span data-v="lead_late"></span>です。</li><li><b>フェーズ：</b>14分前、14–25分、25分以降です。</li><li><b>同じフェーズとの比較：</b>同じ試合の測定可能な全秒で分布内の位置を示します。効果量ではありません。</li><li><b>ゴールドペース：</b>前後の同じ長さ（15分前は<span data-v="dv_early"></span>秒、以後は<span data-v="dv_late"></span>秒）を比べる参考値です。</li></ul></section>
   <section id="ja-coding"><h2>実況コーディング</h2><p>実況要約、引用、実行チーム、ロスターだけを入力し、ゴールドや結果は含みません。異なる3モデル系列が独立に回答して多数決を取り、回答内容は変更しません。</p><div class="tbl" id="ja-coding-table"></div><h3>プレータイプ</h3><p>実行チームが何を試みたかを9種類に分けます。成功やキルはタイプを決めません。エピックオブジェクトを巡る場面を先に判定し、攻撃のないにらみ合いは交戦にしません。</p><ol><li>実行側が攻撃を受ける → 攻撃への対応</li><li>同じレーンの相手だけ → レーン戦</li><li>実行側だけがレーン外の人数を加える → ギャンク/ダイブ/キャッチ</li><li>双方が人数を加える → 交戦/集団戦</li></ol><div class="tbl" id="ja-family-table"></div><h3>オブジェクトリンク</h3><p>ヘラルド、バロン、エルダーの獲得を後続の召喚やバフ中プレーにつなぎます。表示用であり値は合算しません。</p><h3>関与選手</h3><p>実況が特定した選手を実行・対象・対応の役割で記録します。</p></section>
-  <section id="ja-views"><h2>表示ルール</h2><ul><li><b>一度だけ：</b>実行チーム基準で一度数えます。</li><li><b>固定したチーム方向：</b>試合の流れはブルー側勝率と「ブルー−レッド」のゴールド差を上向きに固定します。一覧のバーとチーム名が利益を得た側を直接示し、説明・タイプ・結果は実況が示した実行チーム基準です。</li><li><b>チーム・選手：</b>試合別の「このシリーズのチーム・選手」は、上で選んだシリーズの2チームと選手だけを表示します。独立した「比較」はシリーズ選択と無関係に、大会全体または直接対戦で任意の2チーム・2選手を比較します。値は実際の出場試合数で割ります。チームレーダーの中央は0、外側は有利、内側は不利です。選手バーは1試合当たりの有利・不利な変化を分け、右の数値は相殺後の純変化です。同じプレーが複数選手に入るため、個人貢献の順位ではありません。チャンピオン集計はタイプ別集計に残します。</li><li><b>同じ場面：</b>同一イベントを一緒に表示しますが足しません。</li><li><b>注目シーン：</b>「成功したが損失」「失敗・中止したが利益」、または同フェーズの変動幅上位<span data-v="tail2"></span>%です。左端の金色レールとスパークルで示し、順位ではありません。</li></ul></section>
+  <section id="ja-views"><h2>表示ルール</h2><ul><li><b>一度だけ：</b>実行チーム基準で一度数えます。</li><li><b>固定したチーム方向：</b>試合の流れはブルー側勝率と「ブルー−レッド」のゴールド差を上向きに固定します。一覧のバーとチーム名が利益を得た側を直接示し、説明・タイプ・結果は実況が示した実行チーム基準です。</li><li><b>チーム・選手：</b>試合別の「このシリーズのチーム・選手」は、上で選んだシリーズの2チームと選手だけを表示します。独立した「比較」はシリーズ選択と無関係に、大会全体または直接対戦で任意の2チーム・2選手を比較します。値は実際の出場試合数で割ります。チームレーダーの中央は0、外側は有利、内側は不利です。選手バーは1試合当たりの有利・不利な変化を分け、右の数値は相殺後の純変化です。同じプレーが複数選手に入るため、個人貢献の順位ではありません。チャンピオン集計はタイプ別集計に残します。</li><li class="detail-rule"><b>チーム・選手の詳細：</b>「直接差」は1試合当たり純変化のB−Aで、左がA、右がBです。横の数値は上回った側とその差です。「行動側だった場面の結果」は、選手が行動側として名前が挙がった場面をタイプ別に数え、コーディング結果の成功・一部成功・失敗・中止に分けます。結果が示されない場面は分母から除き、実況が取り上げた試みだけなので全体の成功率ではありません。「よく対峙した相手」は、同じ場面で名前が挙がった相手選手を多い順に並べます。複数の選手がいる場面は相手選手ごとに一度ずつ数え、二人だけの場面は1対1として別に示します。数値はそれらの場面でこの選手のチーム側に動いた変化の合計で、二人の優劣ではありません。「開始時の勝率別の場面」は、場面開始時のそのチームのモデル勝率で劣勢（40%未満）・接戦（40〜60%）・優勢（60%超）に分けます。劣勢のチームは勝率が上がる余地が大きいため、同じ状況にある他チームの平均を並べて示し、5場面未満では平均を表示しません。</li><li class="detail-rule"><b>両チームの収入：</b>プレーカードの「獲得ゴールド」は、選択した区間に配信画面から読んだ両チームのゴールド増加分（100単位）です。両者の差がその区間のゴールド変化です。</li><li class="detail-rule"><b>動線の数値：</b>選手画面の「相手陣地にいた時間」と「ボットレーナーと離れていた時間」は、ミニマップで位置を読めた時間に対する割合です。相手陣地は川に沿って分けたマップの相手側半分、離れていた時間はサポートがボットレーナーから約2,200ユニット以上離れていた時間です。死亡中や位置を読めなかった時間は除きます。横の平均はその大会の同じポジションの全選手です。移動距離は使いません。ミニマップ1ピクセルは約55ユニットで、座標の揺れだけで毎分数千ユニットが加わるためです。リードしているチームほど相手陣地に長くいるため、選手の傾向だけを表すものではありません。</li><li class="detail-rule"><b>リードを広げる・止める：</b>チームカードのこの表は、配信のゴールド差を1分ごとの中央値で読み取って作ります。転換率は、その試合で先に2,000ゴールドのリードを取ったチームが5,000まで広げたか（広げた）、同点以下に戻されたか（止められた）を数えます。リード増加は、3分以降でリードが1,000以上の各分について、その後3分間のリード変化を求め、同じ大会でリード幅と時間帯が同じだった分の平均を引いた値です。リードは大きいほど自然に速く広がるためです。同じ値を、リードした側には「リード時」、された側には「ビハインド時」として示します。チームの値は試合ごとの平均を分数で重み付けしたもので、短いリードが長いリードと同じ重みにならず、大会平均は0になります。1試合の各分は重なり合って独立ではないため、区間は分ではなく試合を再抽出して計算します。「相手補正」は、大会全体で各試合のリード増加を「リードした側の広げる力 − された側の止める力」と置き、全チームを同時に推定したものです。観測が少ないため値を0側に縮小し（ridge）、縮小の強さは1試合ずつ除いて予測したときの誤差が最小になるものを選びます。これは日程がチームをつなぐ範囲でのみ相手を反映し、相手に関するすべてを統制するものではありません。2026年の2大会では、チーム効果を加えても除外した試合の予測改善は1〜2%にとどまりました。チーム間の差の大半は試合ごとの変動なので、この表をチームの順位として読むべきではありません。勝率ではなくゴールドを使うのは、勝率が100%付近で飽和し、うまく広げるほど変化率が小さくなるためです。</li><li><b>同じ場面：</b>同一イベントを一緒に表示しますが足しません。</li><li><b>注目シーン：</b>「成功したが損失」「失敗・中止したが利益」、または同フェーズの変動幅上位<span data-v="tail2"></span>%です。左端の金色レールとスパークルで示し、順位ではありません。</li></ul></section>
   <section id="ja-numbers"><h2>現在のデータ</h2><p id="ja-summary"></p><div class="tbl" id="ja-stage-table"></div><div class="tbl" id="ja-horizon-table"></div><p id="ja-small"></p></section>
-  <section id="ja-check"><h2>Riot試合データによる検証</h2><p>1分ごとの選手ゴールドと精密なイベント記録は15・30秒変化の直接測定には粗いため、抽出とコーディング後の確認だけに使います。</p><h3>ゴールド読み取り</h3><p id="ja-check-gold"></p><h3>ミニマップ位置</h3><p id="ja-check-mm"></p><h3>キル</h3><p id="ja-check-kill"></p><div class="tbl" id="ja-check-table"></div></section>
+  <section id="ja-check"><h2>Riot試合データによる検証</h2><p>1分ごとの選手ゴールドと精密なイベント記録は15・30秒変化の直接測定には粗いため、抽出とコーディング後の確認だけに使います。</p><h3>ゴールド読み取り</h3><p id="ja-check-gold"></p><h3>ミニマップ位置</h3><p id="ja-check-mm"></p><p class="mm-clean"><b>往復座標の除去：</b>マップに表示する位置からは、遠くへ行って1〜2秒で戻る読み取りを除きます。チャンピオンは一度だけなら瞬時に移動できますが（リコール、テレポート、復活）、その速さで往復することはできません。走って届かない移動ごとにコストを課し、一人のチャンピオンが実際に取り得る座標列だけを残します。別の場所に5秒以上とどまった場合はそのままにします。Riotの偶数分の位置を基準点とし、奇数分で採点すると、読み取りの1.9%が除かれ、Riotの位置から600ユニット以内の読み取りは96.2%から97.1%に増えます。除かれた読み取りの約4割は実際には正しいものでした。誤認識が隣の本当の位置より長く続く場合、移動だけでは区別できません。上の精度の数値は、この処理を行う前の追跡結果を採点したものです。</p><h3>キル</h3><p id="ja-check-kill"></p><div class="tbl" id="ja-check-table"></div></section>
   <section id="ja-limits"><h2>限界</h2><ul><li><b>実況が選んだ標本：</b>成功した場面に偏る可能性があります。</li><li><b>動画未確認：</b>字幕誤認識、回想、実況の遅れを含み得ます。</li><li><b>丸めと欠測：</b>±200内は方向不明です。</li><li><b>重なり：</b>他のプレーや別レーンの出来事が入ります。<span id="ja-else"></span></li><li><b>名前が出た選手のみ：</b>チームとして語られた関与は個人に付きません。</li><li><b>区間内でゴールドにならないプレー：</b>効果が後に出る、微小、または変換されない場合を区別できません。</li><li><b>ゴールドに表れない利益：</b>視界や長期バフには勝率モデルが必要です。</li><li><b>モデルコーディング：</b>人手標本で確認していますが誤差は残ります。</li><li><b>粒度：</b>書面ルール導入後は細かく分かれる傾向があります。<span id="ja-gran"></span></li><li><b>標本構成：</b><span id="ja-sample"></span> 比較では試合数も考慮してください。</li><li><b>翻訳：</b>日本語UIと方法説明は機械支援翻訳です。第1段階ではプレーのタイトルと説明を英語で表示します。</li></ul></section>
   <section id="ja-version"><h2>バージョンと出典</h2><p id="ja-version-text"></p><p class="note">出典：公式VOD、英語自動字幕、Oracle's Elixir、Leaguepedia公開のRiot match-v5記録、Riot Data Dragon。訪問数はCookieなしのUmamiで集計します。</p></section>
   <section id="ja-next">
@@ -616,6 +668,20 @@ h = 15, 30, 60 seconds</pre>
     </table></div>
     <p>10秒窓では平均パーセンタイルがゴールドとほぼ同じでしたが、両レビュー元でWPSの方がTop-3とTop-10の大きな場面を多く捉えました。事前に定めた5秒・15秒窓では平均パーセンタイルもWPSが高く、3つの窓すべてでWPSのTop-3がゴールドを上回りました。両者が±20秒以内で共通に選んだ場面は10組で、9組は同じ秒、9組は有利になったチームも一致しました。</p>
     <p class="note">これは補助的な収束妥当性の確認です。レビューは結果を知った後の資料で、言及されない場面は負例ではありません。P.Sで条件を満たす具体的な試合内分析があったのは6試合中3試合だけで、個人ではなく編集チャンネルです。結果はモデルの学習・選択・較正には使っておらず、予測精度や個々のプレーの因果効果を検証するものではありません。</p>
+    <h3>試合単位の要約：試合ランキング</h3>
+    <p>「ランキング」画面の試合ランキングと試合画面上部の一行要約は、個々のプレーではなく試合全体の勝率曲線を要約したものです。値は1秒単位の研究用曲線から計算し、画面に描く2秒間隔の曲線は使いません。配信からゴールドを読めなかった秒は含みません。</p>
+    <div class="tbl game-flow"><table>
+      <tr><th>指標</th><th>定義</th></tr>
+      <tr><td>勝者の最低勝率</td><td>最終的な勝者の勝率が最も低かった値とその時刻です。各秒の値には前後2秒以内に観測された秒の中央値を使い、1〜2秒の細かな揺れを除きます。</td></tr>
+      <tr><td>勝者の最大ゴールド劣勢</td><td>配信のゴールドで勝者が最も大きく後れていた差とその時刻です。一度も後れなかった場合は表示しません。</td></tr>
+      <tr><td>接戦指数</td><td>試合時計を30秒区間に分けて区間ごとの勝率の中央値を求め、隣り合う区間の間の変化幅をすべて合計した値（パーセントポイント）です。観測のない区間は飛ばします。</td></tr>
+      <tr><td>リード交代</td><td>勝率55%以上の状態と45%以下の状態の間を行き来した回数です。45〜55%の中だけの動きは数えません。</td></tr>
+      <tr><td>決着時点</td><td>勝者の勝率が最後に50%を下回った秒の、次に観測された秒です。一度も50%を下回らなかった場合は「常に優勢」と表示します。</td></tr>
+    </table></div>
+    <p class="note"><b>読み方と限界：</b>これらは最終結果を知った後に付けた事後の要約です。その試合の結果はここでのみ使い、その試合の勝率計算には入りません。接戦指数は区間が短いほど大きくなるため、30秒に固定した値どうしでのみ比較でき、試合が長いほど大きくなりやすい値です。決着時点はモデル勝率が最後に50%を越えた時刻にすぎず、その時点で勝敗が実際に決まったという意味ではありません。モデルが最後まで勝者を劣勢と見ていた試合では、決着時点は試合終了と同じになります。モデルはベータ版で、勝率そのものにも誤差があります。</p>
+    <h3 class="moment-rank">場面ランキング</h3>
+    <p>同じ画面の「場面」ランキングは、大会全体で実況が注目したプレーを勝率変化の大きい順に並べます。値はプレーカードに表示される即時変化または15・30・60秒の全体変化そのままで、再計算しません。試合終盤の場面が上位を占めやすいため、序盤（14分まで）・中盤（25分まで）・終盤に分けて見られます。同じ試合で重なり合うプレーは、変化が最も大きい一つだけを残します。同じ場面（エピソード）にまとめられたプレー、または開始時刻の差が測定窓の長さ（即時変化は15秒）より短いプレーです。条件ごとに上位20件を表示します。</p>
+    <p class="note"><b>読み方：</b>このランキングは勝率が大きく動いた瞬間を探すためのものです。変化には同じ時間帯の他の出来事もすべて含まれるため、順位が高いことはそのプレーが優れていることを意味しません。</p>
   </section>
   <section id="ja-contact"><h2>研究データの連携</h2><p>秒単位イベントや選手位置など、より細かな研究データを共有できる方、共同研究を希望する方はご連絡ください。</p><p><a class="gh-link" href="https://github.com/playvalue/playvalue.github.io" data-umami-event="github">GitHub · playvalue/playvalue.github.io</a></p></section>
 </article>

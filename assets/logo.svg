@@ -2,8 +2,8 @@
   <style>
     .word { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 30px; font-weight: 900; letter-spacing: -0.9px; }
     .play { fill: #172133; }
-    .val { fill: #B9731A; }
-    @media (prefers-color-scheme: dark) { .play { fill: #F1F5F9; } .val { fill: #E9A23B; } }
+    .val { fill: #6941E0; }
+    @media (prefers-color-scheme: dark) { .play { fill: #F1F5F9; } .val { fill: #B29CFF; } }
   </style>
   <svg x="0" y="2" width="44" height="44" viewBox="0 0 32 32">
   <defs>
@@ -11,9 +11,9 @@
     <clipPath id="lwBot"><rect x="0" y="16" width="32" height="16"/></clipPath>
     <clipPath id="lwMid"><rect x="12.5" y="0" width="9" height="32"/></clipPath>
   </defs>
-  <!-- Before the play, the 30-second window after it (gold), and what follows. -->
+  <!-- Before the play, the 30-second window after it (violet), and what follows. -->
   <rect x="1" y="1" width="10" height="30" rx="3.5" fill="#243552"/>
-  <rect x="12.5" y="1" width="9" height="30" rx="2" fill="#E9A23B"/>
+  <rect x="12.5" y="1" width="9" height="30" rx="2" fill="#8F73FF"/>
   <rect x="23" y="1" width="8" height="30" rx="3.5" fill="#243552"/>
   <!-- Zero line and the gold gap: blue above zero, red below, knocked out in navy inside the window. -->
   <path d="M2 16H30" stroke="#4A5A73" stroke-width="1.1"/>

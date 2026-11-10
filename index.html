@@ -17,19 +17,19 @@
   <meta name="twitter:card" content="summary_large_image">
   <!-- Visit statistics (Umami, no cookies). Page views are sent by the dashboard itself; see trackView(). -->
   <script defer src="https://cloud.umami.is/script.js" data-website-id="3119b06f-5313-434d-90e9-6eff291dd9d7" data-domains="playvalue.github.io" data-auto-track="false" onload="window.__umFlush && window.__umFlush()"></script>
-  <link rel="icon" type="image/svg+xml" href="./assets/logo-icon.svg?v=2">
+  <link rel="icon" type="image/svg+xml" href="./assets/logo-icon.svg?v=3">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <style>
     /* Achromatic ledger: the chrome is ink on a blue-grey ground; hue is kept for data only: the two sides'
-       colours, gain and loss, and the brand's gold on the selected play and the plays worth a look. */
+       colours, gain and loss, and the brand's violet on the selected play and the plays worth a look. */
     :root {
       --bg-main: #f4f5f7;
-      --bg-header: #f7f3ec;
-      --header-control: #fffdf9;
-      --header-border: #e4d7c5;
+      --bg-header: #f6f5fb;
+      --header-control: #ffffff;
+      --header-border: #dcd9ec;
       --bg-card: #ffffff;
       --bg-card-hover: #f6f7f8;
       --bg-pill: #eceef1;
@@ -48,18 +48,18 @@
       --loss-bg: #fbeae1;
       --neutral: #62666d;
       --neutral-bg: #eceef1;
-      --accent: #95580d;
-      --accent-bg: rgba(185, 115, 26, 0.10);
+      --accent: #6941e0;
+      --accent-bg: rgba(105, 65, 224, 0.10);
       --compare-bg: #edf1f6;
       --compare-border: #bdc9d7;
       --compare-text: #30445c;
       --compare-active: #355d89;
       --compare-active-text: #ffffff;
       --f-objective_hunt: var(--neutral); --f-objective_contest: var(--neutral); --f-structure: var(--neutral); --f-gank: var(--neutral); --f-fight: var(--neutral);
-      --f-lane: var(--neutral); --f-defense: var(--neutral); --f-vision: var(--neutral); --f-other: var(--neutral); --star: #b9731a;
+      --f-lane: var(--neutral); --f-defense: var(--neutral); --f-vision: var(--neutral); --f-other: var(--neutral); --star: #7a5af5;
       --chart-grid: #e9ebee;
       --chart-axis: #686c73;
-      --brand-gold: #B9731A;
+      --brand: #6941e0;
       --radius-card: 8px; --radius-control: 6px;
       --motion-fast: 140ms; --motion-medium: 260ms; --motion-emphasis: 420ms;
       --ease-out: cubic-bezier(.2, .8, .2, 1);
@@ -69,9 +69,9 @@
     }
     [data-theme="dark"] {
       --bg-main: #0d0d0e;
-      --bg-header: #171512;
-      --header-control: #211e1a;
-      --header-border: #3a3024;
+      --bg-header: #15141b;
+      --header-control: #1e1d27;
+      --header-border: #302d42;
       --bg-card: #161618;
       --bg-card-hover: #1d1d20;
       --bg-pill: #242427;
@@ -90,17 +90,17 @@
       --loss-bg: #34200f;
       --neutral: #a0a2a8;
       --neutral-bg: #242427;
-      --accent: #e9a23b;
-      --accent-bg: rgba(233, 162, 59, 0.14);
+      --accent: #b29cff;
+      --accent-bg: rgba(178, 156, 255, 0.16);
       --compare-bg: #202833;
       --compare-border: #46586e;
       --compare-text: #dce7f3;
       --compare-active: #3f6f9e;
       --compare-active-text: #ffffff;
-      --star: #e9a23b;
+      --star: #b29cff;
       --chart-grid: #262629;
       --chart-axis: #9a9ca2;
-      --brand-gold: #E9A23B;
+      --brand: #b29cff;
       color-scheme: dark;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -136,7 +136,7 @@
     .logo-brand-link { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
     .logo-mark { width: 34px; height: 34px; }
     .logo-text { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.03em; }
-    .logo-text-val { color: var(--brand-gold); }
+    .logo-text-val { color: var(--brand); }
     .logo-badge { background: var(--bg-pill); color: var(--text-muted); font-size: .75rem; padding: 1px 8px; border-radius: 999px; font-weight: 600; }
     /* The product's message under the wordmark: a question in ink, then one plain sentence of what is measured. */
     .tagline { display: flex; align-items: baseline; gap: 6px; min-width: 0; margin-top: 6px; color: var(--text-muted); white-space: nowrap; }
@@ -231,7 +231,7 @@
 
     /* Game view: plays on the left, map and gold timeline as the main stage, and a selected-play inspector
        on the right. Match context lives in the navigation and panel heads, so the workspace starts at once. */
-    .workspace { display: grid; grid-template-columns: minmax(290px, 4fr) minmax(500px, 7fr) minmax(340px, 5fr); gap: 16px; align-items: start; }
+    .workspace { display: grid; grid-template-columns: minmax(330px, 4fr) minmax(460px, 7fr) minmax(340px, 5fr); gap: 16px; align-items: start; }
     /* The map and timeline are one continuous stage. Let the page scroll them together instead of
        creating a second, nested scrollbar inside the centre column. */
     .workspace-stage { display: flex; flex-direction: column; gap: 16px; }
@@ -276,7 +276,8 @@
     .list-panel .row > :nth-child(5) { grid-area: gold; align-self: center; text-align: right; }
     .list-panel .row.head { grid-template-areas: "time title gold"; }
     .list-panel .row.head > :nth-child(2), .list-panel .row.head > :nth-child(4) { display: none; }
-    .list-panel .row .famcell .chip { white-space: normal; }
+    .list-panel .row .famcell { min-width: 0; }
+    .list-panel .row .famcell .chip { white-space: normal; overflow-wrap: anywhere; }
     @media (max-width: 1220px) {
       .workspace { grid-template-columns: minmax(0, 1fr); }
       .detail { position: static; max-height: none; overflow: visible; }
@@ -292,7 +293,7 @@
       .list-panel .filters .highlight-toggle, .list-panel .filters .btn { grid-column: auto; }
     }
     @media (max-width: 720px) {
-      .game-summary { flex-basis: 100%; border-left: 0; padding-left: 0; }
+      .game-summary { flex-basis: 100%; border-left: 0; padding-left: 0; flex-wrap: wrap; white-space: normal; }
       .list-panel .row { grid-template-columns: 48px minmax(0, 1fr) 104px; }
       .list-panel .filters { display: grid; grid-template-columns: 1fr; }
       .list-panel .filters select { width: 100%; }
@@ -339,6 +340,13 @@
     .hz .val { display: inline-block; white-space: nowrap; font-size: 1.25rem; font-weight: 700; }
     .hz .val.gain { color: var(--gain); } .hz .val.loss { color: var(--loss); } .hz .val.neutral { color: var(--neutral); }
     .hz .note { font-size: .7rem; color: var(--text-muted); }
+    .income { display: grid; gap: 4px; margin: 0 0 12px; font-size: .78rem; }
+    .income-lbl { color: var(--text-muted); font-weight: 700; }
+    .income-row { display: grid; grid-template-columns: auto minmax(40px, 1fr) auto; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; font-weight: 600; }
+    .income-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--bg-pill); }
+    .income-bar i { display: block; height: 100%; }
+    .income-bar .blue { background: var(--blue-team); } .income-bar .red { background: var(--red-team); }
+    .income-bar.empty i { display: none; }
     .hz .metric-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 3px; }
     .hz .metric-pair > span { min-width: 0; }
     .hz .metric-pair small { display: block; font-size: .62rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
@@ -487,6 +495,35 @@
     .sbar .unresolved { background: var(--neutral); opacity: .45; } .sbar .missing { background: transparent; }
     .xt .rsub { font-size: .72rem; color: var(--text-muted); white-space: normal; max-width: 420px; }
     .scroll-x { overflow-x: auto; }
+    /* Game rankings: the table reuses .xt; a row opens its game. */
+    .xt.gf tbody tr { cursor: pointer; }
+    .xt.gf tbody tr:hover { background: var(--bg-card-hover); }
+    .xt.gf tbody tr.cur td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+    .xt.gf td.key { font-weight: 700; }
+    .xt.gf .at { display: inline-block; min-width: 3.4em; margin-left: 6px; font-size: .74rem; font-weight: 500; color: var(--text-muted); }
+    .xt.gf .game-open { all: unset; cursor: pointer; border-radius: 4px; font-weight: 600; }
+    .xt.gf .game-open:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; }
+    .xt.gf .game-open .chip { margin-right: 6px; }
+    @media (max-width: 720px) {
+      /* Keep the sorted number beside the game on a phone: a narrower game cell and no length column. */
+      .xt.gf .len { display: none; }
+      .xt.gf td:first-child { white-space: normal; min-width: 132px; }
+      .xt.gf .game-open .chip { display: table; margin: 0 0 3px; }
+      .xt.gf th, .xt.gf td { padding-left: 6px; padding-right: 6px; }
+      .xt.gf thead th { white-space: normal; min-width: 64px; vertical-align: bottom; }
+      .xt.gf.pr td:first-child, .xt.gf.pr thead th:first-child { min-width: 0; width: 1.6em; }
+      .xt.gf.pr td:nth-child(2) { min-width: 0; }
+      .xt.gf.pr .at.clock { display: block; margin: 0; }
+    }
+    .rank-switch { margin: 0 0 14px; }
+    .xt.pr th:nth-child(2), .xt.pr td:nth-child(2), .xt.pr th:nth-child(3), .xt.pr td:nth-child(3) { text-align: left; }
+    .xt.pr td:nth-child(2) { white-space: normal; min-width: 180px; }
+    .xt.pr td:first-child { width: 3em; color: var(--text-muted); font-weight: 600; }
+    .xt.pr .at.clock { margin: 0 8px 0 0; min-width: 3.2em; font-variant-numeric: tabular-nums; }
+    .xt.pr td.key .rsub { margin-left: auto; font-weight: 500; }
+    .match-flow { border: 0; background: transparent; padding: 0; font: inherit; font-size: .75rem; font-weight: 600; color: var(--text-muted); cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
+    .match-flow:hover { color: var(--text-main); }
+    .match-flow:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; border-radius: 4px; }
     .note-box { font-size: .78rem; color: var(--text-muted); margin-top: 10px; }
     .empty { color: var(--text-muted); font-size: .85rem; padding: 10px 0; }
     .stats-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; }
@@ -506,7 +543,12 @@
     .stats-compare-bar { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
     .stats-role-pick { min-width: 150px; }
     .stats-basis-note { margin-top: 8px; color: var(--text-muted); font-size: .75rem; }
-    .stats-team-layout { display: grid; grid-template-columns: minmax(380px, 1.05fr) minmax(320px, .95fr); gap: 16px; }
+    /* Team comparison: the difference chart and the radar share a row, then the two teams sit side by side with A
+       on the left and B on the right, like the selectors above and the player comparison. */
+    .stats-team-overview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: center; margin: 14px 0 16px; }
+    .stats-team-overview > :only-child { grid-column: 1 / -1; }
+    .stats-team-overview .stats-difference { margin: 0; }
+    .stats-team-overview .stats-legend { justify-content: center; }
     .stats-radar-wrap { min-width: 0; }
     .stats-radar { display: block; width: min(100%, 680px); height: auto; margin: 0 auto; }
     .stats-radar text { font-family: var(--font); fill: var(--text-muted); font-size: 11px; }
@@ -518,9 +560,11 @@
     .stats-legend span { display: inline-flex; align-items: center; gap: 6px; }
     .stats-legend i { width: 18px; height: 3px; border-radius: 3px; }
     .stats-legend .a { background: var(--blue-team); } .stats-legend .b { background: var(--red-team); }
-    .stats-team-cards { display: grid; gap: 12px; align-content: start; }
+    .stats-team-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
     .stats-team-card { padding: 14px; border: 1px solid var(--border-color); border-radius: var(--radius-card); }
     .stats-team-card h3 { margin-bottom: 8px; }
+    .stats-team-card.side-blue { border-top: 3px solid var(--blue-team); }
+    .stats-team-card.side-red { border-top: 3px solid var(--red-team); }
     .stats-narrative { margin-top: 12px; padding: 11px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-control); background: color-mix(in srgb, var(--bg-pill) 72%, transparent); }
     .stats-narrative-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
     .stats-narrative-head strong { font-size: .76rem; }
@@ -551,19 +595,20 @@
     .stats-difference-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; margin-bottom: 10px; }
     .stats-difference-head strong { font-size: .82rem; }
     .stats-difference-head span { color: var(--text-muted); font-size: .68rem; font-weight: 700; }
-    .stats-difference-axis { display: grid; grid-template-columns: minmax(64px, .7fr) minmax(180px, 4fr) minmax(72px, .8fr); gap: 8px; align-items: end; margin-bottom: 4px; color: var(--text-muted); font: 600 .61rem/1.3 var(--font); }
+    .stats-difference-axis { display: grid; grid-template-columns: minmax(64px, .7fr) minmax(180px, 4fr) minmax(112px, 1fr); gap: 8px; align-items: end; margin-bottom: 4px; color: var(--text-muted); font: 600 .61rem/1.3 var(--font); }
     .stats-difference-axis .scale { display: flex; justify-content: space-between; font-family: var(--mono); }
     .stats-difference-axis .scale b { font: 700 .61rem/1.3 var(--font); }
-    .stats-difference-axis .side-b { color: var(--red-team); }
-    .stats-difference-axis .side-a { color: var(--blue-team); text-align: right; }
+    .stats-difference-axis .side-a { color: var(--blue-team); }
+    .stats-difference-axis .side-b { color: var(--red-team); text-align: right; }
     .stats-difference-rows { display: grid; gap: 7px; }
-    .stats-difference-row { display: grid; grid-template-columns: minmax(64px, .7fr) minmax(180px, 4fr) minmax(72px, .8fr); gap: 8px; align-items: center; }
+    .stats-difference-row { display: grid; grid-template-columns: minmax(64px, .7fr) minmax(180px, 4fr) minmax(112px, 1fr); gap: 8px; align-items: center; }
     .stats-difference-row > span { overflow: hidden; color: var(--text-muted); font-size: .7rem; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
     .stats-difference-row > strong { font: 750 .7rem/1.2 var(--mono); text-align: right; }
+    .stats-difference-row > strong span { font-family: var(--font); }
     .stats-difference-row > strong.side-a { color: var(--blue-team); }
     .stats-difference-row > strong.side-b { color: var(--red-team); }
     .stats-difference-row > strong.uncertain { color: var(--text-muted); }
-    .stats-difference-track { position: relative; height: 18px; border-radius: 4px; background: linear-gradient(90deg, color-mix(in srgb, var(--red-team) 7%, transparent), transparent 45%, transparent 55%, color-mix(in srgb, var(--blue-team) 7%, transparent)); }
+    .stats-difference-track { position: relative; height: 18px; border-radius: 4px; background: linear-gradient(90deg, color-mix(in srgb, var(--blue-team) 7%, transparent), transparent 45%, transparent 55%, color-mix(in srgb, var(--red-team) 7%, transparent)); }
     .stats-difference-track .zero { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: var(--chart-axis); }
     .stats-difference-track .ci { position: absolute; top: 5px; height: 8px; border-radius: 999px; background: var(--text-muted); opacity: .26; }
     .stats-difference-track .bar { position: absolute; top: 7px; height: 4px; border-radius: 999px; }
@@ -623,15 +668,48 @@
     .stats-state-grid span { display: block; color: var(--text-muted); font-size: .66rem; }
     .stats-state-grid strong { font-size: 1rem; }
     .stats-type-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+    .stats-move-note { margin: 8px 0 0; font-size: .68rem; color: var(--text-muted); }
+    .stats-situ { margin-top: 14px; }
+    .stats-situ h4 { font-size: .78rem; margin-bottom: 6px; }
+    .stats-situ h4 .sub { font-size: .68rem; font-weight: 500; color: var(--text-muted); }
+    .stats-situ table { width: 100%; border-collapse: collapse; font-size: .74rem; font-variant-numeric: tabular-nums; }
+    .stats-situ th, .stats-situ td { padding: 5px 4px; border-bottom: 1px solid var(--border-color); text-align: right; }
+    .stats-situ th { color: var(--text-muted); font-size: .66rem; font-weight: 600; }
+    .stats-situ th:first-child, .stats-situ td:first-child { text-align: left; }
+    .stats-situ td:last-child { color: var(--text-muted); }
+    .stats-situ p { margin-top: 6px; font-size: .68rem; color: var(--text-muted); }
+    .stats-snow td:first-child { white-space: normal; }
+    .stats-snow td small, .stats-snow th small { display: block; color: var(--text-muted); font-size: .64rem; font-weight: 500; white-space: nowrap; }
+    .stats-snow td:last-child { white-space: nowrap; color: inherit; }
+    .stats-snow td { vertical-align: top; }
+    /* Outcome shares use ink, not hue: green and orange stay reserved for gain and loss. */
+    .stats-acting { display: grid; gap: 9px; margin-top: 8px; }
+    .stats-acting-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 8px; align-items: center; font-size: .78rem; font-variant-numeric: tabular-nums; }
+    .stats-acting-row .chip { justify-self: start; }
+    .stats-acting-bar { grid-column: 1 / -1; display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--bg-pill); }
+    .stats-acting-bar i { display: block; height: 100%; }
+    .stats-acting-bar .success { background: var(--text-main); }
+    .stats-acting-bar .mixed { background: var(--neutral); opacity: .6; }
+    .stats-acting-bar .failure { background: var(--neutral); opacity: .28; }
+    .stats-acting-row small { grid-column: 1 / -1; color: var(--text-muted); font-size: .7rem; }
+    .stats-acting-note { margin-top: 8px; font-size: .7rem; color: var(--text-muted); }
     .stats-scenes .scene { width: 100%; display: grid; grid-template-columns: 42px 48px minmax(0, 1fr) auto; gap: 7px; align-items: center; padding: 7px 2px; border: 0; border-bottom: 1px solid var(--border-color); background: transparent; text-align: left; cursor: pointer; font-size: .75rem; }
     .stats-scenes .scene:hover { background: var(--bg-card-hover); }
     .stats-scenes .scene .actor { overflow: hidden; color: var(--text-muted); font-size: .64rem; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
     .stats-scenes .scene .v { font-weight: 700; font-variant-numeric: tabular-nums; }
+    .stats-scenes .rival { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(64px, auto); gap: 10px; align-items: center; padding: 7px 2px; border: 0; border-bottom: 1px solid var(--border-color); background: transparent; color: inherit; font: inherit; font-size: .75rem; text-align: left; cursor: pointer; }
+    .stats-scenes .rival:hover { background: var(--bg-card-hover); }
+    .stats-scenes .rival:focus-visible { outline: 2px solid var(--border-focus); outline-offset: -2px; }
+    .stats-scenes .rival small { display: block; margin-top: 1px; color: var(--text-muted); font-size: .66rem; font-weight: 500; }
+    .stats-scenes .rival .n { text-align: right; font-variant-numeric: tabular-nums; }
+    .stats-scenes .rival .v { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .stats-scenes .scene .what { min-width: 0; }
+    .stats-scenes .scene .where { display: block; margin-top: 1px; color: var(--text-muted); font-size: .66rem; font-weight: 500; }
     .team-link { border: 0; background: transparent; color: inherit; font: inherit; font-weight: inherit; cursor: pointer; padding: 0; }
     .team-link.team-blue { color: var(--blue-team); }
     .team-link.team-red { color: var(--red-team); }
-    @media (max-width: 760px) { .stats-compare-layout { grid-template-columns: 1fr; } .stats-difference-axis, .stats-difference-row { grid-template-columns: 54px minmax(130px, 1fr) 64px; gap: 6px; } }
-    @media (max-width: 900px) { .stats-team-layout, .stats-entity-layout { grid-template-columns: 1fr; } .stats-entity-list { position: static; max-height: none; } }
+    @media (max-width: 760px) { .stats-compare-layout { grid-template-columns: 1fr; } .stats-difference-axis, .stats-difference-row { grid-template-columns: 48px minmax(96px, 1fr) 84px; gap: 6px; } .stats-difference-row > strong span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } }
+    @media (max-width: 900px) { .stats-team-overview, .stats-team-cards, .stats-entity-layout { grid-template-columns: 1fr; } .stats-entity-list { position: static; max-height: none; } }
     @media (max-width: 620px) { .stats-mini-grid { grid-template-columns: 1fr; } .stats-detail-grid { grid-template-columns: 1fr; } .stats-state-grid { grid-template-columns: repeat(2, 1fr); } .stats-entity-row { grid-template-columns: minmax(82px, 1fr) 34px minmax(90px, 1fr) 50px; } }
     .planned { text-align: center; padding: 48px 20px; }
     @media (max-width: 720px) { .tagline span { display: none; } .tagline strong { overflow: hidden; text-overflow: ellipsis; font-size: 1rem; } .navbar { gap: 8px; padding: 10px 0 12px; } .ser-pick { flex: 1 1 100%; } .series select.ser-select { flex: 1; } .guide dl { grid-template-columns: 1fr; } .guide dt { margin-top: 6px; } .horizons { gap: 6px; } .hz { padding: 6px 7px; } .hz .val { font-size: .92rem; } .ctx-primary { grid-template-columns: 1fr; } .ctx-primary .ctx-item:first-child { grid-column: auto; } }
@@ -646,7 +724,7 @@
       <div class="header-copy">
         <div class="logo-title">
           <a href="./index.html" class="logo-brand-link" title="PlayValue">
-            <img src="./assets/logo-icon.svg?v=2" alt="" class="logo-mark" width="34" height="34">
+            <img src="./assets/logo-icon.svg?v=3" alt="" class="logo-mark" width="34" height="34">
             <span class="logo-text" translate="no"><span>Play</span><span class="logo-text-val">Value</span></span>
           </a>
           <span class="logo-badge" id="verBadge">v2.0</span>
@@ -710,6 +788,13 @@
   } catch (e) { /* gold-only fallback */ }
   const D = DATA.display;
   const GAMES = DATA.games;
+  // Game-level descriptors of the win-probability curve ship with the overlay index, one per game.
+  const FLOW = Object.fromEntries((WPS_INDEX?.game_files || []).filter(x => x.game_flow).map(x => [x.game_id, x.game_flow]));
+  const flowOf = g => FLOW[g.id] || null;
+  const hasFlow = tid => GAMES.some(g => g.tournament_id === tid && FLOW[g.id]);
+  // Tournament-wide ranking of plays by win-probability swing, precomputed per window and game phase.
+  const TOP = WPS_INDEX?.top_moments?.tournaments || {};
+  const hasMoments = tid => !!TOP[tid];
   const seriesOf = g => g.series || g.stage;
   // Each tournament has its own series; game 1 of its latest series opens first. Without a tournament, the one
   // with the most recently played game is taken, so the page opens on the newest series.
@@ -721,6 +806,10 @@
   };
   const PLAY = {};
   const LIGHT = {};
+  // Per game, each player's seconds of known minimap position by zone; arrives with the tournament's light plays.
+  const MOVE = {};
+  // Per game, what became of the first gold lead and each team's lead growth against expectation.
+  const SNOW = {};
   const loading = {};
   const wpsLoading = {};
 
@@ -732,6 +821,33 @@
       taglineSub: '킬 없는 플레이와 실패한 시도까지, 해설이 짚은 중요 플레이의 밸류를 직후 15·30·60초의 두 팀 골드 차이로 봅니다.',
       methodology: '방법론', lang: 'English', languagePicker: '언어 선택', themeDark: '다크 모드', themeLight: '라이트 모드',
       viewSet: '경기별 보기', viewXtab: '유형별 집계', viewCompare: '비교', winner: '승리',
+      statsEnemyHalf: '상대 진영 체류', statsApart: '원딜과 떨어진 시간', statsPosAvg: (pos, v) => `${pos} 평균 ${v}`,
+      statsMoveNote: '미니맵에서 위치를 읽은 시간 가운데 비율이고, 평균은 이 대회의 같은 포지션 선수 전체입니다. 상대 진영은 강을 따라 나눈 맵의 상대편 절반, 떨어진 시간은 원딜과 약 2,200 유닛 넘게 벌어진 시간입니다. 앞서는 팀일수록 상대 진영에 오래 머무르므로 선수 성향만을 뜻하지 않습니다.',
+      snowTitle: '리드 굴리기와 막기', snowSub: '방송 골드 차이 기준', snowGames: n => `${n}경기`,
+      snowLed: (a, b) => `${a} 리드를 먼저 잡은 경기 중 ${b}까지 굴림`, snowTrailed: a => `${a} 먼저 뒤진 경기 중 동점으로 되돌림`,
+      snowAhead: h => `앞설 때 ${h}분 리드 증가 (기대 대비)`, snowBehind: h => `뒤질 때 상대의 ${h}분 리드 증가 (기대 대비)`,
+      snowScope: '선택 범위', snowAdj: '상대 보정', snowAdjSub: '대회 전체',
+      snowNote: g => `리드는 클수록 저절로 더 빨리 커지므로, 같은 크기의 리드와 같은 시간대에서 이 대회 전체가 보인 평균 증가분을 뺀 값입니다. 팀 값은 분 수로 가중한 평균이어서 대회 평균이 0입니다. 앞설 때는 양수일수록 더 굴린 것이고, 뒤질 때는 음수일수록 상대를 더 막은 것입니다. 상대 보정은 대회 전체에서 모든 팀의 굴리기와 막기를 함께 추정해, 만난 상대의 영향을 덜어 낸 값입니다. 아래 줄은 경기를 다시 뽑아 구한 95% 구간이며 0을 포함하면 방향이 불확실합니다. 이 대회에서 팀 효과는 다른 경기의 예측을 ${g}밖에 개선하지 못해, 팀 간 차이의 대부분은 경기마다의 변동입니다.`,
+      statsSitu: '시작 시점 승률별 장면', statsSituSub: '장면이 시작될 때 이 팀의 모델 승률',
+      statsSituRows: { behind: '열세 (40% 미만)', even: '접전 (40–60%)', ahead: '우세 (60% 초과)' },
+      statsSituN: '장면', statsSituMean: '장면당 평균', statsSituRef: '다른 팀 평균',
+      statsSituNote: '뒤진 팀은 승률이 오를 여지가 더 크므로, 같은 상황에 놓인 다른 팀들의 평균과 함께 읽어야 합니다. 5장면 미만이면 평균을 적지 않습니다.',
+      statsRivals: '자주 맞선 상대', statsRivalsSub: '같은 장면에 상대 팀으로 이름이 나온 선수',
+      statsRivalScenes: (n, duel) => `${n}장면${duel ? ` · 1대1 ${duel}` : ''}`, statsRivalToward: (a, b) => `유리 ${a}/${b}`, statsRivalOpen: (a, b) => `${a}와 ${b}의 맞대결 비교 열기`,
+      statsRivalNote: '한 장면에 여러 선수가 나오면 상대 선수마다 한 번씩 셉니다. 1대1은 두 선수만 이름이 나온 장면입니다. 수치는 그 장면들에서 이 선수 팀 쪽으로 움직인 변화의 합이며, 두 선수 사이의 우열을 뜻하지 않습니다. 누르면 두 선수의 맞대결 비교가 열립니다.',
+      statsActing: '행동으로 나선 장면의 결과', statsScenesPerGame: v => `경기당 ${v}`,
+      statsActingNote: '행동 역할로 이름이 나온 장면만 셉니다. 성공과 실패는 해설 내용을 코딩한 결과이고, 결과가 드러나지 않은 장면은 분모에서 뺍니다. 해설이 짚은 시도만 들어 있어 전체 성공률이 아닙니다.',
+      incomeHead: h => `${h}초 동안 번 골드`, incomeNote: '방송 화면에서 읽은 팀 골드의 증가분(100 단위)입니다. 두 값의 차이가 위의 골드 변화입니다.',
+      viewGames: '순위', rkTabs: '순위 종류', rkGames: '경기', rkMoments: '장면',
+      prTitle: '장면 순위', prSub: '해설이 짚은 플레이 가운데 모델 승률이 가장 크게 움직인 장면입니다. 장면을 누르면 그 플레이가 열립니다.',
+      prPhase: '시간대', prAll: '전체', prPhases: { lane: '초반', mid: '중반', late: '후반' }, prRank: '순위', prMoment: '장면', prSwing: '승률 변화',
+      prEmpty: '이 조건에 해당하는 장면이 없습니다.',
+      prNote: (lane, mid, gap) => `한 경기에서 서로 겹치는 플레이는 변화가 가장 큰 하나만 남겼습니다. 같은 장면으로 묶인 플레이이거나 시작 시각이 ${gap}초 안에 있는 플레이가 그렇습니다. 시간대는 경기 시계 기준으로 ${lane}분까지 초반, ${mid}분까지 중반, 그 뒤가 후반입니다. 승률 변화는 유리해진 팀 기준으로 적었습니다.`,
+      gfTitle: '경기 순위', gfSub: '모델 승률 곡선으로 본 경기 흐름입니다. 열 제목을 누르면 정렬되고, 경기를 누르면 그 경기가 열립니다.',
+      gfGame: '경기', gfLength: '경기 시간', gfLow: '승자 최저 승률', gfGold: '승자 최대 골드 열세', gfSwing: '접전 지수', gfLead: '우세 교체', gfDecided: '결정 시점',
+      gfNever: '줄곧 우세', gfWon: (w, date) => `${w} 승${date ? ` · ${date}` : ''}`, gfOpen: title => `${title} 열기`,
+      gfHead: (w, low, at, swing) => `${w} 최저 승률 ${low} (${at}) · 접전 지수 ${swing}`, gfHeadTitle: (lowRank, swingRank, n) => `이 대회 ${n}경기 중 역전 폭 ${lowRank}위 · 접전 지수 ${swingRank}위. 누르면 경기 순위가 열립니다.`,
+      gfNote: '모델 승률 곡선(v312 베타)을 1초 단위로 읽어 경기가 끝난 뒤 요약한 값입니다. 승자 최저 승률, 결정 시점, 우세 교체는 앞뒤 2초 중앙값으로 잔떨림을 걸러 계산합니다. 접전 지수는 30초 구간 중앙값이 움직인 폭을 모두 더한 값(pp)이며, 클수록 승률이 많이 오르내린 경기입니다. 우세 교체는 승률 55% 이상인 팀이 바뀐 횟수, 결정 시점은 승자가 마지막으로 50% 아래에 있던 직후입니다. 방송에서 골드를 읽지 못한 구간은 빠져 있습니다.',
       contextOpenStats: '시리즈 팀·선수 보기 →', contextBackGame: '← 선택 경기로 돌아가기',
       cov: (n, m, k) => `플레이 <strong>${n}</strong>건 중 골드 변화를 잰 것 <strong>${m}</strong>건, 그중 이득·손해가 판정된 것 <strong>${k}</strong>건`,
       duration: '경기 시간', horizon: '변화 구간', sec: s => `${s}초`,
@@ -827,9 +943,9 @@
       statsBasis: '비교 기준', statsBasisSeries: '현재 시리즈', statsScopeSeries: n => `시리즈 전체 · ${n}경기`, statsBasisH2h: '두 대상의 맞대결', statsBasisAll: '대회 전체', statsH2hUnavailable: '선택한 두 대상의 맞대결 경기가 없습니다.',
       statsPickTeamA: '팀 A', statsPickTeamB: '팀 B', statsPickPlayerA: '선수 A', statsPickPlayerB: '선수 B', statsPosition: '포지션', statsAllPositions: '전체 포지션',
       statsCompareHint: '각 값은 선택한 기준 안에서 해당 팀·선수가 실제로 뛴 경기 수로 나눕니다.',
-      statsDiffTitle: '직접 차이 (A − B)', statsDiffOverall: '전체', statsDiffLeft: label => `${label} 쪽`, statsDiffRight: label => `${label} 쪽`, statsDiffSample: (a, an, b, bn) => `${a} ${an}경기 · ${b} ${bn}경기`,
-      statsDiffNote: '점은 경기당 순변화의 A−B이고, 반투명 구간은 경기를 재표집한 95% bootstrap 신뢰구간입니다. 구간이 0을 포함하면 차이의 방향이 불확실합니다.',
-      statsDiffPoint: (category, value, low, high, a, b, an, bn, paired) => `${category} · ${a}−${b} ${value} · 95% bootstrap CI ${low}~${high} · ${an}/${bn}경기${paired ? ' · 맞대결 경기별 paired' : ''}`,
+      statsDiffTitle: '직접 차이 (B − A)', statsDiffOverall: '전체', statsDiffLeft: label => `${label} 쪽`, statsDiffRight: label => `${label} 쪽`, statsDiffSample: (a, an, b, bn) => `${a} ${an}경기 · ${b} ${bn}경기`,
+      statsDiffNote: '점은 경기당 순변화의 B−A이고, 점이 놓인 쪽의 대상이 앞선 것입니다. 오른쪽 수치는 앞선 쪽과 그 차이입니다. 반투명 구간은 경기를 재표집한 95% bootstrap 신뢰구간입니다. 구간이 0을 포함하면 차이의 방향이 불확실합니다.',
+      statsDiffPoint: (category, value, low, high, a, b, an, bn, paired) => `${category} · ${b}−${a} ${value} · 95% bootstrap CI ${low}~${high} · ${an}/${bn}경기${paired ? ' · 맞대결 경기별 paired' : ''}`,
       statsNoData: '선택한 비교 기준에서 측정 가능한 장면이 없습니다.', statsUnavailableInScope: name => `${name}의 측정 가능한 중요 장면이 이 경기에는 없습니다. 다른 경기를 고르거나 시리즈 전체로 돌아가세요.`, statsOpenPlay: '플레이 열기',
       statsNarrativeTitle: '데이터로 본 플레이 패턴', statsNarrativeScope: '해설이 짚은 측정 장면', statsNarrativeCompareTitle: '선택 대상 차이',
       statsNarrativeTeamBoth: (gainPosition, gainValue, lossPosition, lossValue, windowLabel, metric) => `${windowLabel} ${metric} 기준으로 ${gainPosition} 관여 장면에서 경기당 ${gainValue}로 가장 많이 벌었고, ${lossPosition} 관여 장면에서 ${lossValue}로 가장 많이 잃었습니다.`,
@@ -875,6 +991,33 @@
       taglineSub: 'Key plays the casters point out, including kill-free ones and failed attempts, valued by the gold gap between the teams 15, 30 and 60 seconds later.',
       methodology: 'Methodology', lang: '한국어', languagePicker: 'Choose language', themeDark: 'Dark mode', themeLight: 'Light mode',
       viewSet: 'By game', viewXtab: 'Totals by type', viewCompare: 'Compare', winner: 'Winner',
+      statsEnemyHalf: 'Time in enemy half', statsApart: 'Time apart from the bot laner', statsPosAvg: (pos, v) => `${pos} average ${v}`,
+      statsMoveNote: 'Shares of the time the minimap gave a position; the average is every player of that position in this event. The enemy half is the far side of the map split along the river, and apart means more than about 2,200 units from the bot laner. A team that is ahead spends longer in the enemy half, so this is not the player’s tendency alone.',
+      snowTitle: 'Rolling and stopping a lead', snowSub: 'from the broadcast gold difference', snowGames: n => `${n} game${n === 1 ? '' : 's'}`,
+      snowLed: (a, b) => `First to a ${a} lead, then rolled it to ${b}`, snowTrailed: a => `First to trail by ${a}, then pulled it back to level`,
+      snowAhead: h => `Lead growth over ${h} min when ahead (vs expected)`, snowBehind: h => `Opponent’s lead growth over ${h} min when behind (vs expected)`,
+      snowScope: 'Selected scope', snowAdj: 'Opponent-adjusted', snowAdjSub: 'whole event',
+      snowNote: g => `A lead grows faster the larger it already is, so each figure subtracts the mean growth of all this event’s minutes with the same lead size and game phase. A team’s figure is weighted by minutes, so the event average is zero. When ahead, positive means the lead was rolled faster; when behind, negative means the leader was held back. The opponent-adjusted figure fits every team’s rolling and stopping together over the whole event, which takes out the opponents a team happened to meet. The second line is a 95% interval from resampling games; an interval crossing zero has an uncertain direction. In this event team effects improve the prediction of other games by only ${g}, so most of the difference between teams is game-to-game variation.`,
+      statsSitu: 'Moments by win probability at the start', statsSituSub: 'the team’s modeled win probability when the moment began',
+      statsSituRows: { behind: 'Behind (under 40%)', even: 'Close (40–60%)', ahead: 'Ahead (over 60%)' },
+      statsSituN: 'Moments', statsSituMean: 'Mean per moment', statsSituRef: 'Other teams’ mean',
+      statsSituNote: 'A team that is behind has more room for its probability to rise, so read each mean against the other teams in the same situation. Means are left out below five moments.',
+      statsRivals: 'Most-faced opponents', statsRivalsSub: 'Opponents named in the same moments',
+      statsRivalScenes: (n, duel) => `${n} moments${duel ? ` · ${duel} one-on-one` : ''}`, statsRivalToward: (a, b) => `toward ${a}/${b}`, statsRivalOpen: (a, b) => `Compare ${a} and ${b} head to head`,
+      statsRivalNote: 'A moment with several players counts once for each opponent. One-on-one means only the two players were named. The value is the summed change toward this player’s team over those moments, not a verdict on the two players. Click to compare the pair head to head.',
+      statsActing: 'Outcomes when acting', statsScenesPerGame: v => `${v} per game`,
+      statsActingNote: 'Counts only moments where the player is named as acting. Success and failure are coded from the commentary, and moments whose result is not stated are left out of the denominator. Only attempts the casters called out are here, so this is not an overall success rate.',
+      incomeHead: h => `Gold earned over ${h}s`, incomeNote: 'Each team’s increase in broadcast team gold, read to the nearest 100. Their difference is the gold change above.',
+      viewGames: 'Rankings', rkTabs: 'Ranking type', rkGames: 'Games', rkMoments: 'Moments',
+      prTitle: 'Moment rankings', prSub: 'The commentary-selected plays around which the model win probability moved the most. Click a moment to open that play.',
+      prPhase: 'Game phase', prAll: 'All', prPhases: { lane: 'Early', mid: 'Mid', late: 'Late' }, prRank: 'Rank', prMoment: 'Moment', prSwing: 'Win-probability change',
+      prEmpty: 'No moments match this selection.',
+      prNote: (lane, mid, gap) => `Plays of one game that overlap are listed once, by the largest change: plays coded into the same moment, or plays that start within ${gap} seconds of each other. Phases follow the game clock: early to ${lane}:00, mid to ${mid}:00, late after that. The change is written for the team it favoured.`,
+      gfTitle: 'Game rankings', gfSub: 'How each game went on the model win-probability curve. Click a column heading to sort, or a game to open it.',
+      gfGame: 'Game', gfLength: 'Length', gfLow: 'Winner’s lowest win probability', gfGold: 'Winner’s largest gold deficit', gfSwing: 'Swing index', gfLead: 'Lead changes', gfDecided: 'Decided at',
+      gfNever: 'Never behind', gfWon: (w, date) => `${w} won${date ? ` · ${date}` : ''}`, gfOpen: title => `Open ${title}`,
+      gfHead: (w, low, at, swing) => `${w} low ${low} (${at}) · swing index ${swing}`, gfHeadTitle: (lowRank, swingRank, n) => `Of this event’s ${n} games: comeback rank ${lowRank}, swing index rank ${swingRank}. Click for the game rankings.`,
+      gfNote: 'Read from the one-second model win-probability curve (v312 beta) after the game ended. The winner’s low, the decision time and lead changes use a median over ±2 s to filter jitter. The swing index adds up how far the 30-second bin medians moved, in percentage points: the larger it is, the more the probability went back and forth. Lead changes count switches of the team at 55% or above; the decision time is just after the winner was last below 50%. Seconds where gold could not be read off the broadcast are left out.',
       contextOpenStats: 'View series teams & players →', contextBackGame: '← Back to selected game',
       cov: (n, m, k) => `<strong>${n}</strong> plays: gold change measured for <strong>${m}</strong>, of which <strong>${k}</strong> are a clear gain or loss`,
       duration: 'Length', horizon: 'Change over', sec: s => `${s}s`,
@@ -970,9 +1113,9 @@
       statsBasis: 'Comparison basis', statsBasisSeries: 'Current series', statsScopeSeries: n => `Whole series · ${n} game${n === 1 ? '' : 's'}`, statsBasisH2h: 'Head-to-head', statsBasisAll: 'Whole event', statsH2hUnavailable: 'The selected pair has no head-to-head games.',
       statsPickTeamA: 'Team A', statsPickTeamB: 'Team B', statsPickPlayerA: 'Player A', statsPickPlayerB: 'Player B', statsPosition: 'Position', statsAllPositions: 'All positions',
       statsCompareHint: 'Each value is divided by the games that team or player actually played within the selected basis.',
-      statsDiffTitle: 'Direct difference (A − B)', statsDiffOverall: 'Overall', statsDiffLeft: label => `Toward ${label}`, statsDiffRight: label => `Toward ${label}`, statsDiffSample: (a, an, b, bn) => `${a} ${an} games · ${b} ${bn} games`,
-      statsDiffNote: 'The point is A−B in net change per game; the translucent interval is a 95% bootstrap confidence interval from resampling games. An interval crossing zero has an uncertain direction.',
-      statsDiffPoint: (category, value, low, high, a, b, an, bn, paired) => `${category} · ${a}−${b} ${value} · 95% bootstrap CI ${low} to ${high} · ${an}/${bn} games${paired ? ' · paired by head-to-head game' : ''}`,
+      statsDiffTitle: 'Direct difference (B − A)', statsDiffOverall: 'Overall', statsDiffLeft: label => `Toward ${label}`, statsDiffRight: label => `Toward ${label}`, statsDiffSample: (a, an, b, bn) => `${a} ${an} games · ${b} ${bn} games`,
+      statsDiffNote: 'The point is B−A in net change per game, so it sits on the side of whichever is ahead, and the figure on the right names that side and the gap; the translucent interval is a 95% bootstrap confidence interval from resampling games. An interval crossing zero has an uncertain direction.',
+      statsDiffPoint: (category, value, low, high, a, b, an, bn, paired) => `${category} · ${b}−${a} ${value} · 95% bootstrap CI ${low} to ${high} · ${an}/${bn} games${paired ? ' · paired by head-to-head game' : ''}`,
       statsNoData: 'No measurable moments for this comparison.', statsUnavailableInScope: name => `${name} has no measurable high-salience moment in this game. Choose another game or return to the whole series.`, statsOpenPlay: 'Open play',
       statsNarrativeTitle: 'Observed play pattern', statsNarrativeScope: 'measured commentary moments', statsNarrativeCompareTitle: 'Selected-pair difference',
       statsNarrativeTeamBoth: (gainPosition, gainValue, lossPosition, lossValue, windowLabel, metric) => `On net ${windowLabel} ${metric} per game, ${gainPosition}-involved moments gained the most (${gainValue}), while ${lossPosition}-involved moments lost the most (${lossValue}).`,
@@ -1019,6 +1162,33 @@
     legal: 'PlayValue 未经 Riot Games 认可，也不代表 Riot Games 或任何参与制作、管理 Riot Games 产品人员的观点。Riot Games 及其相关资产均为 Riot Games, Inc. 的商标或注册商标。',
     methodology: '研究方法', languagePicker: '选择语言', themeDark: '深色模式', themeLight: '浅色模式',
     viewSet: '按比赛查看', viewXtab: '按类型汇总', viewCompare: '比较', winner: '胜者', contextOpenStats:'查看系列赛队伍与选手 →', contextBackGame:'← 返回所选比赛',
+    statsEnemyHalf: '在对方半区的时间', statsApart: '与下路射手分开的时间', statsPosAvg: (pos, v) => `${pos}平均 ${v}`,
+    statsMoveNote: '以小地图读到位置的时间为分母，平均值为本赛事同位置的全部选手。对方半区指沿河道划分后地图的对方一半；分开指与下路射手相距约2,200单位以上。领先的队伍在对方半区停留更久，因此这并不只反映选手倾向。',
+    snowTitle: '滚雪球与止损', snowSub: '基于转播经济差', snowGames: n => `${n}局`,
+    snowLed: (a, b) => `率先领先${a}后扩大到${b}`, snowTrailed: a => `率先落后${a}后追平`,
+    snowAhead: h => `领先时${h}分钟领先增幅（相对预期）`, snowBehind: h => `落后时对手${h}分钟领先增幅（相对预期）`,
+    snowScope: '所选范围', snowAdj: '对手校正', snowAdjSub: '整个赛事',
+    snowNote: g => `领先越大本身增长越快，因此每个数值都减去了本赛事中相同领先幅度和时段的全部分钟的平均增幅。队伍数值按分钟加权，因此赛事平均为0。领先时正值表示滚得更快；落后时负值表示更好地遏制了对手。对手校正是在整个赛事中同时估计所有队伍的滚雪球与止损，从而去除所遇对手的影响。第二行为重抽比赛得到的95%区间，跨过0时方向不确定。在本赛事中，队伍效应只让其他比赛的预测改善${g}，队伍间差异大多是各局之间的波动。`,
+    statsSitu: '按开始时胜率划分的场景', statsSituSub: '场景开始时该队的模型胜率',
+    statsSituRows: { behind: '劣势（低于40%）', even: '胶着（40–60%）', ahead: '优势（高于60%）' },
+    statsSituN: '场景', statsSituMean: '每场景平均', statsSituRef: '其他队伍平均',
+    statsSituNote: '落后的一方胜率上升空间更大，因此应与处于相同局面的其他队伍的平均值对照。少于5个场景时不显示平均值。',
+    statsRivals: '最常交手的对手', statsRivalsSub: '在同一场景中被点名的对方选手',
+    statsRivalScenes: (n, duel) => `${n}个场景${duel ? ` · 1对1 ${duel}` : ''}`, statsRivalToward: (a, b) => `有利 ${a}/${b}`, statsRivalOpen: (a, b) => `打开${a}与${b}的交手比较`,
+    statsRivalNote: '一个场景涉及多名选手时，对每名对方选手各计一次。1对1指只有这两名选手被点名的场景。数值是这些场景中朝该选手所在队伍方向的变化之和，并不表示两名选手之间的高下。点击可打开两人的交手比较。',
+    statsActing: '作为执行方时的结果', statsScenesPerGame: v => `每局${v}`,
+    statsActingNote: '只统计该选手被点名为执行方的场景。成功与失败来自对解说内容的编码，结果未说明的场景不计入分母。这里只有解说提到的尝试，并非整体成功率。',
+    incomeHead: h => `${h}秒内获得的经济`, incomeNote: '从转播画面读取的队伍经济增量（以100为单位）。两者之差即上方的经济变化。',
+    viewGames: '排行', rkTabs: '排行类型', rkGames: '比赛', rkMoments: '场景',
+    prTitle: '场景排行', prSub: '解说提到的操作中，模型胜率变动最大的场景。点击场景可打开该操作。',
+    prPhase: '时段', prAll: '全部', prPhases: { lane: '前期', mid: '中期', late: '后期' }, prRank: '排名', prMoment: '场景', prSwing: '胜率变化',
+    prEmpty: '没有符合条件的场景。',
+    prNote: (lane, mid, gap) => `同一局中相互重叠的操作只保留变化最大的一个：被归为同一场景的操作，或开始时间相差不到${gap}秒的操作。时段按比赛时钟划分：${lane}分钟前为前期，${mid}分钟前为中期，之后为后期。胜率变化按受益一方书写。`,
+    gfTitle: '比赛排行', gfSub: '用模型胜率曲线观察每局比赛的走势。点击列标题排序，点击比赛打开该局。',
+    gfGame: '比赛', gfLength: '时长', gfLow: '胜方最低胜率', gfGold: '胜方最大经济落后', gfSwing: '胶着指数', gfLead: '优势易手', gfDecided: '定局时间',
+    gfNever: '从未落后', gfWon: (w, date) => `${w}获胜${date ? ` · ${date}` : ''}`, gfOpen: title => `打开 ${title}`,
+    gfHead: (w, low, at, swing) => `${w}最低胜率 ${low}（${at}）· 胶着指数 ${swing}`, gfHeadTitle: (lowRank, swingRank, n) => `本赛事${n}局中，逆转幅度第${lowRank}，胶着指数第${swingRank}。点击查看比赛排行。`,
+    gfNote: '这些数值在比赛结束后根据逐秒的模型胜率曲线（v312 测试版）汇总。胜方最低胜率、定局时间和优势易手使用前后2秒的中位数来过滤抖动。胶着指数是30秒区间中位数变动幅度的总和（百分点），数值越大表示胜率起伏越多。优势易手是胜率达到55%以上的一方发生更换的次数；定局时间是胜方最后一次低于50%之后的时刻。无法从转播读取经济的时段不计入。',
     cov: (n, m, k) => `共 <strong>${n}</strong> 个操作：测得经济变化 <strong>${m}</strong> 个，其中 <strong>${k}</strong> 个可明确判为收益或损失`,
     duration: '比赛时长', horizon: '变化区间', sec: s => `${s}秒`, metric:'显示指标', metricWps:'胜率', metricGold:'经济', metricBoth:'两者', beta:'测试版',
     guideTitle: '如何读懂数字',
@@ -1047,7 +1217,7 @@
     xtPlayerNote: '按选手或英雄拆分时，计算其执行、成为目标或参与应对的操作，并从该选手队伍视角显示；对方操作会翻转经济变化正负号。多人参与的操作会对每位选手各计一次，只统计解说点名的情况。', sortBy: c => `按${c}排序`, rowLabel: '项目', xtGames: '比赛', xtPerGame: '每局', xtCum: '累计', total: '合计', usedBy: '使用者', played: '使用英雄', games: n => `${n}局`,
     xtNote: '四栏之和为总数。收益与损失只统计超出误差范围、方向明确的变化。这些是观测到的经济变化，并非操作造成的因果效果。', xtPick: '点击数字后，对应操作会显示在这里。',
     statsTitle:'本系列赛队伍与选手',statsTitleGame:n=>`第${n}局队伍与选手`,statsSub:'展示当前系列赛中解说点名的重要场景；与其他队伍、选手的比较请前往独立比较页面。',statsSubGame:'展示所选比赛中解说点名的重要场景。',compareTitle:'队伍与选手比较',compareSub:'不受系列赛选择影响，按整个赛事或双方交手比较队伍与选手。',statsOpenCompare:'在整个赛事中比较 →',statsPlayerList:'本系列赛选手',statsPlayerListGame:'本局选手',statsTeam:'队伍',statsPlayer:'选手',statsChamp:'英雄',statsMetric:'指标',statsWps:'胜率变化',statsGold:'经济变化',statsRadarTitle:'重要场景参与画像',statsRadarSub:(windowLabel,m)=>`每局${windowLabel}${m}净变化 · 中间环为0`,statsGames:'比赛',statsScenes:'已测场景',statsToward:'有利于本队',statsMedian:'中位变化',statsPerGame:'每局净变化',statsComparePlayer:'选手比较',statsCompareChamp:'英雄比较',statsFingerprint:'操作指纹',statsGood:'有利于本队',statsBad:'不利于本队',statsRoles:'参与角色',statsTypes:'主要操作类型',statsGoldBreak:'变化方向统计',statsTopScenes:'变化最大的场景',statsCaveat:'同一操作会对每位参与选手各计一次；重叠时间窗与同时发生的事件仍包含在数值中，因此不能解读为个人贡献。',statsBasis:'比较范围',statsBasisSeries:'当前系列赛',statsScopeSeries:n=>`整个系列赛 · ${n}局`,statsBasisH2h:'双方交手',statsBasisAll:'整个赛事',statsH2hUnavailable:'所选双方没有交手比赛。',statsPickTeamA:'队伍A',statsPickTeamB:'队伍B',statsPickPlayerA:'选手A',statsPickPlayerB:'选手B',statsPosition:'位置',statsAllPositions:'全部位置',statsCompareHint:'各数值按所选范围内其实际出场数计算。',statsNoData:'当前比较没有可测场景。',statsUnavailableInScope:name=>`本局没有${name}的可测重要场景。请选择其他比赛或返回整个系列赛。`,statsOpenPlay:'打开操作',
-    statsNarrativeTitle:'数据中的操作模式',statsNarrativeScope:'解说指出且可测量的场景',statsNarrativeCompareTitle:'所选对象的差异',statsDiffTitle:'直接差异（A − B）',statsDiffOverall:'全部',statsDiffLeft:label=>`偏向${label}`,statsDiffRight:label=>`偏向${label}`,statsDiffSample:(a,an,b,bn)=>`${a} ${an}场 · ${b} ${bn}场`,statsDiffNote:'点表示每场净变化的A−B；半透明区间为按比赛重抽样得到的95% bootstrap置信区间。区间跨过0时，差异方向不确定。',statsDiffPoint:(category,value,low,high,a,b,an,bn,paired)=>`${category} · ${a}−${b} ${value} · 95% bootstrap CI ${low}至${high} · ${an}/${bn}场${paired?' · 按交手比赛配对':''}`,
+    statsNarrativeTitle:'数据中的操作模式',statsNarrativeScope:'解说指出且可测量的场景',statsNarrativeCompareTitle:'所选对象的差异',statsDiffTitle:'直接差异（B − A）',statsDiffOverall:'全部',statsDiffLeft:label=>`偏向${label}`,statsDiffRight:label=>`偏向${label}`,statsDiffSample:(a,an,b,bn)=>`${a} ${an}场 · ${b} ${bn}场`,statsDiffNote:'点表示每场净变化的B−A，点所在一侧的对象领先，右侧数值写出领先一方及差距；半透明区间为按比赛重抽样得到的95% bootstrap置信区间。区间跨过0时，差异方向不确定。',statsDiffPoint:(category,value,low,high,a,b,an,bn,paired)=>`${category} · ${b}−${a} ${value} · 95% bootstrap CI ${low}至${high} · ${an}/${bn}场${paired?' · 按交手比赛配对':''}`,
     statsDetailScopeFamily:'按操作类型',statsDetailScopeChampion:'按英雄',statsDetailScopeTeamChampion:'按英雄参与场景',statsDetailScopePhase:'按比赛阶段',statsDetailWithFamily:(objective,family)=>`${objective}${family}`,statsChampionPlayerLabel:name=>`${name}使用`,statsChampionTeamLabel:name=>`${name}参与`,statsPhaseLegend:'标记颜色 · 阶段',statsObjective:{dragon:'小龙',baron:'纳什男爵',herald:'峡谷先锋',elder:'远古巨龙',atakhan:'厄塔汗',grubs:'虚空巢虫'},statsNarrativeTeamGainDetail:(position,detail,value,scenes,games)=>`细分${position}参与场景后，${detail}的每场收益最高，为${value}（${scenes}个场景 · ${games}场）。`,statsNarrativeTeamLossDetail:(position,detail,value,scenes,games)=>`细分${position}参与场景后，${detail}的每场损失最大，为${value}（${scenes}个场景 · ${games}场）。`,statsNarrativePlayerGainLoss:(scope,high,highValue,highScenes,highGames,low,lowValue,lowScenes,lowGames)=>`${scope}，${high}每场收益最高（${highValue}；${highScenes}个场景 · ${highGames}场），${low}损失最大（${lowValue}；${lowScenes}个场景 · ${lowGames}场）。`,statsNarrativePlayerGainOnly:(scope,high,highValue,highScenes,highGames,low,lowValue,lowScenes,lowGames)=>`${scope}，${high}每场收益最高（${highValue}；${highScenes}个场景 · ${highGames}场），${low}净收益最小（${lowValue}；${lowScenes}个场景 · ${lowGames}场）。`,statsNarrativePlayerLossOnly:(scope,high,highValue,highScenes,highGames,low,lowValue,lowScenes,lowGames)=>`${scope}，${high}每场损失最小（${highValue}；${highScenes}个场景 · ${highGames}场），${low}损失最大（${lowValue}；${lowScenes}个场景 · ${lowGames}场）。`,statsNarrativeChampionSparse:'重复样本不足，无法计算英雄层级统计（至少需要两名英雄各有2场比赛和2个场景）。',
     statsTopGainScenes:team=>`有利于${team}的场景（+）`,statsTopLossScenes:team=>`不利于${team}的场景（−）`,statsViewGainExample:actor=>`代表收益 · ${actor}行动`,statsViewLossExample:actor=>`代表损失 · ${actor}行动`,
     statsNarrativeTeamBoth:(gainPosition,gainValue,lossPosition,lossValue,windowLabel,metric)=>`按每局${windowLabel}${metric}净变化，涉及${gainPosition}的场景收益最多（${gainValue}），涉及${lossPosition}的场景损失最多（${lossValue}）。`,statsNarrativeTeamGainOnly:(position,value,windowLabel,metric)=>`按每局${windowLabel}${metric}净变化，涉及${position}的场景收益最多（${value}），没有位置出现净损失。`,statsNarrativeTeamLossOnly:(position,value,windowLabel,metric)=>`按每局${windowLabel}${metric}净变化，涉及${position}的场景损失最多（${value}），没有位置出现净收益。`,statsNarrativeTeamFlat:(windowLabel,metric)=>`按每局${windowLabel}${metric}净变化，没有位置出现明显的净收益或净损失。`,
@@ -1063,6 +1233,33 @@
     tagline: 'チーム視点で見るプレーの価値', taglineSub: 'キルのないプレーや失敗した試みも含め、実況が注目したプレーを15・30・60秒後の両チームのゴールド差で見ます。',
     legal: 'PlayValueはRiot Gamesの承認を受けておらず、Riot GamesまたはRiot Gamesの資産の制作・管理に正式に関わる個人の見解を示すものではありません。Riot Gamesおよび関連資産はRiot Games, Inc.の商標または登録商標です。',
     methodology:'調査方法', languagePicker:'言語を選択', themeDark:'ダークモード', themeLight:'ライトモード', viewSet:'試合別', viewXtab:'タイプ別集計', viewCompare:'比較', winner:'勝者', contextOpenStats:'シリーズのチーム・選手を見る →', contextBackGame:'← 選択した試合に戻る',
+    statsEnemyHalf: '相手陣地にいた時間', statsApart: 'ボットレーナーと離れていた時間', statsPosAvg: (pos, v) => `${pos}平均 ${v}`,
+    statsMoveNote: 'ミニマップで位置を読めた時間に対する割合で、平均はこの大会の同じポジションの全選手です。相手陣地は川に沿って分けたマップの相手側半分、離れていた時間はボットレーナーから約2,200ユニット以上離れていた時間です。リードしているチームほど相手陣地に長くいるため、選手の傾向だけを表すものではありません。',
+    snowTitle: 'リードを広げる・止める', snowSub: '配信のゴールド差に基づく', snowGames: n => `${n}試合`,
+    snowLed: (a, b) => `先に${a}リードし、${b}まで広げた`, snowTrailed: a => `先に${a}リードされ、同点に戻した`,
+    snowAhead: h => `リード時の${h}分間のリード増加（期待比）`, snowBehind: h => `ビハインド時の相手の${h}分間のリード増加（期待比）`,
+    snowScope: '選択範囲', snowAdj: '相手補正', snowAdjSub: '大会全体',
+    snowNote: g => `リードは大きいほど自然に速く広がるため、各数値からこの大会で同じリード幅・同じ時間帯だった全ての分の平均増加を引いています。チームの値は分数で重み付けした平均なので、大会平均は0です。リード時は正の値ほど速く広げ、ビハインド時は負の値ほど相手を抑えています。相手補正は大会全体で全チームの広げる力と止める力を同時に推定し、対戦した相手の影響を除いた値です。2行目は試合を再抽出して求めた95%区間で、0をまたぐ場合は方向が不確実です。この大会ではチーム効果による他の試合の予測改善は${g}にとどまり、チーム間の差の大半は試合ごとの変動です。`,
+    statsSitu: '開始時の勝率別の場面', statsSituSub: '場面開始時のこのチームのモデル勝率',
+    statsSituRows: { behind: '劣勢（40%未満）', even: '接戦（40〜60%）', ahead: '優勢（60%超）' },
+    statsSituN: '場面', statsSituMean: '1場面あたり平均', statsSituRef: '他チームの平均',
+    statsSituNote: '劣勢のチームは勝率が上がる余地が大きいため、同じ状況にある他チームの平均と比べて読みます。5場面未満では平均を表示しません。',
+    statsRivals: 'よく対峙した相手', statsRivalsSub: '同じ場面で名前が挙がった相手選手',
+    statsRivalScenes: (n, duel) => `${n}場面${duel ? ` · 1対1 ${duel}` : ''}`, statsRivalToward: (a, b) => `有利 ${a}/${b}`, statsRivalOpen: (a, b) => `${a}と${b}の直接対決の比較を開く`,
+    statsRivalNote: '一つの場面に複数の選手がいる場合、相手選手ごとに一度ずつ数えます。1対1は二人だけが名前を挙げられた場面です。数値はそれらの場面でこの選手のチーム側に動いた変化の合計で、二人の優劣を示すものではありません。押すと二人の直接対決の比較が開きます。',
+    statsActing: '行動側だった場面の結果', statsScenesPerGame: v => `1試合あたり${v}`,
+    statsActingNote: '行動側として名前が挙がった場面だけを数えます。成功・失敗は実況内容をコーディングした結果で、結果が示されない場面は分母から除きます。実況が取り上げた試みだけなので、全体の成功率ではありません。',
+    incomeHead: h => `${h}秒間の獲得ゴールド`, incomeNote: '配信画面から読んだチームゴールドの増加分（100単位）です。両者の差が上のゴールド変化です。',
+    viewGames: 'ランキング', rkTabs: 'ランキングの種類', rkGames: '試合', rkMoments: '場面',
+    prTitle: '場面ランキング', prSub: '実況が注目したプレーのうち、モデル勝率が最も大きく動いた場面です。場面を押すとそのプレーが開きます。',
+    prPhase: '時間帯', prAll: 'すべて', prPhases: { lane: '序盤', mid: '中盤', late: '終盤' }, prRank: '順位', prMoment: '場面', prSwing: '勝率変化',
+    prEmpty: '条件に合う場面がありません。',
+    prNote: (lane, mid, gap) => `同じ試合で重なり合うプレーは、変化が最も大きい一つだけを残しました。同じ場面にまとめられたプレー、または開始時刻の差が${gap}秒未満のプレーです。時間帯は試合時計で${lane}分までが序盤、${mid}分までが中盤、それ以降が終盤です。勝率変化は有利になったチームの側で示します。`,
+    gfTitle: '試合ランキング', gfSub: 'モデル勝率曲線で見た各試合の流れです。列見出しを押すと並べ替え、試合を押すとその試合が開きます。',
+    gfGame: '試合', gfLength: '試合時間', gfLow: '勝者の最低勝率', gfGold: '勝者の最大ゴールド劣勢', gfSwing: '接戦指数', gfLead: 'リード交代', gfDecided: '決着時点',
+    gfNever: '常に優勢', gfWon: (w, date) => `${w}勝利${date ? ` · ${date}` : ''}`, gfOpen: title => `${title}を開く`,
+    gfHead: (w, low, at, swing) => `${w}の最低勝率 ${low}（${at}）· 接戦指数 ${swing}`, gfHeadTitle: (lowRank, swingRank, n) => `この大会${n}試合のうち、逆転幅${lowRank}位・接戦指数${swingRank}位。押すと試合ランキングが開きます。`,
+    gfNote: '試合終了後に、1秒単位のモデル勝率曲線（v312ベータ）から要約した値です。勝者の最低勝率、決着時点、リード交代は前後2秒の中央値で細かな揺れを除いて計算します。接戦指数は30秒区間の中央値が動いた幅の合計（pp）で、大きいほど勝率が大きく上下した試合です。リード交代は勝率55%以上のチームが入れ替わった回数、決着時点は勝者が最後に50%を下回った直後です。配信からゴールドを読めなかった区間は含みません。',
     cov:(n,m,k)=>`全<strong>${n}</strong>プレー中、ゴールド変化を測定できたものは<strong>${m}</strong>件、そのうち利益・損失を判定できたものは<strong>${k}</strong>件`, duration:'試合時間', horizon:'変化区間', sec:s=>`${s}秒`, metric:'表示指標', metricWps:'勝率', metricGold:'ゴールド', metricBoth:'両方', beta:'ベータ',
     guideTitle:'数字の読み方', guide:[['ゴールド変化','プレー開始から15・30・60秒の間に、実行したチームと相手のゴールド差がどれだけ広がったか、または縮んだかを示します。放送画面のチームゴールドから計算します。'],['重ねたWPSバー','明るい前面バーは即時WPS、薄い背面バーは選択した15・30・60秒の全体WPSです。方向が逆なら中央軸の両側に分かれます。'],['誤差±200','画面のチームゴールドは100単位に丸められるため生じる範囲です。この範囲内の変化は「不明」と表示します。'],['未測定','リプレイなどで開始時点または終了時点のゴールドを読み取れなかった場合です。'],['同じ時間帯と比較','同じ試合・同じフェーズの全30秒区間を集め、その分布内での位置を示します。効果の大きさではありません。'],['因果ではありません','同時刻に別の場所で起きた出来事もゴールド変化に含まれます。変化がそのプレーによるとは限りません。'],['チーム方向','試合の流れはブルー側基準で固定します。一覧のバーとチーム名が、どちらのチームにどれだけ有利だったかを直接示します。説明と判定は実況が示した実行チーム基準です。']],
     chartTitle:'試合の流れ', chartSub:(h,blue,red)=>`線はブルー側基準、棒は${h}秒の変化です。上${blue} · 下${red}。`, laneWinProb:team=>`${team}勝率`, laneWps:(h,blue,red)=>`${h}秒の勝率変化 · ↑${blue} / ↓${red}`,
@@ -1079,7 +1276,7 @@
     dvText:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}速く拡大（±${b}）`, dvTextNeg:(v,b,w)=>`プレー前後${w}秒を比べると1分当たりのゴールド差が${v}遅く拡大（±${b}）`, verification:'実況のみから整理し、動画では確認していません', retro:'後から振り返った場面', hzHead:'15・30・60秒の全体変化', wpsBoundary:'即時勝率変化', wpsBoundaryWindow:(pre,post)=>`開始前5秒窓の${pre}観測の中央値 → 終了後5秒窓の${post}観測の中央値`, wpsTotalNote:'プレー開始から各終点までの後続イベントをすべて含みます。', wpsMissing:'勝率を測る観測区間が不足しています', wpsProb:(a,b)=>`モデル勝率 ${a} → ${b}`, wpsCausal:'観測されたモデル状態の変化であり、このプレーだけの因果効果ではありません。', wpsCoverage:(im,total,n,h)=>`即時WPS <strong>${im}</strong> · ${h}秒全体 <strong>${total}</strong> / ${n}`, bothCoverage:(im,total,n,gm,gr,h)=>`即時WPS <strong>${im}</strong> · ${h}秒全体 <strong>${total}</strong> / ${n} · ゴールド <strong>${gm}</strong> · 方向判定 <strong>${gr}</strong>`, colWps:h=>`即時 · ${h}秒全体WPS`, colBoth:h=>`即時 · ${h}秒全体 · ゴールド`, wpsGuide:[['即時変化と全体変化','即時WPSは開始前5秒と終了後5秒の勝率中央値を比較します。全体WPSは開始から15・30・60秒の終点までの後続イベントを含みます。'],['ベータモデル','Worldsは凍結v312、MSIは凍結MSI分岐v156を使用し、新しい試合で再学習・再校正していません。'],['因果ではありません','同時刻の全状態変化がWPSに入るため、このプレーだけの効果ではありません。']], hzOk:b=>`誤差±${b}`, hzUnres:b=>`±${b}以内のため不明`,
     xtTitle:'タイプ別集計', xtSub:'各プレーは実行したチーム基準で一度だけ数えます。数字を押すと該当プレーが下に表示されます。', scope:'範囲', scopeGame:'選択した試合', scopeStage:'このシリーズ', scopeAll:'大会全体', rowsBy:'分け方', rFamily:'プレータイプ', rOutcome:'結果', rKill:'キル', rFamOut:'タイプ × 結果', rPlayer:'選手', rChamp:'チャンピオン', xtPlayerNote:'選手・チャンピオン別では、実行・対象・対応として関わったプレーをその選手のチーム視点で数えます。相手のプレーはゴールド変化の符号を反転します。複数の選手が関わるプレーは選手ごとに一度入り、実況が名前を挙げたものだけを数えます。', sortBy:c=>`${c}で並べ替え`, rowLabel:'項目', xtGames:'試合', xtPerGame:'1試合当たり', xtCum:'累計', total:'合計', usedBy:'使用者', played:'使用チャンピオン', games:n=>`${n}試合`, xtNote:'4列の合計が総数です。利益と損失は誤差範囲を超えて方向が明確な場合だけ数えます。これは観測されたゴールド変化であり、プレーの因果効果ではありません。', xtPick:'数字を押すと該当プレーがここに表示されます。',
     statsTitle:'このシリーズのチーム・選手',statsTitleGame:n=>`第${n}試合のチーム・選手`,statsSub:'現在のシリーズで実況が名前を挙げた重要場面を示します。他のチーム・選手との比較は別の比較画面で行います。',statsSubGame:'選択した試合で実況が名前を挙げた重要場面を示します。',compareTitle:'チーム・選手比較',compareSub:'シリーズ選択とは独立して、大会全体または直接対戦で比較します。',statsOpenCompare:'大会全体で比較 →',statsPlayerList:'このシリーズの選手',statsPlayerListGame:'この試合の選手',statsTeam:'チーム',statsPlayer:'選手',statsChamp:'チャンピオン',statsMetric:'指標',statsWps:'勝率変化',statsGold:'ゴールド変化',statsRadarTitle:'重要場面への関与プロフィール',statsRadarSub:(windowLabel,m)=>`1試合当たりの${windowLabel}${m}純変化 · 中央のリングは0`,statsGames:'試合',statsScenes:'測定場面',statsToward:'自チーム方向',statsMedian:'変化幅中央値',statsPerGame:'1試合当たり純変化',statsComparePlayer:'選手比較',statsCompareChamp:'チャンピオン比較',statsFingerprint:'プレー分布',statsGood:'自チームに有利',statsBad:'自チームに不利',statsRoles:'関与役割',statsTypes:'主なプレータイプ',statsGoldBreak:'変化方向の集計',statsTopScenes:'変化幅の大きい場面',statsCaveat:'一つのプレーは関与した各選手に一度ずつ入ります。重なる時間窓や同時イベントも含むため、個人貢献とは解釈しません。',statsBasis:'比較基準',statsBasisSeries:'現在のシリーズ',statsScopeSeries:n=>`シリーズ全体 · ${n}試合`,statsBasisH2h:'直接対戦',statsBasisAll:'大会全体',statsH2hUnavailable:'選択した2者の直接対戦はありません。',statsPickTeamA:'チームA',statsPickTeamB:'チームB',statsPickPlayerA:'選手A',statsPickPlayerB:'選手B',statsPosition:'ポジション',statsAllPositions:'全ポジション',statsCompareHint:'各値は選択範囲内で実際に出場した試合数で割ります。',statsNoData:'この比較で測定可能な場面はありません。',statsUnavailableInScope:name=>`この試合に${name}の測定可能な重要場面はありません。別の試合を選ぶか、シリーズ全体に戻ってください。`,statsOpenPlay:'プレーを開く',
-    statsNarrativeTitle:'データから見たプレーパターン',statsNarrativeScope:'実況が取り上げた測定場面',statsNarrativeCompareTitle:'選択対象の差',statsDiffTitle:'直接差（A − B）',statsDiffOverall:'全体',statsDiffLeft:label=>`${label}側`,statsDiffRight:label=>`${label}側`,statsDiffSample:(a,an,b,bn)=>`${a} ${an}試合 · ${b} ${bn}試合`,statsDiffNote:'点は1試合当たり純変化のA−B、半透明区間は試合を再標本化した95% bootstrap信頼区間です。0をまたぐ区間は方向が不確実です。',statsDiffPoint:(category,value,low,high,a,b,an,bn,paired)=>`${category} · ${a}−${b} ${value} · 95% bootstrap CI ${low}〜${high} · ${an}/${bn}試合${paired?' · 対戦試合でペア化':''}`,
+    statsNarrativeTitle:'データから見たプレーパターン',statsNarrativeScope:'実況が取り上げた測定場面',statsNarrativeCompareTitle:'選択対象の差',statsDiffTitle:'直接差（B − A）',statsDiffOverall:'全体',statsDiffLeft:label=>`${label}側`,statsDiffRight:label=>`${label}側`,statsDiffSample:(a,an,b,bn)=>`${a} ${an}試合 · ${b} ${bn}試合`,statsDiffNote:'点は1試合当たり純変化のB−Aで、点がある側の対象が上回っており、右の数値は上回った側とその差です。半透明区間は試合を再標本化した95% bootstrap信頼区間です。0をまたぐ区間は方向が不確実です。',statsDiffPoint:(category,value,low,high,a,b,an,bn,paired)=>`${category} · ${b}−${a} ${value} · 95% bootstrap CI ${low}〜${high} · ${an}/${bn}試合${paired?' · 対戦試合でペア化':''}`,
     statsDetailScopeFamily:'プレータイプ別',statsDetailScopeChampion:'チャンピオン別',statsDetailScopeTeamChampion:'チャンピオン関与場面別',statsDetailScopePhase:'時間帯別',statsDetailWithFamily:(objective,family)=>`${objective} ${family}`,statsChampionPlayerLabel:name=>`${name}使用`,statsChampionTeamLabel:name=>`${name}関与`,statsPhaseLegend:'マーカー色 · 時間帯',statsObjective:{dragon:'ドラゴン',baron:'バロン',herald:'ヘラルド',elder:'エルダードラゴン',atakhan:'アタカン',grubs:'ヴォイドグラブ'},statsNarrativeTeamGainDetail:(position,detail,value,scenes,games)=>`${position}関与場面を分けると、${detail}が1試合当たり${value}で最大の利益でした（${scenes}場面 · ${games}試合）。`,statsNarrativeTeamLossDetail:(position,detail,value,scenes,games)=>`${position}関与場面を分けると、${detail}が1試合当たり${value}で最大の損失でした（${scenes}場面 · ${games}試合）。`,statsNarrativePlayerGainLoss:(scope,high,highValue,highScenes,highGames,low,lowValue,lowScenes,lowGames)=>`${scope}では${high}が1試合当たり${highValue}で最も稼ぎ（${highScenes}場面 · ${highGames}試合）、${low}が${lowValue}で最も失いました（${lowScenes}場面 · ${lowGames}試合）。`,statsNarrativePlayerGainOnly:(scope,high,highValue,highScenes,highGames,low,lowValue,lowScenes,lowGames)=>`${scope}では${high}が1試合当たり${highValue}で最も稼ぎ（${highScenes}場面 · ${highGames}試合）、${low}が${lowValue}で純利益最小でした（${lowScenes}場面 · ${lowGames}試合）。`,statsNarrativePlayerLossOnly:(scope,high,highValue,highScenes,highGames,low,lowValue,lowScenes,lowGames)=>`${scope}では${high}が1試合当たり${highValue}で損失最小（${highScenes}場面 · ${highGames}試合）、${low}が${lowValue}で最も失いました（${lowScenes}場面 · ${lowGames}試合）。`,statsNarrativeChampionSparse:'反復標本が不足しているため、チャンピオン別統計を算出できません（2試合・2場面以上のチャンピオンが2体必要です）。',
     statsTopGainScenes:team=>`${team}に有利な場面（+）`,statsTopLossScenes:team=>`${team}に不利な場面（−）`,statsViewGainExample:actor=>`代表利益 · ${actor}の行動`,statsViewLossExample:actor=>`代表損失 · ${actor}の行動`,
     statsNarrativeTeamBoth:(gainPosition,gainValue,lossPosition,lossValue,windowLabel,metric)=>`1試合当たりの${windowLabel}${metric}純変化では、${gainPosition}関与場面の利益が最大（${gainValue}）、${lossPosition}関与場面の損失が最大でした（${lossValue}）。`,statsNarrativeTeamGainOnly:(position,value,windowLabel,metric)=>`1試合当たりの${windowLabel}${metric}純変化では、${position}関与場面の利益が最大でした（${value}）。純損失のポジションはありません。`,statsNarrativeTeamLossOnly:(position,value,windowLabel,metric)=>`1試合当たりの${windowLabel}${metric}純変化では、${position}関与場面の損失が最大でした（${value}）。純利益のポジションはありません。`,statsNarrativeTeamFlat:(windowLabel,metric)=>`1試合当たりの${windowLabel}${metric}では、明確なポジション別の純利益・純損失はありませんでした。`,statsNarrativePlayerLead:(role,roleN,total,family,familyN)=>`測定場面では${role}での関与が最も多く（${roleN}/${total}）、${family}タイプが最多でした（${familyN}/${total}）。`,statsNarrativeSparse:n=>`測定できる場面が${n}件だけのため、明確なプレーパターンは判断できません。`,
@@ -1143,7 +1340,7 @@
   const S = {
     lang: 'ko', theme: 'light', tourn: firstGame().tournament_id, view: 'set', stage: 'all', gameId: firstGame().id, playId: null,
     h: String(D.default_horizon_s), fFamily: '', fTag: '', fState: '', fPlayer: '', fHl: false, listSort: 'time',
-    xScope: 'all', xRows: 'family', xCell: null, xSort: { col: 'positive', rev: false }, guideOpen: false,
+    xScope: 'all', xRows: 'family', xCell: null, xSort: { col: 'positive', rev: false }, gSort: { col: 'low', rev: false }, rankTab: 'games', rankH: String(D.default_horizon_s), rankPhase: 'all', guideOpen: false,
     statsScope: 'stage', statsTab: 'team', statsMetric: 'wps', statsH: String(D.default_horizon_s), statsPick: '', statsCompare: '', statsRole: 'all', statsTeamA: '', statsTeamB: '',
     metric: WPS_INDEX ? (WPS_INDEX.display?.default_metric || 'both') : 'gold',
   };
@@ -1276,6 +1473,8 @@
     Object.entries(data.games).forEach(([gid, x]) => {
       const g = GAMES.find(y => y.id === gid);
       if (!ROSTER[gid]) addRoster(g, x.roster);
+      if (x.movement) MOVE[gid] = x.movement;
+      if (x.snowball) SNOW[gid] = x.snowball;
       LIGHT[gid] = x.plays.map(p => { p._game = g; if (!PLAY[p.id]) PLAY[p.id] = p; return p; });
     });
     tour._plays = true;
@@ -1330,6 +1529,11 @@
     if (q.get('play')) S.playId = q.get('play');
     if (q.get('view') === 'xtab') S.view = 'xtab';
     if (q.get('view') === 'compare') S.view = 'compare';
+    if (q.get('view') === 'games' && hasFlow(S.tourn)) S.view = 'games';
+    if (q.get('rank') === 'moments' && hasMoments(S.tourn)) S.rankTab = 'moments';
+    if (['instant', '15', '30', '60'].includes(q.get('rh'))) S.rankH = q.get('rh');
+    if (['all', 'lane', 'mid', 'late'].includes(q.get('rp'))) S.rankPhase = q.get('rp');
+    if (['label', 'length', 'low', 'gold', 'swing', 'lead', 'decided'].includes(q.get('gsort'))) S.gSort = { col: q.get('gsort'), rev: q.get('grev') === '1' };
     // Old global team/player links used view=stats. Preserve them by routing non-series scopes to Compare.
     if (q.get('view') === 'stats') S.view = ['h2h', 'all'].includes(q.get('scope')) ? 'compare' : 'stats';
     if (['15', '30', '60'].includes(q.get('h'))) S.h = q.get('h');
@@ -1351,6 +1555,8 @@
     if (S.view === 'compare') base.tourn = S.tourn; else base.game = S.gameId;
     const q = new URLSearchParams(base);
     if (S.playId && S.view === 'set') q.set('play', S.playId);
+    if (S.view === 'games' && S.rankTab === 'moments') { q.set('rank', 'moments'); q.set('rh', S.rankH); q.set('rp', S.rankPhase); }
+    else if (S.view === 'games') { q.set('gsort', S.gSort.col); if (S.gSort.rev) q.set('grev', '1'); }
     if (S.view === 'compare') {
       q.set('scope', S.statsScope); q.set('tab', S.statsTab); q.set('stat', S.statsMetric);
       q.set('sh', S.statsH);
@@ -1377,10 +1583,10 @@
   window.__umFlush = () => { while (umQueue.length) window.umami.track(...umQueue.shift()); };
   let lastView = '';
   function trackView() {
-    const url = S.view === 'xtab' ? `/totals/${S.tourn}` : S.view === 'compare' ? `/compare/${S.tourn}` : S.view === 'stats' ? (S.statsScope === 'game' ? `/game-stats/${S.gameId}` : `/series-stats/${seriesOf(game())}`) : `/game/${S.gameId}`;
+    const url = S.view === 'xtab' ? `/totals/${S.tourn}` : S.view === 'games' ? `/${S.rankTab === 'moments' ? 'moments' : 'games'}/${S.tourn}` : S.view === 'compare' ? `/compare/${S.tourn}` : S.view === 'stats' ? (S.statsScope === 'game' ? `/game-stats/${S.gameId}` : `/series-stats/${seriesOf(game())}`) : `/game/${S.gameId}`;
     if (url === lastView) return;
     lastView = url;
-    const title = S.view === 'xtab' ? `Totals · ${S.tourn}` : S.view === 'compare' ? `Compare · ${S.tourn}` : S.view === 'stats' ? (S.statsScope === 'game' ? `Game teams & players · ${S.gameId}` : `Series teams & players · ${seriesOf(game())}`) : `${game().title_en} · ${game().tournament_id}`;
+    const title = S.view === 'xtab' ? `Totals · ${S.tourn}` : S.view === 'games' ? `${S.rankTab === 'moments' ? 'Moment' : 'Game'} rankings · ${S.tourn}` : S.view === 'compare' ? `Compare · ${S.tourn}` : S.view === 'stats' ? (S.statsScope === 'game' ? `Game teams & players · ${S.gameId}` : `Series teams & players · ${seriesOf(game())}`) : `${game().title_en} · ${game().tournament_id}`;
     um(props => ({ ...props, url, title }));
   }
 
@@ -1406,6 +1612,21 @@
   const stateCls = s => (s === 'positive' ? 'gain' : s === 'negative' ? 'loss' : 'neutral');
   const tagCls = tg => (!tg ? 'neutral' : tg.endsWith('gain') ? 'gain' : tg.endsWith('loss') ? 'loss' : 'neutral');
   const eText = h => (h.state === 'missing' ? L('state', 'missing') : fmtG(h.e));
+
+  // ------------------------------------------------------------------ game flow
+  // How the game went on the model curve, read after it ended: the winner's low point and the total movement.
+  const pct1 = p => `${(100 * p).toFixed(1)}%`;
+  const flowRank = (g, value) => {
+    const mine = value(flowOf(g));
+    return 1 + gamesIn(g.tournament_id).filter(x => flowOf(x) && value(flowOf(x)) > mine).length;
+  };
+  const flowHead = g => {
+    const f = flowOf(g);
+    if (!f) return '';
+    const n = gamesIn(g.tournament_id).filter(flowOf).length;
+    const title = t('gfHeadTitle')(flowRank(g, x => -x.winner_min_p), flowRank(g, x => x.swing_total_pp), n);
+    return `<button type="button" class="match-flow" data-open-games title="${esc(title)}">${esc(t('gfHead')(g.winner, pct1(f.winner_min_p), fmtClock(f.winner_min_gc), Math.round(f.swing_total_pp)))}</button>`;
+  };
 
   // ------------------------------------------------------------------ chrome
   function renderChrome() {
@@ -1448,10 +1669,10 @@
     const vc = document.getElementById('compareTab');
     const se = document.getElementById('series');
     vn.style.display = planned ? 'none' : '';
-    se.style.display = planned || S.view === 'compare' ? 'none' : '';
+    se.style.display = planned || ['compare', 'games'].includes(S.view) ? 'none' : '';
     if (planned) return;
     const primaryView = S.view === 'stats' ? 'set' : S.view;
-    vt.innerHTML = [['set', t('viewSet')], ['xtab', t('viewXtab')]].map(([k, v]) => `<button data-v="${k}" class="${primaryView === k ? 'on' : ''}">${v}</button>`).join('');
+    vt.innerHTML = [['set', t('viewSet')], ['xtab', t('viewXtab')], ...(hasFlow(S.tourn) ? [['games', t('viewGames')]] : [])].map(([k, v]) => `<button data-v="${k}" class="${primaryView === k ? 'on' : ''}">${v}</button>`).join('');
     vt.querySelectorAll('button').forEach(b => b.onclick = () => {
       S.view = b.dataset.v;
       render();
@@ -1464,7 +1685,7 @@
       if (!['team', 'player'].includes(S.statsTab)) S.statsTab = 'team';
       render();
     };
-    if (S.view === 'compare') { se.innerHTML = ''; return; }
+    if (['compare', 'games'].includes(S.view)) { se.innerHTML = ''; return; }
 
     // Series latest first, in a grouped list (bracket stage, then play-in) with steps to the neighbouring series;
     // the selected series' games sit beside it, each with a bar in the winner's side colour.
@@ -1491,7 +1712,7 @@
       </div>
       ${S.view === 'stats' ? `<div class="games"><button class="gbtn stats-all ${S.statsScope === 'stage' ? 'on' : ''}" data-stats-scope="stage">${esc(t('statsScopeSeries')(gamesOf(cur).length))}</button>${gamesOf(cur).map(g => `<button class="gbtn ${S.statsScope === 'game' && g.id === S.gameId ? 'on' : ''}" data-stats-game="${g.id}" title="${esc(t('gameAria')(g.game_num, g.winner))}" aria-label="${esc(t('gameAria')(g.game_num, g.winner))}">${g.game_num}<span class="win" style="background:var(${g.winner === g.blue_team ? '--blue-team' : '--red-team'})"></span></button>`).join('')}</div><span class="ser-count">${esc(selectedGame.blue_team)} vs ${esc(selectedGame.red_team)}</span>` : `<div class="games">${gamesOf(cur).map(g => `<button class="gbtn ${g.id === S.gameId ? 'on' : ''}" data-g="${g.id}" title="${esc(t('gameAria')(g.game_num, g.winner))}" aria-label="${esc(t('gameAria')(g.game_num, g.winner))}">${g.game_num}<span class="win" style="background:var(${g.winner === g.blue_team ? '--blue-team' : '--red-team'})"></span></button>`).join('')}</div><span class="ser-count">${t('serCount')(ci + 1, series.length)}</span>`}
       ${['set', 'stats'].includes(S.view) ? `<button type="button" class="btn series-context-action" id="contextAction" data-context="${S.view === 'set' ? 'stats' : 'set'}">${esc(t(S.view === 'set' ? 'contextOpenStats' : 'contextBackGame'))}</button>` : ''}
-      ${S.view === 'set' ? `<span class="game-summary"><span class="matchup"><button type="button" class="team-link team-blue" data-stats-team="${esc(selectedGame.blue_team)}" data-other-team="${esc(selectedGame.red_team)}">${esc(selectedGame.blue_team)}</button><span class="muted"> vs </span><button type="button" class="team-link team-red" data-stats-team="${esc(selectedGame.red_team)}" data-other-team="${esc(selectedGame.blue_team)}">${esc(selectedGame.red_team)}</button></span><span class="match-meta">${esc(t('gameNav')(selectedGame.game_num, selectedGame.winner, fmtClock(selectedGame.duration_gc)))}</span></span>` : ''}`;
+      ${S.view === 'set' ? `<span class="game-summary"><span class="matchup"><button type="button" class="team-link team-blue" data-stats-team="${esc(selectedGame.blue_team)}" data-other-team="${esc(selectedGame.red_team)}">${esc(selectedGame.blue_team)}</button><span class="muted"> vs </span><button type="button" class="team-link team-red" data-stats-team="${esc(selectedGame.red_team)}" data-other-team="${esc(selectedGame.blue_team)}">${esc(selectedGame.red_team)}</button></span><span class="match-meta">${esc(t('gameNav')(selectedGame.game_num, selectedGame.winner, fmtClock(selectedGame.duration_gc)))}</span>${flowHead(selectedGame)}</span>` : ''}`;
     const openGame = id => {
       S.gameId = id; S.playId = null; S.xCell = null; S.fPlayer = '';
       if (S.view !== 'stats' || S.statsScope === 'stage') { S.statsPick = S.statsCompare = S.statsTeamA = S.statsTeamB = ''; S.statsRole = 'all'; }
@@ -1503,6 +1724,7 @@
     se.querySelectorAll('[data-stats-scope]').forEach(b => b.onclick = () => { S.statsScope = b.dataset.statsScope; S.statsTeamA = S.statsTeamB = ''; render(); });
     se.querySelectorAll('[data-context]').forEach(b => b.onclick = () => { S.view = b.dataset.context; if (S.view === 'stats') { S.statsScope = 'stage'; if (!['team', 'player'].includes(S.statsTab)) S.statsTab = 'team'; } render(); });
     se.querySelectorAll('[data-stats-team]').forEach(b => b.onclick = () => openStatsEntity('team', b.dataset.statsTeam, b.dataset.otherTeam, 'game'));
+    se.querySelectorAll('[data-open-games]').forEach(b => b.onclick = () => { S.view = 'games'; S.rankTab = 'games'; render(); window.scrollTo({ top: 0 }); });
     // The bar is rebuilt on every render, so keep keyboard focus on the control that was used.
     const refocus = id => { const el = document.getElementById(id); if (el && !el.disabled) el.focus(); };
     se.querySelector('#serSel').onchange = e => { openSeries(e.target.value); refocus('serSel'); };
@@ -1613,7 +1835,11 @@
     const svg = document.getElementById('chart');
     const W = Math.max(320, Math.round(svg.parentElement.clientWidth || 1200));
     const narrow = W < 640;
-    const padL = narrow ? 58 : 72, padR = 12, top = 10, sep = 28;
+    // The lane labels sit left of the plot; the margin grows for a language whose labels are wider than the default.
+    const measure = renderChart.measure || (renderChart.measure = document.createElement('canvas').getContext('2d'));
+    measure.font = `12px ${css('--font')}`;
+    const laneLabel = Math.ceil(Math.max(measure.measureText(t('laneFlow')).width, measure.measureText(t('laneObj')).width));
+    const padL = Math.max(narrow ? 66 : 72, laneLabel + 16), padR = 12, top = 10, sep = 28;
     const curveH = narrow ? 125 : 155, barH = narrow ? 72 : 88;
     const laneH = 22, lanes = 2, bottom = 24;
     const showWps = S.metric !== 'gold' && !!g._wps;
@@ -1974,6 +2200,21 @@
       else values = `<div class="metric-pair"><span><small>WPS</small><span class="val ${wpsClass}">${w ? fmtPP(w.observed_wps_pp) : '—'}</span></span><span><small>${t('metricGold')}</small><span class="val ${stateCls(h.state)}">${eText(h)}</span></span></div><div class="note">${w ? esc(t('wpsProb')(fmtProb(w.p_actor_start), fmtProb(w.p_actor_end))) : t('wpsMissing')} · ${esc(goldNote)}</div>`;
       return `<button class="hz ${S.h === String(hs) ? 'on' : ''}" data-h="${hs}"><div class="lbl">${t('sec')(hs)}</div>${values}</button>`;
     }).join('');
+    // What each team earned over the chosen window; the gold change above is their difference.
+    const income = v.hz[S.h];
+    const opponent = opponentOf(g, p.actor);
+    const incomeHtml = S.metric !== 'wps' && opponent && income.state !== 'missing' && income.actor_income != null && income.opponent_income != null
+      ? (() => {
+        const sum = income.actor_income + income.opponent_income;
+        const share = sum ? 100 * income.actor_income / sum : 50;
+        const cls = team => (team === g.blue_team ? 'blue' : 'red');
+        return `<div class="income" title="${esc(t('incomeNote'))}">
+          <span class="income-lbl">${esc(t('incomeHead')(S.h))}</span>
+          <span class="income-row"><span class="team-${cls(p.actor)}">${esc(p.actor)} <b>+${income.actor_income.toLocaleString()}</b></span>
+            <span class="income-bar${sum ? '' : ' empty'}" aria-hidden="true"><i class="${cls(p.actor)}" style="width:${share}%"></i><i class="${cls(opponent)}" style="width:${100 - share}%"></i></span>
+            <span class="team-${cls(opponent)}"><b>+${income.opponent_income.toLocaleString()}</b> ${esc(opponent)}</span></span>
+        </div>`;
+      })() : '';
     const wps = wpsOf(p);
     const boundary = wps?.boundary;
     const boundaryValid = boundary && wps.status === 'valid' && boundary.wps_pp != null;
@@ -2045,6 +2286,7 @@
       ${S.metric !== 'gold' && g._wps ? `<div class="wps-hero"><div class="top"><span><strong>${t('wpsBoundary')}</strong> <span class="metric-beta">${esc(g._wps.model_version)} ${t('beta')}</span></span><span class="value ${boundaryClass}">${boundaryValue == null ? '—' : fmtPP(boundaryValue)}</span></div><div class="prob">${boundaryValid ? esc(t('wpsProb')(fmtProb(boundaryBefore), fmtProb(boundaryAfter))) : t('wpsMissing')}</div>${boundaryValid ? `<div class="window">${esc(t('wpsBoundaryWindow')(boundary.pre_observed_seconds, boundary.post_observed_seconds))}</div>` : ''}<div class="model-note">${t('wpsCausal')}</div></div>` : ''}
       <div class="hz-head"><strong>${t('hzHead')}</strong>${S.metric !== 'gold' && g._wps ? `<span>${t('wpsTotalNote')}</span>` : ''}</div>
       <div class="horizons" aria-label="${esc(t('hzHead'))}">${hzHtml}</div>
+      ${incomeHtml}
       ${involvedOf(p).length ? `<p class="players">${INV_ROLES.map(r => [r, involvedOf(p).filter(x => x.role === r)]).filter(([, xs]) => xs.length)
         .map(([r, xs]) => `<span class="role-lbl">${esc(L('inv', r))}</span> ${xs.map(x => `<button class="linkbtn" data-player="${esc(x.player)}">${esc(playerText(g, x.player))}</button>`).join(', ')}`).join('<br>')}</p>` : ''}
       <p class="desc">${esc(contentText(p, 'desc'))}</p>
@@ -2376,6 +2618,123 @@
     syncPressed();
   }
 
+  // ------------------------------------------------------------------ game rankings
+  // One row per game of the tournament. Every column's first click puts the most eventful game on top:
+  // the lowest low, the largest deficit, the most movement, the latest decision.
+  const rankSwitch = () => (hasMoments(S.tourn)
+    ? `<div class="controls rank-switch"><div class="seg" id="rankTab" role="group" aria-label="${esc(t('rkTabs'))}">${[['games', t('rkGames')], ['moments', t('rkMoments')]].map(([k, v]) => `<button data-rank="${k}" class="${S.rankTab === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div></div>`
+    : '');
+  const wireRankSwitch = main => main.querySelectorAll('#rankTab button').forEach(b => b.onclick = () => { S.rankTab = b.dataset.rank; render(); });
+
+  // The largest win-probability swings of the tournament, one row per moment, in the favoured team's frame.
+  function renderMoments() {
+    const rows = ((TOP[S.tourn] || {})[S.rankH]?.[S.rankPhase] || []).map(([id, v, a, b]) => ({ p: PLAY[id], v, a, b })).filter(x => x.p);
+    const windows = [['instant', t('listInstant')], ...D.horizons_s.map(h => [String(h), t('sec')(h)])];
+    const phases = [['all', t('prAll')], ...['lane', 'mid', 'late'].map(k => [k, t('prPhases')[k]])];
+    const gap = WPS_INDEX.top_moments.min_anchor_gap_s?.[S.rankH] ?? Number(S.rankH);
+    const main = document.getElementById('main');
+    main.innerHTML = `
+      <section class="card">
+        ${rankSwitch()}
+        <h1 class="xt-title">${t('prTitle')} <span class="sub">${t('prSub')}</span></h1>
+        <div class="controls" style="margin-top:0;margin-bottom:12px">
+          <span class="nav-label">${t('horizon')}</span>
+          <div class="seg" id="rankH">${windows.map(([k, v]) => `<button data-k="${k}" class="${S.rankH === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
+          <span class="nav-label">${t('prPhase')}</span>
+          <div class="seg" id="rankPhase">${phases.map(([k, v]) => `<button data-k="${k}" class="${S.rankPhase === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
+        </div>
+        ${rows.length ? `<div class="scroll-x"><table class="xt gf pr">
+          <thead><tr><th>${t('prRank')}</th><th>${t('prMoment')}</th><th class="len">${t('rFamily')}</th><th>${t('prSwing')}</th></tr></thead>
+          <tbody>${rows.map(({ p, v, a, b }, i) => {
+            const g = p._game;
+            const team = (v >= 0 ? p.actor : opponentOf(g, p.actor)) || p.actor || '';
+            const [from, to] = v >= 0 ? [a, b] : [1 - a, 1 - b];
+            const where = `${contentText(g, 'stage')} · ${g.blue_team} vs ${g.red_team} · ${t('gameN')(g.game_num)}`;
+            return `<tr data-play="${esc(p.id)}">
+              <td>${i + 1}</td>
+              <td><button type="button" class="game-open" aria-label="${esc(t('gfOpen')(`${clock(p)} ${contentText(p, 'title')}`))}"><span class="at clock">${clock(p)}</span>${esc(p.actor || '?')} · ${esc(contentText(p, 'title'))}</button>
+                <div class="rsub">${esc(where)}</div></td>
+              <td class="len">${famChip(p.family, famLabel(p.family), 'dot')}</td>
+              <td class="key"><span class="${team === g.blue_team ? 'team-blue' : team === g.red_team ? 'team-red' : ''}">${esc(team)}</span> +${Math.abs(v).toFixed(1)}pp
+                <div class="rsub">${Math.round(100 * from)}% → ${Math.round(100 * to)}%</div></td></tr>`;
+          }).join('')}</tbody>
+        </table></div>` : `<p class="empty">${t('prEmpty')}</p>`}
+        <p class="note-box">${t('prNote')(Math.round(D.phases.lane_end_s / 60), Math.round(D.phases.mid_end_s / 60), gap)} ${t('wpsCausal')}</p>
+      </section>`;
+    wireRankSwitch(main);
+    main.querySelectorAll('#rankH button').forEach(b => b.onclick = () => { S.rankH = b.dataset.k; renderMoments(); });
+    main.querySelectorAll('#rankPhase button').forEach(b => b.onclick = () => { S.rankPhase = b.dataset.k; renderMoments(); });
+    main.querySelectorAll('tr[data-play]').forEach(row => row.onclick = () => {
+      const p = PLAY[row.dataset.play];
+      S.view = 'set'; S.gameId = p._game.id; S.playId = p.id; S.xCell = null; S.fPlayer = '';
+      um('moment-rank-open', { game: S.gameId, window: S.rankH, phase: S.rankPhase });
+      render(); window.scrollTo({ top: 0 });
+    });
+    writeHash();
+    syncPressed();
+  }
+
+  function renderGames() {
+    const { col, rev } = S.gSort;
+    const value = {
+      length: g => g.duration_gc || 0,
+      low: g => -flowOf(g).winner_min_p,
+      gold: g => flowOf(g).winner_max_gold_deficit,
+      swing: g => flowOf(g).swing_total_pp,
+      lead: g => flowOf(g).lead_changes,
+      decided: g => flowOf(g).decided_gc ?? -1,
+    }[col];
+    const latestFirst = (a, b) => seriesOf(b).localeCompare(seriesOf(a)) || a.game_num - b.game_num;
+    const order = (a, b) => (value ? value(b) - value(a) : 0) || latestFirst(a, b);
+    const rows = gamesIn(S.tourn).filter(flowOf).sort((a, b) => (rev ? -1 : 1) * order(a, b));
+    const sortTh = (c, text) => {
+      const on = col === c;
+      const up = (c === 'low') !== rev;  // the lowest probability first reads as ascending
+      const aria = on ? ` aria-sort="${up ? 'ascending' : 'descending'}"` : '';
+      return `<th${c === 'length' ? ' class="len"' : ''}${aria}><button type="button" class="sort" data-sort="${c}" aria-label="${esc(t('sortBy')(text))}">${esc(text)}<span class="arr" aria-hidden="true">${on ? (up ? '↑' : '↓') : ''}</span></button></th>`;
+    };
+    const at = s => `<span class="at">${s == null ? '' : fmtClock(s)}</span>`;
+    const main = document.getElementById('main');
+    main.innerHTML = `
+      <section class="card">
+        ${rankSwitch()}
+        <h1 class="xt-title">${t('gfTitle')} <span class="sub">${t('gfSub')}</span></h1>
+        <div class="scroll-x"><table class="xt gf">
+          <thead><tr>${sortTh('label', t('gfGame'))}${sortTh('length', t('gfLength'))}${sortTh('low', t('gfLow'))}${sortTh('gold', t('gfGold'))}${sortTh('swing', t('gfSwing'))}${sortTh('lead', t('gfLead'))}${sortTh('decided', t('gfDecided'))}</tr></thead>
+          <tbody>${rows.map(g => {
+            const f = flowOf(g);
+            const side = team => (team === g.blue_team ? 'team-blue' : 'team-red');
+            const name = `${contentText(g, 'stage')} · ${contentText(g, 'title')}`;
+            return `<tr data-open="${esc(g.id)}" class="${g.id === S.gameId ? 'cur' : ''}">
+              <td><button type="button" class="game-open" aria-label="${esc(t('gfOpen')(name))}"><span class="chip">${esc(contentText(g, 'stage'))}</span><span class="team-blue">${esc(g.blue_team)}</span> vs <span class="team-red">${esc(g.red_team)}</span> · ${esc(t('gameN')(g.game_num))}</button>
+                <div class="rsub"><span class="${side(g.winner)}">${esc(g.winner)}</span>${esc(t('gfWon')('', g.date))}</div></td>
+              <td class="len">${g.duration_gc ? fmtClock(g.duration_gc) : '—'}</td>
+              <td class="${col === 'low' ? 'key' : ''}">${pct1(f.winner_min_p)}${at(f.winner_min_gc)}</td>
+              <td class="${col === 'gold' ? 'key' : ''}">${f.winner_max_gold_deficit ? `−${f.winner_max_gold_deficit.toLocaleString()}` : '—'}${at(f.winner_max_gold_deficit ? f.winner_max_gold_deficit_gc : null)}</td>
+              <td class="${col === 'swing' ? 'key' : ''}">${Math.round(f.swing_total_pp)}</td>
+              <td class="${col === 'lead' ? 'key' : ''}">${f.lead_changes}</td>
+              <td class="${col === 'decided' ? 'key' : ''}">${f.decided_gc == null ? esc(t('gfNever')) : fmtClock(f.decided_gc)}</td></tr>`;
+          }).join('')}</tbody>
+        </table></div>
+        <p class="note-box">${t('gfNote')}</p>
+      </section>`;
+    main.querySelectorAll('th .sort').forEach(b => b.onclick = () => {
+      const c = b.dataset.sort;
+      S.gSort = { col: c, rev: S.gSort.col === c ? !S.gSort.rev : false };
+      renderGames();
+      const again = document.querySelector(`th .sort[data-sort="${c}"]`);
+      if (again) again.focus();
+    });
+    wireRankSwitch(main);
+    main.querySelectorAll('tr[data-open]').forEach(row => row.onclick = () => {
+      S.view = 'set'; S.gameId = row.dataset.open; S.playId = null; S.xCell = null; S.fPlayer = '';
+      um('game-rank-open', { game: S.gameId, sort: S.gSort.col });
+      render(); window.scrollTo({ top: 0 });
+    });
+    writeHash();
+    syncPressed();
+  }
+
   // ------------------------------------------------------------------ team and player statistics
   // These views describe who the commentary named in large observed state changes. They deliberately do not
   // divide a play's value among people: the same play can appear for every named participant.
@@ -2458,6 +2817,12 @@
     const raw = S.statsMetric === 'wps' ? (S.statsH === 'instant' ? wps?.wps_pp : wps?.observed_wps_pp) : p.horizons?.[S.statsH]?.e;
     if (raw == null || (S.statsMetric === 'gold' && p.horizons[S.statsH].state === 'missing')) return null;
     return team === p.actor ? raw : -raw;
+  }
+  // The team's modeled win probability when the moment began, for the same window as statValue.
+  function statStartProb(p, team) {
+    if (!p.actor || !team) return null;
+    const actor = S.statsH === 'instant' ? wpsBoundaryOf(p)?.p_actor_before : wpsHorizon(p, S.statsH)?.p_actor_start;
+    return actor == null ? null : team === p.actor ? actor : 1 - actor;
   }
   function statState(p, team, value) {
     if (value == null) return 'missing';
@@ -2785,7 +3150,9 @@
     const dimensions = teamMode ? [['all', t('statsDiffOverall')], ...STAT_POSITIONS.map(pos => [pos, posLabel(pos)])] : [['all', t('statsDiffOverall')], ...INV_ROLES.map(role => [role, L('inv', role)])];
     const rows = dimensions.map(([key, label]) => {
       const aSeries = comparisonGameSeries(a, key, teamMode), bSeries = comparisonGameSeries(b, key, teamMode);
-      return { key, label, ...bootstrapDifference(aSeries, bSeries, `${aLabel}|${bLabel}|${key}|${S.statsMetric}|${S.statsH}|${S.statsScope}`) };
+      const d = bootstrapDifference(aSeries, bSeries, `${aLabel}|${bLabel}|${key}|${S.statsMetric}|${S.statsH}|${S.statsScope}`);
+      // Reported as B − A: A's selector and panel are on the left, B's on the right, and so are the chart's sides.
+      return d ? { key, label, ...d, point: -d.point, low: -d.high, high: -d.low } : { key, label };
     }).filter(row => row.point != null);
     if (!rows.length) return '';
     const rawMax = Math.max(...rows.flatMap(row => [Math.abs(row.point), Math.abs(row.low), Math.abs(row.high)]), S.statsMetric === 'wps' ? 1 : 100);
@@ -2793,12 +3160,14 @@
     const max = Math.ceil(rawMax / step) * step, xOf = value => 100 * (Math.max(-max, Math.min(max, value)) + max) / (2 * max);
     const rowHtml = rows.map(row => {
       const point = xOf(row.point), low = xOf(row.low), high = xOf(row.high), uncertain = row.low <= 0 && row.high >= 0;
-      const side = uncertain ? 'uncertain' : row.point >= 0 ? 'side-a' : 'side-b', barLeft = Math.min(50, point), barWidth = Math.max(.7, Math.abs(point - 50));
+      const side = uncertain ? 'uncertain' : row.point >= 0 ? 'side-b' : 'side-a', barLeft = Math.min(50, point), barWidth = Math.max(.7, Math.abs(point - 50));
+      // The figure names whichever is ahead, so nobody has to remember the order of the subtraction.
+      const ahead = row.point > 0 ? bLabel : row.point < 0 ? aLabel : '';
       const title = t('statsDiffPoint')(row.label, fmtStat(row.point), fmtStat(row.low), fmtStat(row.high), aLabel, bLabel, row.nA, row.nB, row.paired);
-      return `<div class="stats-difference-row"><span>${esc(row.label)}</span><div class="stats-difference-track" role="img" aria-label="${esc(title)}" title="${esc(title)}"><i class="zero"></i><i class="ci" style="left:${low.toFixed(2)}%;width:${Math.max(.7, high - low).toFixed(2)}%"></i><i class="bar ${side}" style="left:${barLeft.toFixed(2)}%;width:${barWidth.toFixed(2)}%"></i><i class="point ${side}" style="left:${point.toFixed(2)}%"></i></div><strong class="${side}">${esc(fmtStat(row.point))}</strong></div>`;
+      return `<div class="stats-difference-row"><span>${esc(row.label)}</span><div class="stats-difference-track" role="img" aria-label="${esc(title)}" title="${esc(title)}"><i class="zero"></i><i class="ci" style="left:${low.toFixed(2)}%;width:${Math.max(.7, high - low).toFixed(2)}%"></i><i class="bar ${side}" style="left:${barLeft.toFixed(2)}%;width:${barWidth.toFixed(2)}%"></i><i class="point ${side}" style="left:${point.toFixed(2)}%"></i></div><strong class="${side}">${ahead ? `<span>${esc(ahead)}</span> +${esc(fmtStatAbs(row.point))}` : esc(fmtStat(row.point))}</strong></div>`;
     }).join('');
     const sample = rows[0];
-    return `<section class="stats-difference"><div class="stats-difference-head"><strong>${esc(t('statsDiffTitle'))}</strong><span>${esc(t('statsDiffSample')(aLabel, sample.nA, bLabel, sample.nB))}</span></div><div class="stats-difference-axis"><span></span><span class="scale"><b class="side-b">${esc(t('statsDiffLeft')(bLabel))}</b><i>0</i><b class="side-a">${esc(t('statsDiffRight')(aLabel))}</b></span><span></span></div><div class="stats-difference-rows">${rowHtml}</div><p class="stats-difference-note">${esc(t('statsDiffNote'))}</p></section>`;
+    return `<section class="stats-difference"><div class="stats-difference-head"><strong>${esc(t('statsDiffTitle'))}</strong><span>${esc(t('statsDiffSample')(aLabel, sample.nA, bLabel, sample.nB))}</span></div><div class="stats-difference-axis"><span></span><span class="scale"><b class="side-a">${esc(t('statsDiffLeft')(aLabel))}</b><i>0</i><b class="side-b">${esc(t('statsDiffRight')(bLabel))}</b></span><span></span></div><div class="stats-difference-rows">${rowHtml}</div><p class="stats-difference-note">${esc(t('statsDiffNote'))}</p></section>`;
   }
   function teamProfile(team, gs) {
     const teamGames = gs.filter(g => g.blue_team === team || g.red_team === team);
@@ -2933,9 +3302,86 @@
       <svg class="stats-timeline-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t('statsTimelineTitle'))}"><rect x="${left}" y="${top}" width="${right - left}" height="${yOf(0) - top}" fill="var(--gain)" opacity=".035"/><rect x="${left}" y="${yOf(0)}" width="${right - left}" height="${bottom - yOf(0)}" fill="var(--loss)" opacity=".035"/>${grid}${series}${xLabels}</svg>
       <div class="stats-timeline-legend">${STAT_POSITIONS.map(pos => `<span><i style="background:${POSITION_COLORS[pos]}"></i>${esc(posLabel(pos))}</span>`).join('')}</div><p class="stats-timeline-note">${esc(t('statsTimelineNote'))}</p></div>`;
   }
+  // Zone shares from the minimap. A player's own games are summed; the reference is every player of the same
+  // position over the whole event, because the shares depend on the position far more than on the player.
+  const MOVE_MIN_S = 300;
+  const sumMovement = entries => entries.reduce((sum, m) => (m ? { seen: sum.seen + m.seen, enemy: sum.enemy + m.enemy, pair: sum.pair + (m.pair || 0), apart: sum.apart + (m.apart || 0) } : sum), { seen: 0, enemy: 0, pair: 0, apart: 0 });
+  const movementOf = (player, gameIds) => sumMovement(gameIds.map(id => MOVE[id]?.[player]));
+  const movementReference = position => sumMovement(statsEventGames().flatMap(g => Object.values(ROSTER[g.id] || {}).filter(r => r.position === position).map(r => MOVE[g.id]?.[r.player])));
+  function movementTiles(row) {
+    const position = topKey(row.positions), mine = movementOf(row.key, [...row.games]), ref = movementReference(position);
+    const tile = (label, n, d, rn, rd) => `<div class="stats-mini" title="${esc(t('statsMoveNote'))}"><small>${esc(label)}</small><strong>${pct0(n, d)}</strong>${rd >= MOVE_MIN_S ? `<small>${esc(t('statsPosAvg')(posLabel(position), pct0(rn, rd)))}</small>` : ''}</div>`;
+    return (mine.seen >= MOVE_MIN_S ? tile(t('statsEnemyHalf'), mine.enemy, mine.seen, ref.enemy, ref.seen) : '')
+      + (position === 'support' && mine.pair >= MOVE_MIN_S ? tile(t('statsApart'), mine.apart, mine.pair, ref.apart, ref.pair) : '');
+  }
+  // How a team's moments went by where it stood when they began. A trailing side has more room to rise, so each
+  // mean is shown beside the mean of the other teams in the same situation; small samples show no mean.
+  const SITUATIONS = ['behind', 'even', 'ahead'];
+  const SITUATION_MIN = 5;
+  const situationOf = prob => (prob == null ? null : prob < .4 ? 'behind' : prob > .6 ? 'ahead' : 'even');
+  function teamSituationHtml(profile, gs) {
+    if (S.statsMetric !== 'wps') return '';
+    const bucket = list => Object.fromEntries(SITUATIONS.map(k => [k, list.filter(x => x.situ === k)]));
+    const mine = bucket(profile.moments.map(m => ({ value: m.value, situ: situationOf(statStartProb(m.p, profile.team)) })));
+    if (!SITUATIONS.some(k => mine[k].length)) return '';
+    const ref = bucket(teamReferenceObs(gs, profile.team).map(o => ({ value: statValue(o.p, o.team), situ: situationOf(statStartProb(o.p, o.team)) })));
+    const mean = xs => (xs.length >= SITUATION_MIN ? xs.reduce((sum, x) => sum + x.value, 0) / xs.length : null);
+    const cell = value => (value == null ? '—' : fmtStat(value));
+    return `<div class="stats-situ"><h4>${esc(t('statsSitu'))} <span class="sub">${esc(t('statsSituSub'))}</span></h4>
+      <table><thead><tr><th></th><th>${esc(t('statsSituN'))}</th><th>${esc(t('statsGood'))}</th><th>${esc(t('statsSituMean'))}</th><th>${esc(t('statsSituRef'))}</th></tr></thead>
+      <tbody>${SITUATIONS.map(k => `<tr><td>${esc(t('statsSituRows')[k])}</td><td>${mine[k].length}</td><td>${pct0(mine[k].filter(x => x.value > 0).length, mine[k].length)}</td><td><b>${esc(cell(mean(mine[k])))}</b></td><td>${esc(cell(mean(ref[k])))}</td></tr>`).join('')}</tbody></table>
+      <p>${esc(t('statsSituNote'))}</p></div>`;
+  }
+  // Rolling and stopping a gold lead: how often the first lead was extended or pulled back, and the lead's growth
+  // against the event's expectation, for the games in scope and adjusted for opponents over the whole event.
+  const SNOW_ADJ_MIN_GAMES = 3;
+  function teamSnowballHtml(profile) {
+    const rule = D.snowball, records = profile.gameIds.map(id => SNOW[id]).filter(Boolean);
+    if (!rule || !records.length) return '';
+    const firsts = records.map(r => r.conversion).filter(Boolean);
+    const led = firsts.filter(c => c.leader === profile.team), trailed = firsts.filter(c => c.trailer === profile.team);
+    const share = (n, d) => (d ? `${n}/${d}` : '—');
+    // A team's figure weights each game by its minutes, so the event's average is zero and a lead held for two
+    // minutes does not count like one held for twenty. The interval resamples games.
+    const growth = key => {
+      const games = records.map(r => r.growth?.[profile.team]?.[key]).filter(Boolean);
+      const minutes = games.reduce((sum, g) => sum + g.minutes, 0);
+      if (!minutes) return null;
+      const mean = games.reduce((sum, g) => sum + g.mean * g.minutes, 0) / minutes;
+      if (games.length < 2) return { mean, games: games.length };
+      const random = seededRandom(stableSeed(`snow|${profile.team}|${key}|${profile.gameIds.join(',')}`)), draws = [];
+      for (let draw = 0; draw < 1000; draw += 1) {
+        let total = 0, weight = 0;
+        for (let i = 0; i < games.length; i += 1) { const g = games[Math.floor(random() * games.length)]; total += g.mean * g.minutes; weight += g.minutes; }
+        draws.push(total / weight);
+      }
+      draws.sort((a, b) => a - b);
+      return { mean, low: percentile(draws, .025), high: percentile(draws, .975), games: games.length };
+    };
+    // Opponent-adjusted values are fitted over the whole event; the behind row keeps the table's sign, so a
+    // good stopper shows a negative number there too.
+    const rating = DATA.snowball_ratings?.[S.tourn], mine = rating?.teams?.[profile.team];
+    const adjusted = key => {
+      const side = key === 'ahead' ? mine?.roll : mine?.stop;
+      if (!side || side.games < SNOW_ADJ_MIN_GAMES) return null;
+      return key === 'ahead' ? { mean: side.value, low: side.low, high: side.high, games: side.games }
+        : { mean: -side.value, low: -side.high, high: -side.low, games: side.games };
+    };
+    const cell = x => (x ? `<b>${esc(fmtG(Math.round(x.mean)))}</b>${x.low != null ? `<small>${esc(fmtG(Math.round(x.low)))} ~ ${esc(fmtG(Math.round(x.high)))}</small>` : ''}<small>${esc(t('snowGames')(x.games))}</small>` : '—');
+    const growthRow = (label, key) => `<tr><td>${esc(label)}</td><td>${cell(growth(key))}</td><td>${cell(adjusted(key))}</td></tr>`;
+    const enter = rule.enter_gold.toLocaleString(), extend = rule.extend_gold.toLocaleString();
+    return `<div class="stats-situ stats-snow"><h4>${esc(t('snowTitle'))} <span class="sub">${esc(t('snowSub'))}</span></h4>
+      <table><thead><tr><th></th><th>${esc(t('snowScope'))}</th><th>${esc(t('snowAdj'))}<small>${esc(t('snowAdjSub'))}</small></th></tr></thead><tbody>
+        <tr><td>${esc(t('snowLed')(enter, extend))}</td><td><b>${share(led.filter(c => c.outcome === 'rolled').length, led.length)}</b></td><td></td></tr>
+        <tr><td>${esc(t('snowTrailed')(enter))}</td><td><b>${share(trailed.filter(c => c.outcome === 'stopped').length, trailed.length)}</b></td><td></td></tr>
+        ${growthRow(t('snowAhead')(rule.horizon_min), 'ahead')}
+        ${growthRow(t('snowBehind')(rule.horizon_min), 'behind')}
+      </tbody></table>
+      <p>${esc(t('snowNote')(rating ? `${(100 * Math.max(0, rating.held_out_gain)).toFixed(1)}%` : '—'))}</p></div>`;
+  }
   function teamCard(profile, side, gs) {
     const roster = [...profile.roster].sort((a, b) => STAT_POSITIONS.indexOf(a.position) - STAT_POSITIONS.indexOf(b.position) || a.player.localeCompare(b.player));
-    return `<article class="stats-team-card">
+    return `<article class="stats-team-card side-${side}">
       <h3 class="team-${side}">${esc(profile.team)}</h3>
       <div class="stats-mini-grid">
         <div class="stats-mini"><small>${t('statsGames')}</small><strong>${profile.games}</strong></div>
@@ -2947,6 +3393,8 @@
       <div class="stats-roster">${roster.map(x => `<button type="button" data-stats-player="${esc(x.player)}">${esc(posLabel(x.position))} · ${esc(x.player)}</button>`).join('')}</div>
       ${teamNarrative(profile, gs)}
       ${teamTimelineSvg(profile, gs)}
+      ${teamSituationHtml(profile, gs)}
+      ${teamSnowballHtml(profile)}
     </article>`;
   }
   function renderTeamStats(gs, teams, selectable = true) {
@@ -2955,8 +3403,9 @@
     return `<section class="card">
       <div class="stats-head"><div><h2>${t('statsRadarTitle')}</h2><p class="stats-sub">${esc(t('statsRadarSub')(statsWindowLabel(), S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')))}</p></div>
         ${selectable ? `<div class="stats-team-picks"><label class="stats-pick a"><span>${t('statsPickTeamA')}</span><select id="statsTeamA">${options(S.statsTeamA)}</select></label><label class="stats-pick b"><span>${t('statsPickTeamB')}</span><select id="statsTeamB">${options(S.statsTeamB)}</select></label></div>` : ''}</div>
-      ${gs.length ? `${comparisonNarrative(a, b, true)}${comparisonDifference(a, b, true)}<div class="stats-team-layout"><div class="stats-radar-wrap">${radarSvg(a, b)}<div class="stats-legend"><span><i class="a"></i>${esc(a.team)}</span><span><i class="b"></i>${esc(b.team)}</span></div></div>
-        <div class="stats-team-cards">${teamCard(a, 'blue', gs)}${teamCard(b, 'red', gs)}</div></div>
+      ${gs.length ? `${comparisonNarrative(a, b, true)}
+        <div class="stats-team-overview">${comparisonDifference(a, b, true)}<div class="stats-radar-wrap">${radarSvg(a, b)}<div class="stats-legend"><span><i class="a"></i>${esc(a.team)}</span><span><i class="b"></i>${esc(b.team)}</span></div></div></div>
+        <div class="stats-team-cards">${teamCard(a, 'blue', gs)}${teamCard(b, 'red', gs)}</div>
       ` : `<p class="empty">${t('statsNoData')}</p>`}
       <p class="note-box">${t('statsCaveat')}</p>
     </section>`;
@@ -3024,21 +3473,61 @@
   function entityDetail(row, kind, side = '', showCaveat = true, referenceRows = []) {
     if (!row) return `<section class="card"><p class="empty">${t('statsNoData')}</p></section>`;
     const scenePerspective = kind === 'player' ? topKey(row.teams) : t('statsTeam');
+    const moveTiles = kind === 'player' ? movementTiles(row) : '';
     const roles = Object.fromEntries(INV_ROLES.map(role => [role, row.obs.filter(x => x.role === role).length]));
     const phases = Object.fromEntries(['lane', 'mid', 'late'].map(phase => [phase, row.summary.valid.filter(x => phaseOfPlay(x.p) === phase).length]));
     const states = Object.fromEntries(STATES.map(state => [state, row.obs.filter(x => x.goldState === state).length]));
     const types = [...row.obs.reduce((m, x) => m.set(x.p.family, (m.get(x.p.family) || 0) + 1), new Map()).entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+    // What the commentary said came of the plays this player or champion made, by play type.
+    const OUTCOMES = ['success', 'mixed', 'failure', 'aborted'];
+    const acting = row.obs.filter(x => x.role === 'actor');
+    const actingTypes = [...acting.reduce((m, x) => {
+      const c = m.get(x.p.family) || { n: 0, unknown: 0, ...Object.fromEntries(OUTCOMES.map(k => [k, 0])) };
+      c[OUTCOMES.includes(x.p.outcome) ? x.p.outcome : 'unknown'] += 1; c.n += 1;
+      return m.set(x.p.family, c);
+    }, new Map()).entries()].sort((a, b) => b[1].n - a[1].n).slice(0, 4);
+    const actingHtml = actingTypes.map(([family, c]) => {
+      const decided = c.n - c.unknown;
+      const rest = [...OUTCOMES.slice(1), 'unknown'].filter(k => c[k]).map(k => `${L('outcome', k)} ${c[k]}`).join(' · ');
+      return `<div class="stats-acting-row">${famChip(family, famLabel(family))}<b>${esc(L('outcome', 'success'))} ${c.success}/${decided}</b>
+        <span class="stats-acting-bar" aria-hidden="true">${decided ? OUTCOMES.map(k => `<i class="${k}" style="width:${100 * c[k] / decided}%"></i>`).join('') : ''}</span>
+        ${rest ? `<small>${esc(rest)}</small>` : ''}</div>`;
+    }).join('');
+    // Opponents named in the same moments as this player, most often first; values stay in the player's team frame.
+    const rivals = kind !== 'player' ? [] : [...row.obs.reduce((m, o) => {
+      const named = involvedOf(o.p);
+      new Set(named.filter(y => y.team && y.team !== o.team).map(y => y.player)).forEach(name => {
+        const c = m.get(name) || { player: name, roster: ROSTER[o.game.id]?.[name], n: 0, duel: 0, valid: 0, toward: 0, net: 0 };
+        c.n += 1;
+        if (new Set(named.map(y => y.player)).size === 2) c.duel += 1;
+        if (o.value != null) { c.valid += 1; c.net += o.value; if (o.value > 0) c.toward += 1; }
+        m.set(name, c);
+      });
+      return m;
+    }, new Map()).values()].filter(c => c.n >= 2).sort((a, b) => b.n - a.n || b.duel - a.duel || a.player.localeCompare(b.player)).slice(0, 5);
+    const rivalsHtml = rivals.length ? `<h3 style="margin-top:16px">${t('statsRivals')} <span class="sub">${t('statsRivalsSub')}</span></h3>
+      ${rivals.map(c => `<button type="button" class="rival" data-rival="${esc(c.player)}" data-rival-of="${esc(row.key)}" aria-label="${esc(t('statsRivalOpen')(row.label, c.player))}">
+        <span class="who"><b>${esc(c.player)}</b><small>${esc([c.roster?.team, c.roster ? posLabel(c.roster.position) : ''].filter(Boolean).join(' · '))}</small></span>
+        <span class="n">${esc(t('statsRivalScenes')(c.n, c.duel))}<small>${c.valid ? esc(t('statsRivalToward')(c.toward, c.valid)) : ''}</small></span>
+        <span class="v ${c.net > 0 ? 'gain' : c.net < 0 ? 'loss' : 'neutral'}">${c.valid ? esc(fmtStat(c.net)) : '—'}</span></button>`).join('')}
+      <p class="stats-acting-note">${t('statsRivalNote')}</p>` : '';
     const gainScenes = [...row.summary.valid].filter(x => x.value > 0).sort((a, b) => b.value - a.value).slice(0, 3);
     const lossScenes = [...row.summary.valid].filter(x => x.value < 0).sort((a, b) => a.value - b.value).slice(0, 3);
-    const sceneRows = scenes => scenes.map(o => `<button type="button" class="scene" data-play="${esc(o.p.id)}"><span>${clock(o.p)}</span><span class="actor">${esc(o.p.actor || '—')}</span><span>${esc(contentText(o.p, 'title'))}</span><span class="v ${o.value >= 0 ? 'gain' : 'loss'}">${esc(fmtStat(o.value))}</span></button>`).join('');
+    // Which game a moment came from: nothing within one game, the game number within a series, the full label otherwise.
+    const sceneWhere = g => (S.view === 'stats' && S.statsScope === 'game' ? ''
+      : S.view === 'stats' ? t('gameN')(g.game_num)
+      : `${contentText(g, 'stage')} · ${g.blue_team} vs ${g.red_team} · ${t('gameN')(g.game_num)}`);
+    const sceneRows = scenes => scenes.map(o => `<button type="button" class="scene" data-play="${esc(o.p.id)}"><span>${clock(o.p)}</span><span class="actor">${esc(o.p.actor || '—')}</span><span class="what">${esc(contentText(o.p, 'title'))}${sceneWhere(o.game) ? `<small class="where">${esc(sceneWhere(o.game))}</small>` : ''}</span><span class="v ${o.value >= 0 ? 'gain' : 'loss'}">${esc(fmtStat(o.value))}</span></button>`).join('');
     return `<section class="card ${side ? `stats-compare-card side-${side}` : ''}">
       <div class="stats-detail-head"><div><h2 class="${side === 'a' ? 'team-blue' : side === 'b' ? 'team-red' : ''}">${esc(row.label)}</h2><p>${esc(entitySubtitle(row, kind))}</p></div><div class="stats-mini-grid">
         <div class="stats-mini"><small>${t('statsGames')}</small><strong>${row.games.size}</strong></div>
-        <div class="stats-mini"><small>${t('statsScenes')}</small><strong>${row.summary.valid.length}</strong></div>
+        <div class="stats-mini"><small>${t('statsScenes')}</small><strong>${row.summary.valid.length}</strong>${row.games.size ? `<small>${esc(t('statsScenesPerGame')((row.summary.valid.length / row.games.size).toFixed(1)))}</small>` : ''}</div>
         <div class="stats-mini"><small>${t('statsToward')}</small><strong>${pct0(row.summary.pos.length, row.summary.valid.length)}</strong></div>
         <div class="stats-mini"><small>${t('statsMedian')}</small><strong>${fmtStatAbs(row.summary.median)}</strong></div>
         <div class="stats-mini"><small>${t('statsPerGame')}</small><strong class="${row.summary.netPerGame > 0 ? 'gain' : row.summary.netPerGame < 0 ? 'loss' : 'neutral'}">${fmtStat(row.summary.netPerGame)}</strong></div>
+        ${moveTiles}
       </div></div>
+      ${moveTiles ? `<p class="stats-move-note">${t('statsMoveNote')}</p>` : ''}
       ${entityNarrative(row, referenceRows)}
       <h3 style="margin-top:16px">${t('statsFingerprint')} <span class="sub">${esc(statsWindowLabel())} · ${S.statsMetric === 'wps' ? t('statsWps') : t('statsGold')}</span></h3>
       ${row.summary.valid.length ? dotplotSvg(row) : `<p class="empty">${t('statsNoData')}</p>`}
@@ -3047,7 +3536,8 @@
       <div class="stats-detail-grid"><div class="stats-breakdown">
         <h3>${t('statsGoldBreak')}</h3><div class="stats-state-grid">${STATES.map(state => `<div><span>${esc(L('state', state))}</span><strong>${states[state]}</strong></div>`).join('')}</div>
         <h3 style="margin-top:14px">${t('statsTypes')}</h3><div class="stats-type-list">${types.map(([family, n]) => `${famChip(family, famLabel(family))}<span class="chip">${n}</span>`).join('')}</div>
-      </div><div class="stats-scenes"><h3>${t('statsTopScenes')}</h3>${gainScenes.length ? `<div class="stats-scene-group gain"><h4>${esc(t('statsTopGainScenes')(scenePerspective))}</h4>${sceneRows(gainScenes)}</div>` : ''}${lossScenes.length ? `<div class="stats-scene-group loss"><h4>${esc(t('statsTopLossScenes')(scenePerspective))}</h4>${sceneRows(lossScenes)}</div>` : ''}${!gainScenes.length && !lossScenes.length ? `<p class="empty">${t('statsNoData')}</p>` : ''}</div></div>
+        ${actingHtml ? `<h3 style="margin-top:14px">${t('statsActing')} <span class="sub">${acting.length}</span></h3><div class="stats-acting">${actingHtml}</div><p class="stats-acting-note">${t('statsActingNote')}</p>` : ''}
+      </div><div class="stats-scenes"><h3>${t('statsTopScenes')}</h3>${gainScenes.length ? `<div class="stats-scene-group gain"><h4>${esc(t('statsTopGainScenes')(scenePerspective))}</h4>${sceneRows(gainScenes)}</div>` : ''}${lossScenes.length ? `<div class="stats-scene-group loss"><h4>${esc(t('statsTopLossScenes')(scenePerspective))}</h4>${sceneRows(lossScenes)}</div>` : ''}${!gainScenes.length && !lossScenes.length ? `<p class="empty">${t('statsNoData')}</p>` : ''}${rivalsHtml}</div></div>
       ${showCaveat ? `<p class="note-box">${t('statsCaveat')}</p>` : ''}
     </section>`;
   }
@@ -3090,6 +3580,13 @@
     writeHash(); syncPressed(); main.removeAttribute('aria-busy');
   }
   function wireStatsPlayLinks(main) {
+    // An opponent row opens the pair in Compare over the games they played against each other.
+    main.querySelectorAll('[data-rival]').forEach(el => el.onclick = () => {
+      S.view = 'compare'; S.statsTab = 'player'; S.statsScope = 'h2h'; S.statsRole = 'all';
+      S.statsPick = el.dataset.rivalOf; S.statsCompare = el.dataset.rival;
+      um('rival-open', { a: S.statsPick, b: S.statsCompare });
+      render(); window.scrollTo({ top: 0, behavior: SMOOTH });
+    });
     main.querySelectorAll('[data-play]').forEach(el => {
       el.onclick = () => openStatsPlay(el.dataset.play);
       el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStatsPlay(el.dataset.play); } };
@@ -3120,6 +3617,7 @@
     document.getElementById('main').innerHTML = `<section class="card planned"><h3 style="justify-content:center">${t('plannedTitle')}</h3><p class="muted">${t('plannedBody')}</p></section>`;
   }
   async function render() {
+    if (S.view === 'games' && !hasFlow(S.tourn)) S.view = 'set';
     renderChrome();
     const tour = DATA.tournaments.find(x => x.id === S.tourn);
     if (tour.status === 'planned') return renderPlanned();
@@ -3127,7 +3625,14 @@
     const wait = `<section class="card"><p class="muted">${t('loading')}</p></section>`;
     main.setAttribute('aria-busy', 'true');
     try {
-      if (S.view === 'xtab') {
+      if (S.view === 'games' && S.rankTab === 'moments' && hasMoments(S.tourn)) {
+        if (!tour._plays) main.innerHTML = wait;
+        await ensurePlays(S.tourn);
+        if (S.view === 'games') renderMoments();
+      } else if (S.view === 'games') {
+        S.rankTab = 'games';
+        renderGames();
+      } else if (S.view === 'xtab') {
         if (!tour._plays) main.innerHTML = wait;
         await ensurePlays(S.tourn);
         if (S.view === 'xtab') renderXtab();

@@ -2,7 +2,7 @@
 
 **https://playvalue.github.io**
 
-[![The PlayValue dashboard: the MSI 2026 final, game 5, with the gold timeline, the play list, and the selected play's gold change and map positions](assets/screenshot.png)](https://playvalue.github.io)
+[![The PlayValue dashboard: the MSI 2026 final, game 5, with the play list, map positions, the selected play's win-probability and gold change, and the game-flow chart](assets/screenshot.png)](https://playvalue.github.io)
 
 PlayValue looks at the plays that League of Legends casters call out in professional matches and shows both how the gold gap moved and how a frozen model's win probability moved in the 15, 30 and 60 seconds after each one.
 
@@ -20,13 +20,13 @@ This repository is the published site shell. It is built from a separate researc
 
 | Path | What it is |
 |---|---|
-| `index.html` | The dashboard: per-game view and totals by play type |
+| `index.html` | The dashboard: per-game view, totals by play type, game and moment rankings, and team and player comparison |
 | `methodology.html` | How plays are picked, measured and coded (Korean and English) |
 | `assets/ddragon/` | Map and champion images from Riot's Data Dragon |
 
 The `playvalue/data` repository provides `index.json`, tournament play and game files, and the frozen v312 WPS overlays at the existing `/data/` URLs.
 
-Tournaments covered so far: MSI 2026 (all 71 games) and Worlds 2026 (41 games through the first three quarterfinal series). As of 6 November 2026 the site holds 112 games and 5,613 plays.
+Tournaments covered so far: MSI 2026 (all 71 games) and Worlds 2026 (52 games, Swiss round 3 through the semifinals). As of 9 November 2026 the site holds 123 games and 6,229 plays.
 
 ## Questions and data
 
