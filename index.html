@@ -515,7 +515,7 @@
       .xt.gf.pr td:nth-child(2) { min-width: 0; }
       .xt.gf.pr .at.clock { display: block; margin: 0; }
     }
-    .rank-switch { margin: 0 0 14px; }
+    .swing-switch { margin: 0 0 14px; }
     .xt.pr th:nth-child(2), .xt.pr td:nth-child(2), .xt.pr th:nth-child(3), .xt.pr td:nth-child(3) { text-align: left; }
     .xt.pr td:nth-child(2) { white-space: normal; min-width: 180px; }
     .xt.pr td:first-child { width: 3em; color: var(--text-muted); font-weight: 600; }
@@ -838,7 +838,7 @@
       statsActing: '행동으로 나선 장면의 결과', statsScenesPerGame: v => `경기당 ${v}`,
       statsActingNote: '행동 역할로 이름이 나온 장면만 셉니다. 성공과 실패는 해설 내용을 코딩한 결과이고, 결과가 드러나지 않은 장면은 분모에서 뺍니다. 해설이 짚은 시도만 들어 있어 전체 성공률이 아닙니다.',
       incomeHead: h => `${h}초 동안 번 골드`, incomeNote: '방송 화면에서 읽은 팀 골드의 증가분(100 단위)입니다. 두 값의 차이가 위의 골드 변화입니다.',
-      viewGames: '접전·역전', rkTabs: '보기 종류', rkGames: '경기', rkMoments: '장면',
+      viewSwings: '접전·역전', swTabs: '보기 종류', swGames: '경기', swMoments: '장면',
       prTitle: '승률이 크게 움직인 장면', prSub: '해설이 짚은 플레이 가운데 모델 승률이 가장 크게 움직인 장면입니다. 장면을 누르면 그 플레이가 열립니다.',
       prPhase: '시간대', prAll: '전체', prPhases: { lane: '초반', mid: '중반', late: '후반' }, prRank: '순위', prMoment: '장면', prSwing: '승률 변화',
       prEmpty: '이 조건에 해당하는 장면이 없습니다.',
@@ -1008,7 +1008,7 @@
       statsActing: 'Outcomes when acting', statsScenesPerGame: v => `${v} per game`,
       statsActingNote: 'Counts only moments where the player is named as acting. Success and failure are coded from the commentary, and moments whose result is not stated are left out of the denominator. Only attempts the casters called out are here, so this is not an overall success rate.',
       incomeHead: h => `Gold earned over ${h}s`, incomeNote: 'Each team’s increase in broadcast team gold, read to the nearest 100. Their difference is the gold change above.',
-      viewGames: 'Swings', rkTabs: 'View', rkGames: 'Games', rkMoments: 'Moments',
+      viewSwings: 'Swings', swTabs: 'View', swGames: 'Games', swMoments: 'Moments',
       prTitle: 'Largest win-probability swings', prSub: 'The commentary-selected plays around which the model win probability moved the most. Click a moment to open that play.',
       prPhase: 'Game phase', prAll: 'All', prPhases: { lane: 'Early', mid: 'Mid', late: 'Late' }, prRank: 'Rank', prMoment: 'Moment', prSwing: 'Win-probability change',
       prEmpty: 'No moments match this selection.',
@@ -1179,7 +1179,7 @@
     statsActing: '作为执行方时的结果', statsScenesPerGame: v => `每局${v}`,
     statsActingNote: '只统计该选手被点名为执行方的场景。成功与失败来自对解说内容的编码，结果未说明的场景不计入分母。这里只有解说提到的尝试，并非整体成功率。',
     incomeHead: h => `${h}秒内获得的经济`, incomeNote: '从转播画面读取的队伍经济增量（以100为单位）。两者之差即上方的经济变化。',
-    viewGames: '胶着与逆转', rkTabs: '查看类型', rkGames: '比赛', rkMoments: '场景',
+    viewSwings: '胶着与逆转', swTabs: '查看类型', swGames: '比赛', swMoments: '场景',
     prTitle: '胜率变动最大的场景', prSub: '解说提到的操作中，模型胜率变动最大的场景。点击场景可打开该操作。',
     prPhase: '时段', prAll: '全部', prPhases: { lane: '前期', mid: '中期', late: '后期' }, prRank: '排名', prMoment: '场景', prSwing: '胜率变化',
     prEmpty: '没有符合条件的场景。',
@@ -1250,7 +1250,7 @@
     statsActing: '行動側だった場面の結果', statsScenesPerGame: v => `1試合あたり${v}`,
     statsActingNote: '行動側として名前が挙がった場面だけを数えます。成功・失敗は実況内容をコーディングした結果で、結果が示されない場面は分母から除きます。実況が取り上げた試みだけなので、全体の成功率ではありません。',
     incomeHead: h => `${h}秒間の獲得ゴールド`, incomeNote: '配信画面から読んだチームゴールドの増加分（100単位）です。両者の差が上のゴールド変化です。',
-    viewGames: '接戦・逆転', rkTabs: '表示の種類', rkGames: '試合', rkMoments: '場面',
+    viewSwings: '接戦・逆転', swTabs: '表示の種類', swGames: '試合', swMoments: '場面',
     prTitle: '勝率が大きく動いた場面', prSub: '実況が注目したプレーのうち、モデル勝率が最も大きく動いた場面です。場面を押すとそのプレーが開きます。',
     prPhase: '時間帯', prAll: 'すべて', prPhases: { lane: '序盤', mid: '中盤', late: '終盤' }, prRank: '順位', prMoment: '場面', prSwing: '勝率変化',
     prEmpty: '条件に合う場面がありません。',
@@ -1340,7 +1340,7 @@
   const S = {
     lang: 'ko', theme: 'light', tourn: firstGame().tournament_id, view: 'set', stage: 'all', gameId: firstGame().id, playId: null,
     h: String(D.default_horizon_s), fFamily: '', fTag: '', fState: '', fPlayer: '', fHl: false, listSort: 'time',
-    xScope: 'all', xRows: 'family', xCell: null, xSort: { col: 'positive', rev: false }, gSort: { col: 'low', rev: false }, rankTab: 'games', rankH: String(D.default_horizon_s), rankPhase: 'all', guideOpen: false,
+    xScope: 'all', xRows: 'family', xCell: null, xSort: { col: 'positive', rev: false }, gSort: { col: 'low', rev: false }, swingList: 'games', swingH: String(D.default_horizon_s), swingPhase: 'all', guideOpen: false,
     statsScope: 'stage', statsTab: 'team', statsMetric: 'wps', statsH: String(D.default_horizon_s), statsPick: '', statsCompare: '', statsRole: 'all', statsTeamA: '', statsTeamB: '',
     metric: WPS_INDEX ? (WPS_INDEX.display?.default_metric || 'both') : 'gold',
   };
@@ -1529,10 +1529,10 @@
     if (q.get('play')) S.playId = q.get('play');
     if (q.get('view') === 'xtab') S.view = 'xtab';
     if (q.get('view') === 'compare') S.view = 'compare';
-    if (q.get('view') === 'games' && hasFlow(S.tourn)) S.view = 'games';
-    if (q.get('rank') === 'moments' && hasMoments(S.tourn)) S.rankTab = 'moments';
-    if (['instant', '15', '30', '60'].includes(q.get('rh'))) S.rankH = q.get('rh');
-    if (['all', 'lane', 'mid', 'late'].includes(q.get('rp'))) S.rankPhase = q.get('rp');
+    if (q.get('view') === 'swings' && hasFlow(S.tourn)) S.view = 'swings';
+    if (q.get('list') === 'moments' && hasMoments(S.tourn)) S.swingList = 'moments';
+    if (['instant', '15', '30', '60'].includes(q.get('win'))) S.swingH = q.get('win');
+    if (['all', 'lane', 'mid', 'late'].includes(q.get('phase'))) S.swingPhase = q.get('phase');
     if (['label', 'length', 'low', 'gold', 'swing', 'lead', 'decided'].includes(q.get('gsort'))) S.gSort = { col: q.get('gsort'), rev: q.get('grev') === '1' };
     // Old global team/player links used view=stats. Preserve them by routing non-series scopes to Compare.
     if (q.get('view') === 'stats') S.view = ['h2h', 'all'].includes(q.get('scope')) ? 'compare' : 'stats';
@@ -1555,8 +1555,8 @@
     if (S.view === 'compare') base.tourn = S.tourn; else base.game = S.gameId;
     const q = new URLSearchParams(base);
     if (S.playId && S.view === 'set') q.set('play', S.playId);
-    if (S.view === 'games' && S.rankTab === 'moments') { q.set('rank', 'moments'); q.set('rh', S.rankH); q.set('rp', S.rankPhase); }
-    else if (S.view === 'games') { q.set('gsort', S.gSort.col); if (S.gSort.rev) q.set('grev', '1'); }
+    if (S.view === 'swings' && S.swingList === 'moments') { q.set('list', 'moments'); q.set('win', S.swingH); q.set('phase', S.swingPhase); }
+    else if (S.view === 'swings') { q.set('gsort', S.gSort.col); if (S.gSort.rev) q.set('grev', '1'); }
     if (S.view === 'compare') {
       q.set('scope', S.statsScope); q.set('tab', S.statsTab); q.set('stat', S.statsMetric);
       q.set('sh', S.statsH);
@@ -1583,10 +1583,10 @@
   window.__umFlush = () => { while (umQueue.length) window.umami.track(...umQueue.shift()); };
   let lastView = '';
   function trackView() {
-    const url = S.view === 'xtab' ? `/totals/${S.tourn}` : S.view === 'games' ? `/${S.rankTab === 'moments' ? 'moments' : 'games'}/${S.tourn}` : S.view === 'compare' ? `/compare/${S.tourn}` : S.view === 'stats' ? (S.statsScope === 'game' ? `/game-stats/${S.gameId}` : `/series-stats/${seriesOf(game())}`) : `/game/${S.gameId}`;
+    const url = S.view === 'xtab' ? `/totals/${S.tourn}` : S.view === 'swings' ? `/swings/${S.swingList === 'moments' ? 'moments' : 'games'}/${S.tourn}` : S.view === 'compare' ? `/compare/${S.tourn}` : S.view === 'stats' ? (S.statsScope === 'game' ? `/game-stats/${S.gameId}` : `/series-stats/${seriesOf(game())}`) : `/game/${S.gameId}`;
     if (url === lastView) return;
     lastView = url;
-    const title = S.view === 'xtab' ? `Totals · ${S.tourn}` : S.view === 'games' ? `${S.rankTab === 'moments' ? 'Moment' : 'Game'} swings · ${S.tourn}` : S.view === 'compare' ? `Compare · ${S.tourn}` : S.view === 'stats' ? (S.statsScope === 'game' ? `Game teams & players · ${S.gameId}` : `Series teams & players · ${seriesOf(game())}`) : `${game().title_en} · ${game().tournament_id}`;
+    const title = S.view === 'xtab' ? `Totals · ${S.tourn}` : S.view === 'swings' ? `${S.swingList === 'moments' ? 'Moment' : 'Game'} swings · ${S.tourn}` : S.view === 'compare' ? `Compare · ${S.tourn}` : S.view === 'stats' ? (S.statsScope === 'game' ? `Game teams & players · ${S.gameId}` : `Series teams & players · ${seriesOf(game())}`) : `${game().title_en} · ${game().tournament_id}`;
     um(props => ({ ...props, url, title }));
   }
 
@@ -1625,7 +1625,7 @@
     if (!f) return '';
     const n = gamesIn(g.tournament_id).filter(flowOf).length;
     const title = t('gfHeadTitle')(flowRank(g, x => -x.winner_min_p), flowRank(g, x => x.swing_total_pp), n);
-    return `<button type="button" class="match-flow" data-open-games title="${esc(title)}">${esc(t('gfHead')(g.winner, pct1(f.winner_min_p), fmtClock(f.winner_min_gc), Math.round(f.swing_total_pp)))}</button>`;
+    return `<button type="button" class="match-flow" data-open-swings title="${esc(title)}">${esc(t('gfHead')(g.winner, pct1(f.winner_min_p), fmtClock(f.winner_min_gc), Math.round(f.swing_total_pp)))}</button>`;
   };
 
   // ------------------------------------------------------------------ chrome
@@ -1669,10 +1669,10 @@
     const vc = document.getElementById('compareTab');
     const se = document.getElementById('series');
     vn.style.display = planned ? 'none' : '';
-    se.style.display = planned || ['compare', 'games'].includes(S.view) ? 'none' : '';
+    se.style.display = planned || ['compare', 'swings'].includes(S.view) ? 'none' : '';
     if (planned) return;
     const primaryView = S.view === 'stats' ? 'set' : S.view;
-    vt.innerHTML = [['set', t('viewSet')], ['xtab', t('viewXtab')], ...(hasFlow(S.tourn) ? [['games', t('viewGames')]] : [])].map(([k, v]) => `<button data-v="${k}" class="${primaryView === k ? 'on' : ''}">${v}</button>`).join('');
+    vt.innerHTML = [['set', t('viewSet')], ['xtab', t('viewXtab')], ...(hasFlow(S.tourn) ? [['swings', t('viewSwings')]] : [])].map(([k, v]) => `<button data-v="${k}" class="${primaryView === k ? 'on' : ''}">${v}</button>`).join('');
     vt.querySelectorAll('button').forEach(b => b.onclick = () => {
       S.view = b.dataset.v;
       render();
@@ -1685,7 +1685,7 @@
       if (!['team', 'player'].includes(S.statsTab)) S.statsTab = 'team';
       render();
     };
-    if (['compare', 'games'].includes(S.view)) { se.innerHTML = ''; return; }
+    if (['compare', 'swings'].includes(S.view)) { se.innerHTML = ''; return; }
 
     // Series latest first, in a grouped list (bracket stage, then play-in) with steps to the neighbouring series;
     // the selected series' games sit beside it, each with a bar in the winner's side colour.
@@ -1724,7 +1724,7 @@
     se.querySelectorAll('[data-stats-scope]').forEach(b => b.onclick = () => { S.statsScope = b.dataset.statsScope; S.statsTeamA = S.statsTeamB = ''; render(); });
     se.querySelectorAll('[data-context]').forEach(b => b.onclick = () => { S.view = b.dataset.context; if (S.view === 'stats') { S.statsScope = 'stage'; if (!['team', 'player'].includes(S.statsTab)) S.statsTab = 'team'; } render(); });
     se.querySelectorAll('[data-stats-team]').forEach(b => b.onclick = () => openStatsEntity('team', b.dataset.statsTeam, b.dataset.otherTeam, 'game'));
-    se.querySelectorAll('[data-open-games]').forEach(b => b.onclick = () => { S.view = 'games'; S.rankTab = 'games'; render(); window.scrollTo({ top: 0 }); });
+    se.querySelectorAll('[data-open-swings]').forEach(b => b.onclick = () => { S.view = 'swings'; S.swingList = 'games'; render(); window.scrollTo({ top: 0 }); });
     // The bar is rebuilt on every render, so keep keyboard focus on the control that was used.
     const refocus = id => { const el = document.getElementById(id); if (el && !el.disabled) el.focus(); };
     se.querySelector('#serSel').onchange = e => { openSeries(e.target.value); refocus('serSel'); };
@@ -2621,27 +2621,27 @@
   // ------------------------------------------------------------------ swings: games and moments
   // One row per game of the tournament. Every column's first click puts the most eventful game on top:
   // the lowest low, the largest deficit, the most movement, the latest decision.
-  const rankSwitch = () => (hasMoments(S.tourn)
-    ? `<div class="controls rank-switch"><div class="seg" id="rankTab" role="group" aria-label="${esc(t('rkTabs'))}">${[['games', t('rkGames')], ['moments', t('rkMoments')]].map(([k, v]) => `<button data-rank="${k}" class="${S.rankTab === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div></div>`
+  const swingSwitch = () => (hasMoments(S.tourn)
+    ? `<div class="controls swing-switch"><div class="seg" id="swingList" role="group" aria-label="${esc(t('swTabs'))}">${[['games', t('swGames')], ['moments', t('swMoments')]].map(([k, v]) => `<button data-list="${k}" class="${S.swingList === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div></div>`
     : '');
-  const wireRankSwitch = main => main.querySelectorAll('#rankTab button').forEach(b => b.onclick = () => { S.rankTab = b.dataset.rank; render(); });
+  const wireSwingSwitch = main => main.querySelectorAll('#swingList button').forEach(b => b.onclick = () => { S.swingList = b.dataset.list; render(); });
 
   // The largest win-probability swings of the tournament, one row per moment, in the favoured team's frame.
   function renderMoments() {
-    const rows = ((TOP[S.tourn] || {})[S.rankH]?.[S.rankPhase] || []).map(([id, v, a, b]) => ({ p: PLAY[id], v, a, b })).filter(x => x.p);
+    const rows = ((TOP[S.tourn] || {})[S.swingH]?.[S.swingPhase] || []).map(([id, v, a, b]) => ({ p: PLAY[id], v, a, b })).filter(x => x.p);
     const windows = [['instant', t('listInstant')], ...D.horizons_s.map(h => [String(h), t('sec')(h)])];
     const phases = [['all', t('prAll')], ...['lane', 'mid', 'late'].map(k => [k, t('prPhases')[k]])];
-    const gap = WPS_INDEX.top_moments.min_anchor_gap_s?.[S.rankH] ?? Number(S.rankH);
+    const gap = WPS_INDEX.top_moments.min_anchor_gap_s?.[S.swingH] ?? Number(S.swingH);
     const main = document.getElementById('main');
     main.innerHTML = `
       <section class="card">
-        ${rankSwitch()}
+        ${swingSwitch()}
         <h1 class="xt-title">${t('prTitle')} <span class="sub">${t('prSub')}</span></h1>
         <div class="controls" style="margin-top:0;margin-bottom:12px">
           <span class="nav-label">${t('horizon')}</span>
-          <div class="seg" id="rankH">${windows.map(([k, v]) => `<button data-k="${k}" class="${S.rankH === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
+          <div class="seg" id="swingH">${windows.map(([k, v]) => `<button data-k="${k}" class="${S.swingH === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
           <span class="nav-label">${t('prPhase')}</span>
-          <div class="seg" id="rankPhase">${phases.map(([k, v]) => `<button data-k="${k}" class="${S.rankPhase === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
+          <div class="seg" id="swingPhase">${phases.map(([k, v]) => `<button data-k="${k}" class="${S.swingPhase === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
         </div>
         ${rows.length ? `<div class="scroll-x"><table class="xt gf pr">
           <thead><tr><th>${t('prRank')}</th><th>${t('prMoment')}</th><th class="len">${t('rFamily')}</th><th>${t('prSwing')}</th></tr></thead>
@@ -2661,13 +2661,13 @@
         </table></div>` : `<p class="empty">${t('prEmpty')}</p>`}
         <p class="note-box">${t('prNote')(Math.round(D.phases.lane_end_s / 60), Math.round(D.phases.mid_end_s / 60), gap)} ${t('wpsCausal')}</p>
       </section>`;
-    wireRankSwitch(main);
-    main.querySelectorAll('#rankH button').forEach(b => b.onclick = () => { S.rankH = b.dataset.k; renderMoments(); });
-    main.querySelectorAll('#rankPhase button').forEach(b => b.onclick = () => { S.rankPhase = b.dataset.k; renderMoments(); });
+    wireSwingSwitch(main);
+    main.querySelectorAll('#swingH button').forEach(b => b.onclick = () => { S.swingH = b.dataset.k; renderMoments(); });
+    main.querySelectorAll('#swingPhase button').forEach(b => b.onclick = () => { S.swingPhase = b.dataset.k; renderMoments(); });
     main.querySelectorAll('tr[data-play]').forEach(row => row.onclick = () => {
       const p = PLAY[row.dataset.play];
       S.view = 'set'; S.gameId = p._game.id; S.playId = p.id; S.xCell = null; S.fPlayer = '';
-      um('moment-rank-open', { game: S.gameId, window: S.rankH, phase: S.rankPhase });
+      um('swing-moment-open', { game: S.gameId, window: S.swingH, phase: S.swingPhase });
       render(); window.scrollTo({ top: 0 });
     });
     writeHash();
@@ -2697,7 +2697,7 @@
     const main = document.getElementById('main');
     main.innerHTML = `
       <section class="card">
-        ${rankSwitch()}
+        ${swingSwitch()}
         <h1 class="xt-title">${t('gfTitle')} <span class="sub">${t('gfSub')}</span></h1>
         <div class="scroll-x"><table class="xt gf">
           <thead><tr>${sortTh('label', t('gfGame'))}${sortTh('length', t('gfLength'))}${sortTh('low', t('gfLow'))}${sortTh('gold', t('gfGold'))}${sortTh('swing', t('gfSwing'))}${sortTh('lead', t('gfLead'))}${sortTh('decided', t('gfDecided'))}</tr></thead>
@@ -2725,10 +2725,10 @@
       const again = document.querySelector(`th .sort[data-sort="${c}"]`);
       if (again) again.focus();
     });
-    wireRankSwitch(main);
+    wireSwingSwitch(main);
     main.querySelectorAll('tr[data-open]').forEach(row => row.onclick = () => {
       S.view = 'set'; S.gameId = row.dataset.open; S.playId = null; S.xCell = null; S.fPlayer = '';
-      um('game-rank-open', { game: S.gameId, sort: S.gSort.col });
+      um('swing-game-open', { game: S.gameId, sort: S.gSort.col });
       render(); window.scrollTo({ top: 0 });
     });
     writeHash();
@@ -3617,7 +3617,7 @@
     document.getElementById('main').innerHTML = `<section class="card planned"><h3 style="justify-content:center">${t('plannedTitle')}</h3><p class="muted">${t('plannedBody')}</p></section>`;
   }
   async function render() {
-    if (S.view === 'games' && !hasFlow(S.tourn)) S.view = 'set';
+    if (S.view === 'swings' && !hasFlow(S.tourn)) S.view = 'set';
     renderChrome();
     const tour = DATA.tournaments.find(x => x.id === S.tourn);
     if (tour.status === 'planned') return renderPlanned();
@@ -3625,12 +3625,12 @@
     const wait = `<section class="card"><p class="muted">${t('loading')}</p></section>`;
     main.setAttribute('aria-busy', 'true');
     try {
-      if (S.view === 'games' && S.rankTab === 'moments' && hasMoments(S.tourn)) {
+      if (S.view === 'swings' && S.swingList === 'moments' && hasMoments(S.tourn)) {
         if (!tour._plays) main.innerHTML = wait;
         await ensurePlays(S.tourn);
-        if (S.view === 'games') renderMoments();
-      } else if (S.view === 'games') {
-        S.rankTab = 'games';
+        if (S.view === 'swings') renderMoments();
+      } else if (S.view === 'swings') {
+        S.swingList = 'games';
         renderGames();
       } else if (S.view === 'xtab') {
         if (!tour._plays) main.innerHTML = wait;
