@@ -44,8 +44,8 @@ PlayValue는 프로 경기에서 해설이 짚은 플레이마다, 그 뒤 15·3
 
 The top navigation follows four subjects: Games, Moments, Teams and Players.
 Games owns the stage/team filters and closeness/comeback sorting. Moments offers
-turning points and play-type totals. A team profile opens Style, Game record or
-Statistics; statistics shows one of Play involvement, Time & situation or Lead
+turning points and play-type totals. A team profile opens Style, Operations or Statistics, with Game list as a
+separate button; statistics shows one of Play involvement, Time & situation or Lead
 development at a time. Team and player comparisons open through explicit buttons
 on their respective profiles, rather than sharing a top-level catch-all view.
 
@@ -96,5 +96,108 @@ Expected frequencies use tournament-wide game-state baselines, not the other
 team currently selected in the comparison.
 
 Visits are counted with [Umami](https://umami.is) without cookies.
+
+### Objective exchanges and between-game changes
+
+Team → Operations contains Objective exchanges and Between games. Purchase
+timing is no longer exposed in team or player navigation. Existing team purchase
+links open Objective exchanges; player purchase links open Growth after solo
+starts, preserving phase and state. Each retained question has its own denominator
+and clock; no combined operational score is created.
+
+The underlying research outputs retain purchase timing. Purchase batches require a net increase in terminal non-boot completed items,
+undo within the batch applied, and the newly purchased item still held at its
+end. The grouping is at most 60 seconds with gaps at most 20 seconds, not an
+inferred recall. Completion multisets must match final inventory for quality;
+equipment catalog-value gaps additionally require non-boot value agreement.
+Final inventory never supplies past-time features. Complete 180-second windows
+measure personal first kill participation (including victim and assists) and
+team epic acquisition. Cash is the last strictly earlier minute frame, at most
+65 seconds old.
+
+Enemy-epic acquisition windows connect actual towers, inhibitors and other epics
+within ±90 seconds. All ±60/90/120-second variants use complete ±120-second
+coverage. Each own asset goes to the nearest enemy acquisition once per team
+view and window. Only top↔bottom counts as opposite-side; middle does not.
+Nearby-kill filters describe observed events, not deliberate concessions or
+proof of no contest. Objective types and raw sample coverage remain visible.
+
+Between-game comparisons retain same-series opponents and consecutive game
+numbers. State matching is 1:1 on time, gold, past model WP and active count,
+with a draft-proxy caliper. Side switches are explicit and do not become
+side-controlled comparisons. Wave opportunities, full matchups and opponent
+responses remain. Repeated post-loss changes require at least three series,
+three opponents and six transitions; the present snapshot supports none at
+that threshold, so no general adaptation score is shown.
+
+```sh
+.venv-minimap/bin/python -m src.winprob_value.analyze_team_operations_timing
+.venv-minimap/bin/python tools/report_team_operations_timing.py
+.venv-minimap/bin/python -m unittest tests.test_team_operations_timing tests.test_winprob_value_equipment_state
+node --test tests/test_team_operations_ui.cjs
+```
+
+Observations, inventory audits, complete episode lists, series contrasts and
+provenance are saved in `data/processed/team_operations_timing_v1`.
+
+### Player connections and growth after unaccompanied starts
+
+Team → Style → Player connections shows ten proximity edges and fully near
+three-player groups at synchronous minute frames with all five active outside
+base. Selecting an edge opens its rates, sample and timed VOD evidence;
+selecting a node opens that player's growth view. Player profiles separate
+commentary-play involvement from Growth after solo starts, with links back to
+the team's network and to other players in the same position.
+
+Unaccompanied means no active teammate within about 2,250 units at the observed
+start. Next-minute CS (including jungle CS), XP and deaths include subsequent
+death/base-return windows; this does not establish continuous isolation or a
+causal effect of missing assistance. The plot separates prevalence of solo
+starts from subsequent growth, whose eligible-game denominators can differ.
+
+Reference predictions use outer series holdouts and inner series model
+selection between phase averages and regularized context models. Additional
+context must improve inner prediction error by 1%; it is not assumed to improve
+prediction. The current network references select phase averages throughout,
+and the UI labels that limitation explicitly. Growth models add current
+position, neighborhood, level, prior economy and own/opponent champion identity.
+These do not fully control wave opportunities, matchups or opponent strength.
+Intervals resample series with equal game weights, conditional on fitted
+references; neither individual ability nor team calls are identified.
+
+```sh
+.venv-minimap/bin/python -m src.winprob_value.analyze_team_player_relations
+.venv-minimap/bin/python tools/report_team_player_relations.py
+.venv-minimap/bin/python -m unittest tests.test_team_player_relations
+node --test tests/test_team_player_relations_ui.cjs
+```
+
+Portable observation CSVs, profiles, prediction diagnostics, raw distance
+sensitivity and example provenance are in `data/processed/team_player_relations_v1`.
+
+### Behavior by game state
+
+Team → Style → Behavior by state separates ahead (+2,000 gold or more), even
+and behind (−2,000 or less), within early/middle/late phases. The optional
+`team-state-styles-v1.json` reuses full-game frame/transition observations and
+held-out-series expectations from `within_team_winloss_v1`; it does not select
+scenes by their final result or later WP gain. Current full-team activity,
+at least two observations per game/state, equal game weights and an end buffer
+of three minutes define the displayed sample. Transition eligibility differs
+by metric and is explained in the screen.
+
+Observed and expected rates appear together. Sparse opponent/series coverage is
+explicit; these state groups are not interchangeable within-game comparisons.
+The analysis exports common-game contrasts separately, plus ±1k/±3k gold,
+40/60% model-WP and end-buffer sensitivity results. None identify causal
+responses, strategic intent or winning contribution. The draft controls are
+proxies and do not fully control matchups or opponent strength.
+
+```sh
+.venv-minimap/bin/python -m src.winprob_value.analyze_team_state_styles
+.venv-minimap/bin/python tools/report_team_state_styles.py
+.venv-minimap/bin/python -m unittest tests.test_team_state_styles
+node --test tests/test_team_state_styles_ui.cjs
+```
 
 PlayValue isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.

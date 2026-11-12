@@ -723,6 +723,9 @@
   </style>
   <link rel="stylesheet" href="./team-signatures.css?v=3">
   <link rel="stylesheet" href="./explore-navigation.css?v=1">
+  <link rel="stylesheet" href="./team-state-styles.css?v=1">
+  <link rel="stylesheet" href="./team-player-relations.css?v=1">
+  <link rel="stylesheet" href="./team-operations.css?v=1">
 </head>
 <body>
 <a class="skip" href="#main" id="skipLink">본문으로 건너뛰기</a>
@@ -779,6 +782,9 @@
 
 <script src="./team-signatures.js?v=3"></script>
 <script src="./explore-navigation.js?v=1"></script>
+<script src="./team-state-styles.js?v=1"></script>
+<script src="./team-player-relations.js?v=1"></script>
+<script src="./team-operations.js?v=1"></script>
 <script>
 (async () => {
   // index.json is small and read first; a game's full file and a tournament's light play list load on demand.
@@ -827,7 +833,7 @@
     ko: {
       tagline: '팀의 관점에서 보는 플레이의 밸류',
       legal: 'PlayValue는 Riot Games의 보증을 받지 않았으며, Riot Games 또는 Riot Games 자산의 제작·관리에 공식적으로 관여하는 누구의 견해나 의견도 반영하지 않습니다. Riot Games 및 관련 모든 자산은 Riot Games, Inc.의 상표 또는 등록 상표입니다.',
-      taglineSub: '킬 없는 플레이와 실패한 시도까지, 해설이 짚은 중요 플레이의 밸류를 직후 15·30·60초의 두 팀 골드 차이로 봅니다.',
+      taglineSub: '플레이 전후의 골드·예측 승률 변화와 경기 기록에 나타난 팀·선수의 패턴을 살펴봅니다.',
       methodology: '방법론', lang: 'English', languagePicker: '언어 선택', themeDark: '다크 모드', themeLight: '라이트 모드',
       viewSet: '경기별 보기', viewXtab: '유형별 집계', viewCompare: '비교', winner: '승리',
       statsEnemyHalf: '상대 진영 체류', statsApart: '원딜과 떨어진 시간', statsPosAvg: (pos, v) => `${pos} 평균 ${v}`,
@@ -1411,6 +1417,9 @@
     h: String(D.default_horizon_s), fFamily: '', fTag: '', fState: '', fPlayer: '', fHl: false, listSort: 'time',
     xScope: 'all', xRows: 'family', xCell: null, xSort: { col: 'positive', rev: false }, gSort: { col: 'label', rev: false }, swingList: 'games', swingH: String(D.default_horizon_s), swingPhase: 'all', guideOpen: false,
     gameStage: 'all', gameTeam: '', gameDetails: false, teamPanel: 'style', analysisPanel: 'plays',
+    teamStyle: 'signature', statePhase: 'middle', stateCondition: 'behind',
+    relationPhase: 'middle', relationState: 'all', relationPair: 'pair_jungle_support', playerPanel: 'plays',
+    operationView:'trades',operationPhase:'middle',operationState:'all',operationMode:'all',operationObjective:'all',operationSeries:'',operationBefore:'',
     statsScope: 'stage', statsTab: 'team', statsMetric: 'wps', statsH: String(D.default_horizon_s), statsPick: '', statsCompare: '', statsRole: 'all', statsTeamA: '', statsTeamB: '', signatureTeam: '',
     metric: WPS_INDEX ? (WPS_INDEX.display?.default_metric || 'both') : 'gold',
   };
@@ -1601,6 +1610,9 @@
     S.gSort={col:'label',rev:false};S.gameStage='all';S.gameTeam='';
     S.xScope='all';S.xRows='family';S.xCell=null;
     S.teamPanel='style';S.analysisPanel='plays';
+    S.teamStyle='signature';S.statePhase='middle';S.stateCondition='behind';
+    S.relationPhase='middle';S.relationState='all';S.relationPair='pair_jungle_support';S.playerPanel='plays';
+    S.operationView='trades';S.operationPhase='middle';S.operationState='all';S.operationMode='all';S.operationObjective='all';S.operationSeries='';S.operationBefore='';
     S.statsScope='stage';S.statsTab='team';S.statsMetric='wps';S.statsH=String(D.default_horizon_s);
     S.statsPick='';S.statsCompare='';S.statsRole='all';S.statsTeamA='';S.statsTeamB='';S.signatureTeam='';
     if (q.get('tourn') && DATA.tournaments.some(tour => tour.id === q.get('tourn')) && gamesIn(q.get('tourn')).length) { S.tourn = q.get('tourn'); S.gameId = firstGame(S.tourn).id; }
@@ -1630,7 +1642,26 @@
       if (['family','outcome','kill','famout','player','champ'].includes(q.get('rows'))) S.xRows=q.get('rows');
     }
     if (q.get('team') && S.view === 'teams') S.signatureTeam = q.get('team');
-    if (['style','records','statistics'].includes(q.get('panel'))) S.teamPanel = q.get('panel');
+    if (['style','operations','records','statistics'].includes(q.get('panel'))) S.teamPanel = q.get('panel');
+    if (S.view==='teams' && q.get('style')==='state') {
+      S.teamStyle='state';
+      if (['early','middle','late'].includes(q.get('phase'))) S.statePhase=q.get('phase');
+      if (['ahead','even','behind'].includes(q.get('state'))) S.stateCondition=q.get('state');
+    }
+    if (S.view==='teams'&&q.get('style')==='connections' || S.view==='players'&&['relations','items'].includes(q.get('panel'))) {
+      if(S.view==='teams')S.teamStyle='connections';else S.playerPanel='relations';
+      if(['early','middle','late'].includes(q.get('phase')))S.relationPhase=q.get('phase');
+      if(['all','ahead','even','behind'].includes(q.get('state')))S.relationState=q.get('state');
+      if(/^pair_(top|jungle|mid|bot|support)_(top|jungle|mid|bot|support)$/.test(q.get('pair')||''))S.relationPair=q.get('pair');
+    }
+    if(S.view==='teams'&&S.teamPanel==='operations'){
+      if(['trades','series'].includes(q.get('op')))S.operationView=q.get('op');
+      if(['early','middle','late'].includes(q.get('phase')))S.operationPhase=q.get('phase');
+      if(['all','ahead','even','behind'].includes(q.get('state')))S.operationState=q.get('state');
+      if(['all','no_nearby_kill','nearby_kill'].includes(q.get('mode')))S.operationMode=q.get('mode');
+      if(['all','DRAGON','BARON_NASHOR','other'].includes(q.get('objective')))S.operationObjective=q.get('objective');
+      S.operationSeries=q.get('series')||'';S.operationBefore=q.get('before')||'';
+    }
     if (['plays','time','lead'].includes(q.get('analysis'))) S.analysisPanel = q.get('analysis');
     if (q.get('gstage')) S.gameStage = q.get('gstage');
     if (q.get('gteam')) S.gameTeam = q.get('gteam');
@@ -1666,11 +1697,19 @@
     } else if (S.view === 'teams') {
       if (S.signatureTeam) q.set('team', S.signatureTeam);
       q.set('panel',S.teamPanel);
+      if (S.teamPanel==='style' && S.teamStyle==='state') {q.set('style','state');q.set('phase',S.statePhase);q.set('state',S.stateCondition);}
+      if (S.teamPanel==='style' && S.teamStyle==='connections') {q.set('style','connections');q.set('phase',S.relationPhase);q.set('state',S.relationState);q.set('pair',S.relationPair);}
+      if(S.teamPanel==='operations'){
+        q.set('op',S.operationView);q.set('phase',S.operationPhase);
+        if(S.operationView==='series'){if(S.operationSeries)q.set('series',S.operationSeries);if(S.operationBefore)q.set('before',S.operationBefore);}
+        else {q.set('state',S.operationState);if(S.operationView==='trades'){q.set('mode',S.operationMode);q.set('objective',S.operationObjective);}}
+      }
       if (S.teamPanel === 'statistics') { q.set('analysis',S.analysisPanel); q.set('stat',S.statsMetric); q.set('sh',S.statsH); }
     } else if (S.view === 'players') {
       if (S.statsPick) q.set('entity',S.statsPick);
       if (S.statsRole !== 'all') q.set('role',S.statsRole);
-      q.set('stat',S.statsMetric);q.set('sh',S.statsH);
+      if(S.playerPanel==='relations'){q.set('panel','relations');q.set('phase',S.relationPhase);q.set('state',S.relationState);}
+      else {q.set('stat',S.statsMetric);q.set('sh',S.statsH);}
     }
     history.replaceState(null, '', '#' + q.toString());
     trackView();
@@ -2661,7 +2700,7 @@
     main.innerHTML = `
       <section class="card">
         ${sceneNavigation()}
-        <h1 class="xt-title">${t('xtTitle')} <span class="sub">${t('xtSub')}</span></h1>
+        <h1 class="xt-title">${t('xtTitle')} <span class="sub">${t('xtSub')}</span></h1>${analysisPurpose('types')}
         <div class="controls" style="margin-top:0;margin-bottom:12px">
           <span class="nav-label">${t('scope')}</span>
           <div class="seg" id="xScope">${['game', 'stage', 'all'].map(k => `<button data-k="${k}" class="${S.xScope === k ? 'on' : ''}">${esc(scopeName[k])}</button>`).join('')}</div>
@@ -2736,7 +2775,7 @@
     main.innerHTML = `
       <section class="card">
         ${sceneNavigation()}
-        <h1 class="xt-title">${t('prTitle')} <span class="sub">${t('prSub')}</span></h1>
+        <h1 class="xt-title">${t('prTitle')} <span class="sub">${t('prSub')}</span></h1>${analysisPurpose('moments')}
         <div class="controls" style="margin-top:0;margin-bottom:12px">
           <span class="nav-label">${t('horizon')}</span>
           <div class="seg" id="swingH">${windows.map(([k, v]) => `<button data-k="${k}" class="${S.swingH === k ? 'on' : ''}">${esc(v)}</button>`).join('')}</div>
@@ -2981,8 +3020,9 @@
     return `<span class="nav-label">${t('horizon')}</span><div class="seg" id="statsH">${windows.map(([h,label])=>`<button data-h="${h}" class="${S.statsH===h?'on':''}">${esc(label)}</button>`).join('')}</div>
       <span class="nav-label">${t('statsMetric')}</span><div class="seg" id="statsMetric">${(WPS_INDEX?[['wps',t('statsWps')],['gold',t('statsGold')]]:[['gold',t('statsGold')]]).map(([key,label])=>`<button data-stat="${key}" class="${S.statsMetric===key?'on':''}">${esc(label)}</button>`).join('')}</div>`;
   }
+  const analysisPurpose=key=>window.PlayValueExplore.purposeHtml(key,S.lang);
   function analysisNavigation() {
-    return `<div class="explore-analysis-nav"><div class="seg" aria-label="${esc(explore().group)}">${['plays','time','lead'].map(key=>`<button type="button" data-analysis="${key}" class="${S.analysisPanel===key?'on':''}">${esc(explore()[key])}</button>`).join('')}</div></div>`;
+    return `<div class="explore-analysis-nav"><div class="seg" aria-label="${esc(explore().group)}">${['plays','time','lead'].map(key=>`<button type="button" data-analysis="${key}" class="${S.analysisPanel===key?'on':''}">${esc(explore()[key])}</button>`).join('')}</div></div>${analysisPurpose(S.analysisPanel==='plays'?'teamPlays':S.analysisPanel)}`;
   }
   function teamAnalysisHelp() {
     if (S.analysisPanel==='plays') return '';
@@ -3701,7 +3741,7 @@
     return `<section class="card"><div class="stats-compare-bar">
       <div class="stats-compare-picks"><label class="stats-pick a"><span>${t('statsPickPlayerA')}</span><select id="statsPlayerA">${options(S.statsPick)}</select></label><label class="stats-pick b"><span>${t('statsPickPlayerB')}</span><select id="statsPlayerB">${options(S.statsCompare)}</select></label></div>
       <label class="stats-pick stats-role-pick"><span>${t('statsPosition')}</span><select id="statsRole">${roles.map(([key, label]) => `<option value="${key}" ${key === S.statsRole ? 'selected' : ''}>${esc(label)}</option>`).join('')}</select></label>
-    </div></section>
+    </div>${analysisPurpose('comparePlayers')}</section>
     ${gs.length ? `<div>${comparisonNarrative(byKey.get(S.statsPick), byKey.get(S.statsCompare))}${comparisonDifference(byKey.get(S.statsPick), byKey.get(S.statsCompare))}<div class="stats-compare-layout">${entityDetail(byKey.get(S.statsPick), 'player', 'a', false, rows)}${entityDetail(byKey.get(S.statsCompare), 'player', 'b', false, rows)}</div><p class="note-box">${t('statsCaveat')}</p></div>` : `<section class="card"><p class="empty">${t('statsNoData')}</p></section>`}`;
   }
   function renderEntityStats(gs, kind) {
@@ -3723,7 +3763,7 @@
     const gs = statsGames(), teams = [...new Set(gs.flatMap(g => [g.blue_team, g.red_team]))];
     const main = document.getElementById('main');
     const gameScoped = S.statsScope === 'game';
-    main.innerHTML = `<section class="card"><div class="stats-head"><div><h1 class="xt-title">${esc(teams.join(' vs '))} · ${gameScoped ? t('statsTitleGame')(game().game_num) : t('statsTitle')}</h1><p class="stats-sub">${gameScoped ? t('statsSubGame') : t('statsSub')}</p></div><button type="button" class="btn stats-open-compare" id="statsOpenCompare">${t('statsOpenCompare')}</button></div>${statsControls()}</section>
+    main.innerHTML = `<section class="card"><div class="stats-head"><div><h1 class="xt-title">${esc(teams.join(' vs '))} · ${gameScoped ? t('statsTitleGame')(game().game_num) : t('statsTitle')}</h1><p class="stats-sub">${gameScoped ? t('statsSubGame') : t('statsSub')}</p></div><button type="button" class="btn stats-open-compare" id="statsOpenCompare">${t('statsOpenCompare')}</button></div>${statsControls()}${S.statsTab==='player'?analysisPurpose('playerPlays'):''}</section>
       ${S.statsTab === 'team' ? renderTeamStats(gs, teams, false) : renderEntityStats(gs, 'player')}`;
     wireStatsControls();
     main.querySelector('#statsOpenCompare').onclick = () => S.statsTab === 'team' ? openCompare('team', S.statsTeamA, S.statsTeamB) : openCompare('player', S.statsPick);
@@ -3756,11 +3796,35 @@
       render(); window.scrollTo({ top: 0, behavior: SMOOTH });
     },
   });
+  const TEAM_STATES = window.PlayValueTeamStates?.create({
+    getLanguage:()=>S.lang,
+    onChange:({phase,state})=>{if(phase)S.statePhase=phase;if(state)S.stateCondition=state;render();},
+  });
+  const RELATIONS=window.PlayValueRelations?.create({
+    getLanguage:()=>S.lang,
+    onChange:({phase,state,pair})=>{if(phase)S.relationPhase=phase;if(state)S.relationState=state;if(pair)S.relationPair=pair;render();},
+    onPlayer:player=>openPlayerProfile(player,'relations'),
+    onTeam:team=>{S.signatureTeam=team;S.view='teams';S.teamPanel='style';S.teamStyle='connections';render();window.scrollTo({top:0});},
+  });
+  const OPERATIONS=window.PlayValueOperations?.create({
+    getLanguage:()=>S.lang,
+    onChange:changes=>{for(const [key,value] of Object.entries(changes)){S['operation'+key[0].toUpperCase()+key.slice(1)]=value;}render();},
+  });
+  const operationSettings=()=>({view:S.operationView,phase:S.operationPhase,state:S.operationState,mode:S.operationMode,objective:S.operationObjective,series:S.operationSeries,before:S.operationBefore});
+  function teamStyleContent(team) {
+    const labels={ko:['반복 배치','상황별 행동','선수 연결'],en:['Recurring formations','Behavior by state','Player connections'],ja:['繰り返す配置','状況別の行動','選手のつながり'],zh:['重复站位','不同局势下的行为','选手关联']}[S.lang]||['Recurring formations','Behavior by state','Player connections'];
+    const mode=`<div class="state-style-switch"><div class="seg">${['signature','state','connections'].map((key,i)=>`<button type="button" data-team-style="${key}" class="${S.teamStyle===key?'on':''}">${esc(labels[i])}</button>`).join('')}</div></div>`;
+    const content=S.teamStyle==='connections'?RELATIONS?.teamHtml(S.tourn,team,S.relationPhase,S.relationState,S.relationPair):S.teamStyle==='state'
+      ? TEAM_STATES?.html(S.tourn,team,S.statePhase,S.stateCondition)
+      : SIGNATURES?.html(S.tourn,team,{picker:false,allowAnyTeam:true,heading:explore().signatureHeading});
+    return mode+(content||`<section class="card"><p>${esc(explore().signatureMissing)}</p></section>`);
+  }
   function openTeamProfile(team) {
     S.view='teams';S.signatureTeam=team;S.teamPanel='style';S.statsTab='team';
     render();window.scrollTo({top:0,behavior:SMOOTH});
   }
-  function openPlayerProfile(player) {
+  function openPlayerProfile(player,panel='plays') {
+    S.playerPanel=panel;
     S.view='players';S.statsTab='player';S.statsScope='all';S.statsPick=player;S.statsRole='all';
     render();window.scrollTo({top:0,behavior:SMOOTH});
   }
@@ -3773,7 +3837,7 @@
   }
   function gameRecordsHtml(gs,team) {
     const rows=[...gs].sort((a,b)=>seriesOf(b).localeCompare(seriesOf(a)) || a.game_num-b.game_num);
-    return `<section class="card"><h2>${esc(explore().records)} <span class="sub">${esc(explore().count(rows.length))}</span></h2>
+    return `<section class="card"><h2>${esc(explore().records)} <span class="sub">${esc(explore().count(rows.length))}</span></h2><p class="explore-records-note">${esc(explore().recordsSub)}</p>
       <div class="scroll-x"><table class="xt explore-records"><thead><tr><th>${esc(t('gfGame'))}</th><th>${esc(explore().opponent)}</th><th>${esc(explore().outcome)}</th><th>${esc(explore().date)}</th></tr></thead><tbody>${rows.map(g=>`<tr><td><button class="game-open" type="button" data-profile-game="${esc(g.id)}">${esc(contentText(g,'stage'))} · ${esc(t('gameN')(g.game_num))}</button></td><td>${esc(opponentOf(g,team))}</td><td>${esc(g.winner===team?explore().win:explore().loss)}</td><td>${esc(g.date)}</td></tr>`).join('')}</tbody></table></div></section>`;
   }
   function renderTeamsPage() {
@@ -3782,18 +3846,20 @@
     const team=S.signatureTeam,teams=statsEventTeams(),gs=selectedTeamGames(),wins=gs.filter(g=>g.winner===team).length;
     const main=document.getElementById('main');
     const profile=()=>teamProfile(team,gs);
+    const teamPanels=[['style',explore().style],['operations',({ko:'운영',en:'Operations',ja:'運営',zh:'运营'}[S.lang]||'Operations')],['statistics',explore().statistics]];
     main.innerHTML=`<section class="card"><div class="explore-head"><div><h1>${esc(explore().teamTitle)}</h1><p>${esc(explore().teamSub)}</p></div>
       <div class="explore-actions"><label class="stats-pick">${esc(explore().team)}<select class="explore-profile-picker" id="profileTeam">${teams.map(x=>`<option value="${esc(x)}" ${team===x?'selected':''}>${esc(x)}</option>`).join('')}</select></label><button type="button" class="btn" id="profileCompare">${esc(explore().compareTeam)}</button></div></div>
       <div class="explore-summary"><b>${esc(team)}</b><span>${esc(explore().count(gs.length))}</span><span>${wins}${esc(explore().win)} · ${gs.length-wins}${esc(explore().loss)}</span></div>
-      <div class="explore-tabs"><div class="seg">${['style','records','statistics'].map(key=>`<button type="button" data-team-panel="${key}" class="${S.teamPanel===key?'on':''}">${esc(explore()[key])}</button>`).join('')}</div></div></section>
-      ${S.teamPanel==='style'?(SIGNATURES?.html(S.tourn,team,{picker:false,allowAnyTeam:true,heading:explore().signatureHeading}) || `<section class="card"><p>${esc(explore().signatureMissing)}</p></section>`):S.teamPanel==='records'?gameRecordsHtml(gs,team):
+      <div class="explore-tabs explore-team-navigation"><div class="seg">${teamPanels.map(([key,label])=>`<button type="button" data-team-panel="${key}" class="${S.teamPanel===key?'on':''}">${esc(label)}</button>`).join('')}</div><button type="button" data-team-panel="records" class="btn explore-records-link ${S.teamPanel==='records'?'on':''}" aria-pressed="${S.teamPanel==='records'}">${esc(explore().records)}</button></div></section>
+      ${S.teamPanel==='operations'?(OPERATIONS?.teamHtml(S.tourn,team,operationSettings())||''):S.teamPanel==='style'?teamStyleContent(team):S.teamPanel==='records'?gameRecordsHtml(gs,team):
         `<section class="card">${analysisNavigation()}${S.analysisPanel==='lead'?`<p class="note">${esc(explore().leadSub)}</p>`:`<div class="stats-controls">${metricControlsHtml()}</div>`}${teamCard(profile(),'neutral',gs,S.analysisPanel)}${teamAnalysisHelp()}${S.analysisPanel==='lead'?'':`<p class="note-box">${esc(t('statsCaveat'))}</p>`}</section>`}`;
     main.querySelector('#profileTeam').onchange=e=>{S.signatureTeam=e.target.value;render();};
     main.querySelector('#profileCompare').onclick=()=>openCompare('team',team);
     main.querySelectorAll('[data-team-panel]').forEach(b=>b.onclick=()=>{S.teamPanel=b.dataset.teamPanel;render();});
+    main.querySelectorAll('[data-team-style]').forEach(b=>b.onclick=()=>{S.teamStyle=b.dataset.teamStyle;render();});
     main.querySelectorAll('[data-profile-game]').forEach(b=>b.onclick=()=>{S.view='set';S.gameId=b.dataset.profileGame;S.playId=null;render();window.scrollTo({top:0});});
     main.querySelectorAll('[data-stats-player]').forEach(b=>b.onclick=()=>openPlayerProfile(b.dataset.statsPlayer));
-    wireStatsControls();wireStatsPlayLinks(main);SIGNATURES?.wire(main);
+    wireStatsControls();wireStatsPlayLinks(main);SIGNATURES?.wire(main);TEAM_STATES?.wire(main);RELATIONS?.wire(main);OPERATIONS?.wire(main);
     writeHash();syncPressed();main.removeAttribute('aria-busy');
   }
   function renderPlayersPage() {
@@ -3803,12 +3869,14 @@
     const rows=buildEntities('player',gs),row=rows.find(r=>r.key===S.statsPick),main=document.getElementById('main');
     main.innerHTML=`<section class="card"><div class="explore-head"><div><h1>${esc(explore().playerTitle)}</h1><p>${esc(explore().playerSub)}</p></div><button type="button" class="btn" id="profileCompare">${esc(explore().comparePlayer)}</button></div>
       <div class="explore-filters"><label>${esc(t('statsPosition'))}<select id="profileRole">${[['all',t('statsAllPositions')],...STAT_POSITIONS.map(pos=>[pos,posLabel(pos)])].map(([key,label])=>`<option value="${key}" ${S.statsRole===key?'selected':''}>${esc(label)}</option>`).join('')}</select></label>
-      <label>${esc(t('statsPlayer'))}<select class="explore-profile-picker" id="profilePlayer">${choices.map(p=>`<option value="${esc(p.key)}" ${S.statsPick===p.key?'selected':''}>${esc(playerChoiceLabel(p))}</option>`).join('')}</select></label></div><div class="stats-controls">${metricControlsHtml()}</div></section>
-      ${entityDetail(row,'player','',true,rows)}`;
+      <label>${esc(t('statsPlayer'))}<select class="explore-profile-picker" id="profilePlayer">${choices.map(p=>`<option value="${esc(p.key)}" ${S.statsPick===p.key?'selected':''}>${esc(playerChoiceLabel(p))}</option>`).join('')}</select></label></div>
+      <div class="explore-tabs"><div class="seg">${[['plays',explore().plays],['relations',({ko:'단독 구간 성장',en:'Growth after solo starts',ja:'単独時点からの成長',zh:'独处时点后的成长'}[S.lang]||'Growth after solo starts')]].map(([key,label])=>`<button type="button" data-player-panel="${key}" class="${S.playerPanel===key?'on':''}">${esc(label)}</button>`).join('')}</div></div>${S.playerPanel==='plays'?analysisPurpose('playerPlays'):''}${S.playerPanel==='plays'?`<div class="stats-controls">${metricControlsHtml()}</div>`:''}</section>
+      ${S.playerPanel==='relations'?(RELATIONS?.playerHtml(S.tourn,S.statsPick,S.relationPhase,S.relationState)||''):entityDetail(row,'player','',true,rows)}`;
     main.querySelector('#profileRole').onchange=e=>{S.statsRole=e.target.value;render();};
     main.querySelector('#profilePlayer').onchange=e=>{S.statsPick=e.target.value;render();};
     main.querySelector('#profileCompare').onclick=()=>openCompare('player',S.statsPick);
-    wireStatsControls();wireStatsPlayLinks(main);writeHash();syncPressed();main.removeAttribute('aria-busy');
+    main.querySelectorAll('[data-player-panel]').forEach(b=>b.onclick=()=>{S.playerPanel=b.dataset.playerPanel;render();});
+    wireStatsControls();wireStatsPlayLinks(main);RELATIONS?.wire(main);OPERATIONS?.wire(main);writeHash();syncPressed();main.removeAttribute('aria-busy');
   }
   function renderCompare() {
     if (!WPS_INDEX && S.statsMetric === 'wps') S.statsMetric = 'gold';
@@ -3861,6 +3929,9 @@
       } else if (S.view === 'teams') {
         if (!tour._plays) main.innerHTML = wait;
         await Promise.all([ensurePlays(S.tourn),SIGNATURES?.load()]);
+        if (S.teamPanel==='style' && S.teamStyle==='state') await TEAM_STATES?.load();
+        if (S.teamPanel==='style' && S.teamStyle==='connections') await RELATIONS?.load();
+        if (S.teamPanel==='operations') await OPERATIONS?.load();
         if(epoch!==renderEpoch)return;
         normalizeProfileTeam();
         if (S.teamPanel==='statistics' && S.analysisPanel!=='lead' && S.statsMetric==='wps' && WPS_INDEX) await Promise.all(selectedTeamGames().map(g=>ensureWps(g.id)));
@@ -3870,7 +3941,8 @@
         if (!tour._plays) main.innerHTML = wait;
         await ensurePlays(S.tourn);if(epoch!==renderEpoch)return;S.statsTab='player';S.statsScope='all';normalizePlayerSelections();
         const games=statsEventGames().filter(g=>Object.values(ROSTER[g.id]||{}).some(r=>r.player===S.statsPick));
-        if(S.statsMetric==='wps'&&WPS_INDEX) await Promise.all(games.map(g=>ensureWps(g.id)));
+        if(S.playerPanel==='relations') await RELATIONS?.load();
+        else if(S.statsMetric==='wps'&&WPS_INDEX) await Promise.all(games.map(g=>ensureWps(g.id)));
         if(epoch!==renderEpoch)return;
         if(S.view==='players') renderPlayersPage();
       } else if (S.view === 'stats' || S.view === 'compare') {

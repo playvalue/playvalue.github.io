@@ -1,0 +1,15 @@
+.state-style-switch { margin:12px 0; }
+.state-style-switch .seg { display:inline-flex; flex-wrap:wrap; }
+.state-behavior .state-intro { color:var(--text-muted); margin:8px 0 16px; font-size:.82rem; }
+.state-controls { display:flex; flex-wrap:wrap; gap:10px 18px; margin:16px 0; }
+.state-controls .seg { flex-wrap:wrap; }
+.state-method { max-width:1000px; color:var(--text-muted); font-size:.75rem; line-height:1.7; margin:12px 0; }
+.state-behavior-table { min-width:760px; }
+.state-behavior-table th[scope="row"] { min-width:150px; max-width:200px; white-space:normal; font-size:.8rem; }
+.state-behavior-table td { font-size:.8rem; }
+.state-evidence small { display:block; color:var(--text-muted); font-size:.68rem; line-height:1.7; }
+.state-evidence span { white-space:nowrap; font-size:.72rem; }
+.state-video { display:block; color:var(--accent); font-size:.7rem; line-height:1.8; white-space:nowrap; }
+.state-transitions { margin:20px 0; }
+.state-transitions summary { cursor:pointer; font-size:.84rem; font-weight:650; }
+.state-no-data { color:var(--text-muted); font-size:.73rem; }

@@ -26,3 +26,30 @@
   .explore-filters label { flex:1 1 130px; }
   .explore-filters select { width:100%; min-width:0; }
 }
+
+/* Keep the reading guide separate from optional calculation details. */
+.analysis-guide { max-width:1000px; margin:16px 0; padding:14px 18px; border-left:3px solid var(--accent); background:var(--bg-card); font-size:.8rem; line-height:1.8; }
+.analysis-guide b { color:var(--text-main); font-weight:650; }
+.analysis-guide p { color:var(--text-muted); margin:5px 0 0; }
+.analysis-metric-hint { display:block; color:var(--text-muted); font-size:.68rem; font-weight:400; line-height:1.65; margin-top:5px; }
+
+.analysis-scroll-hint { display:none; color:var(--text-muted); font-size:.72rem; line-height:1.6; }
+@media(max-width:720px) { .analysis-scroll-hint { display:block; } }
+
+.analysis-purpose { margin:16px 0 22px; padding:18px 20px; max-width:1000px; border:1px solid var(--border-color); border-radius:8px; }
+.analysis-purpose-top { display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; margin-bottom:8px; color:var(--accent); font-size:.7rem; font-weight:650; }
+.analysis-purpose-kind { padding:3px 8px; border:1px solid var(--border-color); border-radius:4px; color:var(--text-muted); font-weight:400; }
+.analysis-purpose h3 { font-size:1.05rem; line-height:1.5; margin:0 0 10px; }
+.analysis-purpose p { max-width:none; font-size:.8rem; line-height:1.8; margin:9px 0 0; }
+.analysis-purpose .analysis-purpose-why { color:var(--text-main); font-size:.84rem; }
+.analysis-purpose-watch,.analysis-purpose-scope { color:var(--text-muted); }
+.analysis-purpose p b { font-size:.73rem; margin-right:5px; }
+@media(max-width:720px) { .analysis-purpose { padding:15px; } }
+
+/* Game participation is a separate destination beside the three analysis tabs. */
+.explore-team-navigation { gap:16px 28px; }
+.explore-records-link { margin-left:auto; white-space:nowrap; }
+.explore-records-link.on { color:var(--accent); border-color:var(--accent); }
+.explore-records-note { color:var(--text-muted); font-size:.8rem; line-height:1.7; margin:10px 0 18px; }
+.explore-records .game-open { background:none; border:0; padding:2px 0; color:var(--accent); font:inherit; text-align:left; cursor:pointer; }
+.explore-records .game-open:hover { text-decoration:underline; }
