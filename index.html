@@ -782,7 +782,7 @@
 <footer class="container site-foot"><p data-i18n="legal"></p></footer>
 
 <script src="./team-signatures.js?v=3"></script>
-<script src="./explore-navigation.js?v=2"></script>
+<script src="./explore-navigation.js?v=3"></script>
 <script src="./team-state-styles.js?v=1"></script>
 <script src="./team-player-relations.js?v=1"></script>
 <script src="./team-operations.js?v=1"></script>
@@ -815,8 +815,8 @@
   const TOP = WPS_INDEX?.top_moments?.tournaments || {};
   const hasMoments = tid => !!TOP[tid];
   const seriesOf = g => g.series || g.stage;
-  // Each tournament has its own series; game 1 of its latest series opens first. Without a tournament, the one
-  // with the most recently played game is taken, so the page opens on the newest series.
+  // Series selectors start at game 1 of the latest series in each tournament.
+  // Bare entries select the latest individual game separately in readHash().
   const gamesIn = tid => GAMES.filter(g => g.tournament_id === tid);
   const latestTourn = () => GAMES.reduce((a, b) => ((b.date || '') > (a.date || '') ? b : a)).tournament_id;
   const firstGame = (tid = latestTourn()) => {
@@ -1417,7 +1417,7 @@
 
   // ------------------------------------------------------------------ state
   const S = {
-    lang: 'ko', theme: 'light', tourn: firstGame().tournament_id, view: 'games', stage: 'all', gameId: firstGame().id, playId: null,
+    lang: 'ko', theme: 'light', tourn: firstGame().tournament_id, view: 'set', stage: 'all', gameId: firstGame().id, playId: null,
     h: String(D.default_horizon_s), fFamily: '', fTag: '', fState: '', fPlayer: '', fHl: false, listSort: 'time',
     xScope: 'all', xRows: 'family', xCell: null, xSort: { col: 'positive', rev: false }, gSort: { col: 'label', rev: false }, swingList: 'games', swingH: String(D.default_horizon_s), swingPhase: 'all', guideOpen: false,
     gameStage: 'all', gameTeam: '', gameDetails: false, teamPanel: 'style', analysisPanel: 'plays',
@@ -1623,6 +1623,12 @@
     if (q.get('game') && GAMES.some(g => g.id === q.get('game'))) { S.gameId = q.get('game'); S.tourn = GAMES.find(g => g.id === S.gameId).tournament_id; }
     if (q.get('play')) S.playId = q.get('play');
     S.view = window.PlayValueExplore.resolveRoute(q);
+    // A bare entry opens the newest available game; explicit deep links keep their target.
+    if(S.view==='set'&&!GAMES.some(g=>g.id===q.get('game'))&&!q.get('play')){
+      const tournament=DATA.tournaments.some(t=>t.id===q.get('tourn'))?q.get('tourn'):null;
+      const latest=window.PlayValueExplore.latestGame(GAMES,tournament);
+      if(latest){S.gameId=latest.id;S.tourn=latest.tournament_id;}
+    }
     if (q.get('list') === 'moments' && hasMoments(S.tourn)) S.swingList = 'moments';
     if (['instant', '15', '30', '60'].includes(q.get('win'))) S.swingH = q.get('win');
     if (['all', 'lane', 'mid', 'late'].includes(q.get('phase'))) S.swingPhase = q.get('phase');

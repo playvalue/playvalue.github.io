@@ -92,7 +92,14 @@
     if (v==='stats') return ['all','h2h'].includes(q.get('scope')) ? 'compare' : 'stats';
     if (v==='compare' && q.get('signature') && q.get('tab')!=='player') return 'teams';
     if (['set','games','moments','xtab','teams','players','compare'].includes(v)) return v;
-    return q.get('game') || q.get('play') ? 'set' : 'games';
+    return q.get('game') || q.get('play') || !v ? 'set' : 'games';
   }
-  window.PlayValueExplore={domain,resolveRoute,purposeHtml,copy:lang=>COPY[lang] || COPY.en};
+  function latestGame(games,tournament=null) {
+    return games.filter(g=>!tournament||g.tournament_id===tournament).sort((a,b)=>
+      String(b.date||'').localeCompare(String(a.date||'')) ||
+      String(b.series||b.stage||'').localeCompare(String(a.series||a.stage||''),undefined,{numeric:true}) ||
+      Number(b.game_num||0)-Number(a.game_num||0) || String(a.id).localeCompare(String(b.id))
+    )[0]||null;
+  }
+  window.PlayValueExplore={domain,resolveRoute,latestGame,purposeHtml,copy:lang=>COPY[lang] || COPY.en};
 })();
