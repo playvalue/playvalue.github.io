@@ -726,6 +726,7 @@
   <link rel="stylesheet" href="./team-state-styles.css?v=1">
   <link rel="stylesheet" href="./team-player-relations.css?v=1">
   <link rel="stylesheet" href="./team-operations.css?v=1">
+  <link rel="stylesheet" href="./team-formation.css?v=1">
 </head>
 <body>
 <a class="skip" href="#main" id="skipLink">본문으로 건너뛰기</a>
@@ -781,10 +782,13 @@
 <footer class="container site-foot"><p data-i18n="legal"></p></footer>
 
 <script src="./team-signatures.js?v=3"></script>
-<script src="./explore-navigation.js?v=1"></script>
+<script src="./explore-navigation.js?v=2"></script>
 <script src="./team-state-styles.js?v=1"></script>
 <script src="./team-player-relations.js?v=1"></script>
 <script src="./team-operations.js?v=1"></script>
+<script src="./formation-clock.js?v=1"></script>
+<script src="./formation-geometry.js?v=1"></script>
+<script src="./team-formation.js?v=1"></script>
 <script>
 (async () => {
   // index.json is small and read first; a game's full file and a tournament's light play list load on demand.
@@ -1643,6 +1647,7 @@
     }
     if (q.get('team') && S.view === 'teams') S.signatureTeam = q.get('team');
     if (['style','operations','records','statistics'].includes(q.get('panel'))) S.teamPanel = q.get('panel');
+    if (S.view==='teams' && q.get('style')==='formation') S.teamStyle='formation';
     if (S.view==='teams' && q.get('style')==='state') {
       S.teamStyle='state';
       if (['early','middle','late'].includes(q.get('phase'))) S.statePhase=q.get('phase');
@@ -1697,6 +1702,7 @@
     } else if (S.view === 'teams') {
       if (S.signatureTeam) q.set('team', S.signatureTeam);
       q.set('panel',S.teamPanel);
+      if (S.teamPanel==='style' && S.teamStyle==='formation') q.set('style','formation');
       if (S.teamPanel==='style' && S.teamStyle==='state') {q.set('style','state');q.set('phase',S.statePhase);q.set('state',S.stateCondition);}
       if (S.teamPanel==='style' && S.teamStyle==='connections') {q.set('style','connections');q.set('phase',S.relationPhase);q.set('state',S.relationState);q.set('pair',S.relationPair);}
       if(S.teamPanel==='operations'){
@@ -3810,11 +3816,16 @@
     getLanguage:()=>S.lang,
     onChange:changes=>{for(const [key,value] of Object.entries(changes)){S['operation'+key[0].toUpperCase()+key.slice(1)]=value;}render();},
   });
+  const FORMATION=window.PlayValueFormation?.create({
+    getLanguage:()=>S.lang,
+    loadGame:id=>ensureGame(id).catch(e=>{delete loading[id];throw e;}),
+    onGame:id=>{S.view='set';S.gameId=id;S.playId=null;render();window.scrollTo({top:0,behavior:SMOOTH});},
+  });
   const operationSettings=()=>({view:S.operationView,phase:S.operationPhase,state:S.operationState,mode:S.operationMode,objective:S.operationObjective,series:S.operationSeries,before:S.operationBefore});
   function teamStyleContent(team) {
-    const labels={ko:['반복 배치','상황별 행동','선수 연결'],en:['Recurring formations','Behavior by state','Player connections'],ja:['繰り返す配置','状況別の行動','選手のつながり'],zh:['重复站位','不同局势下的行为','选手关联']}[S.lang]||['Recurring formations','Behavior by state','Player connections'];
-    const mode=`<div class="state-style-switch"><div class="seg">${['signature','state','connections'].map((key,i)=>`<button type="button" data-team-style="${key}" class="${S.teamStyle===key?'on':''}">${esc(labels[i])}</button>`).join('')}</div></div>`;
-    const content=S.teamStyle==='connections'?RELATIONS?.teamHtml(S.tourn,team,S.relationPhase,S.relationState,S.relationPair):S.teamStyle==='state'
+    const labels={ko:['반복 배치','상황별 행동','선수 연결','팀 포메이션'],en:['Recurring formations','Behavior by state','Player connections','Team formation'],ja:['繰り返す配置','状況別の行動','選手のつながり','チームフォーメーション'],zh:['重复站位','不同局势下的行为','选手关联','队伍阵型']}[S.lang]||['Recurring formations','Behavior by state','Player connections','Team formation'];
+    const mode=`<div class="state-style-switch"><div class="seg">${['signature','state','connections','formation'].map((key,i)=>`<button type="button" data-team-style="${key}" class="${S.teamStyle===key?'on':''}">${esc(labels[i])}</button>`).join('')}</div></div>`;
+    const content=S.teamStyle==='formation'?FORMATION?.html():S.teamStyle==='connections'?RELATIONS?.teamHtml(S.tourn,team,S.relationPhase,S.relationState,S.relationPair):S.teamStyle==='state'
       ? TEAM_STATES?.html(S.tourn,team,S.statePhase,S.stateCondition)
       : SIGNATURES?.html(S.tourn,team,{picker:false,allowAnyTeam:true,heading:explore().signatureHeading});
     return mode+(content||`<section class="card"><p>${esc(explore().signatureMissing)}</p></section>`);
@@ -3860,6 +3871,7 @@
     main.querySelectorAll('[data-profile-game]').forEach(b=>b.onclick=()=>{S.view='set';S.gameId=b.dataset.profileGame;S.playId=null;render();window.scrollTo({top:0});});
     main.querySelectorAll('[data-stats-player]').forEach(b=>b.onclick=()=>openPlayerProfile(b.dataset.statsPlayer));
     wireStatsControls();wireStatsPlayLinks(main);SIGNATURES?.wire(main);TEAM_STATES?.wire(main);RELATIONS?.wire(main);OPERATIONS?.wire(main);
+    if(S.teamPanel==='style'&&S.teamStyle==='formation')FORMATION?.mount(main,S.tourn,team,gs);
     writeHash();syncPressed();main.removeAttribute('aria-busy');
   }
   function renderPlayersPage() {
@@ -3905,6 +3917,7 @@
   }
   let renderEpoch=0;
   async function render() {
+    FORMATION?.dispose();
     const epoch=++renderEpoch;
     if (S.view === 'moments' && !hasMoments(S.tourn)) S.view = 'xtab';
     renderChrome();
@@ -3931,6 +3944,7 @@
         await Promise.all([ensurePlays(S.tourn),SIGNATURES?.load()]);
         if (S.teamPanel==='style' && S.teamStyle==='state') await TEAM_STATES?.load();
         if (S.teamPanel==='style' && S.teamStyle==='connections') await RELATIONS?.load();
+        if (S.teamPanel==='style' && S.teamStyle==='formation') await FORMATION?.load();
         if (S.teamPanel==='operations') await OPERATIONS?.load();
         if(epoch!==renderEpoch)return;
         normalizeProfileTeam();
