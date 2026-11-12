@@ -40,6 +40,61 @@ PlayValue는 프로 경기에서 해설이 짚은 플레이마다, 그 뒤 15·3
 
 ## Notes
 
+### Navigation
+
+The top navigation follows four subjects: Games, Moments, Teams and Players.
+Games owns the stage/team filters and closeness/comeback sorting. Moments offers
+turning points and play-type totals. A team profile opens Style, Game record or
+Statistics; statistics shows one of Play involvement, Time & situation or Lead
+development at a time. Team and player comparisons open through explicit buttons
+on their respective profiles, rather than sharing a top-level catch-all view.
+
+`explore-navigation.js` maps old `swings`, contextual `stats` and signature links
+to the new views. Existing game/play links still open their game workspace.
+Profile links use `view=teams&team=IG&panel=style` or `view=players&entity=...`;
+comparison selections remain in `teamA`/`teamB` or `entity`/`compare`.
+
+```sh
+node --test tests/test_explore_navigation.cjs tests/test_team_signatures_ui.cjs
+```
+
+### Tournament signatures
+
+The team profile's Style tab includes an optional signature layer for MSI's
+top four and the four Worlds semifinalists. It describes repeated formations in
+each tournament, with typical-state examples from different opponents. GEN stays
+explicitly pending because the published sample covers only two opponents
+across three series.
+
+`team-signatures.js` and `team-signatures.css` render
+`data/team-signatures-v1.json`. The layer is independent of the selected WPS/gold
+horizon. Its modal uses actual synchronous Riot minute frames, each linked to its
+own broadcast timestamp; it does not interpolate movement or manufacture a
+commentary play. YouTube embeds may be unavailable; the direct timed VOD link is
+always provided when that broadcast clock is observed.
+
+From the research checkout, after rebuilding `team_style_profiles_v1` when its
+inputs change:
+
+```sh
+.venv-minimap/bin/python -m src.winprob_value.export_team_signatures
+.venv-minimap/bin/python -m unittest tests.test_team_signatures
+node --test tests/test_team_signatures_ui.cjs
+```
+
+The builder checks source hashes, bracket selection, minimum replication and
+opponent sensitivity. The editorial scope is in `config/team_signatures_v1.json`;
+source provenance is saved to `data/processed/team_signatures_v1/manifest.json`.
+The usual two-repository Pages deployment includes the new runtime JSON and site
+assets. A missing signature file does not disable existing comparisons.
+The profile team picker shows a single team and keeps its `team` URL parameter
+separate from the statistical comparison's `teamA`/`teamB` selections.
+Teams outside the signature sample retain their own profile and an explicit
+coverage notice. Old comparison links with a `signature` parameter open that
+team's Style tab.
+Expected frequencies use tournament-wide game-state baselines, not the other
+team currently selected in the comparison.
+
 Visits are counted with [Umami](https://umami.is) without cookies.
 
 PlayValue isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.

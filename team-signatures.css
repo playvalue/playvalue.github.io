@@ -1,0 +1,66 @@
+.signature-section { border-top: 3px solid var(--accent); }
+.signature-heading { display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; align-items:start; }
+.signature-heading h2 { margin:0 0 5px; font-size:1.2rem; }
+.signature-heading p, .signature-note { color:var(--text-muted); font-size:.78rem; line-height:1.6; }
+.signature-scope { padding:4px 9px; border:1px solid var(--border-color); border-radius:999px; white-space:nowrap; font-size:.7rem; color:var(--text-muted); }
+.signature-teams { display:flex; flex-wrap:wrap; gap:7px; margin:15px 0; }
+.signature-team-pick { border:1px solid var(--border-color); border-radius:var(--radius-control); background:var(--bg-card); color:var(--text-main); padding:7px 11px; cursor:pointer; font:inherit; font-size:.8rem; }
+.signature-team-pick.on { border-color:var(--accent); background:var(--accent-bg); color:var(--accent); }
+.signature-team-pick small { margin-left:6px; color:var(--text-muted); font-size:.66rem; }
+.signature-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:16px; }
+.signature-selection-note { color:var(--text-muted); font-size:.72rem; line-height:1.6; margin:0 0 13px; }
+.signature-patterns { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.signature-team { min-width:0; padding:15px; border:1px solid var(--border-color); border-radius:var(--radius-card); }
+.signature-team.side-a { border-top:3px solid var(--blue-team); }
+.signature-team.side-b { border-top:3px solid var(--red-team); }
+.signature-team.side-single { border-top:3px solid var(--accent); }
+.signature-team-head { display:flex; justify-content:space-between; gap:10px; margin-bottom:13px; align-items:baseline; }
+.signature-team-head h3 { margin:0; font-size:1.1rem; }
+.signature-team-head small { color:var(--text-muted); font-size:.68rem; }
+.signature-pattern + .signature-pattern { border-left:1px solid var(--border-color); padding-left:16px; }
+.signature-pattern h4 { font-size:.94rem; margin:6px 0; }
+.signature-phase { display:inline-block; font-size:.65rem; font-weight:700; color:var(--accent); background:var(--accent-bg); padding:3px 7px; border-radius:999px; }
+.signature-pattern p { font-size:.76rem; line-height:1.6; color:var(--text-muted); margin:6px 0; }
+.signature-rate { display:flex; flex-wrap:wrap; gap:9px 17px; align-items:baseline; margin:12px 0 8px; }
+.signature-rate strong { font-size:1.5rem; font-variant-numeric:tabular-nums; color:var(--text-main); }
+.signature-rate span { font-size:.7rem; color:var(--text-muted); }
+.signature-rail { height:6px; background:var(--bg-pill); border-radius:8px; position:relative; margin-bottom:10px; }
+.signature-rail i { display:block; height:100%; background:var(--accent); border-radius:8px; opacity:.7; }
+.signature-rail b { position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--text-muted); }
+.signature-evidence { font-size:.68rem; color:var(--text-muted); margin:8px 0; }
+.signature-examples { display:flex; flex-wrap:wrap; gap:6px; }
+.signature-examples button, .signature-tabs button { border:1px solid var(--border-color); border-radius:var(--radius-control); background:var(--bg-pill); color:var(--text-main); cursor:pointer; padding:6px 8px; font:inherit; font-size:.7rem; }
+.signature-examples button:hover, .signature-team-pick:hover { border-color:var(--accent); color:var(--accent); }
+.signature-note { margin-top:14px; }
+.signature-method { color:var(--text-muted); font-size:.72rem; margin-top:10px; }
+.signature-method summary { cursor:pointer; }
+.signature-method p { margin:8px 0 0; line-height:1.65; }
+.signature-dialog { margin:auto; padding:0; border:1px solid var(--border-color); border-radius:var(--radius-card); background:var(--bg-card); color:var(--text-main); width:min(1080px,calc(100vw - 28px)); max-width:none; max-height:calc(100dvh - 28px); overflow:auto; }
+.signature-dialog::backdrop { background:rgba(12,19,31,.66); }
+.signature-dialog-head { display:flex; gap:15px; justify-content:space-between; align-items:start; padding:20px 22px 0; }
+.signature-dialog-head h2 { font-size:1.15rem; margin:4px 0 8px; }
+.signature-close { border:1px solid var(--border-color); background:var(--bg-pill); color:var(--text-main); font:inherit; border-radius:6px; padding:5px 10px; cursor:pointer; }
+.signature-dialog-body { padding:0 22px 20px; }
+.signature-tabs { display:flex; gap:7px; flex-wrap:wrap; margin:10px 0 15px; }
+.signature-tabs button[aria-pressed="true"] { border-color:var(--accent); background:var(--accent-bg); color:var(--accent); }
+.signature-view { display:grid; grid-template-columns:minmax(240px,.85fr) minmax(0,1.15fr); gap:20px; align-items:start; }
+.signature-map svg { display:block; width:100%; border-radius:10px; }
+.signature-frame-head { display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-size:.72rem; color:var(--text-muted); margin-bottom:8px; }
+.signature-frame-head b { color:var(--text-main); font-variant-numeric:tabular-nums; }
+.signature-frame-buttons { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0; }
+.signature-frame-buttons button { flex:1; min-width:65px; }
+.signature-video { width:100%; aspect-ratio:16/9; border:0; border-radius:10px; }
+.signature-context { display:flex; flex-wrap:wrap; gap:6px 14px; margin:12px 0; color:var(--text-muted); font-size:.74rem; }
+.signature-dialog a { color:var(--accent); font-size:.78rem; }
+.signature-roster { display:grid; grid-template-columns:1fr 1fr; gap:6px 14px; margin-top:15px; }
+.signature-roster div { display:flex; align-items:center; gap:6px; font-size:.66rem; min-width:0; color:var(--text-muted); }
+.signature-roster img { width:22px; height:22px; border-radius:50%; }
+.signature-roster b { color:var(--text-main); }
+.signature-section button:focus-visible, .signature-dialog button:focus-visible, .signature-dialog a:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+@media(max-width:720px) {
+  .signature-grid, .signature-view, .signature-patterns { grid-template-columns:1fr; }
+  .signature-pattern + .signature-pattern { border-left:0; padding-left:0; border-top:1px solid var(--border-color); padding-top:15px; }
+  .signature-dialog-head { padding:15px 14px 0; }
+  .signature-dialog-body { padding:0 14px 15px; }
+  .signature-map { max-width:420px; margin:auto; }
+}
