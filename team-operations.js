@@ -79,7 +79,8 @@
     function teamHtml(tid,team,o={}){
       const copy=c();if(!data?.teams[tid]?.includes(team))return `<section class="card team-operations"><h2>${esc(copy.title)}</h2><p>${esc(copy.missing)}</p></section>`;
       const view=o.view==='series'?'series':'trades';
-      return `<section class="card team-operations"><h2>${esc(copy.title)} <span class="sub">${esc(team)}</span></h2><div class="op-controls"><div class="seg">${Object.entries(copy.views).map(([k,v])=>`<button type="button" data-op-view="${k}" class="${k===view?'on':''}">${esc(v)}</button>`).join('')}</div></div>${view==='series'?seriesHtml(tid,team,o):tradesHtml(tid,team,o)}</section>`;
+      const navigation=o.navigation===false?'':`<h2>${esc(copy.title)} <span class="sub">${esc(team)}</span></h2><div class="op-controls"><div class="seg">${Object.entries(copy.views).map(([k,v])=>`<button type="button" data-op-view="${k}" class="${k===view?'on':''}>${esc(v)}</button>`).join('')}</div></div>`;
+      return `<section class="card team-operations">${navigation}${view==='series'?seriesHtml(tid,team,o):tradesHtml(tid,team,o)}</section>`;
     }
     function wire(root){
       for(const key of ['view','phase','state','before'])root.querySelectorAll(`[data-op-${key}]`).forEach(b=>b.onclick=()=>options.onChange?.({[key]:b.dataset['op'+key[0].toUpperCase()+key.slice(1)]}));
