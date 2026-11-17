@@ -71,8 +71,10 @@ instead of being left out, and a zero-width resampling interval is not printed. 
 the selected event only and open in the game workspace.
 
 The same file feeds three smaller pieces. A team profile has a "When behind" analysis (`panel=behind`) that
-describes attempt frequency, the margin of the plays picked and execution against expectation in sentences,
-with every team on one axis in name order and no ranking. A Baron or Elder play in the game workspace shows
+describes how often the team made a high-stake play, the margin of the plays picked and execution against
+expectation in sentences, with every team on one axis in name order and no ranking. Frequency counts only
+plays in the top third of stake (expected gain on success plus expected loss on failure) among plays made
+while behind; the rate over every narrated play is printed beside it. A Baron or Elder play in the game workspace shows
 the acting team's modeled win probability under three plain endings against its role's reference. The
 game-flow card carries one line on whose plays filled the time one side spent below 35%. The methodology page
 describes all of it under "Choices when behind".
