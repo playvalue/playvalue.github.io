@@ -6,7 +6,7 @@
       domains:{games:'경기',moments:'장면',teams:'팀',players:'선수'},
       gamesTitle:'경기 찾기', gamesSub:'대회와 상대를 고르고, 접전·역전 정도로 볼 경기를 찾아보세요.',
       recent:'최근 경기', close:'접전 정도', comeback:'승자의 최대 골드 열세', sort:'정렬', stage:'대회 단계', team:'팀', allStages:'모든 단계', allTeams:'모든 팀', details:'자세한 흐름 지표', count:n=>`${n}경기`,
-      moments:'주요 전환 장면', types:'유형별 집계', backGames:'경기 목록',
+      moments:'주요 전환 장면', types:'유형별 집계', behind:'불리할 때의 선택', backGames:'경기 목록',
       teamTitle:'팀 탐색',teamSub:'움직임·배치부터 오브젝트와 경기 흐름까지 살펴보고, 소속 선수의 분석으로 이어가세요.',style:'스타일',records:'경기 목록',recordsSub:'선택한 대회에서 이 팀이 참여한 경기 목록입니다.',statistics:'통계',
       compareTeam:'다른 팀과 비교',comparePlayer:'다른 선수와 비교',backTeam:'팀으로 돌아가기',backPlayer:'선수로 돌아가기',
       compareTeamsTitle:'팀 비교',comparePlayersTitle:'선수 비교',compareSub:'비교할 두 대상과 기준을 선택하세요.',
@@ -20,7 +20,7 @@
       domains:{games:'Games',moments:'Moments',teams:'Teams',players:'Players'},
       gamesTitle:'Find a game',gamesSub:'Browse the event and opponents, then sort by how close the game was or how far the winner came back.',
       recent:'Latest games',close:'Closeness',comeback:'Winner’s largest gold deficit',sort:'Sort',stage:'Stage',team:'Team',allStages:'All stages',allTeams:'All teams',details:'Detailed flow metrics',count:n=>`${n} games`,
-      moments:'Key turning points',types:'By play type',backGames:'Game list',
+      moments:'Key turning points',types:'By play type',behind:'Choices when behind',backGames:'Game list',
       teamTitle:'Explore a team',teamSub:'Explore positioning, objective decisions and game flow, then continue to the players.',style:'Style',records:'Game list',recordsSub:'Games this team played in the selected tournament.',statistics:'Statistics',
       compareTeam:'Compare with another team',comparePlayer:'Compare with another player',backTeam:'Back to team',backPlayer:'Back to player',
       compareTeamsTitle:'Team comparison',comparePlayersTitle:'Player comparison',compareSub:'Choose two subjects and a comparison basis.',
@@ -31,11 +31,11 @@
     },
     ja: {
       domains:{games:'試合',moments:'場面',teams:'チーム',players:'選手'},
-      gamesTitle:'試合を探す',gamesSub:'大会・相手を選び、接戦度や逆転の大きさで試合を探します。',recent:'最近の試合',close:'接戦度',comeback:'勝者の最大ゴールド劣勢',sort:'並び順',stage:'ステージ',team:'チーム',allStages:'全ステージ',allTeams:'全チーム',details:'詳しい展開指標',count:n=>`${n}試合`,moments:'主な転換場面',types:'種類別集計',backGames:'試合一覧',teamTitle:'チームを見る',teamSub:'1チームの繰り返す配置と試合一覧。',style:'スタイル',records:'試合一覧',recordsSub:'選択した大会でこのチームが出場した試合の一覧です。',statistics:'統計',compareTeam:'別のチームと比較',comparePlayer:'別の選手と比較',backTeam:'チームに戻る',backPlayer:'選手に戻る',compareTeamsTitle:'チーム比較',comparePlayersTitle:'選手比較',compareSub:'2つの対象と比較基準を選択。',playerTitle:'選手を見る',playerSub:'選手・ポジションを選び、関与場面と記録を確認。',plays:'プレー関与',time:'時間・状況',lead:'リード展開',leadSub:'放送ゴールドで見るリード拡大と回復',outcome:'結果',opponent:'相手',win:'勝',loss:'敗',date:'日付',open:'試合を開く',signatureHeading:'繰り返す配置',signatureMissing:'特徴の資料を準備中です。試合一覧と統計をご覧いただけます。',group:'分析項目',flow:'試合展開',noGames:'条件に合う試合がありません。チームまたはステージを変更してください。',
+      gamesTitle:'試合を探す',gamesSub:'大会・相手を選び、接戦度や逆転の大きさで試合を探します。',recent:'最近の試合',close:'接戦度',comeback:'勝者の最大ゴールド劣勢',sort:'並び順',stage:'ステージ',team:'チーム',allStages:'全ステージ',allTeams:'全チーム',details:'詳しい展開指標',count:n=>`${n}試合`,moments:'主な転換場面',types:'種類別集計',behind:'不利なときの選択',backGames:'試合一覧',teamTitle:'チームを見る',teamSub:'1チームの繰り返す配置と試合一覧。',style:'スタイル',records:'試合一覧',recordsSub:'選択した大会でこのチームが出場した試合の一覧です。',statistics:'統計',compareTeam:'別のチームと比較',comparePlayer:'別の選手と比較',backTeam:'チームに戻る',backPlayer:'選手に戻る',compareTeamsTitle:'チーム比較',comparePlayersTitle:'選手比較',compareSub:'2つの対象と比較基準を選択。',playerTitle:'選手を見る',playerSub:'選手・ポジションを選び、関与場面と記録を確認。',plays:'プレー関与',time:'時間・状況',lead:'リード展開',leadSub:'放送ゴールドで見るリード拡大と回復',outcome:'結果',opponent:'相手',win:'勝',loss:'敗',date:'日付',open:'試合を開く',signatureHeading:'繰り返す配置',signatureMissing:'特徴の資料を準備中です。試合一覧と統計をご覧いただけます。',group:'分析項目',flow:'試合展開',noGames:'条件に合う試合がありません。チームまたはステージを変更してください。',
     },
     zh: {
       domains:{games:'比赛',moments:'片段',teams:'队伍',players:'选手'},
-      gamesTitle:'寻找比赛',gamesSub:'选择赛事与对手，再按胶着程度或逆转幅度寻找比赛。',recent:'最近比赛',close:'胶着程度',comeback:'胜方最大经济劣势',sort:'排序',stage:'阶段',team:'队伍',allStages:'所有阶段',allTeams:'所有队伍',details:'详细走势指标',count:n=>`${n}局`,moments:'关键转折片段',types:'按战术类型汇总',backGames:'比赛列表',teamTitle:'查看队伍',teamSub:'查看一支队伍的重复站位与比赛列表。',style:'风格',records:'比赛列表',recordsSub:'所选赛事中这支队伍参加的比赛列表。',statistics:'统计',compareTeam:'与其他队伍比较',comparePlayer:'与其他选手比较',backTeam:'返回队伍',backPlayer:'返回选手',compareTeamsTitle:'队伍比较',comparePlayersTitle:'选手比较',compareSub:'选择两个对象及比较基准。',playerTitle:'查看选手',playerSub:'选择选手与位置，查看参与片段及记录。',plays:'战术参与',time:'时间与局势',lead:'领先走势',leadSub:'以转播经济观察优势扩大与追回',outcome:'结果',opponent:'对手',win:'胜',loss:'负',date:'日期',open:'打开比赛',signatureHeading:'重复出现的站位',signatureMissing:'正在准备风格资料，可先查看比赛列表与统计。',group:'分析项目',flow:'比赛走势',noGames:'没有符合筛选条件的比赛，请更换队伍或阶段。',
+      gamesTitle:'寻找比赛',gamesSub:'选择赛事与对手，再按胶着程度或逆转幅度寻找比赛。',recent:'最近比赛',close:'胶着程度',comeback:'胜方最大经济劣势',sort:'排序',stage:'阶段',team:'队伍',allStages:'所有阶段',allTeams:'所有队伍',details:'详细走势指标',count:n=>`${n}局`,moments:'关键转折片段',types:'按战术类型汇总',behind:'落后时的选择',backGames:'比赛列表',teamTitle:'查看队伍',teamSub:'查看一支队伍的重复站位与比赛列表。',style:'风格',records:'比赛列表',recordsSub:'所选赛事中这支队伍参加的比赛列表。',statistics:'统计',compareTeam:'与其他队伍比较',comparePlayer:'与其他选手比较',backTeam:'返回队伍',backPlayer:'返回选手',compareTeamsTitle:'队伍比较',comparePlayersTitle:'选手比较',compareSub:'选择两个对象及比较基准。',playerTitle:'查看选手',playerSub:'选择选手与位置，查看参与片段及记录。',plays:'战术参与',time:'时间与局势',lead:'领先走势',leadSub:'以转播经济观察优势扩大与追回',outcome:'结果',opponent:'对手',win:'胜',loss:'负',date:'日期',open:'打开比赛',signatureHeading:'重复出现的站位',signatureMissing:'正在准备风格资料，可先查看比赛列表与统计。',group:'分析项目',flow:'比赛走势',noGames:'没有符合筛选条件的比赛，请更换队伍或阶段。',
     },
   };
   // Editorial purpose, kept separate from calculation instructions and findings.
@@ -54,6 +54,8 @@
       playerPlays:{kind:'전환 장면의 관여',question:'이 선수는 어떤 전환 장면에 관여했을까?',why:'행동을 시작한 장면, 타깃이 된 장면, 대응한 장면을 나눠 보면 선수가 경기 속에서 어떤 역할로 등장했는지 살펴볼 수 있습니다. 팀에 유리했던 장면과 불리했던 장면을 함께 확인할 수 있습니다.',watch:'자주 등장한 행동 유형과 관여 역할을 보고, 이득·손실 장면을 각각 열어 보세요.',scope:'방송 해설에 이름이 나온 중요 장면에 한정됩니다. 전체 플레이의 성공률이나 선수의 종합 실력 점수는 아닙니다.'},
       comparePlayers:{kind:'장면의 비교',question:'두 선수의 차이는 어떤 장면에서 나타났을까?',why:'경기당 이득·손실과 관여 역할을 나란히 보면 합계의 차이가 어떤 장면들에서 생겼는지 찾아볼 수 있습니다. 같은 맞대결만 볼 때와 대회 전체를 볼 때 결과가 달라지는지도 확인할 수 있습니다.',watch:'비교 범위를 먼저 고르고, 수치 차이가 큰 항목에서 두 선수의 실제 장면을 각각 확인하세요.',scope:'장면과 출전 경기의 차이를 비교합니다. 팀 상황·상대·챔피언의 영향을 모두 제거한 개인 실력 비교는 아닙니다.'},
       moments:{kind:'볼 장면 찾기',question:'경기 흐름이 크게 바뀐 순간은 어디일까?',why:'예측 승률이 크게 움직인 장면을 모으면 긴 경기에서 먼저 확인할 전환점을 찾을 수 있습니다. 영상을 열어 그때 전투·오브젝트·다른 지역의 사건이 어떻게 겹쳤는지 살펴보세요.',watch:'즉시 변화와 15·30·60초 뒤의 변화를 바꿔 보세요. 짧게 유리했던 장면이 이후에도 이어졌는지 확인할 수 있습니다.',scope:'변화가 큰 장면의 목록입니다. 선택한 플레이 하나가 그 변화 전체를 만들었다는 뜻은 아닙니다.'},
+      behind:{kind:'불리할 때의 손익',question:'불리할 때의 시도는 얼마나 성공해야 남을까?',why:'지고 있는 팀은 실패해도 더 잃을 승률이 적습니다. 그래서 같은 시도라도 성공해야 하는 비율이 달라집니다. 승률 구간별 본전, 바론과 장로를 먼저 칠 때와 방해할 때의 차이, 승률이 어느 시간에 움직이는지를 차례로 볼 수 있습니다.',watch:'승률 구간별 본전과 실제 성공률을 먼저 비교하고, 바론·장로에서 역할별 차이를 본 뒤, 시간의 흐름에서 격차가 어디서 벌어지는지 확인하세요.',scope:'두 대회를 합친 현재 표본의 결과이며 범위가 넓은 항목이 많습니다. 모델이 본 상태 변화이고, 더 자주 시도해야 한다는 처방이 아닙니다.'},
+      behindTeam:{kind:'불리할 때의 시도',question:'불리할 때 얼마나 자주, 어떤 플레이를 시도했을까?',why:'지고 있을 때의 시도는 실패해도 잃을 것이 적습니다. 그래서 얼마나 자주 시도했는지와 함께, 성공 가능성에 비해 잃을 것이 적은 플레이를 골랐는지를 나눠 볼 수 있습니다.',watch:'시도 빈도, 고른 플레이의 여유, 기대 대비 수행을 차례로 보고, 범위가 팀 평균을 포함하는지 확인하세요.',scope:'두 대회를 합친 현재 표본의 값이며 팀 사이의 차이는 대부분 범위 안에 있습니다. 순위가 아니라 이 팀이 불리할 때 어떤 모습이었는지를 읽는 자료입니다.'},
       types:{kind:'시도의 결과 비교',question:'같은 유형의 시도도 성공과 실패 뒤에 얼마나 달랐을까?',why:'행동 유형과 결과를 함께 나누면 같은 이름의 플레이 안에 어떤 이득·손실 장면이 있었는지 볼 수 있습니다. 숫자를 눌러 집계가 실제로 어떤 시도들로 이루어졌는지 확인할 수 있습니다.',watch:'유형 × 결과로 나눠 보고, 변화 구간을 바꿔 결과가 어떻게 이어졌는지 살펴보세요.',scope:'해설이 짚은 시도의 골드 변화 집계입니다. 빈도가 곧 전체 경기의 시도율이나 성공률은 아닙니다.'},
     },
     en: {
@@ -70,6 +72,8 @@
       playerPlays:{kind:'Key-moment involvement',question:'What turning points involve this player?',why:'Acting, being targeted and responding show different roles in moments that favored or hurt the team.',watch:'Inspect frequent play types and involvement roles, then open both gain and loss examples.',scope:'Only commentary-named moments are included; this is not an overall success rate or skill score.'},
       comparePlayers:{kind:'Comparing moments',question:'Which moments account for the player difference?',why:'Per-game gains, losses and involvement roles help trace aggregate differences back to concrete moments.',watch:'Choose head-to-head or event-wide coverage first, then open examples for both players.',scope:'Team situation, opponents and champions are not fully controlled in this individual comparison.'},
       moments:{kind:'Find moments to watch',question:'Where did the game take a sharp turn?',why:'Large predicted win-probability changes help locate turning points in a long match.',watch:'Switch instant and 15/30/60-second changes, then inspect concurrent fights and objectives.',scope:'A large change is not the isolated effect of the selected play.'},
+      behind:{kind:'Stakes when behind',question:'How often must an attempt succeed to pay when a team is behind?',why:'A team that is behind has less win probability left to lose, so the same attempt needs a different success rate to pay. See the break-even by standing, how going for Baron or Elder differs from contesting it, and when a trailing side’s win probability moves.',watch:'Compare break-even with observed success by standing first, then the roles around Baron and Elder, then where the gap grows over time.',scope:'These pool both events in the current sample, and many intervals are wide. They describe modeled states, not advice to attempt more.'},
+      behindTeam:{kind:'Attempts when behind',question:'How often did this team attempt when behind, and which plays did it pick?',why:'An attempt from behind has less to lose. So besides how often a team attempted, it is worth asking whether it picked plays with little to lose for their chance of success.',watch:'Read attempt frequency, the margin of the plays picked and execution against expectation in turn, and check whether each interval includes the team mean.',scope:'These pool both events in the current sample, and most differences between teams lie within the intervals. Read them as a description of this team when behind, not as a ranking.'},
       types:{kind:'Attempts and outcomes',question:'How do outcomes differ within a play type?',why:'Split play types by outcomes to find the gain and loss moments behind each category.',watch:'Choose type × outcome and vary the followup window; select a count to inspect its plays.',scope:'These are gold changes in commentary-selected attempts, not complete attempt or success rates.'},
     },
   };
@@ -81,7 +85,7 @@
     return `<aside class="analysis-purpose" data-analysis-purpose="${escapeHtml(key)}"><div class="analysis-purpose-top"><span>${labels[0]}</span><span class="analysis-purpose-kind">${escapeHtml(p.kind)}</span></div><h3>${escapeHtml(p.question)}</h3><p class="analysis-purpose-why">${escapeHtml(p.why)}</p><p class="analysis-purpose-watch"><b>${labels[1]}</b> ${escapeHtml(p.watch)}</p>${p.scope?`<p class="analysis-purpose-scope"><b>${labels[2]}</b> ${escapeHtml(p.scope)}</p>`:''}</aside>`;
   }
   function domain(view,tab) {
-    if (['moments','xtab'].includes(view)) return 'moments';
+    if (['moments','xtab','behind'].includes(view)) return 'moments';
     if (view==='teams' || view==='compare' && tab!=='player') return 'teams';
     if (view==='players' || view==='compare' && tab==='player') return 'players';
     return 'games';
@@ -91,7 +95,7 @@
     if (v==='swings') return q.get('list')==='moments' ? 'moments' : 'games';
     if (v==='stats') return ['all','h2h'].includes(q.get('scope')) ? 'compare' : 'stats';
     if (v==='compare' && q.get('signature') && q.get('tab')!=='player') return 'teams';
-    if (['set','games','moments','xtab','teams','players','compare'].includes(v)) return v;
+    if (['set','games','moments','xtab','behind','teams','players','compare'].includes(v)) return v;
     return q.get('game') || q.get('play') || !v ? 'set' : 'games';
   }
   function latestGame(games,tournament=null) {

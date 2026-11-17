@@ -26,7 +26,7 @@ This repository is the published site shell. It is built from a separate researc
 
 The `playvalue/data` repository provides `index.json`, tournament play and game files, and the frozen v312 WPS overlays at the existing `/data/` URLs.
 
-Tournaments covered so far: MSI 2026 (all 71 games) and Worlds 2026 (52 games, Swiss round 3 through the semifinals). As of 9 November 2026 the site holds 123 games and 6,229 plays.
+Tournaments covered: MSI 2026 (all 71 games) and Worlds 2026 (56 games, Swiss round 3 through the final). As of 16 November 2026 the site holds 127 games and 6,519 plays.
 
 ## Questions and data
 
@@ -56,6 +56,32 @@ comparison selections remain in `teamA`/`teamB` or `entity`/`compare`.
 
 ```sh
 node --test tests/test_explore_navigation.cjs tests/test_team_signatures_ui.cjs
+```
+
+### Choices when behind
+
+Moments has a third view, `view=behind`, beside turning points and play-type totals. It pools both events and
+shows three things: break-even and observed success rates by the acting team's win probability, Baron and
+Elder plays split by which team went for the objective, and where a trailing side's win probability moves by
+kind of time. `sec`, `obj` and `tscope` keep the selected section, objective and time scope in the address.
+
+`trailing-choices.js` and `trailing-choices.css` render `data/trailing-choices-v1.json`. Every estimate is
+printed with its 95% interval and its count; cells resting on fewer than 30 plays carry a "preliminary" mark
+instead of being left out, and a zero-width resampling interval is not printed. Example plays are listed for
+the selected event only and open in the game workspace.
+
+The same file feeds three smaller pieces. A team profile has a "When behind" analysis (`panel=behind`) that
+describes attempt frequency, the margin of the plays picked and execution against expectation in sentences,
+with every team on one axis in name order and no ranking. A Baron or Elder play in the game workspace shows
+the acting team's modeled win probability under three plain endings against its role's reference. The
+game-flow card carries one line on whose plays filled the time one side spent below 35%. The methodology page
+describes all of it under "Choices when behind".
+
+From the research checkout, after rerunning the analyses when games are added:
+
+```sh
+.venv-minimap/bin/python -m src.winprob_value.export_trailing_choices
+node --test tests/test_trailing_choices_ui.cjs
 ```
 
 ### Tournament signatures

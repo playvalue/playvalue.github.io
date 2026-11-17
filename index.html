@@ -727,6 +727,7 @@
   <link rel="stylesheet" href="./team-player-relations.css?v=1">
   <link rel="stylesheet" href="./team-operations.css?v=1">
   <link rel="stylesheet" href="./team-formation.css?v=1">
+  <link rel="stylesheet" href="./trailing-choices.css?v=1">
 </head>
 <body>
 <a class="skip" href="#main" id="skipLink">본문으로 건너뛰기</a>
@@ -782,14 +783,15 @@
 <footer class="container site-foot"><p data-i18n="legal"></p></footer>
 
 <script src="./team-signatures.js?v=3"></script>
-<script src="./explore-navigation.js?v=4"></script>
+<script src="./explore-navigation.js?v=5"></script>
 <script src="./team-state-styles.js?v=1"></script>
 <script src="./team-player-relations.js?v=1"></script>
 <script src="./team-operations.js?v=2"></script>
 <script src="./formation-clock.js?v=1"></script>
 <script src="./formation-geometry.js?v=1"></script>
 <script src="./team-formation.js?v=1"></script>
-<script src="./profile-navigation.js?v=1"></script>
+<script src="./profile-navigation.js?v=2"></script>
+<script src="./trailing-choices.js?v=1"></script>
 <script>
 (async () => {
   // index.json is small and read first; a game's full file and a tournament's light play list load on demand.
@@ -1421,7 +1423,7 @@
   const S = {
     lang: 'ko', theme: 'light', tourn: firstGame().tournament_id, view: 'set', stage: 'all', gameId: firstGame().id, playId: null,
     h: String(D.default_horizon_s), fFamily: '', fTag: '', fState: '', fPlayer: '', fHl: false, listSort: 'time',
-    xScope: 'all', xRows: 'family', xCell: null, xSort: { col: 'positive', rev: false }, gSort: { col: 'label', rev: false }, swingList: 'games', swingH: String(D.default_horizon_s), swingPhase: 'all', guideOpen: false,
+    xScope: 'all', xRows: 'family', xCell: null, xSort: { col: 'positive', rev: false }, gSort: { col: 'label', rev: false }, swingList: 'games', swingH: String(D.default_horizon_s), swingPhase: 'all', behindSection: 'standing', behindObjective: 'baron', behindScope: 'all_trailing', guideOpen: false,
     gameStage: 'all', gameTeam: '', gameDetails: false, teamPanel: 'style', analysisPanel: 'plays',
     teamStyle: 'signature', statePhase: 'middle', stateCondition: 'behind',
     relationPhase: 'middle', relationState: 'all', relationPair: 'pair_jungle_support', playerPanel: 'plays', playerFromTeam:'', playerFromAnalysis:'signature',
@@ -1634,6 +1636,13 @@
     if (q.get('list') === 'moments' && hasMoments(S.tourn)) S.swingList = 'moments';
     if (['instant', '15', '30', '60'].includes(q.get('win'))) S.swingH = q.get('win');
     if (['all', 'lane', 'mid', 'late'].includes(q.get('phase'))) S.swingPhase = q.get('phase');
+    S.behindSection='standing';S.behindObjective='baron';S.behindScope='all_trailing';
+    if (S.view === 'behind') {
+      const choices = window.PlayValueTrailingChoices || {};
+      if ((choices.SECTIONS || []).includes(q.get('sec'))) S.behindSection = q.get('sec');
+      if ((choices.OBJECTIVES || []).includes(q.get('obj'))) S.behindObjective = q.get('obj');
+      if ((choices.SCOPES || []).includes(q.get('tscope'))) S.behindScope = q.get('tscope');
+    }
     if (['label', 'length', 'low', 'gold', 'swing', 'lead', 'decided'].includes(q.get('gsort'))) S.gSort = { col: q.get('gsort'), rev: q.get('grev') === '1' };
     if (['15', '30', '60'].includes(q.get('h'))) S.h = q.get('h');
     if (WPS_INDEX && ['wps', 'gold', 'both'].includes(q.get('metric'))) S.metric = q.get('metric');
@@ -1654,7 +1663,7 @@
       if (['family','outcome','kill','famout','player','champ'].includes(q.get('rows'))) S.xRows=q.get('rows');
     }
     if (q.get('team') && S.view === 'teams') S.signatureTeam = q.get('team');
-    if (['style','operations','records','statistics'].includes(q.get('panel'))) S.teamPanel = q.get('panel');
+    if (['style','operations','records','statistics','behind'].includes(q.get('panel'))) S.teamPanel = q.get('panel');
     if (S.view==='teams' && q.get('style')==='formation') S.teamStyle='formation';
     if (S.view==='teams' && q.get('style')==='state') {
       S.teamStyle='state';
@@ -1691,6 +1700,7 @@
     if (S.playId && S.view === 'set') q.set('play', S.playId);
     if (S.view==='xtab') {q.set('scope',S.xScope);q.set('rows',S.xRows);}
     if (S.view === 'moments') { q.set('win', S.swingH); q.set('phase', S.swingPhase); }
+    else if (S.view === 'behind') { q.set('sec', S.behindSection); if (S.behindSection === 'objectives') q.set('obj', S.behindObjective); if (S.behindSection === 'time') q.set('tscope', S.behindScope); }
     else if (S.view === 'games') {
       q.set('gsort', S.gSort.col); if (S.gSort.rev) q.set('grev', '1');
       if (S.gameStage !== 'all') q.set('gstage', S.gameStage);
@@ -1743,10 +1753,10 @@
   window.__umFlush = () => { while (umQueue.length) window.umami.track(...umQueue.shift()); };
   let lastView = '';
   function trackView() {
-    const url = S.view === 'xtab' ? `/totals/${S.tourn}` : ['games','moments','teams','players'].includes(S.view) ? `/${S.view}/${S.tourn}` : S.view === 'compare' ? `/compare/${S.statsTab}/${S.tourn}` : S.view === 'stats' ? (S.statsScope === 'game' ? `/game-stats/${S.gameId}` : `/series-stats/${seriesOf(game())}`) : `/game/${S.gameId}`;
+    const url = S.view === 'xtab' ? `/totals/${S.tourn}` : ['games','moments','behind','teams','players'].includes(S.view) ? `/${S.view}/${S.tourn}` : S.view === 'compare' ? `/compare/${S.statsTab}/${S.tourn}` : S.view === 'stats' ? (S.statsScope === 'game' ? `/game-stats/${S.gameId}` : `/series-stats/${seriesOf(game())}`) : `/game/${S.gameId}`;
     if (url === lastView) return;
     lastView = url;
-    const title = S.view === 'xtab' ? `Totals · ${S.tourn}` : ['games','moments','teams','players'].includes(S.view) ? `${S.view} · ${S.tourn}` : S.view === 'compare' ? `Compare · ${S.tourn}` : S.view === 'stats' ? (S.statsScope === 'game' ? `Game teams & players · ${S.gameId}` : `Series teams & players · ${seriesOf(game())}`) : `${game().title_en} · ${game().tournament_id}`;
+    const title = S.view === 'xtab' ? `Totals · ${S.tourn}` : ['games','moments','behind','teams','players'].includes(S.view) ? `${S.view} · ${S.tourn}` : S.view === 'compare' ? `Compare · ${S.tourn}` : S.view === 'stats' ? (S.statsScope === 'game' ? `Game teams & players · ${S.gameId}` : `Series teams & players · ${seriesOf(game())}`) : `${game().title_en} · ${game().tournament_id}`;
     um(props => ({ ...props, url, title }));
   }
 
@@ -1938,6 +1948,7 @@
               <h3>${t('chartTitle')} <span class="sub">${esc(t('chartSub')(S.h, g.blue_team, g.red_team))}</span></h3>
               ${f ? `<button class="timeline-finding" data-goto="${f.id}" title="${esc(t('finding')(S.h, clock(f), contentText(f, 'title'), findingTeam, findingValue))}">${esc(t('findingCompact')(S.h, clock(f), findingTeam, findingValue))}</button>` : ''}
             </div>
+            ${S.metric !== 'gold' ? (CHOICES?.gameLineHtml(g.id) || '') : ''}
             <div class="chart-wrap"><svg id="chart" role="img" aria-label="${esc(t('chartTitle'))}"></svg><div class="tip" id="tip" aria-hidden="true"></div></div>
             <div class="legend">
               <span><i style="background:var(--blue-team)"></i>${t('lgBlue')}</span>
@@ -2445,6 +2456,7 @@
       <div class="hz-head"><strong>${t('hzHead')}</strong>${S.metric !== 'gold' && g._wps ? `<span>${t('wpsTotalNote')}</span>` : ''}</div>
       <div class="horizons" aria-label="${esc(t('hzHead'))}">${hzHtml}</div>
       ${incomeHtml}
+      ${S.metric !== 'gold' ? (CHOICES?.playCardHtml(p.id, p.actor, opponentOf(g, p.actor)) || '') : ''}
       ${involvedOf(p).length ? `<p class="players">${INV_ROLES.map(r => [r, involvedOf(p).filter(x => x.role === r)]).filter(([, xs]) => xs.length)
         .map(([r, xs]) => `<span class="role-lbl">${esc(L('inv', r))}</span> ${xs.map(x => `<button class="linkbtn" data-player="${esc(x.player)}">${esc(playerText(g, x.player))}</button>`).join(', ')}`).join('<br>')}</p>` : ''}
       <p class="desc">${esc(contentText(p, 'desc'))}</p>
@@ -2464,6 +2476,7 @@
     el.querySelectorAll('.hz').forEach(b => b.onclick = () => { S.h = b.dataset.h; renderSet(); });
     wireMinimap(g, p);
     el.querySelectorAll('[data-goto]').forEach(b => b.onclick = () => selectPlay(b.dataset.goto));
+    CHOICES?.wire(el);
     el.querySelectorAll('[data-player]').forEach(b => b.onclick = () => openStatsEntity('player', b.dataset.player));
     el.querySelector('#prevP').onclick = () => selectPlay(g.plays[idx - 1].id);
     el.querySelector('#nextP').onclick = () => selectPlay(g.plays[idx + 1].id);
@@ -2781,8 +2794,23 @@
   // ------------------------------------------------------------------ games and moments are separate discovery subjects
   // One row per game of the tournament. Every column's first click puts the most eventful game on top:
   // the lowest low, the largest deficit, the most movement, the latest decision.
-  const sceneNavigation = () => `<div class="explore-scene-nav"><div class="seg" aria-label="${esc(explore().domains.moments)}">${[['moments',explore().moments],['xtab',explore().types]].map(([k,v])=>`<button type="button" data-scene-view="${k}" class="${S.view===k?'on':''}" ${k==='moments'&&!hasMoments(S.tourn)?'disabled':''}>${esc(v)}</button>`).join('')}</div></div>`;
+  const sceneNavigation = () => `<div class="explore-scene-nav"><div class="seg" aria-label="${esc(explore().domains.moments)}">${[['moments',explore().moments],['xtab',explore().types],...(CHOICES?[['behind',explore().behind]]:[])].map(([k,v])=>`<button type="button" data-scene-view="${k}" class="${S.view===k?'on':''}" ${k==='moments'&&!hasMoments(S.tourn)?'disabled':''}>${esc(v)}</button>`).join('')}</div></div>`;
   const wireSceneNavigation = main => main.querySelectorAll('[data-scene-view]').forEach(b=>b.onclick=()=>{S.view=b.dataset.sceneView;render();});
+
+  // What an attempt is worth to a side that is behind; both events pooled, examples from the selected one.
+  function renderBehind() {
+    const main = document.getElementById('main');
+    main.innerHTML = `
+      <section class="card">
+        ${sceneNavigation()}
+        <h1 class="xt-title">${esc(CHOICES.title())} <span class="sub">${esc(CHOICES.subtitle())}</span></h1>${analysisPurpose('behind')}
+        ${CHOICES.html(S.tourn, { section: S.behindSection, objective: S.behindObjective, scope: S.behindScope })}
+      </section>`;
+    wireSceneNavigation(main);
+    CHOICES.wire(main);
+    writeHash();
+    syncPressed();
+  }
 
   // The largest win-probability swings of the tournament, one row per moment, in the favoured team's frame.
   function renderMoments() {
@@ -3825,6 +3853,14 @@
     onPlayer:player=>openPlayerProfile(player,'relations'),
     onTeam:team=>{S.signatureTeam=team;S.view='teams';S.teamPanel='style';S.teamStyle='connections';render();window.scrollTo({top:0});},
   });
+  const CHOICES=window.PlayValueTrailingChoices?.create({
+    getLanguage:()=>S.lang,
+    onChange:({section,objective,scope})=>{if(section)S.behindSection=section;if(objective)S.behindObjective=objective;if(scope)S.behindScope=scope;renderBehind();},
+    playLabel:id=>{const p=PLAY[id];if(!p)return null;const g=p._game;return `${clock(p)} ${p.actor||'?'} · ${contentText(p,'title')} — ${g.blue_team} vs ${g.red_team} · ${t('gameN')(g.game_num)}`;},
+    onOpen:objective=>{S.view='behind';S.behindSection='objectives';S.behindObjective=objective;render();window.scrollTo({top:0});},
+    onSection:section=>{S.view='behind';S.behindSection=section;S.tourn=game().tournament_id;render();window.scrollTo({top:0});},
+    onPlay:id=>{const p=PLAY[id];if(!p)return;S.view='set';S.gameId=p._game.id;S.playId=p.id;S.xCell=null;S.fPlayer='';um('behind-moment-open',{game:S.gameId,section:S.behindSection});render();window.scrollTo({top:0});},
+  });
   const OPERATIONS=window.PlayValueOperations?.create({
     getLanguage:()=>S.lang,
     onChange:changes=>{for(const [key,value] of Object.entries(changes)){S['operation'+key[0].toUpperCase()+key.slice(1)]=value;}render();},
@@ -3877,7 +3913,7 @@
     const team=S.signatureTeam,teams=statsEventTeams(),gs=selectedTeamGames(),wins=gs.filter(g=>g.winner===team).length;
     const main=document.getElementById('main'),copy=PROFILES.copy(S.lang),selection=PROFILES.item(PROFILES.active(S),S.lang),roster=PROFILES.roster(gs,ROSTER,team);
     const profile=()=>teamProfile(team,gs);
-    const content=S.teamPanel==='operations'?(OPERATIONS?.teamHtml(S.tourn,team,{...operationSettings(),navigation:false})||''):S.teamPanel==='style'?teamStyleContent(team):S.teamPanel==='records'?gameRecordsHtml(gs,team):
+    const content=S.teamPanel==='behind'?(CHOICES?.teamHtml(team)||''):S.teamPanel==='operations'?(OPERATIONS?.teamHtml(S.tourn,team,{...operationSettings(),navigation:false})||''):S.teamPanel==='style'?teamStyleContent(team):S.teamPanel==='records'?gameRecordsHtml(gs,team):
       `<section class="card"><h2>${esc(selection.label)}</h2>${analysisPurpose(S.analysisPanel==='plays'?'teamPlays':S.analysisPanel)}${S.analysisPanel==='lead'?`<p class="note">${esc(explore().leadSub)}</p>`:`<div class="stats-controls">${metricControlsHtml()}</div>`}${teamCard(profile(),'neutral',gs,S.analysisPanel)}${teamAnalysisHelp()}${S.analysisPanel==='lead'?'':`<p class="note-box">${esc(t('statsCaveat'))}</p>`}</section>`;
     main.innerHTML=`<section class="card"><div class="explore-head"><div><h1>${esc(team)} <span class="profile-heading-kind">${esc(copy.analysis)}</span></h1><p>${esc(explore().teamSub)}</p></div>
       <div class="explore-actions"><label class="stats-pick">${esc(explore().team)}<select class="explore-profile-picker" id="profileTeam">${teams.map(x=>`<option value="${esc(x)}" ${team===x?'selected':''}>${esc(x)}</option>`).join('')}</select></label><button type="button" class="btn" id="profileCompare">${esc(explore().compareTeam)}</button></div></div>
@@ -3955,6 +3991,7 @@
     FORMATION?.dispose();
     const epoch=++renderEpoch;
     if (S.view === 'moments' && !hasMoments(S.tourn)) S.view = 'xtab';
+    if (S.view === 'behind' && !CHOICES) S.view = 'xtab';
     renderChrome();
     const tour = DATA.tournaments.find(x => x.id === S.tourn);
     if (tour.status === 'planned') return renderPlanned();
@@ -3967,6 +4004,11 @@
         await ensurePlays(S.tourn);
         if(epoch!==renderEpoch)return;
         if (S.view === 'moments') renderMoments();
+      } else if (S.view === 'behind') {
+        if (!tour._plays || !CHOICES.available()) main.innerHTML = wait;
+        await Promise.all([ensurePlays(S.tourn), CHOICES.load()]);
+        if(epoch!==renderEpoch)return;
+        if (S.view === 'behind') renderBehind();
       } else if (S.view === 'games') {
         renderGames();
       } else if (S.view === 'xtab') {
@@ -3981,6 +4023,7 @@
         if (S.teamPanel==='style' && S.teamStyle==='connections') await RELATIONS?.load();
         if (S.teamPanel==='style' && S.teamStyle==='formation') await FORMATION?.load();
         if (S.teamPanel==='operations') await OPERATIONS?.load();
+        if (S.teamPanel==='behind') await CHOICES?.load();
         if(epoch!==renderEpoch)return;
         normalizeProfileTeam();
         if (S.teamPanel==='statistics' && S.analysisPanel!=='lead' && S.statsMetric==='wps' && WPS_INDEX) await Promise.all(selectedTeamGames().map(g=>ensureWps(g.id)));
@@ -4007,7 +4050,8 @@
       } else {
         const id = S.gameId;
         if (!isFull(game())) main.innerHTML = wait;
-        await Promise.all([ensureGame(id), ensureWps(id)]);
+        // The objective card is optional: a missing or slow file must not hold the game view back.
+        await Promise.all([ensureGame(id), ensureWps(id), Promise.race([CHOICES?.load(), new Promise(resolve => setTimeout(resolve, 1500))])]);
         if(epoch!==renderEpoch)return;
         if (S.view === 'set' && S.gameId === id) renderSet();
       }
