@@ -58,6 +58,13 @@
       timeLimit:'시간의 종류는 선택이 아니라 결과입니다. 조용한 시간은 상대도 아무것도 하지 못한 시간이고, 중계가 짚는 불리한 팀의 플레이는 통한 플레이 쪽으로 쏠립니다.',
       uncertaintyTitle:'현재 표본 기준의 결과입니다',
       uncertainty:(games,n)=>`${games}경기에서 나온 값이라 범위가 넓은 항목이 많습니다. 괄호 안은 경기를 묶음으로 다시 뽑아 구한 95% 범위이고, 플레이 ${n}개 미만인 항목에는 '예비' 표시를 붙였습니다. 범위가 넓은 항목은 방향만 참고하세요. 경기가 추가되면 같은 방법으로 다시 계산합니다.`,
+      stake:{chip:'큰 승부',only:'걸린 승률이 큰 플레이만',title:'걸린 승률',
+        tip:(gain,loss,be,exp)=>`비슷한 플레이 기준: 성공했을 때 ${gain}, 실패했을 때 ${loss}, 본전 성공률 ${be}, 비슷한 플레이의 성공률 ${exp}`,
+        rows:{gain:'성공했을 때',loss:'실패했을 때',breakEven:'본전 성공률',expected:'비슷한 플레이의 성공률'},
+        lede:'이 플레이의 결과가 아니라, 다른 팀이 다른 경기에서 한 비슷한 플레이(같은 유형, 비슷한 승률과 시간대)가 낸 값입니다.',
+        high:(min,top)=>`얻을 것과 잃을 것을 더한 값이 전체 플레이의 상위 ${top}%(${min}%p 이상)라 큰 승부로 표시했습니다.`,
+        criteriaTitle:'큰 승부 표시',
+        criteria:(min,top)=>`다른 팀이 다른 경기에서 한 비슷한 플레이(같은 유형, 비슷한 승률과 시간대)가 성공했을 때 얻은 승률과 실패했을 때 잃은 승률을 더한 값이 전체 플레이의 상위 ${top}%(${min}%p 이상)인 플레이입니다. 그 플레이의 실제 결과로 정한 것이 아니며, 비슷한 플레이가 부족하면 값이 없어 표시도 붙지 않습니다. 승률이 비슷할 때는 얻을 것과 잃을 것이 모두 커서 이 표시가 더 자주 붙습니다. 상위 ${top}%라는 선은 임의로 정한 것입니다.`},
       missing:'이 분석의 자료를 불러오지 못했습니다.'},
     en:{gameLine:(m,k,pp)=>`${m} minutes with one side below 35%: opponent’s plays ${k.opponent_play} (win probability ${pp.opponent_play}), own plays ${k.own_play} (${pp.own_play}), no narrated play ${k.quiet} (${pp.quiet}), both ${k.contested} (${pp.contested}).`,gameLineNote:'Parentheses give the summed change in the trailing side’s win probability over that time.',gameLineOpen:'See both events',
       teamTitle:'Attempts when behind',teamScope:n=>`${n} games from MSI and Worlds 2026 · time spent below 35%`,
@@ -110,6 +117,13 @@
       timeLimit:'Kinds of time are outcomes, not choices. Quiet time is time in which the opponent also did nothing worth narrating, and narrated plays by a trailing side lean toward the ones that worked.',
       uncertaintyTitle:'Results from the current sample',
       uncertainty:(games,n)=>`These come from ${games} games, so many intervals are wide. Parentheses give 95% intervals from resampling whole games, and cells with fewer than ${n} plays are marked preliminary. Read wide intervals for direction only. The same calculation will be rerun when more games are added.`,
+      stake:{chip:'High stake',only:'High-stake plays only',title:'What was at stake',
+        tip:(gain,loss,be,exp)=>`From similar plays: on success ${gain}, on failure ${loss}, break-even success rate ${be}, success rate of similar plays ${exp}`,
+        rows:{gain:'On success',loss:'On failure',breakEven:'Break-even success rate',expected:'Success rate of similar plays'},
+        lede:'Not this play’s result: these are what similar plays by other teams in other games (same type, similar win probability and game time) gained and lost.',
+        high:(min,top)=>`Gain plus loss is in the top ${top}% of all plays (${min} pp or more), so it is marked as high stake.`,
+        criteriaTitle:'High-stake mark',
+        criteria:(min,top)=>`Plays whose similar plays by other teams in other games (same type, similar win probability and game time) gained on success and lost on failure a combined win probability in the top ${top}% of all plays (${min} pp or more). The mark does not come from the play’s own result, and a play without enough similar plays has no value and no mark. When win probability is close, both the gain and the loss are large, so the mark appears more often. The top-${top}% line is arbitrary.`},
       missing:'The data for this analysis could not be loaded.'},
     ja:{gameLine:(m,k,pp)=>`勝率35%未満だった側の時間${m}分：相手のプレー${k.opponent_play}（勝率${pp.opponent_play}）、自分のプレー${k.own_play}（${pp.own_play}）、プレーのない時間${k.quiet}（${pp.quiet}）、重なる時間${k.contested}（${pp.contested}）。`,gameLineNote:'括弧はその時間に不利な側の勝率が動いた合計です。',gameLineOpen:'両大会の全体を見る',
       teamTitle:'不利なときの試み',teamScope:n=>`MSI・Worlds 2026 合計${n}試合 · 勝率35%未満だった時間`,
@@ -162,6 +176,13 @@
       timeLimit:'時間の種類は選択ではなく結果です。静かな時間は相手も何もできなかった時間であり、実況が取り上げる不利な側のプレーは成功したものに偏ります。',
       uncertaintyTitle:'現在のサンプルに基づく結果です',
       uncertainty:(games,n)=>`${games}試合からの値のため、区間が広い項目が多くあります。括弧内は試合単位で再抽出した95%区間で、プレー${n}件未満の項目には「暫定」を付けました。区間が広い項目は方向だけを参考にしてください。試合が追加されたら同じ方法で再計算します。`,
+      stake:{chip:'大勝負',only:'懸かった勝率が大きいプレーのみ',title:'懸かった勝率',
+        tip:(gain,loss,be,exp)=>`似たプレー基準：成功したとき${gain}、失敗したとき${loss}、損益分岐の成功率${be}、似たプレーの成功率${exp}`,
+        rows:{gain:'成功したとき',loss:'失敗したとき',breakEven:'損益分岐の成功率',expected:'似たプレーの成功率'},
+        lede:'このプレーの結果ではなく、他のチームが他の試合で行った似たプレー（同じタイプ、近い勝率と時間帯）の値です。',
+        high:(min,top)=>`得るものと失うものを足した値が全プレーの上位${top}%（${min}pp以上）のため、大勝負と表示しています。`,
+        criteriaTitle:'大勝負の表示',
+        criteria:(min,top)=>`他のチームが他の試合で行った似たプレー（同じタイプ、近い勝率と時間帯）が成功したときに得た勝率と失敗したときに失った勝率の合計が、全プレーの上位${top}%（${min}pp以上）のプレーです。そのプレー自体の結果で決めたものではなく、似たプレーが足りない場合は値がないため表示も付きません。勝率が拮抗しているときは得るものも失うものも大きいため、この表示が多く付きます。上位${top}%という線は任意に決めたものです。`},
       missing:'この分析のデータを読み込めませんでした。'},
     zh:{gameLine:(m,k,pp)=>`一方胜率低于35%的时间 ${m} 分钟：对手的操作 ${k.opponent_play}（胜率 ${pp.opponent_play}），己方的操作 ${k.own_play}（${pp.own_play}），没有操作的时间 ${k.quiet}（${pp.quiet}），重叠时间 ${k.contested}（${pp.contested}）。`,gameLineNote:'括号内是该时间里落后一方胜率变动的合计。',gameLineOpen:'查看两项赛事的整体',
       teamTitle:'落后时的尝试',teamScope:n=>`MSI 与 Worlds 2026 合计 ${n} 局 · 胜率低于35%的时间`,
@@ -214,15 +235,50 @@
       timeLimit:'时间类型是结果而非选择。安静时间是对手也没能做成什么的时间，而解说提到的落后方操作偏向成功的那些。',
       uncertaintyTitle:'基于当前样本的结果',
       uncertainty:(games,n)=>`这些数值来自 ${games} 局比赛，许多区间较宽。括号内是按整局重抽样得到的95%区间，少于 ${n} 次操作的项目标为“初步”。区间较宽的项目只宜参考方向。比赛增加后将用同样方法重新计算。`,
+      stake:{chip:'高押注',only:'只看押上较大胜率的操作',title:'押上的胜率',
+        tip:(gain,loss,be,exp)=>`按同类操作：成功时 ${gain}，失败时 ${loss}，保本成功率 ${be}，同类操作成功率 ${exp}`,
+        rows:{gain:'成功时',loss:'失败时',breakEven:'保本成功率',expected:'同类操作成功率'},
+        lede:'这不是这次操作的结果，而是其他队伍在其他比赛中的同类操作（同一类型、相近胜率与时间）得到的数值。',
+        high:(min,top)=>`可得与可失之和位于全部操作的前 ${top}%（${min}pp 以上），因此标为高押注。`,
+        criteriaTitle:'高押注标记',
+        criteria:(min,top)=>`指其他队伍在其他比赛中的同类操作（同一类型、相近胜率与时间）成功时得到的胜率与失败时失去的胜率之和，位于全部操作前 ${top}%（${min}pp 以上）的操作。标记不是根据这次操作本身的结果决定的；同类操作不足时没有数值，也不加标记。胜率接近时可得与可失都较大，因此这一标记出现得更多。前 ${top}% 这条界线是人为设定的。`},
       missing:'未能加载此分析的数据。'},
   };
+  // Two opposed arrows: a play whose similar plays moved win probability a lot either way.
+  const STAKE_ICON='<svg class="tc-stake-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13V3M2.5 5.5 5 3l2.5 2.5M11 3v10M8.5 10.5 11 13l2.5-2.5"/></svg>';
   const percent=v=>`${Math.round(100*v)}%`;
   const percentRange=e=>e?`${percent(e.value)}${e.ci95?` (${Math.round(100*e.ci95[0])}–${Math.round(100*e.ci95[1])})`:''}`:'—';
   const signed=(v,digits=1)=>`${v>0?'+':v<0?'−':''}${Math.abs(v).toFixed(digits)}`;
   function create(options={}){
-    let data=null,pending=null;
+    let data=null,pending=null,stakes=null,stakesPending=null;
     const lang=()=>options.getLanguage?.()||'ko';
     const c=()=>COPY[lang()]||COPY.en;
+    // Each play's similar-play stake lives in its own file, read only by the game workspace.
+    async function loadStakes(){if(stakesPending)return stakesPending;stakesPending=(async()=>{try{const r=await fetch('./data/play-stakes-v1.json',{cache:'no-cache'});if(r.ok)stakes=await r.json();}catch(e){stakes=null;}})();return stakesPending;}
+    function stakeOf(id){const v=stakes?.plays?.[id];return v?{gain:v[0],loss:v[1],breakEven:v[2],expected:v[3],high:!!v[4]}:null;}
+    const stakeLine=()=>({min:stakes.min_stake_pp.toFixed(1),top:Math.round(100*stakes.top_share)});
+    const stakePp=v=>`${signed(v)}${c().pp}`;
+    // The list row's mark: a text chip, with the four numbers on hover, only for plays in the top third of stake.
+    function stakeChipHtml(id){
+      const s=stakeOf(id);
+      if(!s||!s.high)return '';
+      const copy=c().stake;
+      return `<span class="chip tc-stake" title="${esc(copy.tip(stakePp(s.gain),stakePp(-s.loss),`${s.breakEven}%`,`${s.expected}%`))}">${STAKE_ICON}<span class="tc-stake-label">${esc(copy.chip)}</span></span>`;
+    }
+    // The play panel: what similar plays gained and lost, for any play with a value, marked or not.
+    function stakeHtml(id){
+      const s=stakeOf(id);
+      if(!s)return '';
+      const copy=c().stake,line=stakeLine();
+      const rows=[['gain',stakePp(s.gain)],['loss',stakePp(-s.loss)],['breakEven',`${s.breakEven}%`],['expected',`${s.expected}%`]]
+        .map(([key,value])=>`<div><dt>${esc(copy.rows[key])}</dt><dd>${esc(value)}</dd></div>`).join('');
+      return `<section class="tc-card tc-stakecard" data-tc-stake="${esc(id)}"><div class="tc-card-top"><strong>${esc(copy.title)}</strong>${s.high?` <span class="chip tc-stake">${STAKE_ICON}${esc(copy.chip)}</span>`:''}</div><dl class="tc-stakes">${rows}</dl><p class="tc-card-limit">${esc(copy.lede)}${s.high?` ${esc(copy.high(line.min,line.top))}`:''}</p></section>`;
+    }
+    function stakeCopy(){
+      if(!stakes)return null;
+      const copy=c().stake,line=stakeLine();
+      return {chip:copy.chip,only:copy.only,criteriaTitle:copy.criteriaTitle,criteria:copy.criteria(line.min,line.top),icon:STAKE_ICON};
+    }
     async function load(){if(pending)return pending;pending=(async()=>{try{const r=await fetch('./data/trailing-choices-v1.json',{cache:'no-cache'});if(r.ok)data=await r.json();}catch(e){data=null;}})();return pending;}
     const points=(e,digits=1,sign=1)=>{
       if(!e)return '—';
@@ -364,7 +420,7 @@
       root.querySelectorAll('[data-tc-open]').forEach(b=>b.onclick=()=>options.onOpen?.(b.dataset.tcOpen));
       root.querySelectorAll('[data-tc-open-section]').forEach(b=>b.onclick=()=>options.onSection?.(b.dataset.tcOpenSection));
     }
-    return {load,html,teamHtml,playCardHtml,gameLineHtml,wire,available:()=>!!data,title:()=>c().title,subtitle:()=>data?c().sub(data.coverage.games):''};
+    return {load,loadStakes,stakeOf,stakeChipHtml,stakeHtml,stakeCopy,stakesAvailable:()=>!!stakes,html,teamHtml,playCardHtml,gameLineHtml,wire,available:()=>!!data,title:()=>c().title,subtitle:()=>data?c().sub(data.coverage.games):''};
   }
   window.PlayValueTrailingChoices={create,SECTIONS,OBJECTIVES,SCOPES};
 })();

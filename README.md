@@ -74,14 +74,20 @@ The same file feeds three smaller pieces. A team profile has a "When behind" ana
 describes how often the team made a high-stake play, the margin of the plays picked and execution against
 expectation in sentences, with every team on one axis in name order and no ranking. Frequency counts only
 plays in the top third of stake (expected gain on success plus expected loss on failure) among plays made
-while behind; the rate over every narrated play is printed beside it. A Baron or Elder play in the game workspace shows
-the acting team's modeled win probability under three plain endings against its role's reference. The
-game-flow card carries one line on whose plays filled the time one side spent below 35%. The methodology page
-describes all of it under "Choices when behind".
+while behind; the rate over every narrated play is printed beside it. A Baron or Elder play in the game
+workspace shows the acting team's modeled win probability under three plain endings against its role's
+reference. The game-flow card carries one line on whose plays filled the time one side spent below 35%.
+
+A second file, `data/play-stakes-v1.json`, holds each play's similar-play estimate. In the game workspace a
+selected play shows what similar plays gained and lost, their break-even and their success rate; plays in
+the top third of stake across all plays carry a "High stake" mark in the list, with a filter for them. The
+mark and the filter follow the win-probability views and are hidden for gold. The methodology page describes
+all of it under "Choices when behind".
 
 From the research checkout, after rerunning the analyses when games are added:
 
 ```sh
+.venv-minimap/bin/python -m src.winprob_value.analyze_clutch_profiles
 .venv-minimap/bin/python -m src.winprob_value.export_trailing_choices
 node --test tests/test_trailing_choices_ui.cjs
 ```

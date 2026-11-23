@@ -467,6 +467,10 @@
     .row .title { min-width: 0; }
     .row .title .ttl, .row .title .who { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .row .title .ttl { font-size: .78rem; line-height: 1.35; font-weight: 600; }
+    .row .title .ttl-text { display: inline; }
+    .row .title .ttl.has-stake { display: flex; align-items: center; gap: 5px; }
+    .row .title .ttl.has-stake .ttl-text { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .row .title .ttl .tc-stake { flex: none; }
     .row .title .who { font-size: .74rem; color: var(--text-muted); margin-top: 1px; }
     .row .title .who b { color: var(--text-main); }
     /* On a phone the team chip gives its width to the title; the time takes the side's colour instead. */
@@ -727,7 +731,7 @@
   <link rel="stylesheet" href="./team-player-relations.css?v=1">
   <link rel="stylesheet" href="./team-operations.css?v=1">
   <link rel="stylesheet" href="./team-formation.css?v=1">
-  <link rel="stylesheet" href="./trailing-choices.css?v=1">
+  <link rel="stylesheet" href="./trailing-choices.css?v=3">
 </head>
 <body>
 <a class="skip" href="#main" id="skipLink">본문으로 건너뛰기</a>
@@ -791,7 +795,7 @@
 <script src="./formation-geometry.js?v=1"></script>
 <script src="./team-formation.js?v=1"></script>
 <script src="./profile-navigation.js?v=2"></script>
-<script src="./trailing-choices.js?v=2"></script>
+<script src="./trailing-choices.js?v=4"></script>
 <script>
 (async () => {
   // index.json is small and read first; a game's full file and a tournament's light play list load on demand.
@@ -1422,7 +1426,7 @@
   // ------------------------------------------------------------------ state
   const S = {
     lang: 'ko', theme: 'light', tourn: firstGame().tournament_id, view: 'set', stage: 'all', gameId: firstGame().id, playId: null,
-    h: String(D.default_horizon_s), fFamily: '', fTag: '', fState: '', fPlayer: '', fHl: false, listSort: 'time',
+    h: String(D.default_horizon_s), fFamily: '', fTag: '', fState: '', fPlayer: '', fHl: false, fStake: false, listSort: 'time',
     xScope: 'all', xRows: 'family', xCell: null, xSort: { col: 'positive', rev: false }, gSort: { col: 'label', rev: false }, swingList: 'games', swingH: String(D.default_horizon_s), swingPhase: 'all', behindSection: 'standing', behindObjective: 'baron', behindScope: 'all_trailing', guideOpen: false,
     gameStage: 'all', gameTeam: '', gameDetails: false, teamPanel: 'style', analysisPanel: 'plays',
     teamStyle: 'signature', statePhase: 'middle', stateCondition: 'behind',
@@ -2456,6 +2460,7 @@
       <div class="hz-head"><strong>${t('hzHead')}</strong>${S.metric !== 'gold' && g._wps ? `<span>${t('wpsTotalNote')}</span>` : ''}</div>
       <div class="horizons" aria-label="${esc(t('hzHead'))}">${hzHtml}</div>
       ${incomeHtml}
+      ${S.metric !== 'gold' ? (CHOICES?.stakeHtml(p.id) || '') : ''}
       ${S.metric !== 'gold' ? (CHOICES?.playCardHtml(p.id, p.actor, opponentOf(g, p.actor)) || '') : ''}
       ${involvedOf(p).length ? `<p class="players">${INV_ROLES.map(r => [r, involvedOf(p).filter(x => x.role === r)]).filter(([, xs]) => xs.length)
         .map(([r, xs]) => `<span class="role-lbl">${esc(L('inv', r))}</span> ${xs.map(x => `<button class="linkbtn" data-player="${esc(x.player)}">${esc(playerText(g, x.player))}</button>`).join(', ')}`).join('<br>')}</p>` : ''}
@@ -2550,11 +2555,13 @@
     const g = p._game;
     const side = p.actor === g.blue_team ? 'blue' : p.actor === g.red_team ? 'red' : '';
     const hl = hlOf(p.id);
+    // The high-stake chip sits outside the truncated title so a long title cannot hide it.
+    const stake = S.metric !== 'gold' && CHOICES ? CHOICES.stakeChipHtml(p.id) : '';
     const wpsMetric = listWpsOverlay(g, p.actor, instant?.wps_pp ?? null, w?.observed_wps_pp ?? null, S.h);
     const goldMetric = listMetric(g, p.actor, t('metricGold'), h.state === 'missing' ? null : h.e, LIST_GOLD_SCALE, 'gold', ['positive', 'negative'].includes(h.state));
     return `<button type="button" class="row side-${side || 'none'} ${selected ? 'on' : ''} ${hl ? 'star' : ''}" data-id="${p.id}" ${selected ? 'aria-current="true"' : ''} ${hl ? `title="${esc(hl.map(r => L('hl', r)).join(' · '))}"` : ''}>
       <span class="t">${clock(p)}</span><span class="chip ${side}">${esc(p.actor || '?')}</span>
-      <span class="title"><span class="ttl">${hl ? `<span class="sr-only">${esc(t('hlOnly'))}</span>` : ''}${S.fPlayer && invOf(p, S.fPlayer) ? `<span class="chip">${esc(L('inv', invOf(p, S.fPlayer).role))}</span> ` : ''}${esc(contentText(p, 'title'))}${p.objective_links.length ? ' <span class="chip fam">' + p.objective_links.map(o => esc(objLabel(o.objective))).join('·') + '</span>' : ''}</span>${whoLine(p)}</span>
+      <span class="title"><span class="ttl ${stake ? 'has-stake' : ''}"><span class="ttl-text">${hl ? `<span class="sr-only">${esc(t('hlOnly'))}</span>` : ''}${S.fPlayer && invOf(p, S.fPlayer) ? `<span class="chip">${esc(L('inv', invOf(p, S.fPlayer).role))}</span> ` : ''}${esc(contentText(p, 'title'))}${p.objective_links.length ? ' <span class="chip fam">' + p.objective_links.map(o => esc(objLabel(o.objective))).join('·') + '</span>' : ''}</span>${stake}</span>${whoLine(p)}</span>
       <span class="famcell">${famChip(v.famKey, v.familyText, 'dot')}</span>
       <span class="e metric-cell">${S.metric === 'wps' ? wpsMetric : S.metric === 'both' ? wpsMetric + goldMetric : goldMetric}</span></button>`;
   }
@@ -2570,6 +2577,8 @@
     const el = document.getElementById('listCard');
     const tagKeys = [...Object.keys(D.tags)];
     if (['instant', 'wps'].includes(S.listSort) && !g._wps) S.listSort = 'time';
+    // The high-stake mark is a win-probability reading, so it follows the WPS views and stays off for gold.
+    const stake = S.metric !== 'gold' ? CHOICES?.stakeCopy() : null, stakeShown = !!stake;
     const list = g.plays.filter(p => {
       const v = viewOf(p);
       if (S.fFamily && p.family !== S.fFamily) return false;
@@ -2577,6 +2586,7 @@
       if (S.fTag && v.tag !== S.fTag) return false;
       if (S.fPlayer && !invOf(p, S.fPlayer)) return false;
       if (S.fHl && !hlOf(p.id)) return false;
+      if (stakeShown && S.fStake && !CHOICES.stakeOf(p.id)?.high) return false;
       return true;
     });
     const chronologicalIndex = new Map(g.plays.map((p, i) => [p.id, i]));
@@ -2619,9 +2629,11 @@
         <select id="fState"><option value="">${t('fState')}</option>${STATES.map(k => `<option value="${k}" ${S.fState === k ? 'selected' : ''}>${esc(L('state', k))}</option>`).join('')}</select>
         <select id="fPlayer"><option value="">${t('fPlayer')}</option>${(g.roster ? g.roster.teams : []).map(tm => `<optgroup label="${esc(tm.team)}">${tm.players.map(x => `<option value="${esc(x.player)}" ${S.fPlayer === x.player ? 'selected' : ''}>${esc(posLabel(x.position))} · ${esc(x.player)} · ${esc(champName(x))}</option>`).join('')}</optgroup>`).join('')}</select>
         <label class="highlight-toggle ${S.fHl ? 'on' : ''}"><input class="sr-only" type="checkbox" id="fHl" ${S.fHl ? 'checked' : ''}>${SPARK_ICON}${t('hlOnly')}</label>
-        ${S.fFamily || S.fTag || S.fState || S.fPlayer || S.fHl ? `<button class="btn" id="fClear">${t('clearFilters')}</button>` : ''}
+        ${stakeShown ? `<label class="highlight-toggle ${S.fStake ? 'on' : ''}"><input class="sr-only" type="checkbox" id="fStake" ${S.fStake ? 'checked' : ''}>${stake.icon}${esc(stake.only)}</label>` : ''}
+        ${S.fFamily || S.fTag || S.fState || S.fPlayer || S.fHl || (stakeShown && S.fStake) ? `<button class="btn" id="fClear">${t('clearFilters')}</button>` : ''}
       </div>
       <details class="highlight-criteria"><summary><span class="criteria-title">${SPARK_ICON}<span>${t('hlCriteriaTitle')(S.h)}</span></span><span class="criteria-action"><span class="criteria-open">${t('hlCriteriaOpen')}</span><span class="criteria-close">${t('hlCriteriaClose')}</span></span></summary><p>${t('hlCriteria')(S.h)}</p></details>
+      ${stakeShown ? `<details class="highlight-criteria stake-criteria"><summary><span class="criteria-title">${stake.icon}<span>${esc(stake.criteriaTitle)}</span></span><span class="criteria-action"><span class="criteria-open">${t('hlCriteriaOpen')}</span><span class="criteria-close">${t('hlCriteriaClose')}</span></span></summary><p>${esc(stake.criteria)}</p></details>` : ''}
       ${S.fPlayer ? `<p class="note-box" style="margin:-4px 0 8px">${t('playerNote')}</p>` : ''}
       <div class="rows"><div class="row head"><span>${t('colTime')}</span><span>${t('colTeam')}</span><span>${t('colPlay')}</span><span class="famcell">${t('colType')}</span><span class="e value-head"><span class="value-head-label"><span>${esc(compactValueHead)}</span>${valueHeadHelp(g)}</span><span class="meter-legend"><i class="blue">${esc(g.blue_team)}</i><i class="axis"></i><i class="red">${esc(g.red_team)}</i></span></span></div>${list.map(p => rowHtml(p, p.id === S.playId)).join('')}</div>`;
     el.querySelector('#listSort').onchange = e => {
@@ -2636,8 +2648,10 @@
     el.querySelector('#fState').onchange = e => { S.fState = e.target.value; renderList(g); };
     el.querySelector('#fPlayer').onchange = e => { pickPlayer(g, e.target.value); };
     el.querySelector('#fHl').onchange = e => { S.fHl = e.target.checked; renderList(g); };
+    const stakeToggle = el.querySelector('#fStake');
+    if (stakeToggle) stakeToggle.onchange = e => { S.fStake = e.target.checked; renderList(g); };
     const clear = el.querySelector('#fClear');
-    if (clear) clear.onclick = () => { S.fFamily = S.fTag = S.fState = ''; S.fHl = false; pickPlayer(g, ''); };
+    if (clear) clear.onclick = () => { S.fFamily = S.fTag = S.fState = ''; S.fHl = S.fStake = false; pickPlayer(g, ''); };
     el.querySelectorAll('.row:not(.head)').forEach(r => r.onclick = () => selectPlay(r.dataset.id, true));
     animateListFlip(el, previousRows);
   }
@@ -4051,7 +4065,7 @@
         const id = S.gameId;
         if (!isFull(game())) main.innerHTML = wait;
         // The objective card is optional: a missing or slow file must not hold the game view back.
-        await Promise.all([ensureGame(id), ensureWps(id), Promise.race([CHOICES?.load(), new Promise(resolve => setTimeout(resolve, 1500))])]);
+        await Promise.all([ensureGame(id), ensureWps(id), Promise.race([Promise.all([CHOICES?.load(), CHOICES?.loadStakes()]), new Promise(resolve => setTimeout(resolve, 1500))])]);
         if(epoch!==renderEpoch)return;
         if (S.view === 'set' && S.gameId === id) renderSet();
       }

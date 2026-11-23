@@ -114,3 +114,19 @@
 
 .tc-gameline { color:var(--text-muted); font-size:.74rem; line-height:1.7; margin:2px 0 10px; }
 .tc-gameline span { opacity:.85; }
+
+/* Game workspace: the high-stake mark in the play list and the stake block in the play panel. Text and an
+   icon carry the mark, so it does not rest on colour. */
+.chip.tc-stake { background:transparent; border:1px solid var(--border-color); color:var(--text-main); font-weight:600; gap:3px; padding:1px 7px; }
+.tc-stake-icon { width:12px; height:12px; flex:none; color:var(--text-muted); }
+.highlight-toggle .tc-stake-icon { width:14px; height:14px; }
+.highlight-toggle.on .tc-stake-icon { color:currentColor; }
+.tc-stakes { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px 12px; margin:10px 0 2px; }
+.tc-stakes dt { color:var(--text-muted); font-size:.7rem; line-height:1.4; }
+.tc-stakes dd { margin:2px 0 0; font-family:var(--mono); font-size:.86rem; }
+@media(max-width:560px) { .tc-stakes { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+/* On a phone the list keeps only the icon; the label stays for screen readers and the numbers stay on hover. */
+@media(max-width:640px) {
+  .row .chip.tc-stake { padding:1px 5px; }
+  .row .tc-stake-label { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+}
